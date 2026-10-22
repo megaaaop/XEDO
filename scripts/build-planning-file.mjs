@@ -9,7 +9,7 @@ const destination=resolve(process.argv[2]||'output/standalone/XEDO-Planning-Tria
 if(!destination.endsWith('.html'))throw new Error('Choose an .html output file.');
 const previewData='data:image/png;base64,'+(await readFile('public/assets/sentinel-proof.png')).toString('base64');
 const bundle=await build({
-  define:{__XEDO_PREVIEW_DATA__:JSON.stringify(previewData),__XEDO_STANDALONE__:'true'},
+  define:{__XEDO_PREVIEW_DATA__:JSON.stringify(previewData),__XEDO_STANDALONE__:'true',__XEDO_GEE_HOSTED__:process.argv.includes('--gee-hosted')?'true':'false'},
   entryPoints:['src/planning-trial-client.js'],bundle:true,splitting:false,format:'iife',
   target:'es2022',minify:true,write:false,outdir:'output/standalone-build',
   loader:{'.png':'dataurl','.jpg':'dataurl','.svg':'dataurl'},
@@ -41,7 +41,9 @@ html=html.replace(/<title>[^<]*<\/title>/,'<title>XEDO · Local mission trial</t
   .replace('<main class="trial-shell">','<main id="trial-top" class="trial-shell">')
   .replace('href="/docs/planning-trial.md" target="_blank" rel="noopener"','href="#standalone-method"')
   .replace('</head>',()=>'<style>'+css.replace(/<\/style/gi,'<\\/style')+'\n#standalone-method{margin-top:28px;padding:20px;border:1px solid var(--border);border-radius:8px}#standalone-method pre{white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.7 var(--font);color:var(--muted)}#standalone-method summary{cursor:pointer}</style></head>');
-const fileNote='Standalone prototype: all four calculators, 2D/3D diagrams and downloads run in this file. No local server or port is used. The stored Sentinel-2 image and calculations work offline; the basemap needs internet. Follow Select an area, Satellite survey, then Drone deployment. The four calculations run in the background; Mission settings and Calculation details open on demand. Saved survey IDs cannot load from a database. Import a snapshot or GeoJSON instead. Imported database linkage is unverified; new results use the imported geometry as a local trial boundary. Manual export confirmations require fresh review.';
+const fileNote=process.argv.includes('--gee-hosted')
+  ? 'Satellite survey searches Google Earth Engine for Sentinel-2 acquisitions covering the selected area. Choose acquisition dates and a cloud-cover limit, then load an image for review. Cloud cover describes the whole scene. The acquisition date is shown; imagery is not a continuous live feed or oil detection. The archived image is available only by explicit selection. Calculations and downloads run in the browser; saved survey IDs need the separate workspace database. Missing image credentials or unavailable scenes are reported as errors.'
+  : 'Standalone prototype: all four calculators, 2D/3D diagrams and downloads run in this file. No local server or port is used. The stored Sentinel-2 image and calculations work offline; the basemap needs internet. Follow Select an area, Satellite survey, then Drone deployment. The four calculations run in the background; Mission settings and Calculation details open on demand. Saved survey IDs cannot load from a database. Import a snapshot or GeoJSON instead. Imported database linkage is unverified; new results use the imported geometry as a local trial boundary. Manual export confirmations require fresh review.';
 html=html.replace('</main>',()=>'<details id="standalone-method"><summary>Local file · Method and limits</summary><p class="trial-help">'+fileNote+'</p><pre>'+escape(method)+'</pre></details></main>');
 html=html.replace('</body>',()=>'<script>'+script.replace(/<\/script/gi,'<\\/script')+'</script><script>document.querySelector(\'a[href="#standalone-method"]\').addEventListener("click",()=>{document.getElementById("standalone-method").open=true;});</script></body>');
 const inlineScripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];

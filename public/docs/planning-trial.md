@@ -4,11 +4,13 @@ The [mission trial page](/planning.html) keeps three user steps: **Select an are
 
 ## Source, snapshots and service boundaries
 
-Start from a saved Quick mission survey or draw a separate trial polygon. A saved survey uses its original frozen boundary snapshot, scene ID and acquisition time. Later edits to the current observation do not replace that snapshot. A trial boundary or drift envelope is a search scenario; it does not confirm oil or measure its extent.
+In the default hosted version, draw or import a trial polygon, review a GEE satellite image, then calculate in the browser. Hosted mode does not persist surveys. The retained workspace can also start from a saved Quick mission survey, using its original frozen boundary snapshot, scene ID and acquisition time. Later edits to the current observation do not replace that snapshot. A trial boundary or drift envelope is a search scenario; it does not confirm oil or measure its extent.
 
-Trial calculation, source retrieval and file export perform no database mutations. In server mode, the separate survey action uses the original Quick mission APIs to save an area and the reviewed inspection before calculation; reopening an existing survey uses its frozen image and boundary. They do not create or update incidents, observations, persisted MissionPlans, runs or device commands. A downloaded JSON snapshot contains the submitted inputs, source, results and `inputHash`; it is a local artifact, not a saved operational mission. Restoring a snapshot restores inputs and requires recalculation. Times and validity checks must be refreshed before exporting again. The hash identifies the calculation inputs; it is not a digital signature or approval.
+Trial calculation, source retrieval and file export perform no database mutations. In workspace server mode, the separate survey action uses the original Quick mission APIs to save an area and the reviewed inspection before calculation; reopening an existing survey uses its frozen image and boundary. The calculation and export actions do not create or update incidents, observations, persisted MissionPlans, runs or device commands. A downloaded JSON snapshot contains the submitted inputs, source, results and `inputHash`; it is a local artifact, not a saved operational mission. Restoring a snapshot restores inputs and requires recalculation. Times and validity checks must be refreshed before exporting again. The hash identifies the calculation inputs; it is not a digital signature or approval.
 
-The calculation modules do not fetch live weather, current forecasts, official airspace restrictions, GEE imagery or an AI prediction. The separate satellite-review step uses the existing catalogue and saved image workflow in server mode, or the embedded stored Sentinel-2 image in standalone mode (local file or static hosting). It validates full boundary coverage and waits for image loading before deployment is enabled. A boundary/source change revokes image review. Source errors revoke readiness and require retry. Existing GEE historical planning context is a separate feature. Use the configured Site session/access boundary for these APIs; no Pi token, Google secret or aircraft connection is needed. See [API integration](api-integration.md).
+The calculation modules do not fetch live weather, current forecasts, official airspace restrictions or an AI prediction. The separate satellite-review step now searches actual GEE Sentinel-2 scenes by area, acquisition dates and cloud threshold, and loads RGB map tiles through the XEDO server. It validates full boundary coverage and waits for image loading before deployment is enabled. A boundary/source change or expired image session revokes image review. Source errors revoke readiness and require retry; the interface does not automatically replace failed GEE requests with an example image. An archived source remains available by explicit selection. The offline local-file build uses only its embedded archived Sentinel-2 image.
+
+Default Vercel hosting exposes only the bounded imagery API alongside the static frontend and browser calculations. Google credentials remain on the server; the browser needs no Google secret, Pi token or aircraft connection. The full workspace has a separate access boundary, saved-image workflow and historical GEE planning context. See [API integration](api-integration.md).
 
 ## 1. Constant-vector drift scenarios
 
@@ -85,6 +87,18 @@ For an emulsion-layer thickness, supply the measured oil volume fraction; it is 
 
 ## HTTP contract
 
+Default Vercel hosting provides these imagery endpoints through `api/gee.mjs`:
+
+| Route | Purpose |
+|---|---|
+| `POST /api/v1/gee/imagery/search` | Search a polygon/date range/cloud threshold for covering Sentinel-2 scenes |
+| `POST /api/v1/gee/imagery/map` | Recheck the selected scene and create a 30-minute same-origin tile session |
+| `GET /api/v1/gee/imagery/tiles/{sessionId}/{z}/{x}/{y}` | Display RGB PNG tiles; zoom 0–18 |
+
+The hosted planning calculations and file export run in the browser. The server exposes fixed imagery operations, with JSON bodies bounded to 64 KiB, and accepts no arbitrary EE expression or upstream URL. Searches span at most 90 days and a polygon no wider or taller than 100 km. Scene cloud metadata and acquisition dates describe the source imagery; they do not establish present conditions or oil detection.
+
+The following planning endpoints belong to the retained workspace server and are not exposed by the default Vercel imagery adapter:
+
 | Route | Purpose | Result |
 |---|---|---|
 | `GET /api/v2/planning-trial/source?survey=...` | Read a saved Quick mission snapshot | Source geometry, survey/incident/scene linkage |
@@ -93,7 +107,7 @@ For an emulsion-layer thickness, supply the measured oil volume fraction; it is 
 
 POST bodies are JSON, bounded to **64 KiB**. Same-origin rules apply. `surveyId` and replacement `geometry` cannot both be supplied. `sortieIndex` is zero based for export. HTTP 200 calculation can contain incomplete or blocked component states; inspect each result. Export returns 422 when checks or the selected sortie are invalid. Successful JSON trial responses use `Cache-Control: no-store`; unsupported methods return an empty 405 response with `Allow`.
 
-The [OpenAPI inventory](../contracts/openapi.json) and `planning-trial-*.schema.json` describe the envelope contracts. Nested calculator inputs and detailed geometric relationships are documented here and validated by runtime code; the inventory does not claim a complete typed contract for every legacy API. All trial results keep `hardwareControl: false` and `releaseControl: false`.
+The [OpenAPI inventory](../contracts/openapi.json) and `planning-trial-*.schema.json` describe the workspace planning envelope contracts. Nested calculator inputs and detailed geometric relationships are documented here and validated by runtime code; the inventory does not claim a complete typed contract for every legacy API. All trial results keep `hardwareControl: false` and `releaseControl: false`.
 
 The trial conservatively requires scheduled takeoff at or after drift `arriveAt` and the full scheduled end at or before drift `endAt`. It does not infer when the first survey acquisition occurs during transit. Include transit and ground delays in the chosen coverage window. Invalid module settings return a blocked component report while unrelated tools remain available. Restoring a snapshot clears manual export confirmations for fresh review; offset timestamps are normalized to UTC. Route/home/constraint edits clear the relevant confirmations.
 
@@ -101,6 +115,6 @@ The trial conservatively requires scheduled takeoff at or after drift `arriveAt`
 
 Run `npm run build:file` to create `output/standalone/XEDO-Planning-Trial.html`, or pass an .html output path to `node scripts/build-planning-file.mjs`. Double-click the resulting file. It embeds the calculators, scripts, styles, logo, stored Sentinel-2 preview, 3D renderer and method notes; no local HTTP server or port is needed. Map tiles still require internet. All four calculators and file downloads also work offline.
 
-Saved survey lookup by ID is unavailable in file mode. Import GeoJSON or a JSON trial snapshot containing the source geometry. Imported survey linkage is unverified: new calculations treat that geometry as a local trial boundary, preserve no live database connection, and require fresh export confirmations. The normal hosted/server version retains its original API behavior.
+Saved survey lookup by ID is unavailable in file mode and in the default hosted version. Import GeoJSON or a JSON trial snapshot containing the source geometry. Imported survey linkage is unverified: new calculations treat that geometry as a local trial boundary, preserve no live database connection, and require fresh export confirmations. The hosted version uses the GEE imagery API; the retained workspace server additionally supports saved surveys. The local-file build includes no GEE credentials or live imagery API.
 
 The standalone stored image is the original archived source dated 29 September 2026, not a live GEE observation. An area outside its prepared crop is rejected. The synthetic test configuration does not turn that image into a current oil observation. Missing physical inputs stay unknown and appear as Settings needed. QGC import, SITL and aircraft acceptance remain outside these interface checks.

@@ -56,7 +56,7 @@ function footprintCovers(footprint,geometry) {
   return Array.isArray(components)&&components.some(component=>componentCovers(component,geometry));
 }
 export function coveringScenes(scenes,geometry) {
-  return scenes.filter(s=>s.visual||s.localPreview).filter(s=>footprintCovers(s.footprint,geometry)&&(!s.localPreview||!s.previewFootprint||footprintCovers(s.previewFootprint,geometry))).sort((a,b)=>Date.parse(b.acquiredAt)-Date.parse(a.acquiredAt));
+  return scenes.filter(s=>s.visual||s.localPreview||(s.provider==='gee'&&s.assetKind==='gee_tiles')).filter(s=>footprintCovers(s.footprint,geometry)&&(!s.localPreview||!s.previewFootprint||footprintCovers(s.previewFootprint,geometry))).sort((a,b)=>Date.parse(b.acquiredAt)-Date.parse(a.acquiredAt));
 }
 export function recentDates(now=new Date()) {const end=new Date(now),start=new Date(end);start.setUTCDate(start.getUTCDate()-30);return {start:start.toISOString().slice(0,10),end:end.toISOString().slice(0,10)};}
 export function newMissionIds() {const key=crypto.randomUUID().replaceAll('-','');return {area:'AREA_'+key,incident:'INC_'+key,observation:'OBS_'+key,survey:'SUR_'+key};}
@@ -65,6 +65,11 @@ export function newMissionIds() {const key=crypto.randomUUID().replaceAll('-',''
 // partially saved request can resume without duplicating its incident.
 export class QuickMission {
   constructor(api){this.api=api;this.busy=false;this.point=null;this.scene=null;this.imageReady=false;this.saved=null;}
+  useScene(scene){
+    if(this.busy||!this.geometry||this.saved||this.preparationStarted)throw new Error('Select a new inspection area before changing its satellite source.');
+    if(scene?.provider!=='gee'||scene.assetKind!=='gee_tiles'||typeof scene.id!=='string'||!scene.id.startsWith('gee:COPERNICUS/S2_SR_HARMONIZED/')||!Number.isFinite(Date.parse(scene.acquiredAt))||coveringScenes([scene],this.geometry).length!==1)throw new Error('The GEE source does not cover this inspection area.');
+    this.scene=structuredClone(scene);this.imageReady=false;return this.scene;
+  }
   selectArea(geometry){
     if(this.busy)throw new Error('Wait for the current request to finish.');
     const metrics=validateSelection(geometry),selected=structuredClone(geometry);
@@ -115,10 +120,11 @@ export class QuickMission {
     this.preparationStarted=true;
     this.busy=true;
     try {
+      if(!this.area)this.area=await this.api('records',{method:'POST',body:JSON.stringify({id:this.ids.area,kind:'area',name:'Quick inspection '+this.point.map(n=>n.toFixed(4)).join(', '),geometry:this.geometry})});
       const position=this.point.map(n=>n.toFixed(5)).join(', '),note='User-selected inspection area from Quick mission. Not a detected or confirmed oil boundary. Satellite image acquired '+this.scene.acquiredAt+'.';
       const save=body=>this.api('records',{method:'POST',body:JSON.stringify(body)});
       await save({id:this.ids.incident,kind:'incident',title:'Inspection at '+position,areaId:this.ids.area,reason:note,owner:String(owner).slice(0,100)});
-      await save({id:this.ids.observation,kind:'observation',incidentId:this.ids.incident,sceneId:this.scene.id,geometry:this.geometry,assetKind:this.scene.localPreview?'cached_preview':'cog',note,reviewer:'Quick mission operator'});
+      await save({id:this.ids.observation,kind:'observation',incidentId:this.ids.incident,sceneId:this.scene.id,geometry:this.geometry,assetKind:this.scene.assetKind==='gee_tiles'?'gee_tiles':this.scene.localPreview?'cached_preview':'cog',note,reviewer:'Quick mission operator'});
       const survey=await save({id:this.ids.survey,kind:'survey',incidentId:this.ids.incident,title:'Drone inspection at '+position,note:'Prepared inspection request. Flight and microcapsule release have not been commanded.'});
       this.saved={incidentId:this.ids.incident,surveyId:survey.id};return this.saved;
     } finally {this.busy=false;}

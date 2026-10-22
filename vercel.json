@@ -4,6 +4,10 @@
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
+  "functions": {"api/gee.mjs": {"maxDuration": 60}},
+  "rewrites": [
+    {"source": "/api/v1/gee/imagery/:path*", "destination": "/api/gee?route=:path*"}
+  ],
   "redirects": [
     {"source": "/planning", "destination": "/", "permanent": false},
     {"source": "/planning.html", "destination": "/", "permanent": false}

@@ -11,6 +11,30 @@
     }
   ],
   "paths": {
+    "/api/v1/gee/imagery/search": {
+      "post": {
+        "summary": "Find actual Sentinel-2 acquisitions covering an inspection polygon",
+        "description": "Fixed GEE Sentinel-2 SR Harmonized metadata search. Dates span up to 90 days, cloud cover is scene-wide, and AOI dimensions are bounded to 100 km. Returns at most 12 fully covering acquisitions. No arbitrary GEE expression, external URL, database write or oil inference.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "required": ["geometry"], "properties": {"geometry": {"type": "object", "description": "WGS84 single-ring Polygon, no holes, at most 120 vertices."}, "start": {"type": "string", "format": "date"}, "end": {"type": "string", "format": "date"}, "maxCloud": {"type": "number", "minimum": 0, "maximum": 100, "default": 80}}}}}},
+        "responses": {"200": {"description": "GEE scene list with exact acquisition time, footprint, native resolution and scene cloud cover; an empty list is a valid no-match result."}, "422": {"description": "Invalid boundary, date range or cloud cover."}, "503": {"description": "Missing GEE configuration or unavailable upstream."}}
+      }
+    },
+    "/api/v1/gee/imagery/map": {
+      "post": {
+        "summary": "Create a bounded RGB image session for one verified GEE acquisition",
+        "description": "Revalidates the canonical fixed-dataset source and full polygon coverage. Returns a 30-minute encrypted stateless session, validated geometry and scene, expiry and same-origin tile URL. Uses computePixels rendering with the existing computation permission when maps.create is unavailable. Google tokens and keys are never returned.",
+        "requestBody": {"required": true, "content": {"application/json": {"schema": {"type": "object", "additionalProperties": false, "required": ["sceneId", "geometry"], "properties": {"sceneId": {"type": "string", "description": "Canonical gee:COPERNICUS/S2_SR_HARMONIZED/... scene returned by search."}, "geometry": {"type": "object", "description": "The exact selected WGS84 inspection Polygon."}}}}}},
+        "responses": {"200": {"description": "Verified image-session manifest."}, "422": {"description": "Invalid scene or insufficient image coverage."}, "503": {"description": "GEE unavailable or not configured."}}
+      }
+    },
+    "/api/v1/gee/imagery/tiles/{sessionId}/{z}/{x}/{y}": {
+      "get": {
+        "summary": "Render a verified Sentinel-2 RGB PNG tile",
+        "description": "Server-side authenticated GEE imagery. Accepts only an unexpired, untampered session issued by map; clips imagery to the approved AOI bounding box. Tiles outside the AOI are transparent PNGs. No raw raster download, Google credentials, aircraft action or database access.",
+        "parameters": [{"name": "sessionId", "in": "path", "required": true, "schema": {"type": "string", "maxLength": 4096}}, {"name": "z", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 0, "maximum": 18}}, {"name": "x", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 0}}, {"name": "y", "in": "path", "required": true, "schema": {"type": "integer", "minimum": 0}}],
+        "responses": {"200": {"description": "RGB or transparent PNG, 256 by 256 pixels.", "content": {"image/png": {"schema": {"type": "string", "format": "binary"}}}}, "400": {"description": "Invalid or altered image session."}, "410": {"description": "Session expired; renew the selected image."}, "503": {"description": "GEE unavailable."}}
+      }
+    },
     "/api/v1/state": {
       "get": {
         "summary": "/state",

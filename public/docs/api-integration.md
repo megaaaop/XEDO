@@ -1,41 +1,57 @@
 # XEDO API integration
 
-XEDO has working server endpoints for saved inspections, route previews, device-data ingestion, images and processing results. Some connections require configuration; GEE imagery, AI inference and physical flight/release control still require implementation. Adding an API key does not enable those missing integrations.
+The default XEDO deployment combines a static frontend with a limited Vercel GEE imagery function (`api/gee.mjs`). It searches actual Sentinel-2 acquisitions and displays RGB tiles; planning calculations run in the browser without persisting surveys. The retained workspace has separate server endpoints for saved inspections, route previews, device-data ingestion, images and processing results. That full backend is not deployed by the default Vercel build. AI inference and physical flight/release control still require implementation.
 
 ## Integration boundaries
 
 | Connection | Implemented | Required before real use |
 |---|---|---|
-| Satellite imagery | Earth Search catalogue, stored original imagery and COG display | Internet access and a readable scene covering the selected polygon; this source is separate from GEE |
-| GEE connection indicator | Server-side authentication and metadata probe | Registered Cloud project, enabled Earth Engine API, permitted service account and server secrets |
-| GEE planning context | Bounded historical SRTM elevation/JRC water sampling for the same 2D/3D route | All of the above plus computation permissions and a real-account integration test |
-| Pi data | Authenticated telemetry batches, original image upload, processing-result ingestion, offline queue and read-only doctor | Matching device/Site credentials, network access, and physical Pi/sensor/camera acceptance |
-| AI | Storage and display of externally supplied processing results | Model, inference adapter, evaluated outputs and source-image linkage; no built-in oil-detection inference |
+| GEE satellite imagery | Bounded Sentinel-2 search, scene review and same-origin RGB tiles in hosted and workspace modes | Registered Cloud project, enabled Earth Engine API, permitted service account, server secrets and an image covering the selected polygon |
+| Other satellite sources | Earth Search catalogue, stored original imagery and COG display in the retained workspace; explicitly selected archived preview in the planning interface | Source availability and boundary coverage; the offline file uses archived imagery only |
+| GEE connection indicator | Server-side authentication and metadata probe in the retained workspace | Registered Cloud project, enabled Earth Engine API, permitted service account and server secrets; not a default hosted API |
+| GEE planning context | Bounded historical SRTM elevation/JRC water sampling for the same 2D/3D route in the retained workspace | All of the above plus computation permissions and a real-account integration test; not exposed by the hosted imagery adapter |
+| Pi data | Retained workspace: authenticated telemetry batches, original image upload, processing-result ingestion, offline queue and read-only doctor | Separate backend deployment, matching device/Site credentials, network access, and physical Pi/sensor/camera acceptance |
+| AI | Retained workspace: storage and display of externally supplied processing results | Separate backend deployment, model, inference adapter, evaluated outputs and source-image linkage; no built-in oil-detection inference |
 | Aircraft and dispenser | Planning previews and data display | Aircraft-specific command adapter, acknowledgements, operating-state handling and physical acceptance; no flight or release commands are implemented |
 
 ## Access and credentials
 
-The hosted Site has its own access boundary. Use the existing sharing/access configuration. For a permitted headless client, the owner supplies its Site service token in `OAI-Sites-Authorization: Bearer <SITE_TOKEN>`. This is separate from device authorization. It is not a GEE credential and must never be embedded in browser source or public downloads.
+The default Vercel imagery gateway is a bounded, read-only satellite API. It accepts same-origin browser requests and does not need browser Google credentials, a Pi token or a database key. It exposes only imagery search, map sessions and tiles; it does not expose the retained workspace APIs. Requests from other website origins are rejected. Server-side Google secrets never enter HTML, browser requests or downloaded files.
 
-Live Pi ingestion and its auth check also require `X-XEDO-Device-Token: <DEVICE_TOKEN>`, matching `XEDO_PI_TOKEN` and the configured `XEDO_PI_DEVICE_ID` on the server. A device token alone does not bypass Site access. Tokens must stay in private configuration. The browser uses its existing same-origin Site session and needs no Google secret.
+The retained workspace and any earlier private Sites deployment have a separate access boundary. Preserve their sharing/access configuration. Where a private Site requires it, a permitted headless client uses `OAI-Sites-Authorization: Bearer <SITE_TOKEN>`. This token is separate from device authorization and GEE credentials, and must never be embedded in browser source or public downloads.
 
-The API accepts same-origin website writes and permitted server/device clients. It does not offer a general cross-origin browser API; another website cannot bypass this by adding a token. Treat redirects or sign-in HTML as failed API access, rather than successful JSON responses.
+Live Pi ingestion and its auth check on a separately deployed workspace also require `X-XEDO-Device-Token: <DEVICE_TOKEN>`, matching `XEDO_PI_TOKEN` and the configured `XEDO_PI_DEVICE_ID` on that server. A device token alone does not bypass private Site access. Tokens must stay in private configuration.
+
+Retained workspace write endpoints accept same-origin website requests and permitted server/device clients. They do not offer a general cross-origin browser API; another website cannot bypass this by adding a token. Treat redirects or sign-in HTML as failed API access, rather than successful JSON responses.
 
 ## GEE setup and acceptance
 
-Set `GEE_PROJECT_ID` and secret `GEE_SERVICE_ACCOUNT_JSON` in Sites runtime configuration, then publish a saved version to apply the environment revision. Local `server.mjs` reads process environment variables; it does not automatically read `.env` files. `GEE_PROBE_ASSET` is optional.
+Set `GEE_PROJECT_ID` and secret `GEE_SERVICE_ACCOUNT_JSON` in the Vercel server environment, then create a new deployment to apply them. Do not use public environment-variable prefixes or upload local credential files. For local workspace use, `npm run dev:workspace` reads an optional `.env`; `GEE_SERVICE_ACCOUNT_FILE` may point to a private Service Account JSON file. The hosted adapter accepts only project ID and credential JSON from runtime configuration, with no local credential-file dependency. `GEE_PROBE_ASSET` is optional for the retained workspace metadata probe.
 
-Register the Cloud project for Earth Engine and enable the API. Grant the service account the necessary project/asset access, computation permission and, where required, permission to consume the project. Follow [Google's service-account guide](https://developers.google.com/earth-engine/guides/service_account). Metadata access alone does not prove that planning computations are permitted.
+Register the Cloud project for Earth Engine and enable the API. Grant the service account the necessary project/asset access, computation permission and, where required, permission to consume the project. Follow [Google's service-account guide](https://developers.google.com/earth-engine/guides/service_account). Metadata access alone does not prove that imagery or planning computations are permitted.
 
-1. Call `GET /api/v1/gee/ping?nonce=<unique-value>`. Require the echoed nonce, `service: "gee"`, `state: "connected"` and numeric `upstream_ms`. An HTTP 200 with `not_configured` or `error` is not a successful GEE connection.
-2. Open a saved Quick mission survey and generate a preview with `useGEE: true`. Require `context.state: "connected"`. Inspect the datasets, sample count and null values; a successful geometric plan can coexist with unavailable GEE data.
-3. Verify the same target/route in 2D and 3D. Missing elevation stays unknown. SRTM and JRC are historical datasets, not current obstacles, bathymetry or live oil observations.
+1. In the satellite-survey step, select a polygon, acquisition-date range and cloud threshold. Search and require actual Sentinel-2 results covering the complete boundary. A failed request or empty result must not substitute the archived example image automatically.
+2. Select a scene, load it, and require visible RGB tiles, an acquisition timestamp and scene cloud metadata before preparing the drone mission. Changing the area/source or expiring the tile session requires image review again.
+3. If testing the separate workspace metadata probe, call `GET /api/v1/gee/ping?nonce=<unique-value>`. Require the echoed nonce, `service: "gee"`, `state: "connected"` and numeric `upstream_ms`. An HTTP 200 with `not_configured` or `error` is not a successful GEE connection. This route is not exposed by the default Vercel adapter.
+4. For the workspace historical planning context, open a saved Quick mission survey and generate a preview with `useGEE: true`. Require `context.state: "connected"`, then inspect datasets, sample counts and nulls in the same 2D/3D target/route. Missing elevation stays unknown. SRTM and JRC are historical datasets, not current obstacles, bathymetry or live oil observations.
 
-The Wi-Fi value is HTTP round-trip latency through XEDO to GEE, not imagery loading speed or an ICMP ping. See [connection measurement](gee-connection-en.md) and [planning context](gee-planning.md) for request limits and source dates. GEE map tiles and imagery selection remain separate future work.
+The workspace Wi-Fi value is HTTP round-trip latency through XEDO to GEE, not imagery loading speed or an ICMP ping. See [connection measurement](gee-connection-en.md) and [planning context](gee-planning.md) for request limits and source dates.
+
+## Hosted imagery contract
+
+| Route | Input / output |
+|---|---|
+| `POST /api/v1/gee/imagery/search` | JSON `{geometry,start,end,maxCloud}` → fully covering scene metadata |
+| `POST /api/v1/gee/imagery/map` | JSON `{sceneId,geometry}` → rechecked scene, geometry, expiring session and same-origin tile URL |
+| `GET /api/v1/gee/imagery/tiles/{sessionId}/{z}/{x}/{y}` | PNG RGB tiles at zoom 0–18 |
+
+The fixed source is `COPERNICUS/S2_SR_HARMONIZED`, RGB bands B4/B3/B2 with 10 m source resolution. Searches span at most 90 days and a polygon no wider or taller than 100 km, returning at most 12 fully covering scenes. Dates are acquisition dates, and cloud cover describes the whole scene. These images do not confirm oil or provide a live video feed.
+
+JSON request bodies are limited to 64 KiB. The gateway rejects other routes, unsupported methods, cross-origin browser requests and arbitrary asset URLs or Earth Engine expressions. Google access tokens stay server-side. Tile sessions expire after 30 minutes and work across function cold starts. Hosted calculations and downloaded snapshots do not create database records.
 
 ## Deployment preview contract
 
-From the authenticated Site page:
+This retained-workspace endpoint is not deployed by the default Vercel build. From an authenticated workspace/Site page:
 
 ```js
 const response = await fetch('/api/v1/deployment-preview', {
@@ -62,7 +78,7 @@ This preview is distinct from a persisted MissionPlan 1.0. Do not pass its surve
 
 ## Pi and external processing
 
-Install the [Pi 5 kit](pi5-setup.md), then run:
+These routes require a separately configured workspace backend; they are not available through `api/gee.mjs`. Install the [Pi 5 kit](pi5-setup.md), then run:
 
 ```bash
 sudo python3 /opt/xedo-pi/run_agent.py --config /etc/xedo-pi.env doctor

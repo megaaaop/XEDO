@@ -18,6 +18,7 @@ for (const [entry, file, name] of [['src/client.js','dashboard.html','app'],['sr
   const html = await readFile(path, 'utf8');
   await writeFile(path, html.replace('/'+name+'.js', '/'+basename(app[0])).replace('/'+name+'.css', '/'+basename(app[1].cssBundle)));
 }
+await cp(resolve(target,'client/planning.html'),resolve(target,'client/index.html'));
 await build({entryPoints:['src/worker.js'], bundle:true, format:'esm', target:'es2022', outfile:resolve(target, 'server/index.js'), minify:true});
 await cp('drizzle', resolve(target, 'migrations'), {recursive:true});
 console.log('Built optional full workspace in dist-workspace/. Hosting/auth/storage integration is separate.');

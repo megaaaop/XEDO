@@ -6,6 +6,8 @@ import {operations,operationsBootstrap,planNeedsReview} from './operations.js';
 import {probeGEE} from './gee-connection.js';
 import {deploymentPreviewAPI} from './deployment-api.js';
 import {planningTrialAPI} from './trial-api.js';
+import {geeImageryAPI} from './gee-imagery-api.js';
+import {coveringScenes} from './mission-flow.js';
 const now=()=>new Date().toISOString(),uuid=()=>crypto.randomUUID();
 const json=(v,status=200)=>new Response(JSON.stringify(v),{status,headers:{'Content-Type':'application/json;charset=utf-8','Cache-Control':'no-store'}});
 const fail=(message,status=400)=>{throw Object.assign(new Error(message),{status});};
@@ -73,6 +75,7 @@ async function api(req,env,ctx,url) {
     const origin=req.headers.get('origin');if((origin&&origin!==url.origin)||req.headers.get('sec-fetch-site')==='cross-site')fail('Requests from other websites are not permitted.',403);
   }
   const db=database(env),actor=req.headers.get('oai-authenticated-user-id')||'private-workspace';
+  const imagery=await geeImageryAPI(req,env,{persistScene:s=>saveScene(db,s)});if(imagery)return imagery;
   const deployment=await deploymentPreviewAPI(req,env,db,url);if(deployment)return deployment;
   const trial=await planningTrialAPI(req,env,db,url);if(trial)return trial;
   if(url.pathname.startsWith('/api/v1/devices/')&&url.pathname.endsWith('/auth-check'))await ensureWorkspace(env,db);
@@ -140,7 +143,8 @@ async function api(req,env,ctx,url) {
       if(b.kind==='observation') {
         const s=await scene(db,b.sceneId),inc=await record(db,b.incidentId);if(inc?.kind!=='incident')fail('Select an incident.');
         item.areaM2=validateGeometry(b.geometry);item.geometry=b.geometry;item.sceneId=s.id;item.incidentId=inc.id;item.sourceKind='manual';item.note=text(b.note);item.reviewer=text(b.reviewer,100);item.status='draft';
-        item.assetKind=b.assetKind==='cached_preview'?'cached_preview':'cog';item.displayGrid=item.assetKind==='cached_preview'?s.accessProof?.output:{epsg:s.epsg,transform:s.transform,shape:s.shape,resolution:s.resolution};
+        if(b.assetKind==='gee_tiles'&&(s.provider!=='gee'||s.assetKind!=='gee_tiles'||coveringScenes([s],b.geometry).length!==1))fail('The GEE image does not cover this inspection boundary.',422);
+        item.assetKind=b.assetKind==='gee_tiles'?'gee_tiles':b.assetKind==='cached_preview'?'cached_preview':'cog';item.displayGrid=item.assetKind==='gee_tiles'?{kind:'gee_rgb_tiles',epsg:3857,sourceResolutionM:s.resolution,bands:['B4','B3','B2']}:item.assetKind==='cached_preview'?s.accessProof?.output:{epsg:s.epsg,transform:s.transform,shape:s.shape,resolution:s.resolution};
         if(b.geometry.coordinates[0].some(p=>!pointWithin(p,s.footprint)||(item.assetKind==='cached_preview'&&s.previewFootprint&&!pointWithin(p,s.previewFootprint))))fail('The boundary is outside the source image used for review.');
         const a=await record(db,inc.areaId),r=b.geometry.coordinates[0];if(r.some(p=>!pointWithin(p,a.geometry)))fail('The boundary is outside the selected study area.');
         extra.push({id:uuid(),kind:'revision',observationId:item.id,geometry:item.geometry,sceneId:s.id,areaM2:item.areaM2,version:1,reason:item.note,actor});
