@@ -1,0 +1,84 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "XEDO MissionPlan output",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "id",
+    "version",
+    "purpose",
+    "target",
+    "targetRevision",
+    "profileId",
+    "profileVersion",
+    "plannerVersion",
+    "status",
+    "waypoints",
+    "segments"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]{5,90}$"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "purpose": {
+      "const": "survey"
+    },
+    "target": {
+      "type": "object"
+    },
+    "targetRevision": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "profileId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]{5,90}$"
+    },
+    "profileVersion": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "plannerVersion": {
+      "const": "convex-survey/1.0"
+    },
+    "status": {
+      "enum": [
+        "generated",
+        "unsupported",
+        "blocked"
+      ]
+    },
+    "sourceMode": {
+      "enum": [
+        "live",
+        "simulated",
+        "replay"
+      ]
+    },
+    "waypoints": {
+      "type": "array",
+      "maxItems": 902
+    },
+    "segments": {
+      "type": "array",
+      "maxItems": 901
+    },
+    "estimates": {
+      "type": [
+        "object",
+        "null"
+      ]
+    },
+    "crs": {
+      "const": "EPSG:4326"
+    }
+  }
+}

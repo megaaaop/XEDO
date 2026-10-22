@@ -1,0 +1,7 @@
+import worker from '../src/worker.js';import {localEnvironment} from './local-storage.mjs';
+const directory=process.env.XEDO_DATA_DIR;if(!directory?.replaceAll('\\','/').startsWith('output/'))throw new Error('QA seed requires an output/ test directory');
+const env=await localEnvironment(directory);const call=async(method,path,data)=>{const r=await worker.fetch(new Request('http://localhost/api/'+path,{method,...(data?{body:JSON.stringify(data)}:{})}),env,{waitUntil:p=>p.catch(()=>{})});const b=await r.json();if(!r.ok)throw new Error(b.message||b.error);return b;};
+const state=await call('GET','state'),scene=state.scenes.find(s=>s.localPreview),geometry={type:'Polygon',coordinates:[[[101.2,12.6],[101.202,12.6],[101.202,12.602],[101.2,12.602],[101.2,12.6]]]};
+await call('POST','records',{id:'INC_UI_v2_fixture',kind:'incident',areaId:'rayong',title:'ทดสอบ workflow · ไม่ใช่เหตุคราบน้ำมันจริง',owner:'QA fixture',reason:'ตัวอย่างสำหรับตรวจหน้าจอในเครื่องเท่านั้น ไม่ส่งขึ้น production'});
+await call('POST','records',{id:'OBS_UI_v2_fixture',kind:'observation',incidentId:'INC_UI_v2_fixture',sceneId:scene.id,geometry,note:'ขอบเขตสมมติทดสอบระบบ ไม่ใช่ผลตรวจจับ',reviewer:'QA fixture',assetKind:'cached_preview'});
+await call('POST','records',{id:'SUR_UI_v2_fixture',kind:'survey',incidentId:'INC_UI_v2_fixture',title:'คำขอทดสอบ · พื้นที่สมมติ 48,266 m²',note:'ตรวจแผนและ replay กับเหตุเดียวกัน'});env.close();console.log('Prepared local-only QA workflow');

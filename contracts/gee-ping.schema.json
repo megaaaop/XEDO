@@ -1,0 +1,101 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "XEDO GEE connection probe response",
+  "description": "HTTP metadata probe via XEDO. Not ICMP ping, map-tile latency, imagery freshness or permission to run computations. The browser measures end-to-end HTTP duration; upstream_ms measures only the server metadata request. GEE tokens and account details remain server-only.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "service",
+    "nonce",
+    "serverTime",
+    "measurement",
+    "state",
+    "upstream_ms"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "1.0"
+    },
+    "service": {
+      "const": "gee"
+    },
+    "nonce": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,80}$"
+    },
+    "serverTime": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "measurement": {
+      "const": "http_round_trip_via_xedo"
+    },
+    "state": {
+      "enum": [
+        "connected",
+        "not_configured",
+        "error"
+      ]
+    },
+    "upstream_ms": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0
+    },
+    "code": {
+      "type": "string"
+    },
+    "message": {
+      "type": "string"
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "connected"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "upstream_ms": {
+            "type": "number"
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "upstream_ms": {
+            "const": null
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "error"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "required": [
+          "code",
+          "message"
+        ]
+      }
+    }
+  ]
+}

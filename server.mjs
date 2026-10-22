@@ -1,0 +1,14 @@
+import http from 'node:http';
+import {readFile} from 'node:fs/promises';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import worker from './src/worker.js';
+import {localEnvironment} from './scripts/local-storage.mjs';
+const root = path.join(path.dirname(fileURLToPath(import.meta.url)), 'dist-workspace/client');
+const types = { '.html': 'text/html; charset=utf-8', '.css': 'text/css; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.svg': 'image/svg+xml', '.jpg': 'image/jpeg', '.png':'image/png', '.json':'application/json', '.md':'text/plain;charset=utf-8' };
+const port = Number(process.env.PORT || 5173);
+const env=await localEnvironment(process.env.XEDO_DATA_DIR||'data');
+env.XEDO_PI_TOKEN=process.env.XEDO_PI_TOKEN;env.XEDO_PI_DEVICE_ID=process.env.XEDO_PI_DEVICE_ID||'pi-001';
+for(const key of ['GEE_PROJECT_ID','GEE_SERVICE_ACCOUNT_JSON','GEE_PROBE_ASSET'])env[key]=process.env[key];
+env.ASSETS={async fetch(req){let pathname;try{pathname=decodeURIComponent(new URL(req.url).pathname);}catch{return new Response('Bad path',{status:400});}const file=path.resolve(root,'.'+(pathname==='/'?'/index.html':pathname));if(!file.startsWith(root+path.sep))return new Response('Forbidden',{status:403});try{return new Response(await readFile(file),{headers:{'Content-Type':types[path.extname(file)]||'application/octet-stream','Cache-Control':'no-cache'}});}catch{return new Response('Not found',{status:404});}}};
+http.createServer(async(request,response)=>{try{const chunks=[];let size=0;for await(const c of request){size+=c.length;if(size>35*1024*1024){response.writeHead(413).end();return;}chunks.push(c);}const req=new Request(`http://127.0.0.1:${port}${request.url}`,{method:request.method,headers:request.headers,...(!['GET','HEAD'].includes(request.method)?{body:Buffer.concat(chunks)}:{})});const r=await worker.fetch(req,env,{waitUntil:p=>p.catch(e=>console.error(e.message))});response.writeHead(r.status,Object.fromEntries(r.headers));if(request.method==='HEAD')response.end();else response.end(Buffer.from(await r.arrayBuffer()));}catch(e){response.writeHead(500).end(e.message);}}).listen(port,'127.0.0.1',()=>console.log(`XEDO preview ready: http://127.0.0.1:${port} · SQLite + file storage`));

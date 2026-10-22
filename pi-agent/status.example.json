@@ -1,0 +1,6 @@
+{
+  "position": null,
+  "battery": null,
+  "dispenser": null,
+  "health": {"agent": "online", "fault_code": null}
+}

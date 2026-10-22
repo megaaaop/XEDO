@@ -1,0 +1,63 @@
+# Dependencies and generated build outputs
+node_modules/
+dist/
+dist-*/
+output/
+coverage/
+.cache/
+.parcel-cache/
+.turbo/
+*.tsbuildinfo
+
+# Local runtime data, databases, and development logs
+data/
+local-data/
+*.sqlite
+*.sqlite3
+*.sqlite-*
+*.sqlite3-*
+*.db
+*.db-shm
+*.db-wal
+*.log
+npm-debug.log*
+
+# Private environment and provider configuration
+.env
+.env.*
+!.env.example
+pi.env
+pi.env.*
+!pi.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.keystore
+service-account*.json
+credentials.json
+.openai/
+.vercel/
+.wrangler/
+.dev.vars
+.dev.vars.*
+secrets/
+credentials/
+.sites-runtime/
+.playwright-cli/
+spool/
+
+# Python caches and environments
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+
+# Editor and OS metadata
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.tmp
+*.bak

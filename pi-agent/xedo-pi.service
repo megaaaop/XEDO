@@ -1,0 +1,26 @@
+[Unit]
+Description=XEDO Raspberry Pi telemetry and diagnostic channel
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=xedo-pi
+Group=xedo-pi
+EnvironmentFile=/etc/xedo-pi.env
+Environment=PYTHONUNBUFFERED=1
+Environment=PYTHONDONTWRITEBYTECODE=1
+WorkingDirectory=/var/lib/xedo-pi
+ExecStart=/usr/bin/python3 /opt/xedo-pi/run_agent.py run
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/xedo-pi
+
+[Install]
+WantedBy=multi-user.target

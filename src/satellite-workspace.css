@@ -1,0 +1,19 @@
+#satellite-page .explorer{grid-template-columns:minmax(0,1fr)}
+.map-heading-status{display:flex;align-items:center;justify-content:flex-end;gap:16px;flex-wrap:wrap}
+.satellite-data-menu{display:flex;flex-wrap:wrap;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border)}
+.satellite-menu-button{display:inline-flex;align-items:center;gap:9px;min-height:42px;padding:8px 13px;border:1px solid color-mix(in srgb,var(--accent) 25%,var(--border));border-radius:9px;background:var(--accent-soft);color:var(--accent);font-size:14px;text-align:left}
+.satellite-menu-button>span:first-child{font-size:19px;line-height:1}.satellite-menu-button:hover{border-color:var(--accent)}
+.satellite-menu-button .count{margin-left:4px;color:var(--accent);font-size:13px;min-width:25px;text-align:center}
+.map-info-button{position:absolute;top:16px;left:16px;z-index:3;display:grid;place-items:center;width:38px;height:38px;background:#102031ed;border:1px solid #38556c;color:#e3f3fc;border-radius:8px;font-size:22px;line-height:1}
+#map-message{left:64px;font-size:14px}
+.satellite-dialog{max-width:720px;width:calc(100% - 32px);max-height:85dvh}
+.satellite-dialog .dialog-top{position:sticky;top:0;z-index:1;background:var(--surface)}
+.satellite-dialog .dialog-top h2{font-size:19px}.satellite-dialog .icon-button{width:40px;height:40px}
+.satellite-dialog .facts{grid-template-columns:120px minmax(0,1fr);font-size:14px;gap:14px 18px}.satellite-dialog .facts .code{font-size:13px}
+.satellite-dialog .scene-list{max-height:none;overflow:visible}.satellite-dialog .scene-card{padding:18px 20px;gap:14px}
+.satellite-dialog .scene-list[inert]{opacity:.45}
+.satellite-dialog .scene-card img{width:70px;height:70px}.satellite-dialog .scene-card strong{font-size:16px}.satellite-dialog .scene-card small{font-size:13px;overflow-wrap:anywhere}.satellite-dialog .scene-card .pill{font-size:12px}
+.satellite-search-summary{font-size:14px;color:var(--muted);padding:16px 20px;border-bottom:1px solid var(--border)}
+.satellite-dialog-actions{padding:0 20px 18px}.satellite-dialog .panel-content{padding:22px}.satellite-dialog .text-link{font-size:14px}
+.map-panel:fullscreen{overflow:auto}.map-panel:fullscreen #map{height:calc(100dvh - 245px);min-height:300px}
+@media(max-width:650px){.map-panel>.panel-heading{flex-wrap:wrap}.map-heading-status{justify-content:flex-start;gap:12px}.satellite-data-menu{padding:8px;gap:6px}.satellite-menu-button{flex:1;justify-content:center;padding:8px;font-size:14px}.satellite-menu-button .count{margin-left:0}.satellite-dialog{width:calc(100% - 20px);max-height:90dvh}.satellite-dialog .facts{grid-template-columns:90px minmax(0,1fr);gap:12px}.satellite-dialog .panel-content{padding:18px}.satellite-dialog .scene-card{padding:15px}.satellite-dialog .scene-card img{width:54px;height:54px}#map-message{font-size:13px}}

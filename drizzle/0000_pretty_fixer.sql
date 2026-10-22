@@ -1,0 +1,26 @@
+CREATE TABLE `jobs` (
+	`id` text PRIMARY KEY NOT NULL,
+	`scene_id` text NOT NULL,
+	`state` text NOT NULL,
+	`attempts` integer DEFAULT 0 NOT NULL,
+	`data` text NOT NULL,
+	`updated_at` text NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `records` (
+	`id` text PRIMARY KEY NOT NULL,
+	`kind` text NOT NULL,
+	`data` text NOT NULL,
+	`revision` integer DEFAULT 1 NOT NULL,
+	`created_at` text NOT NULL,
+	`updated_at` text NOT NULL
+);
+--> statement-breakpoint
+CREATE INDEX `idx_records_kind` ON `records` (`kind`);--> statement-breakpoint
+CREATE TABLE `scenes` (
+	`id` text PRIMARY KEY NOT NULL,
+	`provider` text NOT NULL,
+	`acquired_at` text NOT NULL,
+	`metadata` text NOT NULL,
+	`fetched_at` text NOT NULL
+);

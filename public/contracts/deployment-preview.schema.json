@@ -1,0 +1,726 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "XEDO deployment preview HTTP response",
+  "description": "Ephemeral preview powering both 2D and 3D views. Reads the immutable original Quick mission boundary and writes no records. This schema is distinct from persisted MissionPlan 1.0: it has no operational mission ID/profile and cannot be imported as a mission plan or sent as a Pi/autopilot command. hardwareControl and plan.releaseControl are always false. Geometry relationships, altitude matching and route validity are additionally enforced at runtime.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "surveyId",
+    "scene",
+    "target",
+    "plan",
+    "context",
+    "hardwareControl"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "xedo-deployment-preview/1"
+    },
+    "surveyId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]{5,80}$"
+    },
+    "scene": {
+      "type": "object",
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "minLength": 1
+        },
+        "productId": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "collection": {
+          "type": "string"
+        },
+        "acquiredAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "sourceUrl": {
+          "type": "string",
+          "format": "uri"
+        },
+        "assetKind": {
+          "enum": [
+            "cog",
+            "cached_preview"
+          ]
+        },
+        "displayGrid": {
+          "type": [
+            "object",
+            "null"
+          ]
+        }
+      }
+    },
+    "target": {
+      "$ref": "#/$defs/polygon"
+    },
+    "plan": {
+      "$ref": "#/$defs/plan"
+    },
+    "context": {
+      "$ref": "#/$defs/context"
+    },
+    "hardwareControl": {
+      "const": false
+    }
+  },
+  "$defs": {
+    "position": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        {
+          "type": "number",
+          "minimum": -85,
+          "maximum": 85
+        }
+      ],
+      "items": false
+    },
+    "polygon": {
+      "type": "object",
+      "required": [
+        "type",
+        "coordinates"
+      ],
+      "properties": {
+        "type": {
+          "const": "Polygon"
+        },
+        "coordinates": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 501,
+            "items": {
+              "$ref": "#/$defs/position"
+            }
+          }
+        }
+      },
+      "description": "Exact selected WGS84 polygon, one closed ring without holes. Runtime also checks ring closure, nonintersection, area, latitude and date-line limits."
+    },
+    "metricPolygon": {
+      "type": "object",
+      "required": [
+        "type",
+        "coordinates"
+      ],
+      "properties": {
+        "type": {
+          "const": "Polygon"
+        },
+        "coordinates": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 501,
+            "items": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "description": "Same selected ring in local projected metres, after subtracting projection.origin."
+    },
+    "plan": {
+      "type": "object",
+      "required": [
+        "schema",
+        "schema_version",
+        "status",
+        "code",
+        "message",
+        "reason",
+        "target",
+        "home",
+        "parameters",
+        "projection",
+        "localTarget",
+        "localWaypoints",
+        "waypoints",
+        "segments",
+        "estimates",
+        "warnings",
+        "hardwareControl",
+        "releaseControl",
+        "sourceMode",
+        "valueKind",
+        "limits"
+      ],
+      "properties": {
+        "schema": {
+          "const": "xedo-deployment-preview/1"
+        },
+        "schema_version": {
+          "const": "1.0"
+        },
+        "status": {
+          "enum": [
+            "generated",
+            "blocked"
+          ]
+        },
+        "code": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "reason": {
+          "type": "string"
+        },
+        "target": {
+          "$ref": "#/$defs/polygon"
+        },
+        "home": {
+          "type": "object",
+          "required": [
+            "position",
+            "assumption"
+          ],
+          "properties": {
+            "position": {
+              "$ref": "#/$defs/position"
+            },
+            "assumption": {
+              "type": "string"
+            }
+          }
+        },
+        "parameters": {
+          "type": "object",
+          "required": [
+            "altitudeM",
+            "spacingM",
+            "speedMps"
+          ],
+          "properties": {
+            "altitudeM": {
+              "type": "number",
+              "minimum": 5,
+              "maximum": 500,
+              "default": 50,
+              "description": "Requested height above ground in metres; ground clearance is not verified."
+            },
+            "spacingM": {
+              "type": "number",
+              "minimum": 5,
+              "maximum": 1000,
+              "default": 100
+            },
+            "speedMps": {
+              "type": "number",
+              "minimum": 0.1,
+              "maximum": 30,
+              "default": 5
+            }
+          }
+        },
+        "projection": {
+          "type": "object",
+          "required": [
+            "calculationCrs",
+            "definition",
+            "origin",
+            "originPosition",
+            "units"
+          ],
+          "properties": {
+            "calculationCrs": {
+              "type": "string"
+            },
+            "definition": {
+              "type": "string"
+            },
+            "origin": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "items": {
+                "type": "number"
+              }
+            },
+            "originPosition": {
+              "$ref": "#/$defs/position"
+            },
+            "units": {
+              "const": "metres"
+            }
+          }
+        },
+        "localTarget": {
+          "$ref": "#/$defs/metricPolygon"
+        },
+        "localWaypoints": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "type": "array",
+            "minItems": 2,
+            "maxItems": 2,
+            "items": {
+              "type": "number"
+            }
+          }
+        },
+        "waypoints": {
+          "type": "array",
+          "maxItems": 500,
+          "items": {
+            "type": "object",
+            "required": [
+              "sequence",
+              "position",
+              "altitudeM",
+              "altitudeReference",
+              "groundElevationM",
+              "estimatedAltitudeMSLM",
+              "purpose",
+              "dispenser"
+            ],
+            "properties": {
+              "sequence": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 499
+              },
+              "position": {
+                "$ref": "#/$defs/position"
+              },
+              "altitudeM": {
+                "type": "number",
+                "minimum": 5,
+                "maximum": 500
+              },
+              "altitudeReference": {
+                "const": "AGL"
+              },
+              "groundElevationM": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "minimum": -12000,
+                "maximum": 10000
+              },
+              "estimatedAltitudeMSLM": {
+                "type": [
+                  "number",
+                  "null"
+                ],
+                "description": "Estimated AGL plus ground elevation only at a matching actual connected GEE sample. Missing ground remains null; no terrain interpolation."
+              },
+              "purpose": {
+                "enum": [
+                  "transit",
+                  "survey",
+                  "return"
+                ]
+              },
+              "dispenser": {
+                "const": "off"
+              }
+            }
+          }
+        },
+        "segments": {
+          "type": "array",
+          "maxItems": 499,
+          "items": {
+            "type": "object",
+            "required": [
+              "from",
+              "to",
+              "purpose",
+              "distanceM"
+            ],
+            "properties": {
+              "from": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 499
+              },
+              "to": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 499
+              },
+              "purpose": {
+                "enum": [
+                  "transit",
+                  "survey",
+                  "return"
+                ]
+              },
+              "distanceM": {
+                "type": "number",
+                "minimum": 0
+              }
+            }
+          }
+        },
+        "estimates": {
+          "type": "object",
+          "required": [
+            "distanceM",
+            "durationS",
+            "areaM2"
+          ],
+          "properties": {
+            "distanceM": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "durationS": {
+              "type": [
+                "number",
+                "null"
+              ],
+              "minimum": 0
+            },
+            "areaM2": {
+              "type": "number",
+              "minimum": 1,
+              "maximum": 10000000000
+            }
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hardwareControl": {
+          "const": false
+        },
+        "releaseControl": {
+          "const": false
+        },
+        "sourceMode": {
+          "const": "preview"
+        },
+        "valueKind": {
+          "const": "estimated"
+        },
+        "limits": {
+          "type": "object",
+          "required": [
+            "maxTracks",
+            "maxWaypoints",
+            "maxVertices"
+          ],
+          "properties": {
+            "maxTracks": {
+              "const": 200
+            },
+            "maxWaypoints": {
+              "const": 500
+            },
+            "maxVertices": {
+              "const": 120
+            }
+          }
+        },
+        "trackCount": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 200
+        },
+        "terrain": {
+          "type": "object",
+          "required": [
+            "mode",
+            "sampledWaypointCount",
+            "totalWaypointCount"
+          ],
+          "properties": {
+            "mode": {
+              "enum": [
+                "relative",
+                "gee_sampled"
+              ]
+            },
+            "sampledWaypointCount": {
+              "type": "integer",
+              "minimum": 0,
+              "maximum": 500
+            },
+            "totalWaypointCount": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 500
+            }
+          }
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "status": {
+                "const": "generated"
+              }
+            },
+            "required": [
+              "status"
+            ]
+          },
+          "then": {
+            "required": [
+              "trackCount",
+              "terrain"
+            ],
+            "properties": {
+              "waypoints": {
+                "minItems": 2
+              },
+              "segments": {
+                "minItems": 1
+              },
+              "estimates": {
+                "properties": {
+                  "distanceM": {
+                    "type": "number"
+                  },
+                  "durationS": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "waypoints": {
+                "maxItems": 0
+              },
+              "segments": {
+                "maxItems": 0
+              },
+              "estimates": {
+                "properties": {
+                  "distanceM": {
+                    "const": null
+                  },
+                  "durationS": {
+                    "const": null
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "context": {
+      "type": "object",
+      "required": [
+        "state",
+        "provider",
+        "datasets",
+        "samples",
+        "sampledAt",
+        "cached",
+        "message"
+      ],
+      "properties": {
+        "state": {
+          "enum": [
+            "connected",
+            "not_configured",
+            "disabled",
+            "error"
+          ]
+        },
+        "provider": {
+          "const": "Google Earth Engine"
+        },
+        "datasets": {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "items": {
+            "type": "object",
+            "required": [
+              "id",
+              "label",
+              "band",
+              "resolutionM",
+              "period",
+              "sourceUrl",
+              "attribution"
+            ],
+            "properties": {
+              "id": {
+                "enum": [
+                  "USGS/SRTMGL1_003",
+                  "JRC/GSW1_4/GlobalSurfaceWater"
+                ]
+              },
+              "label": {
+                "type": "string"
+              },
+              "band": {
+                "enum": [
+                  "elevation",
+                  "occurrence"
+                ]
+              },
+              "resolutionM": {
+                "const": 30
+              },
+              "period": {
+                "type": "string"
+              },
+              "sourceUrl": {
+                "type": "string",
+                "format": "uri"
+              },
+              "attribution": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "samples": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 80,
+          "items": {
+            "$ref": "#/$defs/sample"
+          }
+        },
+        "sampledAt": {
+          "type": [
+            "string",
+            "null"
+          ],
+          "format": "date-time"
+        },
+        "cached": {
+          "type": "boolean"
+        },
+        "message": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      },
+      "allOf": [
+        {
+          "if": {
+            "properties": {
+              "state": {
+                "const": "connected"
+              }
+            },
+            "required": [
+              "state"
+            ]
+          },
+          "then": {
+            "properties": {
+              "sampledAt": {
+                "type": "string"
+              }
+            }
+          },
+          "else": {
+            "properties": {
+              "samples": {
+                "items": {
+                  "properties": {
+                    "elevationM": {
+                      "const": null
+                    },
+                    "waterOccurrencePct": {
+                      "const": null
+                    }
+                  }
+                }
+              },
+              "sampledAt": {
+                "const": null
+              },
+              "cached": {
+                "const": false
+              }
+            }
+          }
+        }
+      ],
+      "description": "Historical SRTM/JRC sample context, not current obstacles, oil detection, bathymetry or verified water-only routing. sampledAt is retrieval time, not dataset acquisition time. Server-only credentials never appear in responses."
+    },
+    "sample": {
+      "type": "object",
+      "required": [
+        "longitude",
+        "latitude",
+        "elevationM",
+        "waterOccurrencePct"
+      ],
+      "properties": {
+        "longitude": {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        "latitude": {
+          "type": "number",
+          "minimum": -80,
+          "maximum": 80
+        },
+        "elevationM": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": -12000,
+          "maximum": 10000
+        },
+        "waterOccurrencePct": {
+          "type": [
+            "number",
+            "null"
+          ],
+          "minimum": 0,
+          "maximum": 100
+        }
+      }
+    }
+  }
+}

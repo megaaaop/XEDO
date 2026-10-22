@@ -1,0 +1,33 @@
+.trial-section-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.trial-section-heading > h2, .trial-section-heading > h3 { flex: 1; min-width: 0; margin-bottom: 0; }
+.coastal-mission .information-button { display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; flex: 0 0 44px; border: 0; padding: 0; border-radius: 6px; color: var(--muted); background: transparent; }
+.information-button > span { display: grid; place-items: center; width: 20px; height: 20px; border: 1px solid currentColor; border-radius: 50%; font: 600 13px/1 var(--font); }
+.coastal-mission .information-button:hover { color: var(--ink); background: #ffffff09; }
+.trial-map-heading { display: flex; gap: 6px; align-items: center; min-width: 0; }
+.trial-setting-summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.trial-setting-summary > span { flex: 1; min-width: 0; }
+.trial-setting-summary::before { content: '+'; color: var(--muted); font-weight: 400; }
+.engine-setting[open] > .trial-setting-summary::before { content: '−'; }
+.trial-engine-result { padding: 16px 0 20px; border-bottom: 1px solid var(--border); }
+.trial-engine-result .trial-result { padding: 0; border: 0; }
+.trial-result-context { color: var(--ink); margin-bottom: 14px; }
+.trial-result-heading { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+.trial-result-heading h3 { margin: 0; }
+.coastal-mission .trial-help-original[hidden], .coastal-mission .trial-help-panel[hidden] { display: none !important; }
+#trial-info-dialog { max-width: 700px; }
+.trial-information-content { padding: 24px; font-size: 15px; color: var(--muted); line-height: 1.7; }
+.trial-information-content h2 { font-size: 24px; line-height: 1.3; color: var(--ink); margin: 0 0 20px; }
+.trial-information-content p + p, .trial-information-content ul { margin-top: 16px; }
+.trial-information-content ul { padding-left: 22px; }
+.trial-information-content li { padding-left: 3px; margin: 12px 0; }
+.trial-help-formula { padding: 14px; background: var(--inset); color: var(--ink); border-left: 2px solid var(--accent); overflow-wrap: anywhere; font-variant-numeric: tabular-nums; }
+.coastal-mission .trial-help-navigation .button { min-width: 0; white-space: normal; text-align: left; }
+.trial-about-actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 16px; }
+.coastal-mission .trial-footer .button { padding-inline: 0; color: var(--ink); }
+.trial-footer .trial-footer-mode { color: var(--muted); }
+.trial-3d-label { position: absolute; bottom: 14px; left: 16px; margin: 0; color: #cad5df; background: #101820d9; padding: 5px 9px; border-radius: 4px; font-size: 12px; pointer-events: none; }
+@media (max-width: 600px) {
+  .trial-information-content { padding: 20px 16px; font-size: 14px; }
+  .trial-information-content h2 { font-size: 22px; }
+  .trial-about-actions { margin-top: 8px; }
+}

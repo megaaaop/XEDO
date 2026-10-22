@@ -1,0 +1,248 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "XEDO manual trial export check report",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "state",
+    "pass",
+    "canExport",
+    "checks",
+    "missing",
+    "errors",
+    "warnings",
+    "hardwareControl",
+    "releaseControl",
+    "notFlightApproval",
+    "selfAttested",
+    "checkedAt"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "xedo-qgc-trial/1"
+    },
+    "state": {
+      "enum": [
+        "pass",
+        "incomplete",
+        "blocked"
+      ]
+    },
+    "pass": {
+      "type": "boolean"
+    },
+    "canExport": {
+      "type": "boolean"
+    },
+    "checks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "state",
+          "message"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "state": {
+            "enum": [
+              "pass",
+              "incomplete",
+              "blocked"
+            ]
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "missing": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "errors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "warnings": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "hardwareControl": {
+      "const": false
+    },
+    "releaseControl": {
+      "const": false
+    },
+    "notFlightApproval": {
+      "const": true
+    },
+    "selfAttested": {
+      "const": true
+    },
+    "checkedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "plannedTakeoffAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "plannedEndAt": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "validUntil": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date-time"
+    },
+    "source": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "home": {
+      "anyOf": [
+        {
+          "type": "array",
+          "minItems": 2,
+          "maxItems": 2,
+          "prefixItems": [
+            {
+              "type": "number",
+              "minimum": -180,
+              "maximum": 180
+            },
+            {
+              "type": "number",
+              "minimum": -85,
+              "maximum": 85
+            }
+          ],
+          "items": false
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "homeAmslM": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "relativeHeightM": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "ceilingM": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "corridorM": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "groundSpeedMps": {
+      "type": [
+        "number",
+        "null"
+      ]
+    },
+    "firmware": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "qgcVersion": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "sortieCount": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "sortieIndex": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "adapterVersion": {
+      "const": "xedo-qgc-trial/1"
+    },
+    "itemCount": {
+      "type": "integer",
+      "minimum": 1
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "state": {
+            "const": "pass"
+          }
+        },
+        "required": [
+          "state"
+        ]
+      },
+      "then": {
+        "properties": {
+          "pass": {
+            "const": true
+          },
+          "canExport": {
+            "const": true
+          },
+          "missing": {
+            "maxItems": 0
+          },
+          "errors": {
+            "maxItems": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "pass": {
+            "const": false
+          },
+          "canExport": {
+            "const": false
+          }
+        }
+      }
+    }
+  ],
+  "description": "User-attested trial checks, not flight approval or authoritative airspace clearance. No onboard geofence or ceiling configuration is supplied. Native QGC import and SITL remain untested."
+}

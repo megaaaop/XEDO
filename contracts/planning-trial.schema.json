@@ -1,0 +1,483 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "XEDO planning trial calculation response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version",
+    "purpose",
+    "generatedAt",
+    "inputHash",
+    "source",
+    "inputs",
+    "target",
+    "drift",
+    "flight",
+    "exportCheck",
+    "oil",
+    "hardwareControl",
+    "releaseControl"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": "xedo-planning-trial/1"
+    },
+    "purpose": {
+      "const": "planning_trial_only"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "inputHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "source": {
+      "$ref": "./planning-trial-source.schema.json"
+    },
+    "inputs": {
+      "$ref": "./planning-trial-request.schema.json"
+    },
+    "target": {
+      "anyOf": [
+        {
+          "type": "object",
+          "required": [
+            "type",
+            "coordinates"
+          ],
+          "properties": {
+            "type": {
+              "const": "Polygon"
+            },
+            "coordinates": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "items": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 121,
+                "items": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "number",
+                      "minimum": -180,
+                      "maximum": 180
+                    },
+                    {
+                      "type": "number",
+                      "minimum": -85,
+                      "maximum": 85
+                    }
+                  ],
+                  "items": false
+                }
+              }
+            }
+          },
+          "description": "A closed simple WGS84 ring with 3–120 vertices and no holes. Runtime validates closure, self-intersection, area and the trial latitude/date-line limits."
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "drift": {
+      "type": "object",
+      "required": [
+        "state",
+        "missing",
+        "geometry",
+        "features",
+        "warnings"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "xedo-trial-drift/1"
+        },
+        "state": {
+          "enum": [
+            "disabled",
+            "incomplete",
+            "assumption_based"
+          ]
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "geometry": {
+          "anyOf": [
+            {
+              "type": "object",
+              "required": [
+                "type",
+                "coordinates"
+              ],
+              "properties": {
+                "type": {
+                  "const": "Polygon"
+                },
+                "coordinates": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "array",
+                    "minItems": 4,
+                    "maxItems": 121,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -85,
+                          "maximum": 85
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                }
+              },
+              "description": "A closed simple WGS84 ring with 3–120 vertices and no holes. Runtime validates closure, self-intersection, area and the trial latitude/date-line limits."
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "features": {
+          "type": "object",
+          "required": [
+            "type",
+            "features"
+          ],
+          "properties": {
+            "type": {
+              "const": "FeatureCollection"
+            },
+            "features": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Partial field contract. Constant supplied current/wind only; envelope and displacement are assumptions, not a forecast or confidence region."
+    },
+    "flight": {
+      "type": "object",
+      "required": [
+        "state",
+        "missing",
+        "plan",
+        "camera",
+        "wind",
+        "battery",
+        "warnings"
+      ],
+      "properties": {
+        "schema": {
+          "const": "xedo-trial-flight/1"
+        },
+        "state": {
+          "enum": [
+            "generated",
+            "incomplete",
+            "blocked"
+          ]
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "plan": {
+          "anyOf": [
+            {
+              "$ref": "./deployment-preview.schema.json#/$defs/plan"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "camera": {
+          "type": "object",
+          "required": [
+            "state"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "pass",
+                "incomplete",
+                "blocked"
+              ]
+            }
+          },
+          "description": "Only assessment state is fully typed here; detailed calculated fields and units are documented in planning-trial.md."
+        },
+        "wind": {
+          "type": "object",
+          "required": [
+            "state"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "pass",
+                "incomplete",
+                "blocked"
+              ]
+            }
+          },
+          "description": "Only assessment state is fully typed here; detailed calculated fields and units are documented in planning-trial.md."
+        },
+        "battery": {
+          "type": "object",
+          "required": [
+            "state",
+            "sorties"
+          ],
+          "properties": {
+            "state": {
+              "enum": [
+                "pass",
+                "incomplete",
+                "blocked"
+              ]
+            },
+            "sorties": {
+              "type": "array",
+              "maxItems": 200,
+              "items": {
+                "type": "object",
+                "required": [
+                  "index",
+                  "waypoints",
+                  "distanceM",
+                  "durationS",
+                  "energyWh"
+                ],
+                "properties": {
+                  "index": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "waypoints": {
+                    "type": "array",
+                    "minItems": 2,
+                    "maxItems": 500,
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "position",
+                        "altitudeM",
+                        "altitudeReference",
+                        "purpose",
+                        "dispenser"
+                      ],
+                      "properties": {
+                        "position": {
+                          "type": "array",
+                          "minItems": 2,
+                          "maxItems": 2,
+                          "prefixItems": [
+                            {
+                              "type": "number",
+                              "minimum": -180,
+                              "maximum": 180
+                            },
+                            {
+                              "type": "number",
+                              "minimum": -85,
+                              "maximum": 85
+                            }
+                          ],
+                          "items": false
+                        },
+                        "altitudeM": {
+                          "type": "number",
+                          "minimum": 5,
+                          "maximum": 500
+                        },
+                        "altitudeReference": {
+                          "const": "AGL"
+                        },
+                        "purpose": {
+                          "enum": [
+                            "transit",
+                            "survey",
+                            "return"
+                          ]
+                        },
+                        "dispenser": {
+                          "const": "off"
+                        }
+                      }
+                    }
+                  },
+                  "distanceM": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "durationS": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "energyWh": {
+                    "type": "number",
+                    "minimum": 0
+                  }
+                }
+              }
+            }
+          },
+          "description": "Only assessment state is fully typed here; detailed calculated fields and units are documented in planning-trial.md."
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hardwareControl": {
+          "const": false
+        },
+        "releaseControl": {
+          "const": false
+        }
+      },
+      "description": "Generated geometry can coexist with incomplete camera/wind/battery assessments. Battery sorties are the assessed manual-home routes; the nested geometric plan home is only its original diagram reference. Detailed result fields are not all typed here."
+    },
+    "exportCheck": {
+      "$ref": "./planning-trial-report.schema.json"
+    },
+    "oil": {
+      "type": "object",
+      "required": [
+        "schema_version",
+        "state",
+        "missing",
+        "areaM2",
+        "volumeLowL",
+        "volumeHighL",
+        "oilMassLowKg",
+        "oilMassHighKg",
+        "capsulesLowKg",
+        "capsulesHighKg",
+        "upperUnknown",
+        "warnings",
+        "hardwareControl",
+        "releaseControl"
+      ],
+      "properties": {
+        "schema_version": {
+          "const": "xedo-trial-oil/1"
+        },
+        "state": {
+          "enum": [
+            "incomplete",
+            "assumption_based"
+          ]
+        },
+        "missing": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "areaM2": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "volumeLowL": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "volumeHighL": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "oilMassLowKg": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "oilMassHighKg": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "capsulesLowKg": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "capsulesHighKg": {
+          "type": [
+            "number",
+            "null"
+          ]
+        },
+        "upperUnknown": {
+          "type": "boolean"
+        },
+        "warnings": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hardwareControl": {
+          "const": false
+        },
+        "releaseControl": {
+          "const": false
+        }
+      },
+      "description": "Mass-range estimate from independently supplied oil area/pixels and thickness; no AI inference, calibrated field dose or release command. Missing calculated quantities remain null."
+    },
+    "hardwareControl": {
+      "const": false
+    },
+    "releaseControl": {
+      "const": false
+    }
+  },
+  "description": "Read-only composition of four trial modules. Detailed nested calculations are partial contracts; consult planning-trial.md. No database mutations, live weather/official-airspace lookup, GEE call or physical control occurs."
+}

@@ -1,0 +1,82 @@
+/* Two windows into the original artwork show the symbol + EDO, omitting
+   the duplicated text X. The original logo file stays unchanged. */
+.brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0;
+  flex-shrink: 0;
+  margin: 0 0 30px;
+  width: auto;
+  aspect-ratio: 1844 / 520;
+  overflow: hidden;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  filter: drop-shadow(0 0 3px #4cd0ce80) drop-shadow(0 0 12px #29a9d34d);
+  line-height: 0;
+  letter-spacing: normal;
+}
+
+.brand-symbol,
+.brand-wordmark {
+  position: relative;
+  display: block;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.brand-symbol {
+  width: 39.045553%;
+  aspect-ratio: 720 / 520;
+}
+
+.brand-wordmark {
+  width: 60.954447%;
+  aspect-ratio: 1124 / 520;
+}
+
+.brand img {
+  position: absolute;
+  top: -48.076923%;
+  display: block;
+  max-width: none;
+  height: auto;
+  pointer-events: none;
+}
+
+.brand-symbol img {
+  left: -52.777778%;
+  width: 426.666667%;
+}
+
+.brand-wordmark img {
+  left: -139.857651%;
+  width: 273.309609%;
+}
+
+#sidebar .brand-wordmark img,
+html[data-theme=dark] .brand-header .brand-wordmark img {
+  filter: brightness(0) invert(1);
+}
+
+.brand-header {
+  display: none;
+  width: 104px;
+  min-height: 36px;
+  margin: 0;
+  border-radius: 0;
+}
+
+@media (max-width: 650px) {
+  .brand-header { display: flex; }
+  .topbar #location { display: none; }
+}
+
+@media (max-width: 380px) {
+  .topbar { gap: 6px; }
+  .topbar > div { gap: 7px; }
+  .brand-header { width: 96px; }
+}
+
+.quick-mission-link{display:block;text-align:center;margin:0 0 22px}

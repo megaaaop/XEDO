@@ -1,0 +1,2394 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "XEDO integration contracts",
+    "version": "1.2",
+    "description": "Existing route inventory plus typed deployment-preview/GEE probe contracts and partial planning-trial envelopes. This is not a complete typed specification for every legacy route or every nested calculator value. Separate JSON Schemas describe field shapes; runtime also validates entity references, modes, units, geometry, revisions and source-specific conditions. Sites enforces the configured audience/access boundary before the Worker. Browser users use the platform session; programmatic callers can use the platform OAI-Sites-Authorization: Bearer <service token> header. The Worker does not implement standalone user authentication. X-XEDO-Device-Token is an additional credential only on the documented Pi receive branches and auth check. No aircraft/dispenser command API or AI inference endpoint exists."
+  },
+  "servers": [
+    {
+      "url": "/"
+    }
+  ],
+  "paths": {
+    "/api/v1/state": {
+      "get": {
+        "summary": "/state",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/study-areas": {
+      "get": {
+        "summary": "/study-areas",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/scenes": {
+      "get": {
+        "summary": "/scenes",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/jobs": {
+      "post": {
+        "summary": "/jobs",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/jobs/{id}": {
+      "get": {
+        "summary": "/jobs/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/records": {
+      "post": {
+        "summary": "/records",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/records/{id}": {
+      "get": {
+        "summary": "/records/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "patch": {
+        "summary": "/records/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/observations": {
+      "get": {
+        "summary": "/observations",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "post": {
+        "summary": "/observations",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/observations/{id}": {
+      "get": {
+        "summary": "/observations/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "patch": {
+        "summary": "/observations/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/incidents": {
+      "get": {
+        "summary": "/incidents",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "post": {
+        "summary": "/incidents",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/incidents/{id}": {
+      "get": {
+        "summary": "/incidents/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "patch": {
+        "summary": "/incidents/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/incidents/{id}/reviews": {
+      "post": {
+        "summary": "/incidents/{id}/reviews",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/incidents/{id}/evidence": {
+      "post": {
+        "summary": "/incidents/{id}/evidence",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/survey-requests": {
+      "get": {
+        "summary": "/survey-requests",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "post": {
+        "summary": "/survey-requests",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/survey-requests/{id}": {
+      "get": {
+        "summary": "/survey-requests/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "patch": {
+        "summary": "/survey-requests/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/profiles": {
+      "get": {
+        "summary": "/profiles",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "post": {
+        "summary": "/profiles",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/mission-plans": {
+      "get": {
+        "summary": "/mission-plans",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "post": {
+        "summary": "/mission-plans",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/mission-plans/{id}": {
+      "get": {
+        "summary": "/mission-plans/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "patch": {
+        "summary": "/mission-plans/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/mission-plans/{id}/export": {
+      "get": {
+        "summary": "/mission-plans/{id}/export",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/mission-plans/import": {
+      "post": {
+        "summary": "/mission-plans/import",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/runs": {
+      "get": {
+        "summary": "/runs",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "post": {
+        "summary": "/runs",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/runs/{id}": {
+      "get": {
+        "summary": "/runs/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/runs/{id}/log": {
+      "get": {
+        "summary": "/runs/{id}/log",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/runs/import": {
+      "post": {
+        "summary": "/runs/import",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/telemetry/batches": {
+      "post": {
+        "summary": "/telemetry/batches",
+        "description": "Receive telemetry only. Envelope accepts source_mode live or replay and 1–100 events with matching device_id/source_mode. Live requires X-XEDO-Device-Token for the configured live device; replay relies on workspace access and cannot update live state. Simulated events come from the simulator rather than this ingestion endpoint. mission_id references a persisted MissionPlan, not a deployment preview or survey ID. Sending status never commands a flight or dispenser.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "202": {
+            "description": "Telemetry batch accepted with accepted/duplicates counts."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-XEDO-Device-Token",
+            "in": "header",
+            "required": false,
+            "description": "Additional configured Pi receive-channel secret. Required only for live telemetry, captured_live uploads, and results belonging to captured_live captures. Not a user login token or a drone command.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ]
+      }
+    },
+    "/api/v1/captures": {
+      "post": {
+        "summary": "/captures",
+        "description": "Receive an original image and JSON metadata as multipart/form-data. source_mode is live or simulated. captured_live requires a configured live device token and live source mode; imported uploads rely on workspace access and do not prove an attached camera. Missing dimensions remain unknown. File validation and incident/mission/device linkage are enforced at runtime.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-XEDO-Device-Token",
+            "in": "header",
+            "required": false,
+            "description": "Additional configured Pi receive-channel secret. Required only for live telemetry, captured_live uploads, and results belonging to captured_live captures. Not a user login token or a drone command.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "file",
+                  "metadata"
+                ],
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "Valid JPEG/PNG/WebP original image, 1 byte to 8 MiB."
+                  },
+                  "metadata": {
+                    "type": "string",
+                    "description": "JSON string matching capture.schema.json.",
+                    "contentMediaType": "application/json",
+                    "contentSchema": {
+                      "$ref": "#/components/schemas/CaptureMetadata"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/image-processing-results": {
+      "post": {
+        "summary": "/image-processing-results",
+        "description": "Receive output from an external processor; this endpoint does not run an AI model. Results attached to a captured_live image require that capture device token; imported-image results rely on workspace access. Completed results require an algorithm version, pixel coordinate space, duration 0–86400000 ms, known original image dimensions and up to 100 ordered bounding boxes inside those dimensions. Pixel boxes are not converted to geographic oil boundaries.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        },
+        "parameters": [
+          {
+            "name": "X-XEDO-Device-Token",
+            "in": "header",
+            "required": false,
+            "description": "Additional configured Pi receive-channel secret. Required only for live telemetry, captured_live uploads, and results belonging to captured_live captures. Not a user login token or a drone command.",
+            "schema": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ProcessingResultInput"
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/devices": {
+      "get": {
+        "summary": "/devices",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/devices/{id}": {
+      "get": {
+        "summary": "/devices/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "patch": {
+        "summary": "/devices/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/devices/{id}/state": {
+      "get": {
+        "summary": "/devices/{id}/state",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/devices/{id}/track": {
+      "get": {
+        "summary": "/devices/{id}/track",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/devices/{id}/events": {
+      "get": {
+        "summary": "/devices/{id}/events",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/devices/{id}/auth-check": {
+      "get": {
+        "summary": "/devices/{id}/auth-check",
+        "description": "Read-only check of the additional receive-channel credential for the sole configured live device. Also requires access through the hosting platform. No telemetry, image or hardware command is sent; success does not confirm hardware testing.",
+        "responses": {
+          "200": {
+            "description": "Device receive-channel authentication passed.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "schema_version",
+                    "device_id",
+                    "device_authenticated",
+                    "hardware_tested",
+                    "hardware_control"
+                  ],
+                  "properties": {
+                    "schema_version": {
+                      "const": "1.0"
+                    },
+                    "device_id": {
+                      "type": "string",
+                      "pattern": "^[a-zA-Z0-9_-]{5,90}$"
+                    },
+                    "device_authenticated": {
+                      "const": true
+                    },
+                    "hardware_tested": {
+                      "const": false
+                    },
+                    "hardware_control": {
+                      "const": false
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        },
+        "security": [
+          {
+            "PiDeviceToken": []
+          }
+        ]
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/lab-template": {
+      "get": {
+        "summary": "/lab-template",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/lab-imports": {
+      "post": {
+        "summary": "/lab-imports",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/lab-imports/{id}": {
+      "get": {
+        "summary": "/lab-imports/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/lab-imports/{id}/commit": {
+      "post": {
+        "summary": "/lab-imports/{id}/commit",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/lab-results/{id}": {
+      "patch": {
+        "summary": "/lab-results/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/incidents/{id}/report": {
+      "get": {
+        "summary": "/incidents/{id}/report",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/assets/{id}": {
+      "get": {
+        "summary": "/assets/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/files/{id}": {
+      "get": {
+        "summary": "/files/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/survey-export/{id}": {
+      "get": {
+        "summary": "/survey-export/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/export/{id}": {
+      "get": {
+        "summary": "/export/{id}",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      },
+      "parameters": [
+        {
+          "name": "id",
+          "in": "path",
+          "required": true,
+          "description": "URL-encoded existing entity ID. The selected route enforces its own ID and entity rules; job IDs may include punctuation.",
+          "schema": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      ]
+    },
+    "/api/v1/backup": {
+      "get": {
+        "summary": "/backup",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/restore": {
+      "post": {
+        "summary": "/restore",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/health": {
+      "get": {
+        "summary": "/health",
+        "description": "Existing route inventory entry. Full request/response typing is not supplied here; consult the linked field contracts and runtime validation for units, references, revisions and source-mode rules.",
+        "responses": {
+          "200": {
+            "description": "Success; creation may instead return 201, and accepted asynchronous work may return 202."
+          },
+          "404": {
+            "description": "Referenced entity not found."
+          },
+          "409": {
+            "description": "Revision or ID conflict."
+          },
+          "422": {
+            "description": "Validation failure."
+          },
+          "503": {
+            "description": "Service unavailable."
+          }
+        }
+      }
+    },
+    "/api/v1/deployment-preview": {
+      "post": {
+        "summary": "Generate a read-only 2D/3D deployment preview",
+        "operationId": "createDeploymentPreview",
+        "description": "Reads the original immutable Quick mission survey snapshot. Accepts no replacement geometry or GEE expression. Returns the same estimated route for both views, with optional bounded historical GEE samples. No records, flights, dispensing settings or commands are created. A blocked plan or unavailable GEE account is represented inside an HTTP 200 response. This response is not MissionPlan 1.0 and is not accepted by mission-plans/import. Workspace access is enforced by the hosting platform; no Pi device token belongs on this endpoint.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeploymentPreviewRequest"
+              },
+              "example": {
+                "surveyId": "SUR_example_inspection",
+                "altitudeM": 50,
+                "spacingM": 100,
+                "speedMps": 5,
+                "useGEE": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Preview result, including generated/blocked plan and connected/not_configured/disabled/error GEE context.",
+            "headers": {
+              "Cache-Control": {
+                "description": "Responses are not cacheable by the browser or CDN.",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeploymentPreview"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Cross-site or foreign-Origin mutation rejected by the Worker.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Saved survey or linked incident not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Only POST is supported; response has no JSON body.",
+            "headers": {
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "POST"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "JSON body exceeds 4096 characters.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Content-Type must include application/json.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid fields, units, geometry or original Quick mission snapshot.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unexpected server/storage failure; inspect the error and retryable flag.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/gee/ping": {
+      "get": {
+        "summary": "Probe server-to-GEE metadata connectivity",
+        "operationId": "readGEEConnectionProbe",
+        "description": "Read-only metadata request using server-side service-account credentials. HTTP 200 includes state not_configured or error when GEE cannot be read. This does not measure imagery/tile load time, perform image analysis or prove computation permissions. No Pi token or GEE key is supplied by the browser.",
+        "parameters": [
+          {
+            "name": "nonce",
+            "in": "query",
+            "required": true,
+            "description": "Fresh caller-generated identifier echoed verbatim. It is not an authentication credential.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,80}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Echoed nonce and honest connectivity state; unavailable measurements are null.",
+            "headers": {
+              "Cache-Control": {
+                "description": "Responses are not cacheable by the browser or CDN.",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GEEConnectionProbe"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Only GET is supported; response has no JSON body.",
+            "headers": {
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Missing or malformed nonce.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unexpected server failure.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ping": {
+      "get": {
+        "summary": "Probe XEDO HTTP responsiveness",
+        "description": "Measures only the XEDO web request. This endpoint must not be substituted for the GEE connection indicator.",
+        "parameters": [
+          {
+            "name": "nonce",
+            "in": "query",
+            "required": true,
+            "description": "Fresh caller-generated identifier echoed verbatim. It is not an authentication credential.",
+            "schema": {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{1,80}$"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "XEDO HTTP nonce echo.",
+            "headers": {
+              "Cache-Control": {
+                "description": "Responses are not cacheable by the browser or CDN.",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "schema_version",
+                    "service",
+                    "nonce",
+                    "serverTime",
+                    "measurement"
+                  ],
+                  "properties": {
+                    "schema_version": {
+                      "const": "1.0"
+                    },
+                    "service": {
+                      "const": "xedo"
+                    },
+                    "nonce": {
+                      "type": "string",
+                      "pattern": "^[A-Za-z0-9_-]{1,80}$"
+                    },
+                    "serverTime": {
+                      "type": "string",
+                      "format": "date-time"
+                    },
+                    "measurement": {
+                      "const": "http_round_trip"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Missing or malformed nonce.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/planning-trial/source": {
+      "get": {
+        "summary": "Read original Quick mission snapshot for a trial",
+        "operationId": "readPlanningTrialSource",
+        "description": "Read-only source lookup under the Site access boundary. Returns the immutable original Quick mission boundary with available incident/scene/time linkage; does not use the edited current observation. No Pi token or external service call.",
+        "parameters": [
+          {
+            "name": "survey",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^[a-zA-Z0-9_-]{5,80}$"
+            },
+            "description": "Existing Quick mission survey ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Frozen original Quick mission source.",
+            "headers": {
+              "Cache-Control": {
+                "description": "Responses are not cacheable by the browser or CDN.",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanningTrialSource"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Saved survey or linked incident not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Only GET is supported; empty response body.",
+            "headers": {
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "GET"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Missing/invalid survey ID or unsupported/missing original boundary.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unexpected server/storage failure.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/planning-trial": {
+      "post": {
+        "summary": "Calculate a read-only planning trial",
+        "operationId": "calculatePlanningTrial",
+        "description": "Combines supplied drift, camera/flight, export-review and oil assumptions. No database mutations, live weather/official-airspace lookup, GEE call, AI inference or hardware action. HTTP 200 may contain incomplete/blocked component states; missing values remain null. Uses a saved frozen survey source or a separate trial polygon. Detailed nested fields are partial contracts documented in /docs/planning-trial.md.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanningTrialRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Calculated envelope with independent component states, including incomplete/blocked results.",
+            "headers": {
+              "Cache-Control": {
+                "description": "Responses are not cacheable by the browser or CDN.",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanningTrial"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON or missing request body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Cross-site or foreign-Origin request rejected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Saved survey or linked incident not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Only POST is supported; empty response body.",
+            "headers": {
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "POST"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "JSON input exceeds 65536 bytes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Content-Type must include application/json.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input, source snapshot, units, geometry, timing or unavailable export checks.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unexpected server/storage failure.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v2/planning-trial/export": {
+      "post": {
+        "summary": "Recalculate and download one QGC trial file",
+        "operationId": "exportPlanningTrialQGC",
+        "description": "Recalculates from submitted inputs and checks again before returning a JSON envelope containing one QGC 5.1.x .plan text. sortieIndex is zero based. Requires complete camera/wind/battery estimates and manual source/home/reference/constraint/time checks. No aircraft transfer, arm/start, camera trigger or release command; no DJI KMZ export. Native import and SITL remain untested.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PlanningTrialRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "One local file artifact and manual check report.",
+            "headers": {
+              "Cache-Control": {
+                "description": "Responses are not cacheable by the browser or CDN.",
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PlanningTrialExport"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Malformed JSON or missing request body.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Cross-site or foreign-Origin request rejected.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Saved survey or linked incident not found.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "405": {
+            "description": "Only POST is supported; empty response body.",
+            "headers": {
+              "Allow": {
+                "schema": {
+                  "type": "string",
+                  "const": "POST"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "JSON input exceeds 65536 bytes.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Content-Type must include application/json.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "TRIAL_CHECKS_INCOMPLETE with report in details, invalid zero-based sortie index, or input validation failure. No file is returned.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "Unexpected server/storage failure.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "SitesServiceAuthorization": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "OAI-Sites-Authorization",
+        "description": "Optional programmatic access to the configured Sites platform boundary, value Bearer <service token>. Browser sessions use platform-managed access instead; the Worker does not validate this header itself."
+      },
+      "PiDeviceToken": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-XEDO-Device-Token",
+        "description": "Additional receive-channel credential for the configured live Pi. Required for auth-check, live telemetry, captured_live images and processing results belonging to captured_live captures; never a flight/release command."
+      }
+    },
+    "schemas": {
+      "DeploymentPreviewRequest": {
+        "$ref": "./deployment-preview-request.schema.json"
+      },
+      "DeploymentPreview": {
+        "$ref": "./deployment-preview.schema.json"
+      },
+      "GEEConnectionProbe": {
+        "$ref": "./gee-ping.schema.json"
+      },
+      "PlanningTrialRequest": {
+        "$ref": "./planning-trial-request.schema.json"
+      },
+      "PlanningTrialSource": {
+        "$ref": "./planning-trial-source.schema.json"
+      },
+      "PlanningTrialReport": {
+        "$ref": "./planning-trial-report.schema.json"
+      },
+      "PlanningTrial": {
+        "$ref": "./planning-trial.schema.json"
+      },
+      "PlanningTrialExport": {
+        "$ref": "./planning-trial-export.schema.json"
+      },
+      "CaptureMetadata": {
+        "$ref": "./capture.schema.json"
+      },
+      "ProcessingResultInput": {
+        "$ref": "./processing.schema.json"
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "code",
+          "message",
+          "details",
+          "retryable",
+          "request_id"
+        ],
+        "properties": {
+          "code": {
+            "type": "string"
+          },
+          "message": {
+            "type": "string"
+          },
+          "details": {
+            "type": "object"
+          },
+          "retryable": {
+            "type": "boolean"
+          },
+          "request_id": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "XEDO deployment preview request",
+  "description": "Read-only geometric planning preview from an existing Quick mission survey snapshot. Not a flight, treatment, dose or dispenser command. The browser does not supply GEE credentials, geometry, asset IDs or Earth Engine expressions.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "surveyId"
+  ],
+  "properties": {
+    "surveyId": {
+      "type": "string",
+      "pattern": "^[a-zA-Z0-9_-]{5,80}$"
+    },
+    "altitudeM": {
+      "type": "number",
+      "minimum": 5,
+      "maximum": 500,
+      "default": 50,
+      "description": "Requested height above ground in metres; ground clearance is not verified."
+    },
+    "spacingM": {
+      "type": "number",
+      "minimum": 5,
+      "maximum": 1000,
+      "default": 100
+    },
+    "speedMps": {
+      "type": "number",
+      "minimum": 0.1,
+      "maximum": 30,
+      "default": 5
+    },
+    "useGEE": {
+      "type": "boolean",
+      "default": true,
+      "description": "False skips GEE entirely. Missing configuration or upstream errors preserve an honest local preview."
+    }
+  }
+}

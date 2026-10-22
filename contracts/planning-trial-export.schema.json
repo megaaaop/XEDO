@@ -1,0 +1,43 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "XEDO planning trial file response",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "filename",
+    "mime",
+    "text",
+    "report",
+    "inputHash",
+    "hardwareControl",
+    "releaseControl"
+  ],
+  "properties": {
+    "filename": {
+      "type": "string",
+      "pattern": "^XEDO-trial-sortie-[0-9]{2}\\.plan$"
+    },
+    "mime": {
+      "const": "application/json"
+    },
+    "text": {
+      "type": "string",
+      "minLength": 1,
+      "description": "Serialized QGC 5.1.x Plan v1 / mission v2 JSON. A local download only. Not a transmission, persisted XEDO MissionPlan, DJI KMZ, camera trigger or release command."
+    },
+    "report": {
+      "$ref": "./planning-trial-report.schema.json"
+    },
+    "inputHash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "hardwareControl": {
+      "const": false
+    },
+    "releaseControl": {
+      "const": false
+    }
+  },
+  "description": "One zero-based selected sortie, after recalculation and all manual export gates. TAKEOFF, ground-speed setting, explicit route/return and LAND. Native QGC import/firmware/SITL acceptance remain untested."
+}

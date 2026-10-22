@@ -1,0 +1,23 @@
+# XEDO Quick mission
+
+The default Home action opens `/mission.html`. The operator sees three steps:
+
+1. **Select an area:** click or tap the boundary vertices to draw a polygon, with at least three points and up to 500. Double-click, click the first point, or choose Finish area to close it. Undo point removes the last vertex; Cancel discards the unfinished replacement and keeps the previous area. After finishing, drag vertices to reshape the boundary, or choose Redraw area to replace it. Self-intersecting and degenerate polygons are rejected without changing the previous selection. Survey stays disabled during unfinished drawing or editing. The exact polygon is used; dimensions describe its bounding extent. Keyboard: focus the map, move with arrow keys, Enter adds the map centre as a vertex, Ctrl+Enter finishes, Backspace undoes, and Esc cancels. Details also offers selection of the rectangular visible map area.
+2. **Satellite survey:** search Earth Search for Sentinel-2 acquisitions in the last 30 days, select the newest publicly readable image covering the entire zone, and display the actual image. Acquisition time and scene cloud cover remain visible. The archived option retains the stored image's original date. No cloud mask or oil detection is implied.
+3. **Drone deployment:** save the incident, draft observation and survey request with an immutable boundary snapshot. Choose **2D Route plan** or **3D Height preview**, then Generate plan. Both views share the same estimated survey route inside the exact polygon, including concave boundaries. Settings allow requested AGL height, track spacing, speed and use of GEE terrain/water context. GEE is queried only on generation; changing views or orbiting does not request more data. Download the original inspection boundary or a JSON planning preview. Retries retain record IDs; the saved URL reopens the request.
+
+Release is disabled: this version has no aircraft or dispenser control channel. Creating an inspection request or planning preview does not confirm oil, calculate a dose, produce a validated treatment route, or command physical equipment. Satellite AI and GEE imagery layers have not been connected to this workflow. Satellite images still use Earth Search and the existing stored-image/COG renderer. GEE planning context uses historical SRTM elevation and JRC water occurrence when server credentials are configured; the source dates, sampled gaps and assumptions remain visible under Data & assumptions. Without GEE, 3D uses an explicitly labelled flat local AGL diagram, not invented terrain.
+
+Completing a new area or changing a vertex invalidates the previous image and request draft. A failed search never reuses an old successful survey. An image must load before a request can be prepared. Saved requests and their original imagery remain available in Advanced workspace. The selected geometry is retained unchanged in the area record, observation, survey snapshot and exported boundary, including irregular and concave polygons. Previously saved rectangle and point missions remain compatible.
+
+**Clear area** appears beside the map tools when an area or unfinished polygon exists. It clears the current boundary, sketch and image, resets the workflow to Step 01 and disables Survey until a new polygon is completed. It is also available when reviewing imagery or viewing a saved request. Existing saved records remain available in Advanced workspace. Clear is temporarily disabled while a request or vertex edit is in progress.
+
+Existing advanced pages, the Home logo link, Pi setup and drone tracking remain available. There are no new device credentials, database migrations or flight permissions.
+
+## Connection and saved-image checks
+
+Quick mission shares the existing GEE metadata latency probe with Advanced workspace. The Wi-Fi indicator shows no number while GEE is unconfigured; it does not substitute the XEDO HTTP ping or enable a GEE imagery layer. Details distinguishes the GEE probe, current image source and configured Pi ingestion channel. Physical release remains disabled.
+
+Saved requests reopen their immutable survey snapshot, including its original image and boundary, even if the current observation is edited later in Advanced workspace. Reload saved image retries that same source and never starts a new catalogue search. Start a new inspection to choose a new image.
+
+If the 3D tools cannot load, the error offers Reload page. The saved inspection URL and boundary are retained; Generate plan recreates the preview after reloading. Switching back to 2D remains available. Changing settings resets the empty-view instructions instead of retaining the previous error.
