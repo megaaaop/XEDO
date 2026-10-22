@@ -46,6 +46,14 @@ Verified in the current integration workspace, using the existing Google Cloud p
 - Existing deployment protection settings were preserved. The main `xedo-eight.vercel.app` domain returned HTTP 200 without authentication at verification time.
 - Main-domain browser verification also displayed the real coastal image and reached step 3. One initial tile returned a transient 503; the UI correctly blocked readiness and offered retry. Reloading the selected acquisition recovered successfully with map/all 15 tiles returning 200 and Prepare enabled.
 
-## Limits
+## Satellite loading flow correction
+
+- Confirmed the reported blue map was the initial OpenStreetMap basemap: no acquisition had been loaded. The public GEE page/search/map/PNG chain returned HTTP 200.
+- Changed the first action to **Load satellite image**. It searches with the current date/cloud filters, selects the newest validated full-cover scene, then loads its real imagery. Manual acquisition search/selection and explicit archived-image selection remain available.
+- Added a visible map status explaining the basemap before satellite imagery is ready.
+- Syntax checks, all 142 automated tests, and hosted/portable/workspace builds passed.
+- Browser verification on the local hosted preview confirmed that cancellation stops the automatic sequence and keeps Prepare disabled. Retrying loaded the newest acquisition automatically: Sentinel-2B, 22 October 2026 03:54 UTC, 8.3% scene cloud, 10 m RGB. Actual sea, boats, coastline and city pixels appeared; Prepare became enabled only after image readiness.
+
+## Remaining limits
 
 The Vercel deployment above was built directly from the local integration source before its GitHub commit, so its deployment commit metadata refers to the earlier baseline. GitHub publication and CI results are tracked in repository history and workflow runs. The connector's separate environment-variable access restriction was handled by using the authenticated CLI. Portable-file browser focus behavior, live Pi/aircraft, native QGC import and airspace acceptance remain unverified. Hosted output uses a static planner with a limited GEE function. Full database, device and flight-control backend deployment needs separate authenticated runtime and storage integration.

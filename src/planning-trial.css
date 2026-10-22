@@ -46,6 +46,7 @@
 .trial-map-panel { min-width: 0; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; overflow: hidden; position: sticky; top: 18px; }
 .trial-map-head { display: flex; justify-content: space-between; align-items: center; min-height: 58px; padding: 10px 18px; gap: 12px; }
 .trial-map-head strong { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
+.trial-map-hint { margin: 0; padding: 10px 18px; border-block: 1px solid var(--border); background: var(--inset); color: var(--muted); font-size: 13px; line-height: 1.6; }
 #trial-map-views { display: flex; gap: 2px; flex-shrink: 0; }
 .coastal-mission .trial-map-head .button[aria-pressed=true] { background: var(--accent-soft); color: var(--accent); }
 #trial-map, #trial-3d-wrap { height: clamp(440px, 53vh, 620px); background: var(--inset); position: relative; }

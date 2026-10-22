@@ -196,6 +196,8 @@ function refreshFlow(){
   for(const input of document.querySelectorAll('#trial-image-search input'))input.disabled=satelliteBusy;
   $('#trial-image-search-submit').disabled=satelliteBusy||!geometry;$('#trial-image-scenes').disabled=satelliteBusy||!satelliteScenes.length;
   $('#trial-image-load').disabled=satelliteBusy||!$('#trial-image-scenes').value;$('#trial-image-cancel').hidden=!satelliteBusy;
+  $('#trial-map-hint').hidden=!!review?.ready;
+  $('#trial-map-hint').textContent=satelliteBusy?'Base map · Loading a satellite image for the selected area…':!geometry?'Base map · Draw an inspection area, then choose Load satellite image.':currentStep===1?'Base map · Choose Load satellite image to show a dated acquisition for this area.':geeHosted&&!surveyId?satelliteScenes.length?'Base map · Choose an acquisition, then Load selected image.':'Base map · Search for a covering acquisition using the dates and cloud limit.':'Base map · Retry loading the original satellite image.';
   $('#trial-map-views').hidden=currentStep!==3;$('#trial-boundary-tools').hidden=currentStep!==1;
   if(geometry){const metrics=selectionMetrics(geometry);$('#trial-area-size').textContent=metrics.areaM2>=1e6?number(metrics.areaM2/1e6)+' km²':number(metrics.areaM2,0)+' m²';$('#trial-area-vertices').textContent=(geometry.coordinates[0].length-1)+' boundary corners';}
   else{$('#trial-area-size').textContent='No area selected';$('#trial-area-vertices').textContent='Place at least three corners.';}
@@ -315,27 +317,32 @@ async function reviewSatellite(selection,token,signal){
   if(!field('drift','observedAt').value)field('drift','observedAt').value=new Date(selection.scene.acquiredAt).toISOString().slice(0,16);
   $('#trial-image-status').textContent='Image ready for review';announce('Satellite image ready for review.');
 }
-async function searchSatellite(){
+async function searchSatellite({autoLoad=false}={}){
   if(!geeHosted||!geometry||draw||satelliteBusy||working||surveyId)return;
   const start=$('#trial-image-start').value,end=$('#trial-image-end').value,maxCloud=Number($('#trial-image-cloud').value);
   if(!$('#trial-image-search').reportValidity()||!start||!end||start>end||!Number.isFinite(maxCloud)||maxCloud<0||maxCloud>100){error('Choose a valid acquisition date range and cloud cover from 0 to 100%.');return;}
   stopDraw();resetSurvey();currentStep=2;satelliteBusy=true;lastSatelliteAction='search';lastSurveyArchived=false;
   const token=satelliteToken,controller=new AbortController();satelliteAbort=controller;satelliteTimer=setTimeout(()=>controller.abort(),30000);
+  let automaticSceneId=null;
   error();invalidate();refreshFlow();$('#trial-image-status').textContent='Searching Earth Engine for covering images…';announce('Searching satellite acquisitions.');
   try{
     const data=await geeAPI('search',{geometry:structuredClone(geometry),start,end,maxCloud},controller.signal);
     if(token!==satelliteToken||controller.signal.aborted)return;
     if(!Array.isArray(data.scenes)||data.scenes.length>100)throw Error('The image search returned an invalid scene list. Retry the search.');
-    satelliteScenes=data.scenes.map(scene=>selectGEESatellite(scene,geometry).scene);
+    satelliteScenes=data.scenes.map(scene=>selectGEESatellite(scene,geometry).scene).sort((a,b)=>Date.parse(b.acquiredAt)-Date.parse(a.acquiredAt));
     if(new Set(satelliteScenes.map(scene=>scene.id)).size!==satelliteScenes.length)throw Error('The image search returned duplicate sources. Retry the search.');
     satelliteSearchGeometry=structuredClone(geometry);
     $('#trial-image-scenes').innerHTML='<option value="">'+(satelliteScenes.length?'Choose an acquisition':'No matching covering images')+'</option>'+satelliteScenes.map(scene=>'<option value="'+esc(scene.id)+'">'+esc(acquisitionLabel(scene)+' · '+number(scene.cloudCover,1)+'% cloud · '+scene.platform)+'</option>').join('');
     $('#trial-image-status').textContent=satelliteScenes.length?satelliteScenes.length+' covering image'+(satelliteScenes.length===1?'':'s')+' found. Choose one and load it for review.':'No image covers the whole area within these dates and cloud limit. Widen the dates or cloud limit, or change the area.';
     announce(satelliteScenes.length?'Choose a satellite acquisition to review.':'No matching covering satellite image found.');
+    if(autoLoad&&satelliteScenes.length){automaticSceneId=satelliteScenes[0].id;$('#trial-image-scenes').value=automaticSceneId;}
   }catch(e){
     if(token!==satelliteToken)return;satelliteScenes=[];satelliteSearchGeometry=null;
     $('#trial-image-status').textContent='Image search needs another attempt.';error(e.name==='AbortError'?'Earth Engine image search timed out. Retry or narrow the date range.':e.message);
   }finally{if(token===satelliteToken){clearTimeout(satelliteTimer);satelliteTimer=null;satelliteBusy=false;refreshFlow();}}
+  if(automaticSceneId&&token===satelliteToken&&!controller.signal.aborted&&currentStep===2&&$('#trial-image-scenes').value===automaticSceneId&&JSON.stringify(satelliteSearchGeometry)===JSON.stringify(geometry)){
+    announce('Loading the newest covering satellite acquisition.');await loadGEEScene();
+  }
 }
 async function loadGEEScene(){
   if(!geeHosted||satelliteBusy||working||!geometry)return;
@@ -355,7 +362,7 @@ async function loadGEEScene(){
   }finally{if(token===satelliteToken){clearTimeout(satelliteTimer);satelliteTimer=null;satelliteBusy=false;refreshFlow();}}
 }
 async function surveySatellite(archived=false){
-  if(geeHosted&&!archived&&!surveyId)return searchSatellite();
+  if(geeHosted&&!archived&&!surveyId)return searchSatellite({autoLoad:true});
   if(!geometry||draw||satelliteBusy||working)return;lastSurveyArchived=archived;stopDraw();error();resetSurvey();currentStep=2;satelliteBusy=true;const token=satelliteToken,controller=new AbortController();satelliteAbort=controller;satelliteTimer=setTimeout(()=>controller.abort(),30000);invalidate();refreshFlow();
   lastSatelliteAction='legacy';
   $('#trial-image-status').textContent=fileMode||archived?'Opening the stored satellite image…':'Searching available satellite imagery…';announce('Satellite survey in progress.');
