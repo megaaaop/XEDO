@@ -1,5 +1,25 @@
+import {XEDO_HARDWARE_PROFILE} from './planning-hardware-profile.js';
+
 /** Contextual, read-only help shared by the hosted and local-file planners. */
 export const planningHelpTopics = {
+  hardware: {
+    title: 'XEDO equipment profile',
+    paragraphs: [
+      'The equipment list is fixed in the ' + XEDO_HARDWARE_PROFILE.name + ' profile. Only Raspberry Pi 5 was confirmed by the project owner; other model identifications came from an AI interpretation of a photograph.',
+      XEDO_HARDWARE_PROFILE.cameraLabel + ' stock optics at full sensor size: ' + XEDO_HARDWARE_PROFILE.flightDefaults.sensorWidthMm + ' × ' + XEDO_HARDWARE_PROFILE.flightDefaults.sensorHeightMm + ' mm, ' + XEDO_HARDWARE_PROFILE.flightDefaults.focalLengthMm + ' mm focal length, ' + XEDO_HARDWARE_PROFILE.flightDefaults.imageWidthPx + ' × ' + XEDO_HARDWARE_PROFILE.flightDefaults.imageHeightPx + ' pixels. Preview assumptions are ' + XEDO_HARDWARE_PROFILE.flightDefaults.altitudeM + ' m AGL, ' + XEDO_HARDWARE_PROFILE.flightDefaults.speedMps + ' m/s, ' + XEDO_HARDWARE_PROFILE.flightDefaults.sideOverlap * 100 + '% side overlap, ' + XEDO_HARDWARE_PROFILE.flightDefaults.frontOverlap * 100 + '% front overlap and a ' + XEDO_HARDWARE_PROFILE.flightDefaults.minTriggerIntervalS + ' s minimum capture interval. These are editable planning inputs, not verified flight performance.',
+      'Defaults are filled once for a new form. Clearing an input or restoring a snapshot keeps that choice. Changing an inspection boundary preserves your settings. Battery, wind, real home, firmware and oil evidence remain unknown until supplied.'
+    ],
+    bullets: XEDO_HARDWARE_PROFILE.components.map(component =>
+      component.label + ': ' + (component.model || 'Unknown') + ' · ' +
+      (component.status === 'confirmed' ? 'Owner-confirmed' : component.status === 'candidate' ? 'Unverified candidate' : 'Unknown') +
+      (component.frequencyMHz ? ' · ' + component.frequencyMHz + ' MHz' : '') +
+      (component.diameterRangeIn ? ' · ' + component.diameterRangeIn.join('–') + ' in candidate range' : '') +
+      (component.variants ? ' · ' + component.variants.join(' / ') : '') +
+      (component.alternatives ? ' · Alternatives: ' + component.alternatives.join(' / ') : '') +
+      (component.notes ? '. ' + component.notes : '')
+    ),
+    formulas: []
+  },
   area: {
     title: 'Inspection area',
     paragraphs: [
@@ -44,7 +64,7 @@ export const planningHelpTopics = {
     title: 'About this trial',
     paragraphs: [
       'Use three steps: select an area, review satellite imagery, then prepare a drone mission. Drift, flight, export and oil/material calculations run behind that flow. Mission settings holds the inputs; Calculation details explains the results.',
-      'Unknown physical inputs stay blank. Load test example fills synthetic aircraft, weather and material inputs; it does not turn the archived satellite image into a current oil observation.'
+      'A fixed XEDO equipment profile fills candidate camera geometry and preview height, speed, overlap and capture interval. Other unknown physical inputs stay blank. Load test example fills synthetic aircraft, weather and material inputs; it does not turn the archived satellite image into a current oil observation.'
     ],
     bullets: [
       'In the standalone prototype, including static hosting, the calculators, stored image and downloads work without an API server. Basemap tiles need internet. Saved survey lookup by ID needs the separate full workspace service.',
@@ -73,7 +93,7 @@ export const planningHelpTopics = {
   flight: {
     title: 'Flight model',
     paragraphs: [
-      'Camera geometry sets line and photo spacing. Wind and battery inputs then assess the route and split it into sorties. Enter the actual hardware settings; NoIR presets are candidates to verify against the installed module, lens and active image crop.'
+      'Camera geometry sets line and photo spacing. Wind and battery inputs then assess the route and split it into sorties. The initial XEDO profile uses candidate NoIR v2 optics and preview flight assumptions. Verify or replace them against the installed module, lens, active image crop and actual aircraft.'
     ],
     bullets: [
       'Geometry assumes a nadir camera over a flat surface, with image width across track. Height is in m AGL; sensor dimensions and focal length are in mm. Enter overlap as percent in the interface; the formulas use the equivalent fraction.',

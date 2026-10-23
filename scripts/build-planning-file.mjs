@@ -24,10 +24,8 @@ css=css.replace(/@import[^;]+;/g,''); // Use system font fallbacks without fetch
 const dataImage=async(path,type)=>'data:'+type+';base64,'+(await readFile(path)).toString('base64');
 const logo=await dataImage('public/assets/xedo-brand-mangrove.png','image/png');
 const favicon=await dataImage('public/favicon-xedo-planning.svg','image/svg+xml');
-const escape=value=>value.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
-const method=await readFile('public/docs/planning-trial.md','utf8');
 let html=await readFile('public/planning.html','utf8');
-for(const token of ['href="/favicon-xedo-planning.svg"','src="/assets/xedo-brand-mangrove.png"','href="/" aria-label="XEDO Home"','<main class="trial-shell">','href="/docs/planning-trial.md" target="_blank" rel="noopener"','id="trial-info-dialog"']){
+for(const token of ['href="/favicon-xedo-planning.svg"','src="/assets/xedo-brand-mangrove.png"','href="/" aria-label="XEDO Home"','<main class="trial-shell">','id="trial-info-dialog"']){
   if(!html.includes(token))throw new Error('Portable markup hook is missing: '+token);
 }
 for(const [,key] of html.matchAll(/data-help="([^"]+)"/g))if(!Object.hasOwn(planningHelpTopics,key))throw new Error('Unknown information topic: '+key);
@@ -39,15 +37,13 @@ html=html.replace(/<title>[^<]*<\/title>/,'<title>XEDO · Local mission trial</t
   .replace('href="/" aria-label="XEDO Home"','href="#trial-top" aria-label="XEDO Coastal inspection"')
   .replace('href="/mission.html">Back to mission','href="#trial-top">Local file mode')
   .replace('<main class="trial-shell">','<main id="trial-top" class="trial-shell">')
-  .replace('href="/docs/planning-trial.md" target="_blank" rel="noopener"','href="#standalone-method"')
-  .replace('</head>',()=>'<style>'+css.replace(/<\/style/gi,'<\\/style')+'\n#standalone-method{margin-top:28px;padding:20px;border:1px solid var(--border);border-radius:8px}#standalone-method pre{white-space:pre-wrap;overflow-wrap:anywhere;font:14px/1.7 var(--font);color:var(--muted)}#standalone-method summary{cursor:pointer}</style></head>');
+  .replace('</head>',()=>'<style>'+css.replace(/<\/style/gi,'<\\/style')+'</style></head>');
 const fileNote=process.argv.includes('--gee-hosted')
   ? 'The background map loads real Google Earth Engine Sentinel-2 imagery on opening, before an inspection area is drawn. It is a mosaic of up to 31 intersecting acquisitions from the recent 30-day UTC window, with newer images on top; its actual acquisition range is shown. Pan or zoom to update the bounded background. Draw an area over that imagery, then choose Review area image to load one dated, fully covering acquisition for review. The background alone does not mark a mission ready. Cloud cover describes the whole scene; imagery is not a continuous live feed or oil detection. Archived imagery is available only by explicit selection. Calculations and downloads run in the browser; saved survey IDs need the separate workspace database. Missing credentials and imagery failures remain visible.'
   : 'Standalone prototype: all four calculators, 2D/3D diagrams and downloads run in this file. No local server or port is used. The stored Sentinel-2 image and calculations work offline; the basemap needs internet. Follow Select an area, Satellite survey, then Drone deployment. The four calculations run in the background; Mission settings and Calculation details open on demand. Saved survey IDs cannot load from a database. Import a snapshot or GeoJSON instead. Imported database linkage is unverified; new results use the imported geometry as a local trial boundary. Manual export confirmations require fresh review.';
-html=html.replace('</main>',()=>'<details id="standalone-method"><summary>Local file · Method and limits</summary><p class="trial-help">'+fileNote+'</p><pre>'+escape(method)+'</pre></details></main>');
-html=html.replace('</body>',()=>'<script>'+script.replace(/<\/script/gi,'<\\/script')+'</script><script>document.querySelector(\'a[href="#standalone-method"]\').addEventListener("click",()=>{document.getElementById("standalone-method").open=true;});</script></body>');
+html=html.replace('</body>',()=>'<script>'+script.replace(/<\/script/gi,'<\\/script')+'</script></body>');
 const inlineScripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
-if(inlineScripts.length!==2)throw new Error('The portable script boundaries are invalid.');
+if(inlineScripts.length!==1)throw new Error('The portable script boundaries are invalid.');
 for(const [,inline] of inlineScripts)new Script(inline);
 if(/(?:src|href)="\/(?:assets\/|favicon-)/.test(html))throw new Error('A portable artwork asset was not embedded.');
 await mkdir(dirname(destination),{recursive:true});

@@ -12,6 +12,8 @@ The default deployment combines a **static browser application** with a bounded 
 
 The background calculations cover drift compensation, camera/overlap/wind/battery planning, checked QGroundControl `.plan` export, and oil/capsule quantity estimates. Unknown hardware values remain required settings. DJI KMZ export and physical flight/release control are not enabled. See [method and limits](public/docs/planning-trial.md).
 
+The fixed `XEDO Prototype 01` equipment candidates and initial route assumptions live in [`src/planning-hardware-profile.js`](src/planning-hardware-profile.js). A new form starts with candidate NoIR v2 optics, 50 m height, 5 m/s ground speed, 70%/80% overlap and a 1 s capture interval. Open the profile Information button in Mission settings for the equipment list. These editable assumptions enable a geometric preview; wind, battery performance, actual home, firmware and oil evidence still require inputs. Clearing fields or restoring a snapshot does not silently refill them.
+
 ## Requirements
 
 - Node.js 24 and npm. The version is recorded in `.nvmrc`.
