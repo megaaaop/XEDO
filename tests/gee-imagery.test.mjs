@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {generateKeyPairSync} from 'node:crypto';
 import {inflateSync} from 'node:zlib';
-import {searchGEEImagery,createGEEImageryMap,getGEEImageryTile} from '../src/gee-imagery.js';
+import {searchGEEImagery,createGEEImageryMap,getGEEImageryTile,createGEEBasemap} from '../src/gee-imagery.js';
 
 const privateKey=generateKeyPairSync('rsa',{modulusLength:2048,privateKeyEncoding:{type:'pkcs8',format:'pem'},publicKeyEncoding:{type:'spki',format:'pem'}}).privateKey;
 const geometry={type:'Polygon',coordinates:[[[101.19,12.59],[101.2,12.59],[101.2,12.6],[101.19,12.6],[101.19,12.59]]]};
@@ -141,4 +141,32 @@ test('upstream denied, malformed, oversized and timed-out responses retain sanit
     await assert.rejects(()=>searchGEEImagery(v.env,search,{fetchImpl:v.fetchImpl,timeoutMs:mode==='timeout'?5:1000}),e=>safeFailure(e,code,v.secret));
   }
   for(const mode of ['html-tile','invalid-png']){const v=fixture(),map=await createGEEImageryMap(v.env,{sceneId:id,geometry},{fetchImpl:v.fetchImpl});v.state.mode=mode;await assert.rejects(()=>getGEEImageryTile(v.env,{sessionId:map.sessionId,...pointTile()},{fetchImpl:v.fetchImpl}),e=>safeFailure(e,'GEE_RESPONSE_INVALID',v.secret));}
+});
+
+
+test('viewport basemap uses bounded intersecting scenes without requiring mission coverage and pins a cold-start mosaic',async()=>{
+  const v=fixture(),clock=Date.parse('2026-10-23T12:00:00Z');
+  v.state.features[0].properties.coversAOI=false;
+  v.state.features.push({...structuredClone(v.state.features[0]),properties:{...v.state.features[0].properties,id:id.slice(4).replace('20261010T034539','20261019T034539'),acquiredMs:Date.parse('2026-10-19T03:45:39Z')}});
+  const map=await createGEEBasemap(v.env,{geometry},{fetchImpl:v.fetchImpl,now:()=>clock});
+  assert.equal(map.kind,'gee_basemap');assert.equal(map.imageCount,2);assert.equal(map.start,'2026-09-24');assert.equal(map.end,'2026-10-23');assert.equal(map.acquiredFrom,'2026-10-10T03:45:39.000Z');assert.equal(map.acquiredTo,'2026-10-19T03:45:39.000Z');
+  assert.deepEqual(map.geometry,geometry);assert.equal(map.renderMode,'pixels');assert.equal(map.scene,undefined);assert.equal(v.calls.map,0);assert.ok(map.sessionId.length<4096);
+  const query=JSON.stringify(v.calls.bodies[0]);assert.match(query,/Collection.limit/);assert.match(query,/CLOUDY_PIXEL_PERCENTAGE/);assert.doesNotMatch(query,/Geometry.contains/);
+  await createGEEBasemap(v.env,{geometry},{fetchImpl:v.fetchImpl,now:()=>clock});assert.equal(v.calls.compute,1);
+  const fresh=await import('../src/gee-imagery.js?basemap='+crypto.randomUUID());
+  const tile=await fresh.getGEEImageryTile(v.env,{sessionId:map.sessionId,...pointTile()},{fetchImpl:v.fetchImpl,now:()=>clock});
+  assert.equal(tile.status,200);assert.deepEqual(Buffer.from(await tile.arrayBuffer()),png);assert.equal(v.calls.pixels,1);assert.equal(v.calls.map,0);
+  const body=v.calls.bodies.at(-1);assert.equal(body.workloadTag,'xedo-basemap-tile');assert.match(JSON.stringify(body.expression),/ImageCollection.mosaic/);assert.match(JSON.stringify(body.expression),/ImageCollection.fromImages/);
+  const rendered=JSON.stringify(body.expression);assert.ok(rendered.indexOf('20261010T034539')<rendered.indexOf('20261019T034539'),'Newest source is last and therefore drawn on top');
+  const outside=await fresh.getGEEImageryTile(v.env,{sessionId:map.sessionId,z:12,x:0,y:0},{fetchImpl:v.fetchImpl,now:()=>clock});assert.equal(outside.headers.get('X-XEDO-Cache'),'outside-aoi');assert.equal(v.calls.pixels,1);
+});
+
+test('31 basemap assets fit the encrypted route limit and bounds/empty/upstream inputs fail safely',async()=>{
+  const v=fixture(),clock=Date.parse('2026-10-23T12:00:00Z');
+  v.state.features=Array.from({length:31},(_,i)=>({...structuredClone(v.state.features[0]),properties:{...v.state.features[0].properties,id:id.slice(4).replace('034539','0345'+String(i).padStart(2,'0')),acquiredMs:Date.parse('2026-10-10T03:45:00Z')+i*1000}}));
+  const map=await createGEEBasemap(v.env,{geometry},{fetchImpl:v.fetchImpl,now:()=>clock});assert.equal(map.imageCount,31);assert.ok(map.sessionId.length<=4096);
+  const fresh=await import('../src/gee-imagery.js?maxbasemap='+crypto.randomUUID());await fresh.getGEEImageryTile(v.env,{sessionId:map.sessionId,...pointTile()},{fetchImpl:v.fetchImpl,now:()=>clock});assert.equal((JSON.stringify(v.calls.bodies.at(-1).expression).match(/Image.load/g)||[]).length,31);
+  for(const extra of [{url:'https://invalid.example'},{start:'2020-01-01'},{assets:['private/image']},{maxCloud:100}])await assert.rejects(()=>createGEEBasemap(v.env,{geometry,...extra},{fetchImpl:v.fetchImpl,now:()=>clock}),e=>e.code==='GEE_INPUT_INVALID');
+  const empty=fixture();empty.state.features=[];await assert.rejects(()=>createGEEBasemap(empty.env,{geometry},{fetchImpl:empty.fetchImpl,now:()=>clock}),e=>e.code==='GEE_BASEMAP_EMPTY'&&e.status===404);assert.equal(empty.calls.pixels,0);
+  const tooMany=fixture();tooMany.state.features=Array(32).fill(tooMany.state.features[0]);await assert.rejects(()=>createGEEBasemap(tooMany.env,{geometry},{fetchImpl:tooMany.fetchImpl,now:()=>clock}),e=>e.code==='GEE_RESPONSE_INVALID');
 });

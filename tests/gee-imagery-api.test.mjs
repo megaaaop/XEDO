@@ -49,3 +49,12 @@ test('Untrusted persistence/network errors never leak credentials to the browser
   const response=await geeImageryAPI(request('map',{sceneId:scene.id,geometry}),{}, {services,persistScene:async()=>{throw new Error(secret);}});
   assert.equal(response.status,502);assert.doesNotMatch(await response.text(),new RegExp(secret));
 });
+
+
+test('basemap is a geometry-only read endpoint with no mission persistence side effect',async()=>{
+  const geometry={type:'Polygon',coordinates:[[[101.1,12.5],[101.2,12.5],[101.2,12.6],[101.1,12.6],[101.1,12.5]]]};let calls=0;
+  const options={persistScene:()=>assert.fail('Background is never persisted as a surveyed scene'),services:{createGEEBasemap:async(_env,input)=>{calls++;assert.deepEqual(input,{geometry});return {kind:'gee_basemap',imageCount:2};}}};
+  const make=body=>new Request('https://xedo.example/api/v1/gee/imagery/basemap',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  const response=await geeImageryAPI(make({geometry}),{},options);assert.equal(response.status,200);assert.deepEqual(await response.json(),{kind:'gee_basemap',imageCount:2});
+  const rejected=await geeImageryAPI(make({geometry,sceneId:'untrusted'}),{},options);assert.equal(rejected.status,422);assert.equal(calls,1);
+});

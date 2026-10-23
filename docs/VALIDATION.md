@@ -54,6 +54,16 @@ Verified in the current integration workspace, using the existing Google Cloud p
 - Syntax checks, all 142 automated tests, and hosted/portable/workspace builds passed.
 - Browser verification on the local hosted preview confirmed that cancellation stops the automatic sequence and keeps Prepare disabled. Retrying loaded the newest acquisition automatically: Sentinel-2B, 22 October 2026 03:54 UTC, 8.3% scene cloud, 10 m RGB. Actual sea, boats, coastline and city pixels appeared; Prepare became enabled only after image readiness.
 
+## GEE background on initial page load
+
+- Hosted mode now starts with a real Sentinel-2 mosaic before any inspection polygon exists. OSM remains only in the offline-file build.
+- The new geometry-only basemap endpoint fixes the source collection, recent 30-day UTC window, scene cloud limit and maximum 31 inputs. Encrypted sessions pin the source assets and expire after 30 minutes. Basemap requests do not persist survey scenes or grant mission readiness.
+- All 149 tests and syntax checks passed; hosted, portable-file and full-workspace builds passed. Tests include compact 31-source sessions, cold starts, fixed mosaic order, empty sources, bounded viewports, origin/method restrictions and no mission persistence.
+- Actual GEE metadata and a 256×256 mosaic PNG were verified with the existing service account. No permission change was needed.
+- Browser verification on the local hosted preview showed full coastal imagery with No area selected: 21 input images, actual acquisition range 29 September–22 October 2026 UTC. The native Draw polygon/Finish area flow drew a four-corner 61.05 km² inspection over the GEE map.
+- Fixed an initial-view move event cancelling tile work before it began. Stale and paused tile work now settles without entering the new queue; cache reuse requires the exact same source session.
+- The background pauses during the separate single-acquisition review. Local upstream network failures were shown as errors and kept Prepare disabled; production review verification is performed separately after deployment.
+
 ## Remaining limits
 
 The Vercel deployment above was built directly from the local integration source before its GitHub commit, so its deployment commit metadata refers to the earlier baseline. GitHub publication and CI results are tracked in repository history and workflow runs. The connector's separate environment-variable access restriction was handled by using the authenticated CLI. Portable-file browser focus behavior, live Pi/aircraft, native QGC import and airspace acceptance remain unverified. Hosted output uses a static planner with a limited GEE function. Full database, device and flight-control backend deployment needs separate authenticated runtime and storage integration.

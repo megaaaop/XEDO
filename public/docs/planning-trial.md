@@ -4,7 +4,9 @@ The [mission trial page](/planning.html) keeps three user steps: **Select an are
 
 ## Source, snapshots and service boundaries
 
-In the default hosted version, draw or import a trial polygon, then choose **Load satellite image**. XEDO searches GEE and displays the newest covering Sentinel-2 acquisition within the current date and cloud limits. The acquisition controls remain available to search and choose another image. Before loading, the map is an OpenStreetMap basemap; the visible map status distinguishes it from satellite imagery. Review the displayed source and acquisition time before preparing a mission. Hosted mode does not persist surveys. The retained workspace can also start from a saved Quick mission survey, using its original frozen boundary snapshot, scene ID and acquisition time. Later edits to the current observation do not replace that snapshot. A trial boundary or drift envelope is a search scenario; it does not confirm oil or measure its extent.
+The hosted version opens directly on a real GEE Sentinel-2 background, before any polygon is selected. The background is a mosaic of up to 31 intersecting acquisitions in the recent 30-day UTC window, with newer scenes on top and the actual source date range displayed. Panning or zooming updates its bounded display area; it does not change the inspection polygon. Hosted mode does not silently substitute OpenStreetMap if imagery fails. The portable offline file retains its OSM basemap and archived satellite preview.
+
+Draw or import a trial polygon over the GEE background, then choose **Review area image**. XEDO searches GEE and displays the newest fully covering Sentinel-2 acquisition within the current date and cloud limits. The acquisition controls remain available to search and choose another image. Background imagery alone never enables mission preparation. Review the displayed single acquisition and its timestamp before preparing a mission. Hosted mode does not persist surveys. The retained workspace can also start from a saved Quick mission survey, using its original frozen boundary snapshot, scene ID and acquisition time. Later edits to the current observation do not replace that snapshot. A trial boundary or drift envelope is a search scenario; it does not confirm oil or measure its extent.
 
 Trial calculation, source retrieval and file export perform no database mutations. In workspace server mode, the separate survey action uses the original Quick mission APIs to save an area and the reviewed inspection before calculation; reopening an existing survey uses its frozen image and boundary. The calculation and export actions do not create or update incidents, observations, persisted MissionPlans, runs or device commands. A downloaded JSON snapshot contains the submitted inputs, source, results and `inputHash`; it is a local artifact, not a saved operational mission. Restoring a snapshot restores inputs and requires recalculation. Times and validity checks must be refreshed before exporting again. The hash identifies the calculation inputs; it is not a digital signature or approval.
 
@@ -91,6 +93,7 @@ Default Vercel hosting provides these imagery endpoints through `api/gee.mjs`:
 
 | Route | Purpose |
 |---|---|
+| `POST /api/v1/gee/imagery/basemap` | Bounded viewport geometry → fixed recent Sentinel-2 mosaic, acquisition range and 30-minute tile session |
 | `POST /api/v1/gee/imagery/search` | Search a polygon/date range/cloud threshold for covering Sentinel-2 scenes |
 | `POST /api/v1/gee/imagery/map` | Recheck the selected scene and create a 30-minute same-origin tile session |
 | `GET /api/v1/gee/imagery/tiles/{sessionId}/{z}/{x}/{y}` | Display RGB PNG tiles; zoom 0–18 |

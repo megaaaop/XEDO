@@ -1,4 +1,4 @@
-import {searchGEEImagery,createGEEImageryMap,getGEEImageryTile} from './gee-imagery.js';
+import {searchGEEImagery,createGEEImageryMap,getGEEImageryTile,createGEEBasemap} from './gee-imagery.js';
 
 const prefix='/api/v1/gee/imagery/';
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json;charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
@@ -15,18 +15,19 @@ async function inputs(req,allowed){
 }
 
 /** Fixed public-imagery operations. No database, device or arbitrary EE execution. */
-export async function geeImageryAPI(req,env,{persistScene,services={searchGEEImagery,createGEEImageryMap,getGEEImageryTile}}={}){
+export async function geeImageryAPI(req,env,{persistScene,services={searchGEEImagery,createGEEImageryMap,getGEEImageryTile,createGEEBasemap}}={}){
   const url=new URL(req.url);
   if(!url.pathname.startsWith(prefix))return null;
   const route=url.pathname.slice(prefix.length);
   const origin=req.headers.get('origin');
   if((origin&&origin!==url.origin)||req.headers.get('sec-fetch-site')==='cross-site')return json({code:'GEE_IMAGERY_ORIGIN_DENIED',message:'Requests from other websites are not permitted.'},403);
   const tile=/^tiles\/([A-Za-z0-9_-]{16,4096})\/(\d{1,2})\/(\d{1,8})\/(\d{1,8})$/.exec(route);
-  if(!['search','map'].includes(route)&&!tile)return json({code:'NOT_FOUND',message:'Satellite imagery route not found.'},404);
+  if(!['search','map','basemap'].includes(route)&&!tile)return json({code:'NOT_FOUND',message:'Satellite imagery route not found.'},404);
   const method=tile?'GET':'POST';
   if(req.method!==method)return new Response(null,{status:405,headers:{Allow:method,'Cache-Control':'no-store'}});
   try{
     if(tile)return await services.getGEEImageryTile(env,{sessionId:tile[1],z:Number(tile[2]),x:Number(tile[3]),y:Number(tile[4])});
+    if(route==='basemap')return json(await services.createGEEBasemap(env,await inputs(req,['geometry'])));
     if(route==='search'){
       const result=await services.searchGEEImagery(env,await inputs(req,['geometry','start','end','maxCloud']));
       return json(result);

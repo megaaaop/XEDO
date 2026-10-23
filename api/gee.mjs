@@ -20,7 +20,7 @@ function selectedRoute(url) {
     route = url.pathname.slice(PREFIX.length);
     if (routes.length && routes[0] !== route) return null;
   } else return null;
-  if (route === 'search' || route === 'map') return route;
+  if (route === 'search' || route === 'map' || route === 'basemap') return route;
   // Tokens are opaque; accepting a token never accepts an upstream URL or EE expression.
   const tile = /^tiles\/([A-Za-z0-9_-]{16,4096})\/(\d{1,2})\/(\d{1,8})\/(\d{1,8})$/.exec(route || '');
   if (!tile) return null;
@@ -86,7 +86,7 @@ export async function hostedGEEFetch(request, {handler, env = process.env} = {})
     const url = new URL(request.url), route = selectedRoute(url);
     if (!route) return problem(404, 'NOT_FOUND', 'Imagery endpoint not found.');
     if (!sameOrigin(request, url)) return problem(403, 'GEE_ORIGIN_DENIED', 'Use imagery from the XEDO website.');
-    const expensive = route === 'search' || route === 'map';
+    const expensive = route === 'search' || route === 'map' || route === 'basemap';
     const method = expensive ? 'POST' : 'GET';
     if (request.method !== method) return problem(405, 'METHOD_NOT_ALLOWED', 'Method not allowed.', {Allow: method});
     if (expensive && request.headers.get('content-type')?.split(';')[0].trim().toLowerCase() !== 'application/json') {

@@ -2,7 +2,7 @@
 
 XEDO is an environmental innovation prototype for reviewing coastal satellite imagery and preparing a drone inspection plan. This package contains the latest three-step interface, the XEDO logo, Information dialogs, four planning calculators, and the retained workspace source.
 
-The default deployment combines a **static browser application** with a bounded **Google Earth Engine imagery API** on Vercel. It searches actual Sentinel-2 acquisitions and displays RGB map tiles through the server; Google credentials never enter the browser. Planning calculations still run in the browser. The retained database, Pi, aircraft and dispenser APIs remain separate from this deployment.
+The default deployment combines a **static browser application** with a bounded **Google Earth Engine imagery API** on Vercel. A real Sentinel-2 mosaic loads as the background on opening, before an inspection polygon is drawn. Its source date range is displayed. The separate area-review step loads one covering acquisition with its exact timestamp. Google credentials never enter the browser. Planning calculations still run in the browser. The retained database, Pi, aircraft and dispenser APIs remain separate from this deployment.
 
 ## Workflow
 
@@ -54,7 +54,7 @@ The package is prepared for upload, but preparing files does not push a reposito
 | Node.js version | 24.x |
 | Runtime environment variables | `GEE_PROJECT_ID`, secret `GEE_SERVICE_ACCOUNT_JSON` |
 
-`vercel.json` records the build settings. The root URL serves the planning page; `/planning` and `/planning.html` redirect to the root. Only `/api/v1/gee/imagery/search`, `/map` and `/tiles/...` are exposed by the hosted imagery adapter. It does not expose the retained database/device APIs or advanced dashboard. See [GEE imagery](docs/GEE-IMAGERY-TH.md) and [Vercel configuration](https://vercel.com/docs/project-configuration/vercel-json).
+`vercel.json` records the build settings. The root URL serves the planning page; `/planning` and `/planning.html` redirect to the root. Only `/api/v1/gee/imagery/basemap`, `/search`, `/map` and `/tiles/...` are exposed by the hosted imagery adapter. It does not expose the retained database/device APIs or advanced dashboard. See [GEE imagery](docs/GEE-IMAGERY-TH.md) and [Vercel configuration](https://vercel.com/docs/project-configuration/vercel-json).
 
 GitHub Actions runs verification on pushes and pull requests; it does not deploy. See [CI behavior](docs/CI.md) and the [Thai deployment guide](docs/DEPLOY-TH.md).
 

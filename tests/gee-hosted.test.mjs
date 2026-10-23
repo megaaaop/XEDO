@@ -139,3 +139,12 @@ test('Hosted source path reaches actual imagery API without exposing the workspa
   const other = await hostedGEEFetch(new Request('https://xedo.example/api/v1/telemetry/batches', {method: 'POST'}), {env, handler: () => assert.fail('Workspace APIs must remain private')});
   assert.equal(other.status, 404);
 });
+
+
+test('Hosted basemap route shares bounded public imagery gateway protections',async()=>{
+  let seen;
+  const response=await hostedGEEFetch(request('basemap'),{env,handler:async req=>{seen=req.url;return Response.json({kind:'gee_basemap'});}});
+  assert.equal(response.status,200);assert.equal(seen,'https://xedo.example/api/v1/gee/imagery/basemap');
+  const blocked=await hostedGEEFetch(request('basemap',{method:'GET'}),{env,handler:()=>assert.fail('Basemap requires POST')});assert.equal(blocked.status,405);
+  const cross=await hostedGEEFetch(request('basemap',{headers:{origin:'https://other.example'}}),{env,handler:()=>assert.fail('Cross-origin basemap must fail')});assert.equal(cross.status,403);
+});

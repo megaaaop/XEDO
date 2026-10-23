@@ -30,10 +30,10 @@ export const planningHelpTopics = {
   map: {
     title: 'Map layers & route preview',
     paragraphs: [
-      'The map shows the selected boundary and whichever calculation layers are available. A route drawn on the map is not, by itself, an assessed flight.'
+      'The hosted map loads a Google Earth Engine Sentinel-2 background before you draw an area. It combines recent acquisitions; the displayed date range describes the source imagery. Draw your inspection boundary over the map. A route drawn on the map is not, by itself, an assessed flight.'
     ],
     bullets: [
-      'Inspection area: the cyan boundary selected for satellite review.',
+      'Inspection area: the cyan boundary selected for satellite review. Background imagery is navigation context; Review area image loads a single dated acquisition before mission preparation.',
       'Forecast: purple outlines showing the nominal shifted boundary at arrival and survey end. Search envelope: the dashed amber box enclosing the supplied drift scenarios and margin.',
       'Route: pale yellow flight lines. Assessed sorties include outbound travel and return to the configured home; a geometric route can appear before those assessments are complete.',
       'The 3D view is a flat-surface height diagram. It does not verify terrain, obstacles or clearance. Use 2D to review the source image and boundary.'

@@ -49,7 +49,7 @@ async function scopeFor(env) {
   if(typeof env.GEE_PROJECT_ID!=='string'||!/^(?:[a-z][a-z0-9-]{4,61}[a-z0-9]|[0-9]{6,20})$/.test(env.GEE_PROJECT_ID)||typeof env.GEE_SERVICE_ACCOUNT_JSON!=='string')throw failure('GEE_CONFIG_INVALID','Invalid GEE configuration.',503);
   const digest=new Uint8Array(await crypto.subtle.digest('SHA-256',textEncoder.encode('xedo-gee-imagery/1\0'+env.GEE_PROJECT_ID+'\0'+env.GEE_SERVICE_ACCOUNT_JSON)));
   const id=base64(digest);
-  if(!scopes.has(id)){scopes.set(id,{key:await crypto.subtle.importKey('raw',digest,'AES-GCM',false,['encrypt','decrypt']),searches:new Map(),scenes:new Map(),maps:new Map(),tiles:new Map(),pending:new Map(),tileBytes:0});trim(scopes,4);}
+  if(!scopes.has(id)){scopes.set(id,{key:await crypto.subtle.importKey('raw',digest,'AES-GCM',false,['encrypt','decrypt']),searches:new Map(),basemaps:new Map(),scenes:new Map(),maps:new Map(),tiles:new Map(),pending:new Map(),tileBytes:0});trim(scopes,4);}
   return scopes.get(id);
 }
 
@@ -161,6 +161,46 @@ function rgbRequest(sceneId,bbox) {
   return {expression:{result:'image',values:{image:f('Image.clip',{input:f('Image.load',{id:c(canonicalScene(sceneId))}),geometry:polygon(rectangle(bbox))})}},fileFormat:'PNG',bandIds:['B4','B3','B2'],visualizationOptions:{ranges:[{min:0,max:3000}],gamma:1.2}};
 }
 
+
+function basemapExpression({geometry,start,end}) {
+  const filters=[f('Filter.greaterThanOrEquals',{leftField:c('system:time_start'),rightValue:c(Date.parse(start))}),f('Filter.lessThan',{leftField:c('system:time_start'),rightValue:c(Date.parse(end)+DAY)}),f('Filter.lessThanOrEquals',{leftField:c('CLOUDY_PIXEL_PERCENTAGE'),rightValue:c(80)}),f('Filter.intersects',{leftField:c('.all'),rightValue:f('Feature',{geometry:polygon(geometry)})})];
+  const selected=f('Collection.limit',{collection:f('Collection.filter',{collection:f('ImageCollection.load',{id:c(COLLECTION)}),filter:f('Filter.and',{filters:list(filters)})}),limit:c(MAX_CANDIDATES),key:c('system:time_start'),ascending:c(false)});
+  const metadata=f('Feature',{geometry:c(null),metadata:{dictionaryValue:{values:{id:f('Image.id',{element:a('image')}),acquiredMs:f('Element.get',{object:a('image'),property:c('system:time_start')}),cloudCover:f('Element.get',{object:a('image'),property:c('CLOUDY_PIXEL_PERCENTAGE')})}}}});
+  return {result:'result',values:{metadata,result:f('Collection.toList',{collection:f('Collection.map',{collection:selected,baseAlgorithm:{functionDefinitionValue:{argumentNames:['image'],body:'metadata'}}}),count:c(MAX_CANDIDATES)})}};
+}
+
+/** Recent bounded viewport background; never a surveyed scene or readiness proof. */
+export async function createGEEBasemap(env,input,options={}) {
+  if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(key=>key!=='geometry'))throw failure('GEE_INPUT_INVALID','Supply only the viewport geometry.');
+  const geometry=checkedGeometry(input.geometry),opts=contextOptions(options),scope=await scopeFor(env),end=new Date(opts.now()).toISOString().slice(0,10),start=new Date(Date.parse(end)-29*DAY).toISOString().slice(0,10),key=JSON.stringify({geometry,start,end}),cached=scope.basemaps.get(key);
+  if(cached&&cached.until>opts.now())return structuredClone(cached.result);
+  return structuredClone(await once(scope,'basemap:'+key,4,async()=>{
+    const data=await jsonCall(env,'projects/'+env.GEE_PROJECT_ID+'/value:compute',{expression:basemapExpression({geometry,start,end}),workloadTag:'xedo-basemap-search'},opts);
+    if(!Array.isArray(data?.result)||data.result.length>MAX_CANDIDATES)throw failure('GEE_RESPONSE_INVALID','GEE returned invalid basemap metadata.',502);
+    const selected=[],ids=new Set();
+    for(const feature of data.result){
+      const p=feature?.properties;
+      if(feature?.type!=='Feature'||!p||typeof p.id!=='string'||!Number.isFinite(p.acquiredMs)||p.acquiredMs<Date.parse(start)||p.acquiredMs>=Date.parse(end)+DAY||!Number.isFinite(p.cloudCover)||p.cloudCover<0||p.cloudCover>80)throw failure('GEE_RESPONSE_INVALID','GEE returned invalid basemap metadata.',502);
+      const full=p.id.startsWith(COLLECTION+'/')?p.id:COLLECTION+'/'+p.id;
+      try{canonicalScene('gee:'+full);}catch{throw failure('GEE_RESPONSE_INVALID','GEE returned invalid basemap metadata.',502);}
+      if(!ids.has(full)){ids.add(full);selected.push({index:full.slice(COLLECTION.length+1),time:p.acquiredMs});}
+    }
+    if(!selected.length)throw failure('GEE_BASEMAP_EMPTY','No recent Sentinel-2 images cover this viewport. Move closer to the coast or retry later.',404);
+    // Mosaic prioritizes the last image: pin oldest first, newest on top.
+    selected.sort((a,b)=>a.time-b.time||a.index.localeCompare(b.index));
+    const expires=opts.now()+SESSION_MS,sessionId=await encodeSession(scope,{v:1,purpose:'basemap',mode:'pixels',assets:selected.map(image=>image.index),bbox:bounds(geometry),expires});
+    const result={kind:'gee_basemap',provider:'gee',collection:COLLECTION,sessionId,tileUrl:'/api/v1/gee/imagery/tiles/'+sessionId+'/{z}/{x}/{y}',expiresAt:new Date(expires).toISOString(),geometry,start,end,imageCount:selected.length,acquiredFrom:new Date(selected[0].time).toISOString(),acquiredTo:new Date(selected.at(-1).time).toISOString(),renderMode:'pixels'};
+    scope.basemaps.set(key,{result,until:opts.now()+SEARCH_MS});trim(scope.basemaps,16);
+    return result;
+  }));
+}
+
+function basemapRGBRequest(session) {
+  const images=list(session.assets.map(index=>f('Image.load',{id:c(COLLECTION+'/'+index)})));
+  const mosaic=f('ImageCollection.mosaic',{collection:f('ImageCollection.fromImages',{images})});
+  return {expression:{result:'image',values:{image:f('Image.clip',{input:mosaic,geometry:polygon(rectangle(session.bbox))})}},fileFormat:'PNG',bandIds:['B4','B3','B2'],visualizationOptions:{ranges:[{min:0,max:3000}],gamma:1.2}};
+}
+
 async function mapFor(env,scope,sceneId,bbox,opts,force=false) {
   const key=sceneId+'\0'+JSON.stringify(bbox),cached=scope.maps.get(key);
   if(!force&&cached&&cached.until>opts.now())return cached.name;
@@ -181,7 +221,13 @@ async function decodeSession(scope,sessionId,project,now) {
   let payload;
   try {const bytes=unbase64(sessionId);if(base64(bytes)!==sessionId)throw new Error();const raw=await crypto.subtle.decrypt({name:'AES-GCM',iv:bytes.subarray(0,12),additionalData:textEncoder.encode('xedo-gee-imagery/1')},scope.key,bytes.subarray(12));payload=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(raw));}catch {throw failure('GEE_SESSION_INVALID','The satellite image session is invalid. Select the image again.',400);}
   if(payload?.v!==1||!Number.isFinite(payload.expires)||payload.expires<=now()||payload.expires>now()+SESSION_MS+1000)throw failure('GEE_SESSION_EXPIRED','The satellite image session expired. Select the image again.',410);
-  canonicalScene(payload.sceneId);
+  if(payload.purpose==='basemap'){
+    if(payload.mode!=='pixels'||payload.sceneId!==undefined||payload.mapName!==undefined||!Array.isArray(payload.assets)||!payload.assets.length||payload.assets.length>MAX_CANDIDATES||new Set(payload.assets).size!==payload.assets.length)throw failure('GEE_SESSION_INVALID','The satellite image session is invalid. Select the image again.',400);
+    for(const index of payload.assets)canonicalScene('gee:'+COLLECTION+'/'+index);
+  }else{
+    if(payload.purpose!==undefined&&payload.purpose!=='scene')throw failure('GEE_SESSION_INVALID','The satellite image session is invalid. Select the image again.',400);
+    canonicalScene(payload.sceneId);
+  }
   if(!['map','pixels'].includes(payload.mode))throw failure('GEE_SESSION_INVALID','The satellite image session is invalid. Select the image again.',400);
   if(payload.mode==='map')checkedMapName(payload.mapName,project);
   else if(payload.mapName!==undefined)throw failure('GEE_SESSION_INVALID','The satellite image session is invalid. Select the image again.',400);
@@ -218,7 +264,7 @@ async function readPNG(response) {
 
 function computeTile(env,session,z,x,y,opts) {
   const scale=40075016.68557849/(2**z*256),origin=20037508.342789244;
-  const body={...rgbRequest(session.sceneId,session.bbox),grid:{dimensions:{width:256,height:256},affineTransform:{scaleX:scale,shearX:0,translateX:-origin+x*256*scale,shearY:0,scaleY:-scale,translateY:origin-y*256*scale},crsCode:'EPSG:3857'},workloadTag:'xedo-sentinel-tile'};
+  const body={...(session.purpose==='basemap'?basemapRGBRequest(session):rgbRequest(session.sceneId,session.bbox)),grid:{dimensions:{width:256,height:256},affineTransform:{scaleX:scale,shearX:0,translateX:-origin+x*256*scale,shearY:0,scaleY:-scale,translateY:origin-y*256*scale},crsCode:'EPSG:3857'},workloadTag:session.purpose==='basemap'?'xedo-basemap-tile':'xedo-sentinel-tile'};
   return authenticated(env,'projects/'+env.GEE_PROJECT_ID+'/image:computePixels',body,opts,readPNG);
 }
 
