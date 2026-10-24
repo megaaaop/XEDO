@@ -111,7 +111,9 @@ function landcoverExpression(request){
 function qualityExpression(request){
  const id=request.sceneId.slice(4),index=id.slice(id.lastIndexOf('/')+1),image=f('Image.load',{id:c(id)});
  const clouds=f('Collection.filter',{collection:f('ImageCollection.load',{id:c(GEE_MISSION_DATASETS.quality.id)}),filter:f('Filter.equals',{leftField:c('system:index'),rightValue:c(index)})});
- const hasProbability=f('Number.gt',{left:f('Collection.size',{collection:ref('clouds')}),right:c(0)});
+ // Number.gt returns 0/1 in GEE. Emit an actual JSON boolean for the strict
+ // result contract instead of treating that numeric predicate as a boolean.
+ const hasProbability=f('If',{condition:f('Number.gt',{left:f('Collection.size',{collection:ref('clouds')}),right:c(0)}),trueCase:c(true),falseCase:c(false)});
  const choose=(yes,no)=>f('If',{condition:ref('hasProbability'),trueCase:yes,falseCase:no});
  const probability=select(f('ImageCollection.mosaic',{collection:ref('clouds')}),['probability']);
  const scl=select(ref('image'),['SCL']),rgb=select(ref('image'),['B4','B3','B2']);

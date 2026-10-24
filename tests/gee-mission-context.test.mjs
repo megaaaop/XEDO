@@ -84,10 +84,6 @@ test('Terrain and area reductions use supported WGS84 with explicit metre scales
  assert.equal(terrainReducer.functionName,'Reducer.setOutputs');
  assert.equal(terrainReducer.arguments.reducer.functionInvocationValue.functionName,'Reducer.first');
  assert.deepEqual(terrainReducer.arguments.outputs.constantValue,['elevation']);
- const reducer=e.terrain.values.result.functionInvocationValue.arguments.reducer.functionInvocationValue;
- assert.equal(reducer.functionName,'Reducer.setOutputs');
- assert.equal(reducer.arguments.reducer.functionInvocationValue.functionName,'Reducer.first');
- assert.deepEqual(reducer.arguments.outputs.constantValue,['elevation']);
  // Image.pixelArea supplies square metres independently of the chosen CRS;
  // retain it in both the total area and all classified-area partitions.
  for(const kind of ['landcover','quality']){
@@ -96,6 +92,15 @@ test('Terrain and area reductions use supported WGS84 with explicit metre scales
   assert.doesNotMatch(areas,/pixelLonLat|Geometry\.area/);
  }
  assert.doesNotMatch(JSON.stringify(e),/EPSG:6933/);
+});
+
+test('Cloud-probability availability emits a JSON boolean rather than GEE numeric comparison output',()=>{
+ const e=missionContextExpressions(validateMissionContextRequest(request(),{now:NOW}),{now:NOW});
+ const availability=e.quality.values.hasProbability.functionInvocationValue;
+ assert.equal(availability.functionName,'If');
+ assert.equal(availability.arguments.condition.functionInvocationValue.functionName,'Number.gt');
+ assert.equal(availability.arguments.trueCase.constantValue,true);
+ assert.equal(availability.arguments.falseCase.constantValue,false);
 });
 
 test('Unconfigured credentials return explicit Unknown with matching request and no upstream access',async()=>{
