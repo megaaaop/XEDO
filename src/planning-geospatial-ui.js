@@ -30,7 +30,10 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
   const hint=create('p',{id:'trial-geospatial-home-note',className:'trial-help',textContent:'30 m DSM · EGM2008 estimate. Confirm the actual launch level and compatible height reference.'});
   const refresh=create('button',{id:'trial-geospatial-refresh',type:'button',className:'button quiet',textContent:'Refresh GEE data'}),actions=create('div',{className:'trial-geospatial-actions'});actions.append(accept,refresh);
   const details=create('details',{id:'trial-geospatial-details'}),detailsTitle=create('summary',{textContent:'Sources & calculations'}),detailsBody=create('div',{id:'trial-geospatial-details-body'});details.append(detailsTitle,detailsBody);
-  panel.append(heading,status,summary,reviewLabel,hint,actions,details);settings.insertBefore(panel,settings.querySelector('details'));
+  // The environment section also has nested <details>; insertBefore requires
+  // a direct child of the form, rather than its first descendant disclosure.
+  panel.append(heading,status,summary,reviewLabel,hint,actions,details);
+  settings.insertBefore(panel,[...settings.children].find(child=>child.tagName==='DETAILS')||null);
   const opener=create('button',{id:'trial-geospatial-open',type:'button',className:'button quiet trial-geospatial-badge'}),badge=create('span',{id:'trial-geospatial-badge'});badge.setAttribute('role','status');opener.setAttribute('aria-controls','trial-settings-dialog');opener.append(badge);bar.append(opener);
   let disposed=false,key=null,response=null,accepted=null,pending=null,revision=0,debounce=null,expiry=null,deadline=null;
   let state={status:'waiting',reason:null,fetchedAt:null,expiresAt:null};

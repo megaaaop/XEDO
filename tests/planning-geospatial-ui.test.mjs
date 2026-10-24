@@ -29,7 +29,9 @@ function harness({localFile=false,example=false,hidden=false,held=false,transfor
   showModal(){this.open=true;}scrollIntoView(){this.scrolled=true;}
  }
  const make=(id,tag='div')=>Object.assign(new Element(tag),{id});
- const settings=make('trial-settings','form'),legacy=make('legacy-details','details');settings.append(legacy);
+ const settings=make('trial-settings','form'),legacy=make('legacy-details','details');
+ const environment=make('trial-environment-panel','section'),sources=make('trial-environment-details','details');
+ environment.append(sources);settings.append(environment,legacy);
  const bar=new Element();bar.className='trial-context-bar';
  const home=make('f-export-homeAmslM','input'),dialog=make('trial-settings-dialog','dialog');
  const node=id=>nodes.find(item=>item.id===id);
@@ -45,8 +47,8 @@ function harness({localFile=false,example=false,hidden=false,held=false,transfor
  return {ui,node,root,mission,calls,changes,settings,legacy,bar,home,jobs,setHeld:value=>{hold=value;},setTime:value=>{time=value;},async tick(ms){const target=time+ms;for(;;){const next=[...jobs].filter(([,job])=>job.at<=target).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;time=next[1].at;jobs.delete(next[0]);next[1].fn();await flush();}time=target;await flush();},async accept(){node('trial-geospatial-home-reviewed').checked=true;node('trial-geospatial-home-reviewed').dispatch();return node('trial-geospatial-use-home').onclick();},async hidden(value){root.hidden=value;events.dispatchEvent(new Event('visibilitychange'));await flush();}};
 }
 
-test('The dynamic GEE panel preserves the existing form and keeps explanations on demand',()=>{
- const h=harness();try{assert.equal(h.settings.children[0].id,'trial-geospatial-panel');assert.equal(h.settings.children[1],h.legacy);assert.equal(h.bar.children.at(-1).id,'trial-geospatial-open');assert.equal(h.node('trial-geospatial-details').open,undefined);assert.equal(h.node('trial-geospatial-use-home').disabled,true);assert.equal(h.calls.length,0);h.node('trial-geospatial-open').onclick();assert.equal(h.node('trial-settings-dialog').open,true);assert.equal(h.node('trial-geospatial-panel').scrolled,true);}finally{h.ui.dispose();}
+test('The dynamic GEE panel uses a direct form child and preserves nested environment source details',()=>{
+ const h=harness();try{assert.equal(h.settings.children[0].id,'trial-environment-panel');assert.equal(h.settings.children[1].id,'trial-geospatial-panel');assert.equal(h.settings.children[2],h.legacy);assert.equal(h.node('trial-environment-details').parentElement,h.settings.children[0]);assert.equal(h.bar.children.at(-1).id,'trial-geospatial-open');assert.equal(h.node('trial-geospatial-details').open,undefined);assert.equal(h.node('trial-geospatial-use-home').disabled,true);assert.equal(h.calls.length,0);h.node('trial-geospatial-open').onclick();assert.equal(h.node('trial-settings-dialog').open,true);assert.equal(h.node('trial-geospatial-panel').scrolled,true);}finally{h.ui.dispose();}
 });
 test('A matching request returns advisory terrain, area and image calculations without changing physical inputs',async()=>{
  const h=harness();try{h.home.value='47';await h.ui.refresh();assert.equal(h.calls.length,1);assert.deepEqual(Object.keys(h.calls[0].payload),['geometry','home','sceneId','startAt','endAt']);assert.equal(h.home.value,'47');assert.equal(h.ui.getState().status,'ready');const context=h.ui.getContext();assert.equal(context.samples[0].elevationM,0);context.samples[0].elevationM=999;assert.equal(h.ui.getContext().samples[0].elevationM,0);const patch=h.ui.getPatch();assert.equal(patch.flight.geospatialEvidence.terrain.elevationRangeM,2);assert.equal(patch.flight.geospatialEvidence.landcover.waterPct,60);assert.equal(patch.flight.geospatialEvidence.quality.cloudPct,10);assert.equal(patch.export.homeElevationEvidence,null);assert.equal(Object.hasOwn(patch.flight,'windEastMps'),false);assert.match(h.node('trial-geospatial-summary').innerHTML,/0 m.*EGM2008/);assert.match(h.node('trial-geospatial-summary').innerHTML,/5 m\/s/);assert.equal(h.changes.filter(x=>x==='home-accepted').length,0);}finally{h.ui.dispose();}
