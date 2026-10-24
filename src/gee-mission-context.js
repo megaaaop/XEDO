@@ -97,7 +97,7 @@ function terrainExpression(request){
  return {result:'result',values:{
   image:rename(select(mosaic(GEE_MISSION_DATASETS.terrain.id,request.geometry,request.home),['DEM']),'elevation'),
   points:f('Collection',{features:array(points.map((p,i)=>f('Feature',{geometry:point(p.coordinates),metadata:c({sample_index:i})})))}),
-  result:f('Image.reduceRegions',{image:ref('image'),collection:ref('points'),reducer:f('Reducer.first'),scale:c(30),crs:f('Projection',{crs:c('EPSG:4326')}),maxPixelsPerRegion:c(4)})
+  result:f('Image.reduceRegions',{image:ref('image'),collection:ref('points'),reducer:f('Reducer.setOutputs',{reducer:f('Reducer.first'),outputs:c(['elevation'])}),scale:c(30),crs:f('Projection',{crs:c('EPSG:4326')}),maxPixelsPerRegion:c(4)})
  }};
 }
 function landcoverExpression(request){
@@ -172,11 +172,13 @@ function landResult(result){
 }
 function qualityResult(result,request,now){
  const out=emptyQuality(request);
- if(!record(result)||result.sceneId!==request.sceneId.slice(4)||result.coversAOI!==true||typeof result.hasProbability!=='boolean')throw Error('Selected image identity or coverage is invalid.');
+ const expectedId=request.sceneId.slice(4),shortId=expectedId.slice(expectedId.lastIndexOf('/')+1);
+ const sourceId=result?.sceneId===shortId?'COPERNICUS/S2_SR_HARMONIZED/'+shortId:result?.sceneId;
+ if(!record(result)||sourceId!==expectedId||result.coversAOI!==true||typeof result.hasProbability!=='boolean')throw Error('Selected image identity or coverage is invalid.');
  const acquired=parsedNumber(result.acquiredMs,Date.UTC(2017,2,28),now+5*60000),cloud=parsedNumber(result.sceneCloudPct,0,100);
  if(acquired===null||cloud===null)throw Error('Selected image metadata is unavailable.');
- const assetTime=request.sceneId.split('/').at(-1).split('_')[0],at=new Date(acquired).toISOString().replaceAll('-','').replaceAll(':','').slice(0,15);
- if(at!==assetTime)throw Error('Selected image acquisition time does not match its identity.');
+ // The product index timestamp is not the granule's system:time_start. Retain
+ // that source metadata exactly; the client binds it to the reviewed scene.
  const s=areaStats(result.stats,['image_m2','classified_m2','cloud_m2','clear_m2']);
  if(s.classified_m2>s.image_m2+Math.max(1,s.total*.001)||Math.abs(s.cloud_m2+s.clear_m2-s.classified_m2)>Math.max(1,s.total*.001))throw Error('Invalid image-quality area partition.');
  Object.assign(out,{acquiredAt:new Date(acquired).toISOString(),sceneCloudPct:cloud,method:result.hasProbability?'S2_cloud_probability_threshold_65':'S2_SCL_cloud_shadow_snow_fallback',resolutionM:20,coveragePct:s.classified_m2/s.total*100,imageCoveragePct:s.image_m2/s.total*100,cloudPct:s.cloud_m2/s.total*100,clearPct:s.clear_m2/s.total*100,unknownPct:100-s.classified_m2/s.total*100});

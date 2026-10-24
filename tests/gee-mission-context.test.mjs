@@ -80,6 +80,14 @@ test('Terrain and area reductions use supported WGS84 with explicit metre scales
   assert.equal(args.crs.functionInvocationValue.arguments.crs.constantValue,'EPSG:4326');
   assert.equal(args.scale.constantValue,scale);
  }
+ const terrainReducer=e.terrain.values.result.functionInvocationValue.arguments.reducer.functionInvocationValue;
+ assert.equal(terrainReducer.functionName,'Reducer.setOutputs');
+ assert.equal(terrainReducer.arguments.reducer.functionInvocationValue.functionName,'Reducer.first');
+ assert.deepEqual(terrainReducer.arguments.outputs.constantValue,['elevation']);
+ const reducer=e.terrain.values.result.functionInvocationValue.arguments.reducer.functionInvocationValue;
+ assert.equal(reducer.functionName,'Reducer.setOutputs');
+ assert.equal(reducer.arguments.reducer.functionInvocationValue.functionName,'Reducer.first');
+ assert.deepEqual(reducer.arguments.outputs.constantValue,['elevation']);
  // Image.pixelArea supplies square metres independently of the chosen CRS;
  // retain it in both the total area and all classified-area partitions.
  for(const kind of ['landcover','quality']){
@@ -151,6 +159,34 @@ test('Masked land cover and quality are not converted into all-land or cloud-fre
 test('Scene footprint, source timestamp and quality area conflicts invalidate only that independent part',async()=>{
  for(const change of [r=>({...r,coversAOI:false}),r=>({...r,sceneId:sceneId.replace('20261024','20261023').slice(4)}),r=>({...r,acquiredMs:NOW+HOUR}),r=>({...r,hasProbability:'true'}),r=>({...r,stats:{...r.stats,clear_m2:10000}})]){
   const v=fixture();v.state.parts.quality=change;const r=await lookup(v);assert.equal(r.quality.state,'unavailable');assert.equal(r.quality.acquiredAt,null);assert.equal(r.quality.cloudPct,null);assert.equal(r.terrain.state,'ready');assert.equal(r.forecast.state,'ready');
+ }
+});
+
+test('Real granule acquisition milliseconds are retained when product time differs, with exact full or short source identity',async()=>{
+ const selected='gee:COPERNICUS/S2_SR_HARMONIZED/20261022T033809_20261022T035258_T47PQQ',acquiredAt='2026-10-22T03:54:37.155Z';
+ const full=selected.slice(4),short=full.slice(full.lastIndexOf('/')+1);
+ for(const sourceId of [full,short]){
+  const v=fixture();v.state.parts.quality=r=>({...r,sceneId:sourceId,acquiredMs:Date.parse(acquiredAt)});
+  const r=await lookup(v,{...request(),sceneId:selected});
+  assert.equal(r.quality.state,'ready');assert.equal(r.quality.sceneId,selected);
+  assert.equal(r.quality.acquiredAt,acquiredAt);assert.equal(r.terrain.state,'ready');
+ }
+});
+
+test('Quality source normalization rejects a different index or collection and keeps acquisition time range validation',async()=>{
+ const selected='gee:COPERNICUS/S2_SR_HARMONIZED/20261022T033809_20261022T035258_T47PQQ',short=selected.split('/').at(-1);
+ const valid=r=>({...r,sceneId:short,acquiredMs:Date.parse('2026-10-22T03:54:37.155Z')});
+ for(const change of [
+  r=>({...r,sceneId:short.replace('T47PQQ','T47PQP')}),
+  r=>({...r,sceneId:'COPERNICUS/S2/'+short}),
+  r=>({...r,sceneId:null}),
+  r=>({...r,acquiredMs:NOW+5*60000+1}),
+  r=>({...r,acquiredMs:Date.UTC(2017,2,27)}),
+  r=>({...r,acquiredMs:null}),
+  r=>({...r,acquiredMs:'2026-10-22T03:54:37.155Z'})
+ ]){
+  const v=fixture();v.state.parts.quality=r=>change(valid(r));const r=await lookup(v,{...request(),sceneId:selected});
+  assert.equal(r.quality.state,'unavailable');assert.equal(r.quality.acquiredAt,null);assert.equal(r.quality.cloudPct,null);assert.equal(r.landcover.state,'ready');
  }
 });
 
