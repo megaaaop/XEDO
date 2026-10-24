@@ -26,6 +26,18 @@ function normalize(settings){
     if(!Array.isArray(home)||home.length!==2||!home.every(Number.isFinite)||Math.abs(home[0])>180||Math.abs(home[1])>80)throw new Error('home must be WGS84 [longitude, latitude] between 80 degrees south and north.');
     out.home=[...home];
   }
+  if(Object.hasOwn(settings,'windGustMps'))out.windGustMps=number(settings.windGustMps,'windGustMps',0,150);
+  if(Object.hasOwn(settings,'windSamples')&&settings.windSamples===null)out.windSamples=null;
+  else if(Object.hasOwn(settings,'windSamples')){
+    if(!Array.isArray(settings.windSamples)||settings.windSamples.length<1||settings.windSamples.length>150)throw new Error('windSamples must contain 1–150 east/north vectors.');
+    out.windSamples=settings.windSamples.map(sample=>{
+      if(!sample||typeof sample!=='object'||Array.isArray(sample))throw new Error('Each wind sample must be an object.');
+      const eastMps=number(sample.eastMps,'Sample east wind m/s',-100,100),northMps=number(sample.northMps,'Sample north wind m/s',-100,100);
+      if(eastMps===null||northMps===null)throw new Error('Each wind sample requires finite east/north vectors.');
+      const gustMps=sample.gustMps==null?null:number(sample.gustMps,'Sample gust m/s',0,150);
+      return {eastMps,northMps,...(gustMps===null?{}:{gustMps})};
+    });
+  }
   return out;
 }
 
@@ -100,7 +112,17 @@ export function buildTrialFlight(geometry,settings={}){
   const block=(code,message)=>{result.state='blocked';result.code=code;result.message=message;warnings.push(message);return result;};
   const cameraGeometryReady=need(['sensorWidthMm','sensorHeightMm','focalLengthMm','imageWidthPx','imageHeightPx','sideOverlap','frontOverlap','altitudeM','speedMps']);
   const intervalReady=need(['minTriggerIntervalS']);
-  const windReady=need(['windEastMps','windNorthMps','windLimitMps','maxAirspeedMps']);
+  const vectorReady=need(['windEastMps','windNorthMps','windLimitMps','maxAirspeedMps']);
+  const sampleMode=Array.isArray(input.windSamples),gustReady=!sampleMode||(input.windGustMps!=null&&input.windSamples.every(sample=>sample.gustMps!=null));
+  if(!gustReady)missing.push('windGustMps');
+  const windReady=vectorReady&&gustReady;
+  const windVectors=[...(sampleMode?input.windSamples:[]),...(input.windEastMps!==null&&input.windNorthMps!==null?[{eastMps:input.windEastMps,northMps:input.windNorthMps}]:[])];
+  const maximumWind=windVectors.length?Math.max(...windVectors.map(sample=>Math.hypot(sample.eastMps,sample.northMps))):null;
+  const gustValues=[input.windGustMps,...(input.windSamples??[]).map(sample=>sample.gustMps)].filter(value=>typeof value==='number'&&Number.isFinite(value));
+  const maximumGust=gustValues.length?Math.max(...gustValues):null;
+  const limitingWind=maximumWind===null?null:Math.max(maximumWind,maximumGust??0);
+  if(sampleMode){wind.sampleCount=input.windSamples.length;wind.maximumSampleSpeedMps=maximumWind;wind.gustMps=maximumGust;wind.gustReferenceHeightM=10;warnings.push('All supplied model wind vectors are assessed on every route leg. Gust speed is a conservative 10 m proxy; actual flight-height gusts remain unmeasured.');if(!gustReady)warnings.push('Automatic gust coverage is incomplete. Wind and battery assessment remain incomplete.');}
+
   const batteryReady=need(['usableWh','reserveWh','powerW','takeoffS','landingS','turnS','home']);
   if(input.windEastMps!==null&&input.windNorthMps!==null)wind.speedMps=Math.hypot(input.windEastMps,input.windNorthMps);
   if(!cameraGeometryReady)return result;
@@ -122,13 +144,16 @@ export function buildTrialFlight(geometry,settings={}){
   const airspeed=(a,b,length)=>{
     if(wind.speedMps===null)return null;
     const key=JSON.stringify([a,b]);if(windLegCache.has(key))return windLegCache.get(key);
-    const direction=delta(b,a);let required=wind.speedMps;
+    const direction=delta(b,a);let required=limitingWind??wind.speedMps;
+    if(maximumGust!==null)required=Math.max(required,input.speedMps+maximumGust);
     // UTM grid north is not true north. Project the supplied east/north wind
     // into the local grid rather than silently rotating the wind with the map.
     for(const t of [0,0.5,1]){
       const xy=[a[0]+direction[0]*t+origin[0],a[1]+direction[1]*t+origin[1]],position=projection.inverse(xy),east=delta(projection.forward([position[0]+1e-5,position[1]]),xy),north=delta(projection.forward([position[0],position[1]+1e-5]),xy),eastLength=Math.hypot(...east),northLength=Math.hypot(...north);
-      const wx=input.windEastMps*east[0]/eastLength+input.windNorthMps*north[0]/northLength,wy=input.windEastMps*east[1]/eastLength+input.windNorthMps*north[1]/northLength;
-      required=Math.max(required,Math.hypot(input.speedMps*direction[0]/length-wx,input.speedMps*direction[1]/length-wy));
+      for(const sample of windVectors){
+        const wx=sample.eastMps*east[0]/eastLength+sample.northMps*north[0]/northLength,wy=sample.eastMps*east[1]/eastLength+sample.northMps*north[1]/northLength;
+        required=Math.max(required,Math.hypot(input.speedMps*direction[0]/length-wx,input.speedMps*direction[1]/length-wy));
+      }
     }
     windLegCache.set(key,required);return required;
   };
@@ -153,7 +178,7 @@ export function buildTrialFlight(geometry,settings={}){
     return {waypoints:entries.map(entry=>({position:entry.position,altitudeM:input.altitudeM,altitudeReference:'AGL',purpose:entry.purpose,dispenser:'off'})),distanceM,durationS,energyWh:durationS===null||input.powerW===null?null:input.powerW*durationS/3600,requiredMaxAirspeedMps:wind.speedMps===null?null:required,phases:{takeoffS:input.takeoffS,landingS:input.landingS,turnCount,turnS:input.turnS,turnDurationS,travelS}};
   };
   const full=route(0,work.length-1);
-  const windPass=trip=>windReady&&wind.speedMps<=input.windLimitMps+1e-9&&trip.requiredMaxAirspeedMps<=input.maxAirspeedMps+1e-9;
+  const windPass=trip=>windReady&&limitingWind<=input.windLimitMps+1e-9&&trip.requiredMaxAirspeedMps<=input.maxAirspeedMps+1e-9;
   wind.requiredMaxAirspeedMps=full.requiredMaxAirspeedMps;
   wind.state=windReady?(windPass(full)?'pass':'blocked'):'incomplete';
   if(!batteryReady||!windReady){
@@ -163,7 +188,7 @@ export function buildTrialFlight(geometry,settings={}){
   }
   battery.budgetWh=input.usableWh-input.reserveWh;
   if(battery.budgetWh<=0){battery.state='blocked';return block('BATTERY_RESERVE_INFEASIBLE','Usable starting energy must exceed the energy reserved after landing.');}
-  if(wind.speedMps>input.windLimitMps+1e-9){battery.state='incomplete';return block('WIND_INFEASIBLE','The supplied wind exceeds the environmental wind limit.');}
+  if(limitingWind>input.windLimitMps+1e-9){battery.state='incomplete';return block('WIND_INFEASIBLE','The supplied wind exceeds the environmental wind limit.');}
   const sorties=[];let first=0,candidates=0,totalWaypoints=0;
   while(first<work.length){
     let best=null,end=-1;

@@ -46,10 +46,17 @@ export const XEDO_HARDWARE_PROFILE = deepFreeze({
     altitudeM: 50,
     speedMps: 5
   },
+  // Locked trial policy; these values do not verify the aircraft or environment.
+  fixedDefaults: {
+    drift: {alpha: 0.03, alphaMin: 0.025, alphaMax: 0.04, marginM: 0},
+    oil: {densityGml: 0.86, capacityGg: 3.42, allowance: 1.5, targetFraction: 1},
+    export: {qgcVersion: '5.1.0', limitReference: 'relative_home', relativeHeightM: 50}
+  },
+  satelliteDefaults: {maxCloud: 80, lookbackDays: 30},
   cameraSpecification: 'https://www.raspberrypi.com/documentation/accessories/camera.html'
 });
 
-/** Each new form owns its values; later edits and snapshots never refill blanks. */
+/** Independent mutable copy for generic callers; the planner uses fixed policy. */
 export function createHardwareFlightDefaults() {
   return {...XEDO_HARDWARE_PROFILE.flightDefaults};
 }

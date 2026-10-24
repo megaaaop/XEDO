@@ -12,7 +12,16 @@ The default deployment combines a **static browser application** with a bounded 
 
 The background calculations cover drift compensation, camera/overlap/wind/battery planning, checked QGroundControl `.plan` export, and oil/capsule quantity estimates. Unknown hardware values remain required settings. DJI KMZ export and physical flight/release control are not enabled. See [method and limits](public/docs/planning-trial.md).
 
-The fixed `XEDO Prototype 01` equipment candidates and initial route assumptions live in [`src/planning-hardware-profile.js`](src/planning-hardware-profile.js). A new form starts with candidate NoIR v2 optics, 50 m height, 5 m/s ground speed, 70%/80% overlap and a 1 s capture interval. Open the profile Information button in Mission settings for the equipment list. These editable assumptions enable a geometric preview; wind, battery performance, actual home, firmware and oil evidence still require inputs. Clearing fields or restoring a snapshot does not silently refill them.
+The fixed `XEDO Prototype 01` equipment candidates and project constants live in [`src/planning-hardware-profile.js`](src/planning-hardware-profile.js); [`src/planning-fixed-settings.js`](src/planning-fixed-settings.js) applies that policy to the planner. Camera geometry (candidate NoIR v2, 3.68 × 2.76 mm, 3.04 mm lens, 3280 × 2464 px), height 50 m, speed 5 m/s, overlap 70%/80% and minimum capture interval 1 s are locked. The project also locks windage 0.03 (0.025–0.04), extra drift margin 0 m, oil density 0.86 g/mL, capacity 3.42 g/g, material allowance 1.5, target fraction 1, QGC 5.1.0 and home-relative export height 50 m. Image search uses scene cloud cover ≤80% and starts with a 30-day date window; acquisition dates remain editable.
+
+Fixed controls are hidden from routine mission entry, with their values available through the profile **Information** button in Mission settings. Every calculation/export reapplies the profile. A snapshot with missing fixed keys adopts this profile; explicitly different or null fixed values reject the import before the current mission changes. Synthetic test inputs use the same fixed constants. The generic calculation/API modules remain configurable for other callers. Locking these project assumptions does not verify the installed hardware.
+
+### Inputs still needed
+
+- **Each inspection:** boundary, dated satellite image, observation/arrival/search times; automatic regional wind/current data or independently reviewed manual vectors when drift is enabled.
+- **Aircraft setup awaiting verification:** actual camera/lens/crop, firmware, motor and battery identity, wind/airspeed limits, reserve, loaded-flight power and takeoff/landing/turn allowances. Verified performance values can become another fixed profile later; unknown values remain blank.
+- **Each flight:** real home coordinates and AMSL altitude, automatic or independently reviewed flight-level wind, usable starting energy, scheduled times, reviewed ceiling/corridor/no-go polygons and constraint source/validity. The three manual export confirmations are never preapproved.
+- **Oil evidence:** independently reviewed pixels with image GSD, or measured oil area; supported thickness bounds; emulsion/oil fraction when applicable. Route distance, spacing, flight time, energy, sorties, oil volume and capsule mass remain calculated outputs.
 
 ## Requirements
 
@@ -30,7 +39,7 @@ npm test
 npm run build
 ```
 
-The frontend build is `dist/index.html`; Vercel also deploys `api/gee.mjs` from source. Build-time credentials are unnecessary. Set `GEE_PROJECT_ID` and secret `GEE_SERVICE_ACCOUNT_JSON` in the server environment before deployment. Opening the HTML as a local file keeps offline archived mode. Do not upload `node_modules`, runtime data, private configuration, credential files or development logs.
+The frontend build is `dist/index.html`; A future Vercel deployment can build `api/gee.mjs` and `api/environment.mjs` from source. Build-time credentials are unnecessary. Set `GEE_PROJECT_ID` and secret `GEE_SERVICE_ACCOUNT_JSON` in the server environment before deployment. Opening the HTML as a local file keeps offline archived mode. Do not upload `node_modules`, runtime data, private configuration, credential files or development logs.
 
 To build the separately named local review file:
 
@@ -73,7 +82,7 @@ Build first. The local server then opens at `http://127.0.0.1:5173`, uses `dist-
 
 For private GEE credential-file setup and read-only Supabase diagnostics, see the [Thai connection guide](docs/CONNECTIONS-TH.md). Run `npm run connections:check` after configuration. This diagnostic does not migrate application data to Supabase.
 
-**Only the bounded imagery API has a Vercel adapter.** Publishing the full retained backend still requires a compatible runtime, persistent database/object storage, application access control and private secrets. Preserve the original private access boundary; the local development server is not a public deployment template. Do not enable aircraft or dispenser control from a planning preview.
+**The bounded imagery and read-only environmental APIs have Vercel adapters in this source tree.** Publishing the full retained backend still requires a compatible runtime, persistent database/object storage, application access control and private secrets. Preserve the original private access boundary; the local development server is not a public deployment template. Do not enable aircraft or dispenser control from a planning preview.
 
 See the [legacy workspace reference](docs/LEGACY-WORKSPACE.md) for historical architecture. Its former hosting URLs and commands describe that earlier deployment; use this README for this package's current build commands.
 
@@ -91,3 +100,20 @@ See the [legacy workspace reference](docs/LEGACY-WORKSPACE.md) for historical ar
 | Automated checks | `tests/`, `.github/workflows/ci.yml` |
 
 Automated tests validate software behavior. They do not validate native QGroundControl import, actual airspace permission, live GEE access, calibrated oil thickness, absorption performance, or physical hardware.
+
+## Local automatic-condition trial
+
+The same three-step planner can now retrieve NOAA GFS wind and Copernicus SMOC surface currents through the fixed Open-Meteo API adapter. Open **Mission settings → Mission conditions** for the planned takeoff/end window, Automatic/Manual mode, water setting, source timestamps and coverage. Each area/time change fetches up to five points; checks repeat at most every ten minutes while active. This version uses an equivalent spatial/time mean for the existing drift scenario and tests sampled wind vectors/gusts conservatively. The 50 m wind is explicitly interpolated between model levels at 10 m and 80 m.
+
+To test live conditions on this computer:
+
+```sh
+npm run build
+npm run preview:environment
+```
+
+Open http://127.0.0.1:5180. The server binds only to loopback. The read-only endpoint is `POST /api/v1/environment`; it accepts only a bounded Thailand-region polygon, start/end timestamps and flight height. GEE imagery still needs its separate server configuration; stored imagery remains an explicit option for its prepared Rayong crop. Run `npm run test:environment:live` in another terminal to check public-model responses at several example locations through this local endpoint.
+
+Unknown/expired/masked values never become calm conditions. Current forecasts use a roughly 9 km regional grid, so **Estuary / mangrove channel** keeps automatic local drift unavailable. Use independently reviewed local data in Manual mode when appropriate. Automatic provenance and its expiry travel with calculation snapshots; expired data or an uncovered flight window blocks file export. Manual home/surface/airspace confirmations remain mandatory. The standalone file retains calculators, archived imagery and Manual/test modes; automatic conditions require the HTTP API and are explicitly unavailable under `file://`.
+
+Sources: [Open-Meteo weather](https://open-meteo.com/en/docs/gfs-api), [Marine API](https://open-meteo.com/en/docs/marine-weather-api), [model update metadata](https://open-meteo.com/en/docs/model-updates), [Copernicus SMOC](https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description). Direct authenticated Copernicus subsetting and GISTDA numerical radar ingestion are not connected in this trial. No aircraft or dispenser control is enabled.

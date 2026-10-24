@@ -202,3 +202,13 @@
 .trial-basemap-status strong { font-weight:500; color:var(--ink); }
 .trial-basemap-status[data-state=error] span { color:var(--error); }
 .trial-basemap-status .button { margin-top:8px; }
+.trial-environment-panel { padding: 20px 0; border-bottom: 1px solid var(--border); scroll-margin-top: 96px; }
+.trial-environment-panel > p { color: var(--muted); margin-top: 8px; }
+.trial-environment-panel .trial-result { padding-top: 0; margin-bottom: 16px; }
+.trial-environment-panel details { margin-top: 16px; font-size: 13px; color: var(--muted); }
+.trial-environment-panel details summary { cursor: pointer; }
+.trial-environment-panel li { margin: 8px 0; overflow-wrap: anywhere; }
+.trial-environment-badge { border: 1px solid var(--border); font-size: 11px; white-space: normal; text-align: left; }
+#trial-environment-badge[data-state=ready] { color: var(--accent); }
+#trial-environment-badge[data-state=partial] { color: var(--amber); }
+#trial-environment-badge[data-state=error], #trial-environment-badge[data-state=stale] { color: var(--error); }

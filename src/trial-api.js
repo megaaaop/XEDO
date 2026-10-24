@@ -1,4 +1,5 @@
 import {record} from './storage.js';
+import {applyEnvironmentExportGate} from './planning-environment-gate.js';
 import {validateGeometry} from './domain.js';
 import {calculateDrift} from './trial-drift.js';
 import {calculateOil} from './trial-oil.js';
@@ -46,6 +47,10 @@ export async function calculatePlanningTrial(db,body){
   const attempt=(calculate,fallback)=>{try{return calculate();}catch(error){return {...fallback,state:'blocked',errors:[error.message],warnings:[...(fallback.warnings||[]),error.message],hardwareControl:false};}};
   const driftEmpty={state:body.driftEnabled?'incomplete':'disabled',missing:body.driftEnabled?['Inspection boundary']:[],geometry:null,features:{type:'FeatureCollection',features:[]},warnings:['Drift is a manually configured constant-vector scenario, not a live forecast.']};
   const drift=original.geometry&&body.driftEnabled?attempt(()=>calculateDrift(original.geometry,body.drift||{}),driftEmpty):driftEmpty;
+  if(body.drift?.environment?.mode==='automatic'){
+    drift.warnings=drift.warnings.filter(message=>!message.startsWith('Drift is a manually configured')&&!message.startsWith('Constant supplied surface-current')&&!message.startsWith('The envelope is a conservative')&&!message.startsWith('Diffusion, waves,'));
+    drift.warnings.push('Automatic regional model data is reduced to equivalent constant vectors. Model-run metadata is checked separately; local current accuracy and intermediate slick motion remain unverified.','The axis-aligned scenario envelope covers its declared constant-vector scenarios, not all paths under varying wind/current.','Tidal and Stokes components are already included in the supplied SMOC current. Diffusion, additional wave processes, shoreline interaction and weathering are not simulated.');
+  }
   const target=body.driftEnabled?drift.geometry:original.geometry;
   const flightEmpty={state:'incomplete',missing:[],plan:null,camera:{state:'blocked'},wind:{state:'incomplete'},battery:{state:'incomplete',sorties:[]},warnings:[]};
   const flight=target?attempt(()=>buildTrialFlight(target,body.flight||{}),flightEmpty):{...flightEmpty,missing:[body.driftEnabled?'Complete the drift inputs before planning the expanded area.':'Inspection boundary'],camera:{state:'incomplete'}};
@@ -58,6 +63,7 @@ export async function calculatePlanningTrial(db,body){
       exportCheck.pass=false;exportCheck.canExport=false;exportCheck.state=exportCheck.errors?.length?'blocked':'incomplete';exportCheck.missing.push(message);exportCheck.checks.push({id:'drift-window',state:'incomplete',message});
     }
   }
+  applyEnvironmentExportGate(exportCheck,{...body,geometry:original.geometry});
   const oil=attempt(()=>calculateOil(body.oil||{}),{missing:[],areaM2:null,volumeLowL:null,volumeHighL:null,oilMassLowKg:null,oilMassHighKg:null,capsulesLowKg:null,capsulesHighKg:null,warnings:[]});
   const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(canonical({source:original,...body})))),x=>x.toString(16).padStart(2,'0')).join('');
   return {schema_version:'xedo-planning-trial/1',purpose:'planning_trial_only',generatedAt:new Date().toISOString(),inputHash:hash,source:original,inputs:structuredClone(body),target,drift,flight,exportCheck,oil,hardwareControl:false,releaseControl:false};

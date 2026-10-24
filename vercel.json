@@ -4,12 +4,34 @@
   "installCommand": "npm ci",
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
-  "functions": {"api/gee.mjs": {"maxDuration": 60}},
+  "functions": {
+    "api/gee.mjs": {
+      "maxDuration": 60
+    },
+    "api/environment.mjs": {
+      "maxDuration": 60
+    }
+  },
   "rewrites": [
-    {"source": "/api/v1/gee/imagery/:path*", "destination": "/api/gee?route=:path*"}
+    {
+      "source": "/api/v1/environment",
+      "destination": "/api/environment"
+    },
+    {
+      "source": "/api/v1/gee/imagery/:path*",
+      "destination": "/api/gee?route=:path*"
+    }
   ],
   "redirects": [
-    {"source": "/planning", "destination": "/", "permanent": false},
-    {"source": "/planning.html", "destination": "/", "permanent": false}
+    {
+      "source": "/planning",
+      "destination": "/",
+      "permanent": false
+    },
+    {
+      "source": "/planning.html",
+      "destination": "/",
+      "permanent": false
+    }
   ]
 }

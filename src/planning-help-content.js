@@ -1,13 +1,35 @@
 import {XEDO_HARDWARE_PROFILE} from './planning-hardware-profile.js';
+import {FIXED_PLANNING_SETTINGS,FIXED_SEARCH_SETTINGS} from './planning-fixed-settings.js';
+
+const fixed=FIXED_PLANNING_SETTINGS;
 
 /** Contextual, read-only help shared by the hosted and local-file planners. */
 export const planningHelpTopics = {
+  environment: {
+    title: 'Automatic mission conditions',
+    paragraphs: [
+      'Select an inspection polygon and a planned takeoff/end time. The local or hosted API retrieves up to five in-area forecast samples and hourly values across that window. The interface keeps the same three mission steps.',
+      'The trial receives NOAA GFS wind and Copernicus SMOC surface-current estimates through Open-Meteo. It checks the provider model run, availability, time coverage, units and grid location. A recent web request does not make an old model fresh.'
+    ],
+    bullets: [
+      'Automatic checks run when the area or relevant times change, every ten minutes while the page is active, and again when needed before export. Failed, expired, masked or incomplete inputs remain Unknown. Offline and local-file mode cannot query the backend.',
+      '10 m wind is used for the drift scenario. At the fixed 50 m flight height, wind vectors are linearly interpolated from the 10 m and 80 m GFS levels. This is an explicit model estimate. Wind assessment considers sampled vectors and available 10 m gusts; it does not validate actual flight conditions.',
+      'SMOC currents already include tides and Stokes drift. These components are not added a second time. The separate project windage range remains uncalibrated.',
+      'The current grid is a regional sea estimate around 9 km. It does not resolve every shoreline, river discharge, estuary or mangrove channel. Choose Estuary / mangrove channel to keep automatic local drift unavailable; independently reviewed local currents can be entered in Manual mode.',
+      'The existing drift calculation uses an equivalent spatial/time mean over the supplied window, not a validated changing-current particle model. It retains the original observation time and the 24-hour limit. Old satellite images are not reset to the present.',
+      'Synthetic test inputs remain separate. Manual mode lets a reviewer supply independent conditions; switching modes never approves home, surface or airspace checks. Source updates revoke affected export reviews.',
+      'Weather/currents do not supply battery performance, official flight permission, measured oil thickness or a capsule-release command.'
+    ],
+    formulas: []
+  },
   hardware: {
     title: 'XEDO equipment profile',
     paragraphs: [
       'The equipment list is fixed in the ' + XEDO_HARDWARE_PROFILE.name + ' profile. Only Raspberry Pi 5 was confirmed by the project owner; other model identifications came from an AI interpretation of a photograph.',
-      XEDO_HARDWARE_PROFILE.cameraLabel + ' stock optics at full sensor size: ' + XEDO_HARDWARE_PROFILE.flightDefaults.sensorWidthMm + ' × ' + XEDO_HARDWARE_PROFILE.flightDefaults.sensorHeightMm + ' mm, ' + XEDO_HARDWARE_PROFILE.flightDefaults.focalLengthMm + ' mm focal length, ' + XEDO_HARDWARE_PROFILE.flightDefaults.imageWidthPx + ' × ' + XEDO_HARDWARE_PROFILE.flightDefaults.imageHeightPx + ' pixels. Preview assumptions are ' + XEDO_HARDWARE_PROFILE.flightDefaults.altitudeM + ' m AGL, ' + XEDO_HARDWARE_PROFILE.flightDefaults.speedMps + ' m/s, ' + XEDO_HARDWARE_PROFILE.flightDefaults.sideOverlap * 100 + '% side overlap, ' + XEDO_HARDWARE_PROFILE.flightDefaults.frontOverlap * 100 + '% front overlap and a ' + XEDO_HARDWARE_PROFILE.flightDefaults.minTriggerIntervalS + ' s minimum capture interval. These are editable planning inputs, not verified flight performance.',
-      'Defaults are filled once for a new form. Clearing an input or restoring a snapshot keeps that choice. Changing an inspection boundary preserves your settings. Battery, wind, real home, firmware and oil evidence remain unknown until supplied.'
+      XEDO_HARDWARE_PROFILE.cameraLabel + ' stock optics at full sensor size: ' + fixed.flight.sensorWidthMm + ' × ' + fixed.flight.sensorHeightMm + ' mm, ' + fixed.flight.focalLengthMm + ' mm focal length, ' + fixed.flight.imageWidthPx + ' × ' + fixed.flight.imageHeightPx + ' pixels. Fixed trial settings are ' + fixed.flight.altitudeM + ' m AGL, ' + fixed.flight.speedMps + ' m/s, ' + fixed.flight.sideOverlap * 100 + '% side overlap, ' + fixed.flight.frontOverlap * 100 + '% front overlap and a ' + fixed.flight.minTriggerIntervalS + ' s minimum capture interval. These are project assumptions, not verified flight performance.',
+      'Project constants are held in one configuration and hidden from mission entry. Changing them requires updating the project profile. A snapshot with explicitly different constants is rejected before the current mission changes. Battery, wind, real home, firmware and oil evidence remain unknown until supplied.',
+      'Fixed drift settings: windage ' + fixed.drift.alpha + ' (' + fixed.drift.alphaMin + '–' + fixed.drift.alphaMax + ') and additional margin ' + fixed.drift.marginM + ' m. Fixed material settings: density ' + fixed.oil.densityGml + ' g/mL, sorption capacity ' + fixed.oil.capacityGg + ' g/g, allowance ' + fixed.oil.allowance + ' and target fraction ' + fixed.oil.targetFraction + '.',
+      'The export target is QGroundControl ' + fixed.export.qgcVersion + ', with a ' + fixed.export.relativeHeightM + ' m home-relative route. The surface and home reference still require review. Image search starts with the past ' + FIXED_SEARCH_SETTINGS.lookbackDays + ' days and uses a fixed scene-cloud threshold of ' + FIXED_SEARCH_SETTINGS.maxCloud + '%. You can change the acquisition dates.'
     ],
     bullets: XEDO_HARDWARE_PROFILE.components.map(component =>
       component.label + ': ' + (component.model || 'Unknown') + ' · ' +
@@ -64,12 +86,12 @@ export const planningHelpTopics = {
     title: 'About this trial',
     paragraphs: [
       'Use three steps: select an area, review satellite imagery, then prepare a drone mission. Drift, flight, export and oil/material calculations run behind that flow. Mission settings holds the inputs; Calculation details explains the results.',
-      'A fixed XEDO equipment profile fills candidate camera geometry and preview height, speed, overlap and capture interval. Other unknown physical inputs stay blank. Load test example fills synthetic aircraft, weather and material inputs; it does not turn the archived satellite image into a current oil observation.'
+      'A fixed XEDO profile supplies candidate camera geometry, route assumptions and project model constants. View them through the profile Information button in Mission settings. Other unknown physical inputs stay blank. Load test example uses the same fixed profile with synthetic mission, weather and material inputs; it does not turn the archived satellite image into a current oil observation.'
     ],
     bullets: [
       'In the standalone prototype, including static hosting, the calculators, stored image and downloads work without an API server. Basemap tiles need internet. Saved survey lookup by ID needs the separate full workspace service.',
-      'Calculations do not fetch current weather, currents, official airspace restrictions or AI predictions. GEE imagery and historical terrain are separate from live environmental data.',
-      'Results update after satellite review and relevant setting changes. Missing inputs and failed checks remain visible beside the affected result.',
+      'Automatic mission conditions use a separate weather/current API. GEE imagery and historical terrain remain separate. Official airspace restrictions and AI oil detection are not fetched by this trial.',
+      'Results update after satellite review and relevant setting changes. Automatic conditions refresh independently; missing inputs and failed checks remain visible beside the affected result.',
       'Downloading a file does not upload or start a mission. Aircraft control, arming, camera triggers and capsule release are not connected in this trial.'
     ],
     formulas: []
@@ -81,8 +103,8 @@ export const planningHelpTopics = {
     ],
     bullets: [
       'Current components point toward true east and north in m/s. Wind uses its FROM bearing, clockwise from true north; the calculator converts this to the direction the wind blows.',
-      'Project windage defaults are 0.03 nominal and 0.025–0.04 for the scenario range. They are editable assumptions, not a calibrated site model.',
-      'The search envelope is a local-grid bounding box covering the shifted boundary from arrival through survey end, plus your margin. It is not measured oil extent or a probability region.',
+      'Project windage is fixed at ' + fixed.drift.alpha + ' nominal and ' + fixed.drift.alphaMin + '–' + fixed.drift.alphaMax + ' for the scenario range. Additional margin is fixed at ' + fixed.drift.marginM + ' m. These are project assumptions, not a calibrated site model.',
+      'The search envelope is a local-grid bounding box covering the shifted boundary from arrival through survey end, plus the profile margin. Automatic mode supplies an equivalent vector mean from the sampled data; varying intermediate transport is not modelled. It is not measured oil extent or a probability region.',
       'The horizon is limited to 24 hours. Waves, diffusion, shoreline effects and changing vectors are absent. Drift-enabled export requires the envelope window to cover the full scheduled flight window.'
     ],
     formulas: [
@@ -93,10 +115,10 @@ export const planningHelpTopics = {
   flight: {
     title: 'Flight model',
     paragraphs: [
-      'Camera geometry sets line and photo spacing. Wind and battery inputs then assess the route and split it into sorties. The initial XEDO profile uses candidate NoIR v2 optics and preview flight assumptions. Verify or replace them against the installed module, lens, active image crop and actual aircraft.'
+      'Camera geometry sets line and photo spacing. Wind and battery inputs then assess the route and split it into sorties. This XEDO trial locks candidate NoIR v2 optics and route assumptions in the project profile. Verify the installed module, lens, active image crop and actual aircraft before updating that profile for field use.'
     ],
     bullets: [
-      'Geometry assumes a nadir camera over a flat surface, with image width across track. Height is in m AGL; sensor dimensions and focal length are in mm. Enter overlap as percent in the interface; the formulas use the equivalent fraction.',
+      'Geometry assumes a nadir camera over a flat surface, with image width across track. Height is in m AGL; sensor dimensions and focal length are in mm. The fixed overlap settings are ' + fixed.flight.sideOverlap * 100 + '% across track and ' + fixed.flight.frontOverlap * 100 + '% along track; formulas use the equivalent fractions.',
       'Speed is commanded ground speed. Required airspeed is estimated from each route leg and the supplied wind. Wind and airspeed limits are checked separately.',
       'Each assessed sortie includes outbound transit, survey travel, return to the manually entered home, takeoff, landing and turn allowances. Each sortie starts with a fresh energy budget and retains the final reserve.',
       'The model uses uniform power and fixed ground speed. Payload effects, battery ageing, manoeuvres, terrain and obstacles require aircraft-specific validation. Downloaded files do not contain camera-trigger commands.'
@@ -112,7 +134,7 @@ export const planningHelpTopics = {
   export: {
     title: 'Flight file & constraint checks',
     paragraphs: [
-      'This trial exports one QGroundControl .plan file per selected sortie for the explicitly chosen PX4 or ArduPilot multicopter profile. The adapter targets QGroundControl 5.1.x. DJI KMZ export is not implemented.'
+      'This trial exports one QGroundControl .plan file per selected sortie for the explicitly chosen PX4 or ArduPilot multicopter profile. The fixed target version is ' + fixed.export.qgcVersion + '. Firmware remains unknown until checked against the controller. DJI KMZ export is not implemented.'
     ],
     bullets: [
       'Camera, wind and battery checks must pass. Confirm the real home, home AMSL altitude and the reviewed flat surface at the same ground level as home. Exported heights are relative to home; this is not terrain following.',
@@ -130,7 +152,7 @@ export const planningHelpTopics = {
     ],
     bullets: [
       'GSD is in m/pixel, area in m², thickness in µm, density in g/mL and capacity in g oil per g dry whole capsules.',
-      'Project defaults are density 0.86 g/mL, capacity 3.42 g/g, allowance 1.5 and target oil fraction 1. The capacity is project-supplied; this calculator does not verify laboratory or field performance.',
+      'Fixed project constants are density ' + fixed.oil.densityGml + ' g/mL, capacity ' + fixed.oil.capacityGg + ' g/g, allowance ' + fixed.oil.allowance + ' and target oil fraction ' + fixed.oil.targetFraction + '. The capacity is project-supplied; this calculator does not verify laboratory or field performance.',
       'For emulsion-layer thickness, enter the measured oil volume fraction. Retained oil is not necessarily recovered oil. The allowance is a multiplier, not a confidence interval.'
     ],
     formulas: [
@@ -142,7 +164,7 @@ export const planningHelpTopics = {
   snapshots: {
     title: 'Boundaries & snapshots',
     paragraphs: [
-      'A trial snapshot stores inputs, source information, results and an input hash in a local JSON file. Restoring it restores the inputs and requires fresh calculations and export review.'
+      'A trial snapshot stores inputs, source information, results and an input hash in a local JSON file. Restoring it restores compatible mission inputs and requires fresh calculations and export review. Missing profile constants are filled from this version; explicitly different constants are rejected without changing your current mission.'
     ],
     bullets: [
       'A saved Quick mission survey uses its original frozen boundary and image source. Trial calculations and exports do not modify that saved inspection.',
