@@ -1,0 +1,16 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {fileTrialAPI} from '../src/planning-file-api.js';
+import {applyFixedPlanningSettings} from '../src/planning-fixed-settings.js';
+function fixture(){const now=Date.now(),iso=m=>new Date(now+m*60000).toISOString(),home=[101.22,12.62];return applyFixedPlanningSettings({geometry:{type:'Polygon',coordinates:[[[101.22,12.62],[101.222,12.62],[101.222,12.621],[101.22,12.621],[101.22,12.62]]]},driftEnabled:false,flight:{home,windEastMps:0,windNorthMps:0,windLimitMps:8,maxAirspeedMps:12,usableWh:100,reserveWh:20,powerW:180,takeoffS:20,landingS:20,turnS:3},export:{firmware:'PX4',homeAmslM:12,ceilingM:60,corridorM:5,plannedTakeoffAt:iso(15),plannedEndAt:iso(120),validUntil:iso(180),source:'Synthetic software test constraints; not a field clearance',noGo:{type:'FeatureCollection',features:[]},homeConfirmed:true,flatSurfaceConfirmed:true,airspaceReviewed:true,homeElevationEvidence:{mode:'gee_estimate',reviewed:true,home,valueM:12,verticalDatum:'EGM2008',datasetId:'COPERNICUS/DEM/GLO30_2024_1',acceptedAt:iso(0)}},oil:{areaM2:1000,thicknessLowUm:10,thicknessHighUm:30}});}
+const calculate=input=>fileTrialAPI('',{method:'POST',body:JSON.stringify(input)});
+test('Reviewed static GEE Home evidence can accompany the four engines without altering route heights',async()=>{
+ const input=fixture(),before=structuredClone(input),result=await calculate(input);assert.deepEqual(input,before);assert.equal(result.exportCheck.pass,true);assert.ok(result.flight.plan.waypoints.every(w=>w.altitudeM===50&&w.altitudeReference==='AGL'));assert.equal(result.oil.volumeLowL,10);assert.ok(result.exportCheck.warnings.some(w=>w.includes('EGM2008')));const file=await fileTrialAPI('/export',{method:'POST',body:JSON.stringify(input)});assert.equal(file.hardwareControl,false);assert.equal(file.releaseControl,false);assert.equal(JSON.parse(file.text).mission.plannedHomePosition[2],12);
+});
+test('Changed Home, altitude, datum, dataset or missing review blocks checked file export while retaining oil results',async()=>{
+ const variants=[i=>i.export.homeElevationEvidence.reviewed=false,i=>i.export.homeElevationEvidence.home=[101.3,12.6],i=>i.export.homeAmslM=13,i=>i.export.homeElevationEvidence.verticalDatum='ellipsoid',i=>i.export.homeElevationEvidence.datasetId='arbitrary/private/asset',i=>i.export.homeElevationEvidence.acceptedAt=new Date(Date.now()+120000).toISOString()];
+ for(const modify of variants){const input=fixture();modify(input);const result=await calculate(input);assert.equal(result.exportCheck.pass,false);assert.ok(result.exportCheck.checks.some(c=>c.id==='home-elevation-evidence'));assert.equal(result.oil.volumeLowL,10);await assert.rejects(fileTrialAPI('/export',{method:'POST',body:JSON.stringify(input)}),e=>e.code==='TRIAL_CHECKS_INCOMPLETE');}
+});
+test('Manual Home values remain independent and zero is valid when explicitly reviewed',async()=>{
+ const input=fixture();input.export.homeAmslM=0;input.export.homeElevationEvidence.valueM=0;assert.equal((await calculate(input)).exportCheck.pass,true);input.export.homeElevationEvidence=null;input.export.homeAmslM=17;assert.equal((await calculate(input)).exportCheck.pass,true);
+});

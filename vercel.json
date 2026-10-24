@@ -10,9 +10,16 @@
     },
     "api/environment.mjs": {
       "maxDuration": 60
+    },
+    "api/planning-context.mjs": {
+      "maxDuration": 60
     }
   },
   "rewrites": [
+    {
+      "destination": "/api/planning-context",
+      "source": "/api/v1/gee/planning-context"
+    },
     {
       "source": "/api/v1/environment",
       "destination": "/api/environment"

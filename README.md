@@ -117,3 +117,26 @@ Open http://127.0.0.1:5180. The server binds only to loopback. The read-only end
 Unknown/expired/masked values never become calm conditions. Current forecasts use a roughly 9 km regional grid, so **Estuary / mangrove channel** keeps automatic local drift unavailable. Use independently reviewed local data in Manual mode when appropriate. Automatic provenance and its expiry travel with calculation snapshots; expired data or an uncovered flight window blocks file export. Manual home/surface/airspace confirmations remain mandatory. The standalone file retains calculators, archived imagery and Manual/test modes; automatic conditions require the HTTP API and are explicitly unavailable under `file://`.
 
 Sources: [Open-Meteo weather](https://open-meteo.com/en/docs/gfs-api), [Marine API](https://open-meteo.com/en/docs/marine-weather-api), [model update metadata](https://open-meteo.com/en/docs/model-updates), [Copernicus SMOC](https://data.marine.copernicus.eu/product/GLOBAL_ANALYSISFORECAST_PHY_001_024/description). Direct authenticated Copernicus subsetting and GISTDA numerical radar ingestion are not connected in this trial. No aircraft or dispenser control is enabled.
+
+## Estimated demo
+
+Click **Estimated demo** in the planner to use the opt-in 177.6 Wh / 44.4 Wh reserve / 600 W assumed aircraft profile, test wind/airspeed limits of 8/12 m/s, and phase allowances of 30/30/5 seconds. It retains three mission steps and all four calculators. The stored dated image and browser calculations work without GEE or weather credentials; the demo creates no saved inspections or device commands. The Information button explains the hypothetical battery and other assumptions.
+
+**Use mission inputs** restores the previous form and boundary, with imagery and export review required again. This backup exists only in the current tab. Demo downloads are labelled and snapshots retain the profile provenance. Real hardware defaults and automatic-source behavior remain separate. See [planning trial details](public/docs/planning-trial.md#estimated-demo).
+
+## Local GEE planning-data trial
+
+The local three-step planner now requests read-only context from `POST /api/v1/gee/planning-context`. Open **GEE planning data** from the context bar or Mission settings. The endpoint computes bounded Copernicus DSM elevation samples, historical WorldCover water/mangrove area fractions, selected-image AOI cloud/valid coverage and a GFS 10 m takeoff-time reference. It does not replace the existing whole-mission Open-Meteo wind/current inputs or supply aircraft/battery specifications.
+
+```sh
+npm run build
+npm run preview:geospatial
+```
+
+Open http://127.0.0.1:5182. This is a loopback-only preview. For real GEE reads, configure the existing ignored `.env` with `GEE_PROJECT_ID` and either private `GEE_SERVICE_ACCOUNT_FILE` or `GEE_SERVICE_ACCOUNT_JSON`; see `docs/CONNECTIONS-TH.md`. Credentials remain on the server. Missing configuration returns explicit Unknown values, not sample data. The standalone HTML keeps the same calculators and Manual/test modes; `file://` cannot call this API.
+
+The DSM is `COPERNICUS/DEM/GLO30_2024_1` (30 m, EGM2008). A Home elevation is offered only at the selected Home point. It is copied to the trial Home field only after an explicit source/reference review and **Use reviewed estimate**. Other home, surface and airspace confirmations are reset and remain mandatory. Changing Home revokes an unchanged copied estimate; manual edits are retained. This is not a surveyed launch altitude or terrain following. The 3D preview displays model samples while flight heights retain the existing flat-height illustration.
+
+WorldCover is a 2021 classification at 10 m. Area fractions and unknown coverage are displayed; the route is not silently clipped or legally approved from these classes. AOI quality joins the selected Sentinel-2 image to cloud probability, with an explicit SCL fallback and 20 m analysis grid. Unknown pixels are not counted as clear, and source acquisition times are retained. GFS is a roughly 28 km, 10 m wind reference for one forecast time near takeoff; it cannot replace 50 m flight wind or establish whole-mission coverage.
+
+Requests are limited to a Thailand-region simple polygon of at most 100 km², 120 vertices and 100 km extent, at most 80 elevation samples, and a mission window of at most 24 h. Parts fail independently. Context requests are cancelled on relevant changes, expire within ten minutes and retain source metadata in trial inputs/snapshots. The static accepted Home estimate remains bound to its reviewed coordinate/value. No database write or aircraft/material-release command occurs.

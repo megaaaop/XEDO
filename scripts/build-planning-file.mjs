@@ -48,5 +48,5 @@ for(const [,inline] of inlineScripts)new Script(inline);
 if(/(?:src|href)="\/(?:assets\/|favicon-)/.test(html))throw new Error('A portable artwork asset was not embedded.');
 await mkdir(dirname(destination),{recursive:true});
 await writeFile(destination,html);
-await writeFile(resolve(dirname(destination),'README.txt'),'XEDO local planning trial\n\nDouble-click XEDO-Planning-Trial.html to open it in your browser.\nClick Load test example, then Review area image, review the image and choose Prepare drone mission.\n\n'+fileNote+'\n\nSource: scripts/build-planning-file.mjs\n');
+await writeFile(resolve(dirname(destination),'README.txt'),'XEDO local planning trial\n\nDouble-click XEDO-Planning-Trial.html to open it in your browser.\nClick Estimated demo, then Review area image, review the stored image and choose Prepare drone mission. Use mission inputs restores your previous form and boundary.\n\nThe demo uses 177.6 Wh starting energy, 44.4 Wh reserve, 600 W assumed power, 8 m/s test wind threshold, 12 m/s test airspeed limit, 30 s takeoff/climb, 30 s landing and 5 s per turn. These are software-test assumptions, not verified aircraft specifications.\n\n'+fileNote+'\n\nSource: scripts/build-planning-file.mjs\n');
 console.log('Created portable local file: '+destination+' ('+Buffer.byteLength(html)+' bytes)');

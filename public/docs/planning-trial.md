@@ -14,6 +14,14 @@ The pure calculation modules do not fetch data themselves. The separate read-onl
 
 The current source includes bounded imagery and read-only environmental API adapters alongside the static frontend and browser calculations. Google credentials remain on the server; the browser needs no Google secret, Pi token or aircraft connection. The full workspace has a separate access boundary, saved-image workflow and historical GEE planning context. See [API integration](api-integration.md).
 
+## Estimated demo
+
+Choose **Estimated demo** to opt into assumed aircraft inputs: starting usable energy 177.6 Wh, landing reserve 44.4 Wh, average loaded power 600 W, test wind threshold 8 m/s, test maximum airspeed 12 m/s, takeoff/climb 30 s, landing 30 s and each turn 5 s. The hypothetical 22.2 V, 10 Ah pack is 222 Wh nominal; 80% starting usable energy and a 25% reserve of that starting energy leave a 133.2 Wh mission budget. These values do not verify battery compatibility or aircraft performance. Camera NoIR v2 remains a candidate and PX4 is only the demo export target.
+
+The interface retains Select an area → Satellite survey → Drone deployment and the same drift, flight, export and oil calculators. Demo imagery uses the bundled dated Sentinel-2 crop; calculations run locally even in the HTTP preview. The demo does not fetch automatic environment/GEE context, create saved inspections or transmit hardware commands. Its calm wind, drift vectors, home, constraints and oil thickness are synthetic. Source coverage checks and all three manual export confirmations still apply.
+
+**Use mission inputs** restores the previous raw form values and boundary, with imagery/export review required again. Reloading the demo preserves that first backup; drawing, importing a boundary or clearing the demo area retains the demo label. The backup is held only in the current tab; download a real mission snapshot before closing the page if it must persist. Snapshot downloads carry `exampleData: true` plus the estimated `demoProfile`; demo snapshot and mission filenames begin with `XEDO-estimated-demo-`. Older test snapshots remain compatible. The Information button contains the assumptions without expanding the main workflow.
+
 ## Automatic environmental inputs
 
 Use Mission conditions to choose the planned takeoff/end window. The server adapter samples up to five points inside the AOI, requests hourly brackets and validates model-run metadata, SI units, provider-grid locations and missing values. Weather uses GFS `gfs_global`; marine currents use `meteofrance_currents` (SMOC, including tidal and Stokes contributions). Wind is FROM true north, current is TO true north; vectors are converted before averaging. No tidal or Stokes term is added again.
@@ -133,3 +141,18 @@ Run `npm run build:file` to create `output/standalone/XEDO-Planning-Trial.html`,
 Saved survey lookup by ID is unavailable in file mode and in the default hosted version. Import GeoJSON or a JSON trial snapshot containing the source geometry. Imported survey linkage is unverified: new calculations treat that geometry as a local trial boundary, preserve no live database connection, and require fresh export confirmations. The hosted version uses the GEE imagery API; the retained workspace server additionally supports saved surveys. The local-file build includes no GEE credentials or live imagery API.
 
 The standalone stored image is the original archived source dated 29 September 2026, not a live GEE observation. An area outside its prepared crop is rejected. The synthetic test configuration does not turn that image into a current oil observation. Missing physical inputs stay unknown and appear as Settings needed. QGC import, SITL and aircraft acceptance remain outside these interface checks.
+
+## GEE mission context in the local trial
+
+The new read-only `POST /api/v1/gee/planning-context` supplies advisory data to the current three-step planner without changing its four calculation engines. **GEE planning data** opens its compact report; source and calculation explanations remain collapsed.
+
+| Source | Calculation | Limit |
+| --- | --- | --- |
+| Copernicus `DEM/GLO30_2024_1` | Elevation samples, AOI minimum/maximum, optional selected-Home estimate and 3D point context | Historical 30 m DSM, EGM2008; masked pixels remain Unknown; no obstacle or launch-level certification |
+| ESA `WorldCover/v200` | Mapped, water, mangrove, land and unknown area fractions | Historical 2021 classes at 10 m; no silent route clipping or legal no-go declaration |
+| Selected Sentinel-2 + cloud probability/SCL | AOI clear/cloud/unknown fractions with canonical scene acquisition and coverage | 20 m analysis grid, thresholded probability or explicit SCL fallback; source date is never retimestamped |
+| NOAA `GFS0P25` | 10 m east/north wind, speed, FROM direction and available gust near scheduled takeoff | One regional roughly 28 km reference; no replacement for whole-flight 50 m wind assessment |
+
+The Home estimate is never filled automatically. A reviewer checks the actual launch elevation and compatible height reference, then explicitly chooses **Use reviewed estimate**. The copied value carries point/dataset/datum/review provenance; changing the point or value invalidates that provenance. A static reviewed elevation can remain valid across context refreshes at the same Home, while all other flight/airspace reviews and validity checks still apply. Export refuses inconsistent point/value/datum evidence. Imported snapshots require a new review rather than restoring approval.
+
+The existing flight path, height, image footprint, battery model, drift scenarios, oil calculation and release-off behavior remain in place. A 3D view may show GEE surface-model samples while route heights remain a flat illustration. Actual battery energy, reserve, loaded power, wind/airspeed limits, phase allowances, installed firmware, launch location and reviewed airspace constraints still need project or field inputs. Optional oil/drift evidence requirements are unchanged. Missing local GEE configuration leaves context Unknown; software fixtures are not live Earth Engine validation.

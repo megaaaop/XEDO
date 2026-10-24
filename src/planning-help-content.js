@@ -1,10 +1,43 @@
 import {XEDO_HARDWARE_PROFILE} from './planning-hardware-profile.js';
+import {ESTIMATED_DEMO_PROFILE} from './planning-estimated-demo.js';
 import {FIXED_PLANNING_SETTINGS,FIXED_SEARCH_SETTINGS} from './planning-fixed-settings.js';
 
 const fixed=FIXED_PLANNING_SETTINGS;
 
 /** Contextual, read-only help shared by the hosted and local-file planners. */
 export const planningHelpTopics = {
+  estimatedDemo: {
+    title: 'Estimated demo',
+    paragraphs: [
+      'An optional software-test profile. The same three mission steps and four calculators use explicit assumptions instead of measured aircraft performance.',
+      'Use mission inputs restores the form and boundary from before the demo. Satellite readiness and export confirmations require a fresh review. Reloading the demo keeps that original backup.'
+    ],
+    bullets: [
+      'Starting usable energy: 177.6 Wh. Landing reserve: 44.4 Wh. Mission budget: 133.2 Wh. Average power: 600 W.',
+      'Test wind threshold: 8 m/s. Test maximum airspeed: 12 m/s. Takeoff/climb: 30 s. Landing: 30 s. Each turn: 5 s.',
+      ...ESTIMATED_DEMO_PROFILE.notes,
+      'The demo reviews the bundled dated satellite image and calculates locally. Automatic environment/GEE requests and saved-inspection writes are paused. Changing the demo area retains its demo label.',
+      'Demo snapshots include the profile and assumed inputs. Demo mission filenames are labelled; the existing export checks still apply.'
+    ],
+    formulas: ['Mission budget = 177.6 − 44.4 = 133.2 Wh', 'Budget duration at constant 600 W = 133.2 ÷ 600 × 60 = 13.32 minutes']
+  },
+  geospatial: {
+    title: 'GEE planning data',
+    paragraphs: [
+      'GEE adds area-specific surface-elevation samples, historical water/mangrove coverage, selected-image quality and a takeoff-time GFS reference. The same three mission steps and four calculation engines remain in place.',
+      'These layers support inspection planning. They do not supply aircraft performance, flight permission, oil confirmation or a material-release command.'
+    ],
+    bullets: [
+      'Copernicus DEM GLO30_2024_1 is a roughly 30 m digital surface model in the EGM2008 height reference. Buildings and vegetation can be part of its surface. Model heights do not prove current terrain or obstacle clearance.',
+      'The Home estimate remains a suggestion until you check the launch elevation and its compatible height reference, then choose Use reviewed estimate. The trial does not convert a GNSS ellipsoid height or automatically certify AMSL. Changing Home revokes an unchanged owned estimate; a manually edited value remains your responsibility.',
+      'WorldCover v200 describes 2021 land cover at 10 m, including permanent water and mangroves. Fractions are historical area estimates; they do not establish a current shoreline, channel current, protected-area boundary or official no-fly zone.',
+      'Selected-image quality is calculated for the inspection area. Cloud probability or the documented SCL fallback is a classification estimate. Missing pixels remain Unknown, and neither image quality nor a dark water patch confirms oil.',
+      'The GEE GFS reference describes 10 m wind and available gusts at one forecast time on a roughly 28 km grid. It is not 50 m flight wind or full-mission weather coverage; the existing automatic weather/current API remains the calculation source.',
+      'Area, Home, image and time changes cancel an older request. Context expires after at most ten minutes. Missing credentials, masked values, source errors, offline mode and file mode never become zero elevation, calm wind or a completed review.',
+      'The 3D view can show available surface-model sample points alongside the flat flight-height illustration. Route heights, terrain following, airspace checks and onboard geofences are not generated from these layers.'
+    ],
+    formulas: ['Estimated sampled elevation range = highest available DSM sample − lowest available DSM sample']
+  },
   environment: {
     title: 'Automatic mission conditions',
     paragraphs: [
