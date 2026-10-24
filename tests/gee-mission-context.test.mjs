@@ -29,6 +29,7 @@ function fixture(){
    if(state.mode==='oversized')return new Response(secret,{headers:{'Content-Length':String(512*1024+1)}});
    if(state.mode==='invalid-json')return new Response(secret);
    if(state.mode==='denied')return Response.json({error:{message:secret}},{status:403});
+   if(state.mode==='http-error')return Response.json({error:{message:state.errorMessage}},{status:state.httpStatus??400});
    let result;
    if(kind==='terrain'){
     const entries=body.expression.values.points.functionInvocationValue.arguments.features.arrayValue.values;
@@ -69,6 +70,43 @@ test('Fixed expression trees retain dataset versions, pixel-area partitions, bou
 test('Unconfigured credentials return explicit Unknown with matching request and no upstream access',async()=>{
  let calls=0;const input=request(),result=await fetchGEEMissionContext({},input,{now:NOW,fetchImpl:async()=>{calls++;throw Error();}});
  assert.equal(calls,0);assert.equal(result.state,'not_configured');assert.equal(result.schema_version,'xedo-gee-mission-context/1');assert.deepEqual(result.request,input);assert.equal(result.terrain.homeElevationM,null);assert.equal(result.landcover.waterPct,null);assert.equal(result.quality.cloudPct,null);assert.equal(result.forecast.windEastMps,null);assert.equal(Date.parse(result.expiresAt)-Date.parse(result.fetchedAt),600000);
+});
+
+test('Internal compute diagnostics never log untrusted provider messages, authentication material or arbitrary exception text',async()=>{
+ const logs=[],previous=console.warn;console.warn=value=>logs.push(value);
+ try{
+  for(const mode of ['network','denied','invalid-json']){
+   const v=fixture();v.state.mode=mode;const r=await lookup(v);
+   assert.equal(r.state,'unavailable');assert.doesNotMatch(JSON.stringify(r),new RegExp(v.secret+'|PRIVATE KEY|gserviceaccount'));
+  }
+  assert.ok(logs.length>=12);
+  for(const entry of logs){assert.equal(entry.event,'XEDO_GEE_CONTEXT_FAILURE');assert.ok(['terrain','landcover','quality','forecast'].includes(entry.kind));assert.deepEqual(Object.keys(entry).sort(),['event','httpStatus','kind','reason']);assert.ok(['COMPUTE_FAILED','UPSTREAM_HTTP_ERROR','RESPONSE_JSON_INVALID'].includes(entry.reason));}
+  assert.doesNotMatch(JSON.stringify(logs),/secret-provider|PRIVATE KEY|gserviceaccount|Bearer|private upstream/);
+ }finally{console.warn=previous;}
+});
+
+test('Known technical diagnostics are bounded and redact URLs, emails, coordinates and tokens without reaching public responses',async()=>{
+ const logs=[],previous=console.warn;console.warn=value=>logs.push(value);
+ try{
+  const v=fixture();v.state.mode='http-error';v.state.httpStatus=400;
+  v.state.errorMessage="Image.select: Pattern DEM missing at https://example.invalid/request?q=101.22 for robot@example.invalid near [101.22, 12.62]; Bearer "+'A'.repeat(64)+'; '+'B'.repeat(64)+'\n'+'diagnostic '.repeat(30);
+  const r=await lookup(v);assert.equal(r.state,'unavailable');assert.equal(logs.length,4);
+  for(const entry of logs){assert.equal(entry.httpStatus,400);assert.match(entry.reason,/^Image\.select:/);assert.ok(entry.reason.length<=240);assert.doesNotMatch(entry.reason,/https?:|robot@|101\.22|12\.62|A{40}|B{40}|\n/);}
+  assert.doesNotMatch(JSON.stringify(r),/Image\.select|robot@|A{40}|B{40}/);
+ }finally{console.warn=previous;}
+});
+
+test('Oversized, sensitive and parser-failed diagnostics retain only static internal reason codes',async()=>{
+ const logs=[],previous=console.warn;console.warn=value=>logs.push(value);
+ try{
+  for(const [message,reason] of [['Parameter key: -----BEGIN PRIVATE KEY----- private-material','UPSTREAM_HTTP_ERROR_REDACTED'],['Image.select: '+ 'x'.repeat(9000),'UPSTREAM_ERROR_BODY_TOO_LARGE']]){
+   const before=logs.length,v=fixture();v.state.mode='http-error';v.state.errorMessage=message;const r=await lookup(v);
+   assert.equal(r.state,'unavailable');assert.ok(logs.slice(before).every(entry=>entry.reason===reason));
+  }
+  const v=fixture();v.state.parts.terrain=()=>({providerPayload:v.secret});const r=await lookup(v);
+  assert.equal(r.terrain.state,'unavailable');assert.ok(logs.some(entry=>entry.kind==='terrain'&&entry.reason==='RESULT_PARSE_FAILED'&&entry.httpStatus===null));
+  assert.doesNotMatch(JSON.stringify(logs),/PRIVATE KEY|private-material|secret-provider|providerPayload/);
+ }finally{console.warn=previous;}
 });
 
 test('Signed real adapter preserves zero, source dates, coverage and takeoff wind direction without changing inputs',async()=>{

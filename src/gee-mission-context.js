@@ -4,6 +4,23 @@ import {accessToken,invalidateGEEToken,publicGEEError} from './gee-connection.js
 const HOUR=3600000,DAY=24*HOUR,TTL=600000,MAX_JSON=512*1024;
 const MAX_SAMPLES=80,MAX_AREA=100000000,MAX_PIXELS=1500000;
 const scopesByFetch=new WeakMap(),slotsByFetch=new WeakMap();
+const diagnosticProblems=new WeakMap(),MAX_ERROR_JSON=8192;
+function diagnosticProblem(httpStatus,reason){const error=Error('GEE request unavailable.');diagnosticProblems.set(error,{httpStatus,reason});return error;}
+function technicalReason(value){
+ if(typeof value!=='string'||!/^(?:Invalid JSON payload|Unrecognized function|Unknown function|Unable to perform this geometry|Image\.|ImageCollection\.|Collection\.|Parameter\b|Projection\b|Geometry\b|Dictionary\b|No algorithm\b|Invalid argument\b)/.test(value))return 'UPSTREAM_HTTP_ERROR';
+ if(/private[ _-]?key|client_email|access_token|authorization|credential|password|secret|-----BEGIN/i.test(value))return 'UPSTREAM_HTTP_ERROR_REDACTED';
+ return value.replace(/Bearer\s+[^\s,;]+/gi,'Bearer [REDACTED]').replace(/https?:\/\/[^\s"'<>]+/gi,'[URL]').replace(/[^\s@"'<>]+@[^\s@"'<>]+\.[^\s@"'<>]+/g,'[EMAIL]').replace(/[A-Za-z0-9_+/=-]{40,}/g,'[TOKEN]').replace(/[-+]?(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?/gi,'[NUMBER]').replace(/[\u0000-\u001f\u007f]+/g,' ').slice(0,240);
+}
+async function upstreamReason(response){
+ if(Number(response.headers.get('content-length'))>MAX_ERROR_JSON)return 'UPSTREAM_ERROR_BODY_TOO_LARGE';
+ const reader=response.body?.getReader();if(!reader)return 'UPSTREAM_ERROR_BODY_UNAVAILABLE';
+ let size=0;const chunks=[];
+ try{for(;;){const {done,value}=await reader.read();if(done)break;size+=value.byteLength;if(size>MAX_ERROR_JSON)return 'UPSTREAM_ERROR_BODY_TOO_LARGE';chunks.push(value);}
+  const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
+  let value;try{value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{return 'UPSTREAM_ERROR_BODY_INVALID';}
+  return technicalReason(value?.error?.message);
+ }catch{return 'UPSTREAM_ERROR_BODY_UNAVAILABLE';}finally{await reader.cancel().catch(()=>{});}
+}
 const c=constantValue=>({constantValue});
 const f=(functionName,args={})=>({functionInvocationValue:{functionName,arguments:args}});
 const ref=valueReference=>({valueReference});
@@ -186,13 +203,13 @@ async function slot(fetchImpl,signal){
  return ()=>{const next=s.queue.shift();if(next)next.resolve();else s.active--;};
 }
 async function readJSON(response){
- if(!response.ok){if(response.status===401)invalidateGEEToken();throw Error('GEE request unavailable.');}
- if(Number(response.headers.get('content-length'))>MAX_JSON)throw Error('GEE result too large.');
- const reader=response.body?.getReader();if(!reader)throw Error('GEE result unavailable.');const chunks=[];let count=0;
- try{for(;;){const {done,value}=await reader.read();if(done)break;count+=value.byteLength;if(count>MAX_JSON)throw Error('GEE result too large.');chunks.push(value);}}finally{await reader.cancel().catch(()=>{});}
+ if(!response.ok){if(response.status===401)invalidateGEEToken();throw diagnosticProblem(response.status,await upstreamReason(response));}
+ if(Number(response.headers.get('content-length'))>MAX_JSON)throw diagnosticProblem(response.status,'RESPONSE_BODY_TOO_LARGE');
+ const reader=response.body?.getReader();if(!reader)throw diagnosticProblem(response.status,'RESPONSE_BODY_UNAVAILABLE');const chunks=[];let count=0;
+ try{for(;;){const {done,value}=await reader.read();if(done)break;count+=value.byteLength;if(count>MAX_JSON)throw diagnosticProblem(response.status,'RESPONSE_BODY_TOO_LARGE');chunks.push(value);}}finally{await reader.cancel().catch(()=>{});}
  const bytes=new Uint8Array(count);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}
- let value;try{value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{throw Error('GEE result invalid.');}
- if(!record(value)||!Object.hasOwn(value,'result'))throw Error('GEE result invalid.');return value.result;
+ let value;try{value=JSON.parse(new TextDecoder('utf-8',{fatal:true}).decode(bytes));}catch{throw diagnosticProblem(response.status,'RESPONSE_JSON_INVALID');}
+ if(!record(value)||!Object.hasOwn(value,'result'))throw diagnosticProblem(response.status,'RESPONSE_RESULT_MISSING');return value.result;
 }
 async function compute(env,kind,expression,fetchImpl,signal){
  const release=await slot(fetchImpl,signal);let abort;
@@ -218,10 +235,11 @@ export async function fetchGEEMissionContext(env,input,{fetchImpl=fetch,signal,n
    const staticKey=kind==='terrain'||kind==='landcover'?digest+'\0static:'+kind+'\0'+JSON.stringify({geometry:request.geometry,...(kind==='terrain'?{home:request.home}:{})}):null;
    const prior=useCache&&staticKey&&cache.get(staticKey);
    if(prior&&Date.parse(prior.expiresAt)>nowMs){base[kind]=structuredClone(prior.data);return;}
+   let phase='compute';
    try{
-    const result=await compute(env,kind,expression,fetchImpl,controller.signal);base[kind]=parsers[kind](result,request,nowMs);
+    const result=await compute(env,kind,expression,fetchImpl,controller.signal);phase='parse';base[kind]=parsers[kind](result,request,nowMs);
     if(useCache&&staticKey&&base[kind].state==='ready'){cache.set(staticKey,{data:structuredClone(base[kind]),expiresAt:new Date(nowMs+TTL).toISOString()});while(cache.size>16)cache.delete(cache.keys().next().value);}
-   }catch(error){const publicError=publicGEEError(error);base[kind].warnings.push(publicError?.message||'GEE '+kind+' lookup is unavailable; values remain Unknown.');}
+   }catch(error){const detail=diagnosticProblems.get(error);console.warn({event:'XEDO_GEE_CONTEXT_FAILURE',kind,httpStatus:detail?.httpStatus??null,reason:detail?.reason??(phase==='parse'?'RESULT_PARSE_FAILED':controller.signal.aborted?'COMPUTE_CANCELLED':'COMPUTE_FAILED')});const publicError=publicGEEError(error);base[kind].warnings.push(publicError?.message||'GEE '+kind+' lookup is unavailable; values remain Unknown.');}
   }));
   if(signal?.aborted)throw new DOMException('The context lookup was cancelled.','AbortError');
   if(controller.signal.aborted)base.warnings.push('The GEE context lookup deadline elapsed. Completed parts are retained; incomplete parts remain Unknown.');
