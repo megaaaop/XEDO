@@ -62,9 +62,32 @@ test('Deterministic samples include an explicit outside home while area samples 
 test('Fixed expression trees retain dataset versions, pixel-area partitions, bounds and exact source identity',()=>{
  const e=missionContextExpressions(validateMissionContextRequest(request(),{now:NOW}),{now:NOW}),text=JSON.stringify(e);
  for(const dataset of Object.values(GEE_MISSION_DATASETS))assert.ok(text.includes(dataset.id));
- assert.match(text,/Image\.pixelArea/);assert.match(text,/EPSG:6933/);assert.match(text,/1500000/);assert.match(text,/maxPixelsPerRegion/);assert.match(text,/Geometry\.contains/);assert.match(text,/system:index/);assert.match(text,/AggregateFeatureCollection\.max/);assert.match(text,/Collection\.first/);assert.match(text,/Image\.constant/);
+ assert.match(text,/Image\.pixelArea/);assert.match(text,/EPSG:4326/);assert.match(text,/1500000/);assert.match(text,/maxPixelsPerRegion/);assert.match(text,/Geometry\.contains/);assert.match(text,/system:index/);assert.match(text,/AggregateFeatureCollection\.max/);assert.match(text,/Collection\.first/);assert.match(text,/Image\.constant/);
  assert.ok(!text.includes(privateKey));assert.ok(!text.includes('HYCOM/'));assert.ok(!text.includes('COPERNICUS/DEM/GLO30"'));
  const noOptional=missionContextExpressions(validateMissionContextRequest({geometry:geometry()},{now:NOW}),{now:NOW});assert.equal(noOptional.quality,null);assert.equal(noOptional.forecast,null);
+});
+
+test('Terrain and area reductions use supported WGS84 with explicit metre scales and retain pixel-area units',()=>{
+ const e=missionContextExpressions(validateMissionContextRequest(request(),{now:NOW}),{now:NOW});
+ const reductions=[
+  [e.terrain.values.result,30],
+  [e.landcover.values.result,10],
+  [e.quality.values.result.dictionaryValue.values.stats,20]
+ ];
+ for(const [expression,scale]of reductions){
+  const args=expression.functionInvocationValue.arguments;
+  assert.equal(args.crs.functionInvocationValue.functionName,'Projection');
+  assert.equal(args.crs.functionInvocationValue.arguments.crs.constantValue,'EPSG:4326');
+  assert.equal(args.scale.constantValue,scale);
+ }
+ // Image.pixelArea supplies square metres independently of the chosen CRS;
+ // retain it in both the total area and all classified-area partitions.
+ for(const kind of ['landcover','quality']){
+  const areas=JSON.stringify(e[kind].values.areas);
+  assert.match(areas,/Image\.pixelArea/);assert.match(areas,/total_m2/);
+  assert.doesNotMatch(areas,/pixelLonLat|Geometry\.area/);
+ }
+ assert.doesNotMatch(JSON.stringify(e),/EPSG:6933/);
 });
 
 test('Unconfigured credentials return explicit Unknown with matching request and no upstream access',async()=>{

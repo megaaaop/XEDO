@@ -42,7 +42,9 @@ const mosaic=(id,geometry,home=null)=>{
 };
 const polygon=geometry=>f('GeometryConstructors.Polygon',{coordinates:c(geometry.coordinates),geodesic:c(false)});
 const point=coordinates=>f('GeometryConstructors.Point',{coordinates:c(coordinates)});
-const reduction=(image,geometry,scale)=>f('Image.reduceRegion',{image,reducer:f('Reducer.sum'),geometry:polygon(geometry),scale:c(scale),crs:f('Projection',{crs:c('EPSG:6933')}),bestEffort:c(false),maxPixels:c(MAX_PIXELS),tileScale:c(2)});
+// Use the CRS accepted by the existing live GEE adapters. Image.pixelArea
+// supplies actual square metres; the geographic grid is not treated as m².
+const reduction=(image,geometry,scale)=>f('Image.reduceRegion',{image,reducer:f('Reducer.sum'),geometry:polygon(geometry),scale:c(scale),crs:f('Projection',{crs:c('EPSG:4326')}),bestEffort:c(false),maxPixels:c(MAX_PIXELS),tileScale:c(2)});
 const bands=images=>images.slice(1).reduce((dstImg,srcImg)=>f('Image.addBands',{dstImg,srcImg}),images[0]);
 const finite=value=>typeof value==='number'&&Number.isFinite(value);
 const record=value=>value!==null&&typeof value==='object'&&!Array.isArray(value);
@@ -95,7 +97,7 @@ function terrainExpression(request){
  return {result:'result',values:{
   image:rename(select(mosaic(GEE_MISSION_DATASETS.terrain.id,request.geometry,request.home),['DEM']),'elevation'),
   points:f('Collection',{features:array(points.map((p,i)=>f('Feature',{geometry:point(p.coordinates),metadata:c({sample_index:i})})))}),
-  result:f('Image.reduceRegions',{image:ref('image'),collection:ref('points'),reducer:f('Reducer.first'),scale:c(30),crs:f('Projection',{crs:c('EPSG:6933')}),maxPixelsPerRegion:c(4)})
+  result:f('Image.reduceRegions',{image:ref('image'),collection:ref('points'),reducer:f('Reducer.first'),scale:c(30),crs:f('Projection',{crs:c('EPSG:4326')}),maxPixelsPerRegion:c(4)})
  }};
 }
 function landcoverExpression(request){
