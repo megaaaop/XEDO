@@ -9,6 +9,67 @@ const tileKey=tile=>tile.getTileCoord().join('/');
 const date=value=>new Intl.DateTimeFormat('en-GB',{dateStyle:'medium',timeZone:'UTC'}).format(new Date(value));
 const label=m=>'Google Earth Engine · Sentinel-2 · '+date(m.acquiredFrom)+'–'+date(m.acquiredTo)+' UTC · '+m.imageCount+' images';
 const aborted=()=>new DOMException('Background map cancelled.','AbortError');
+const transientStatus=status=>[429,502,503,504].includes(status);
+const permanentCode=code=>typeof code==='string'&&(/(?:NOT_CONFIGURED|CONFIG_INVALID|ACCESS_DENIED|ORIGIN_DENIED|PERMISSION|INVALID|NO_IMAGES|EMPTY)/.test(code));
+function delay(ms,signal){
+  if(signal?.aborted)return Promise.reject(aborted());
+  return new Promise((resolve,reject)=>{
+    const cancel=()=>{clearTimeout(timer);signal?.removeEventListener('abort',cancel);reject(aborted());};
+    const timer=setTimeout(()=>{signal?.removeEventListener('abort',cancel);resolve();},ms);
+    signal?.addEventListener('abort',cancel,{once:true});
+  });
+}
+
+/** One recovery attempt for a cold start or transient transport failure.
+ * Each deadline includes reading the body; cancelling a view never starts a retry.
+ */
+export async function requestGEEBasemap(geometry,{signal,fetchImpl=globalThis.fetch,timeoutMs=30000,retryDelayMs=500,onRetry=()=>{},now=Date.now}={}){
+  const requested=structuredClone(geometry);
+  for(let attempt=0;attempt<2;attempt++){
+    if(signal?.aborted)throw aborted();
+    const controller=new AbortController();let timer,cancel,response;
+    const cancelled=new Promise((_,reject)=>{
+      cancel=()=>{controller.abort();reject(aborted());};
+      signal?.addEventListener('abort',cancel,{once:true});
+      timer=setTimeout(()=>{
+        controller.abort();
+        reject(Object.assign(Error('Earth Engine background imagery timed out. Retry the map.'),{retryable:true}));
+      },timeoutMs);
+    });
+    try{
+      const task=(async()=>{
+        response=await fetchImpl('/api/v1/gee/imagery/basemap',{method:'POST',credentials:'same-origin',redirect:'error',cache:'no-store',signal:controller.signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({geometry:requested})});
+        const json=response.headers.get('content-type')?.includes('application/json');
+        if(!response.ok){
+          let data;
+          if(json)try{data=await response.json();}catch{if(controller.signal.aborted)throw aborted();}
+          else await response.body?.cancel();
+          const seconds=Number(response.headers.get('retry-after'));
+          throw Object.assign(Error(typeof data?.message==='string'?data.message:'Earth Engine background imagery is unavailable. Retry the map.'),{
+            retryable:transientStatus(response.status)&&!permanentCode(data?.code),
+            retryAfterMs:Number.isFinite(seconds)&&seconds>0?Math.min(seconds*1000,5000):0,
+          });
+        }
+        if(!json)throw Error('Earth Engine background imagery returned an invalid response.');
+        const data=await response.json();
+        if(signal?.aborted||controller.signal.aborted)throw aborted();
+        return bindGEEBasemap(data,requested,{now:now()});
+      })();
+      return await Promise.race([task,cancelled]);
+    }catch(error){
+      if(signal?.aborted)throw aborted();
+      // Native fetch reports transport failures as TypeError. Invalid JSON or
+      // a rejected manifest remains an error instead of a synthetic basemap.
+      const retryable=error.retryable===true||error instanceof TypeError;
+      if(!retryable||attempt===1)throw error instanceof TypeError?Error('Earth Engine background imagery could not load. Check the connection and retry the map.'):error;
+      clearTimeout(timer);signal?.removeEventListener('abort',cancel);
+      onRetry();
+      await delay(Math.max(retryDelayMs,error.retryAfterMs||0),signal);
+    }finally{
+      clearTimeout(timer);signal?.removeEventListener('abort',cancel);
+    }
+  }
+}
 function imageBlob(tile,blob){
   const image=tile.getImage(),url=URL.createObjectURL(blob);
   const clean=()=>{URL.revokeObjectURL(url);image.removeEventListener('load',clean);image.removeEventListener('error',clean);};
@@ -49,11 +110,9 @@ export function createGEEBasemap({map,onState}){
       let manifest;
       if(!force&&current&&Date.parse(current.manifest.expiresAt)>Date.now()+60000&&basemapContains(current.bbox,visible.bbox))manifest=current.manifest;
       else{
-        const timeout=setTimeout(()=>controller.abort(),30000);let response;
-        try{for(let attempt=0;attempt<2;attempt++){response=await fetch('/api/v1/gee/imagery/basemap',{method:'POST',credentials:'same-origin',redirect:'error',cache:'no-store',signal:controller.signal,headers:{'Content-Type':'application/json'},body:JSON.stringify({geometry:request.geometry})});if(response.ok||![429,502,503,504].includes(response.status)||attempt)break;await response.body?.cancel();if(controller.signal.aborted)throw aborted();}}finally{clearTimeout(timeout);}
-        if(!response.headers.get('content-type')?.includes('application/json'))throw Error('Earth Engine background imagery returned an invalid response.');
-        const data=await response.json();if(!response.ok)throw Error(data.message||'Earth Engine background imagery is unavailable.');
-        manifest=bindGEEBasemap(data,request.geometry);
+        manifest=await requestGEEBasemap(request.geometry,{signal:controller.signal,onRetry:()=>{
+          if(token===generation&&active&&!disposed)emit('loading','Earth Engine is taking longer than expected. Retrying once…');
+        }});
       }
       if(disposed||!active||token!==generation||controller.signal.aborted)throw aborted();
       const points=manifest.geometry.coordinates[0],bbox=[points[0][0],points[0][1],points[2][0],points[2][1]];
@@ -77,7 +136,7 @@ export function createGEEBasemap({map,onState}){
             let response;
             for(let attempt=0;attempt<2;attempt++){
               response=await fetch(url,{credentials:'same-origin',redirect:'error',cache:'no-store',signal:controller.signal});
-              if(response.ok||![429,502,503,504].includes(response.status)||attempt)break;
+              if(response.ok||!transientStatus(response.status)||attempt)break;
               await response.body?.cancel();
               await new Promise((resolve,reject)=>{const timer=setTimeout(()=>{controller.signal.removeEventListener('abort',cancel);resolve();},500);const cancel=()=>{clearTimeout(timer);reject(aborted());};controller.signal.addEventListener('abort',cancel,{once:true});});
             }

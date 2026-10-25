@@ -12,7 +12,7 @@ after(()=>{if(previous.add)globalThis.addEventListener=previous.add;else delete 
 function fixture(payload,now=EPOCH){
  const first=payload.home||payload.geometry.coordinates[0][0];
  return {schema_version:'xedo-gee-mission-context/1',state:'complete',fetchedAt:iso(now),expiresAt:iso(now+600000),request:structuredClone(payload),
- terrain:{state:'ready',datasetId:'COPERNICUS/DEM/GLO30_2024_1',verticalDatum:'EGM2008',resolutionM:30,samples:[{longitude:first[0],latitude:first[1],elevationM:0},{longitude:101.21,latitude:12.61,elevationM:2}],homeElevationM:payload.home?0:null,minElevationM:0,maxElevationM:2,warnings:[]},
+ terrain:{state:'ready',datasetId:'COPERNICUS/DEM/GLO30_2024_1',verticalDatum:'EGM2008',resolutionM:30,samples:[{longitude:first[0],latitude:first[1],elevationM:0},{longitude:101.21,latitude:12.61,elevationM:2},...(payload.routePoints||[]).map(p=>({longitude:p[0],latitude:p[1],elevationM:1,role:'route'}))],homeElevationM:payload.home?0:null,minElevationM:0,maxElevationM:2,warnings:[]},
  landcover:{state:'ready',areaM2:1000000,coveragePct:100,waterPct:60,mangrovePct:20,landPct:20,unknownPct:0,waterAreaM2:600000,mangroveAreaM2:200000,year:2021,resolutionM:10,warnings:[]},
  quality:{state:payload.sceneId?'ready':'not_requested',sceneId:payload.sceneId,acquiredAt:payload.sceneId?acquiredAt:null,method:'S2 cloud probability',resolutionM:10,coveragePct:100,cloudPct:10,clearPct:90,warnings:[]},
  forecast:{state:payload.startAt&&payload.endAt?'ready':'not_requested',scope:'takeoff_reference_only',modelRunAt:iso(now-6*3600000),validAt:payload.startAt,referenceHeightM:10,resolutionM:27830,windEastMps:3,windNorthMps:4,windSpeedMps:5,windFromDeg:216.869897645844,gustMps:7,warnings:[]},warnings:[],hardwareControl:false,releaseControl:false};
@@ -70,7 +70,8 @@ test('Releasing a real Home estimate before demo inputs preserves an equal zero 
   assert.equal(h.ui.revokeHomeEstimate(),true);assert.equal(h.home.value,'');
   h.mission.home=[101.22,12.62];h.home.value='0';h.ui.changed();
   assert.equal(h.home.value,'0');assert.equal(h.ui.getPatch().export.homeElevationEvidence,null);
-  assert.equal(h.ui.getContext(),null);await h.tick(1000);assert.equal(h.calls.length,1);
+  assert.equal(h.ui.getContext(),null);await h.tick(1000);assert.equal(h.calls.length,2);
+  assert.equal(h.calls[1].payload.sceneId,null);assert.equal(h.calls[1].payload.startAt,null);assert.equal(h.calls[1].payload.endAt,null);
   assert.equal(h.changes.filter(reason=>reason==='home-revoked').length,1);
  }finally{h.ui.dispose();}
 });
@@ -109,8 +110,11 @@ test('Wrong image acquisition metadata becomes Unknown without discarding other 
 test('Provider warnings are escaped and all unavailable values stay Unknown without a zero fallback',async()=>{
  const h=harness({transform:data=>{data.state='not_configured';for(const key of ['terrain','landcover','quality','forecast'])data[key]={state:'unavailable',warnings:['<img src=x onerror=alert(1)>']};return data;}});try{await h.ui.refresh();assert.equal(h.ui.getState().status,'not_configured');assert.equal(h.ui.getContext(),null);assert.equal(h.home.value,'');assert.equal(await h.accept(),false);assert.doesNotMatch(h.node('trial-geospatial-summary').innerHTML,/>0 m/);assert.match(h.node('trial-geospatial-details-body').innerHTML,/&lt;img/);assert.doesNotMatch(h.node('trial-geospatial-details-body').innerHTML,/<img/);}finally{h.ui.dispose();}
 });
-test('File and test-example modes never fetch or change existing mission inputs',async()=>{
- for(const options of [{localFile:true},{example:true}]){const h=harness(options);try{h.home.value='31';await h.ui.refresh();await h.tick(1000);assert.equal(h.calls.length,0);assert.equal(h.home.value,'31');assert.equal(h.ui.getContext(),null);assert.equal(h.ui.getState().status,'skipped');}finally{h.ui.dispose();}}
+test('Standalone files cannot fetch GEE or change existing mission inputs',async()=>{
+ const h=harness({localFile:true});try{h.home.value='31';await h.ui.refresh();await h.tick(1000);assert.equal(h.calls.length,0);assert.equal(h.home.value,'31');assert.equal(h.ui.getContext(),null);assert.equal(h.ui.getState().status,'skipped');}finally{h.ui.dispose();}
+});
+test('Estimated Demo may read only terrain and land cover without requesting scene quality or forecast',async()=>{
+ const h=harness({example:true});try{h.home.value='31';h.mission.routePoints=[[101.195,12.595]];await h.ui.refresh();assert.equal(h.calls.length,1);assert.equal(h.calls[0].payload.sceneId,null);assert.equal(h.calls[0].payload.startAt,null);assert.equal(h.calls[0].payload.endAt,null);assert.deepEqual(h.calls[0].payload.routePoints,h.mission.routePoints);assert.equal(h.ui.getPatch().flight.geospatialEvidence.quality.state,'not_requested');assert.equal(h.ui.getPatch().flight.geospatialEvidence.forecast.state,'not_requested');assert.equal(h.home.value,'31');assert.equal(h.ui.useModelHomeEstimate(),false);assert.ok(h.ui.getContext());assert.doesNotMatch(h.node('trial-geospatial-summary').innerHTML,/GFS 10 m reference/);assert.equal(Object.hasOwn(h.ui.getPatch().flight,'windEastMps'),false);}finally{h.ui.dispose();}
 });
 test('Page hiding aborts and revokes pending context; disposal clears timers and ignores late replies',async()=>{
  const h=harness({held:true});const pending=h.ui.refresh();await h.hidden(true);assert.equal(h.calls[0].signal.aborted,true);await pending;assert.equal(h.ui.getState().status,'paused');await h.hidden(false);const second=h.ui.refresh();h.ui.dispose();assert.equal(h.calls[1].signal.aborted,true);await second;h.calls[1].resolve();await flush();assert.equal(h.jobs.size,0);assert.equal(h.ui.getContext(),null);
@@ -125,4 +129,37 @@ test('An outside-AOI Home elevation can be reviewed without filling masked AOI t
 test('A concave AOI excludes samples inside its bounding box but outside its actual polygon',async()=>{
  const h=harness({transform:data=>{data.terrain.samples=[{longitude:101.2,latitude:12.6,elevationM:0},{longitude:101.202,latitude:12.602,elevationM:5},{longitude:101.207,latitude:12.607,elevationM:200}];data.terrain.maxElevationM=200;return data;}});
  try{h.mission.geometry={type:'Polygon',coordinates:[[[101.2,12.6],[101.21,12.6],[101.21,12.603],[101.203,12.603],[101.203,12.61],[101.2,12.61],[101.2,12.6]]]};h.ui.changed();await h.ui.refresh();const context=h.ui.getContext(),terrain=h.ui.getPatch().flight.geospatialEvidence.terrain;assert.equal(context.samples.length,2);assert.equal(terrain.minElevationM,0);assert.equal(terrain.maxElevationM,5);assert.equal(terrain.elevationRangeM,5);}finally{h.ui.dispose();}
+});
+test('The labelled model Home estimate copies only an empty field and never fabricates human review',async()=>{
+ const h=harness();try{await h.ui.refresh();h.home.value='17';assert.equal(h.ui.useModelHomeEstimate(),false);assert.equal(h.home.value,'17');h.home.value='';assert.equal(h.ui.useModelHomeEstimate(),true);assert.equal(h.home.value,'0');const patch=h.ui.getPatch();assert.equal(patch.export.homeElevationEvidence.mode,'gee_model');assert.equal(patch.export.homeElevationEvidence.reviewed,false);assert.equal(patch.export.homeElevationEvidence.resolutionM,30);assert.equal(Object.hasOwn(patch.export.homeElevationEvidence,'fieldValue'),false);assert.match(h.node('trial-geospatial-home-note').textContent,/model estimate/);assert.equal(h.ui.getTerrainAssessment().state,'ready');assert.equal(h.ui.useModelHomeEstimate(),true);assert.equal(h.changes.filter(x=>x==='home-model').length,1);h.home.value='18';h.ui.changed();assert.equal(h.ui.getPatch().export.homeElevationEvidence,null);assert.equal(h.ui.useModelHomeEstimate(),false);assert.equal(h.home.value,'18');}finally{h.ui.dispose();}
+});
+test('Changing Home invalidates an owned model elevation and a fresh context is required before replacing it',async()=>{
+ const h=harness();try{await h.ui.refresh();h.ui.useModelHomeEstimate();h.mission.home=[101.205,12.605];h.ui.changed();assert.equal(h.home.value,'');assert.equal(h.ui.useModelHomeEstimate(),false);assert.equal(h.ui.getTerrainAssessment().state,'unknown');await h.ui.refresh();assert.equal(h.ui.useModelHomeEstimate(),true);assert.deepEqual(h.ui.getPatch().export.homeElevationEvidence.home,h.mission.home);h.setTime(EPOCH+600001);assert.equal(h.ui.getTerrainAssessment().state,'unknown');}finally{h.ui.dispose();}
+});
+test('Model assessment includes explicitly requested outside route points and refreshes when they change',async()=>{
+ const h=harness();try{h.mission.routePoints=[[101.195,12.595]];await h.ui.refresh();assert.equal(h.ui.getContext().samples.at(-1).role,'route');assert.equal(h.ui.getTerrainAssessment().state,'ready');assert.deepEqual(h.ui.getPatch().flight.geospatialEvidence.routePoints,h.mission.routePoints);h.mission.routePoints=[[101.194,12.594]];h.ui.changed();assert.equal(h.ui.getTerrainAssessment().state,'unknown');await h.ui.refresh();assert.equal(h.calls.length,2);assert.deepEqual(h.ui.getTerrainAssessment().routePoints,h.mission.routePoints);assert.equal(h.ui.getTerrainAssessment({toleranceM:1}).state,'review');}finally{h.ui.dispose();}
+});
+test('Invalid numerical area/route samples become Unknown instead of being silently dropped from model assessment',async()=>{
+ const h=harness({transform:data=>{data.terrain.samples[1].elevationM='0';return data;}});try{await h.ui.refresh();assert.equal(h.ui.getTerrainAssessment().state,'unknown');assert.equal(h.ui.getContext().samples[1].elevationM,null);}finally{h.ui.dispose();}
+});
+test('Same-Home model evidence renews to the fresh report without losing ownership or claiming human review',async()=>{
+ const h=harness();try{await h.ui.refresh();assert.equal(h.ui.useModelHomeEstimate(),true);const first=h.ui.getPatch().export.homeElevationEvidence;h.setTime(EPOCH+10000);await h.ui.refresh();assert.equal(h.ui.useModelHomeEstimate(),true);const current=h.ui.getPatch().export.homeElevationEvidence;assert.notEqual(current.fetchedAt,first.fetchedAt);assert.equal(current.fetchedAt,h.ui.getTerrainAssessment().fetchedAt);assert.equal(current.expiresAt,h.ui.getTerrainAssessment().expiresAt);assert.equal(current.reviewed,false);assert.equal(h.home.value,'0');h.home.value='20';h.setTime(EPOCH+20000);await h.ui.refresh();assert.equal(h.ui.useModelHomeEstimate(),false);assert.equal(h.home.value,'20');assert.equal(h.ui.getPatch().export.homeElevationEvidence,null);}finally{h.ui.dispose();}
+});
+test('A missing requested route sample leaves the model assessment unknown while independent GEE sources remain ready',async()=>{
+ const h=harness({example:true,transform:data=>{data.terrain.samples=data.terrain.samples.filter(s=>s.role!=='route');return data;}});try{h.mission.routePoints=[[101.195,12.595]];await h.ui.refresh();assert.equal(h.ui.getState().status,'partial');assert.equal(h.ui.getPatch().flight.geospatialEvidence.landcover.state,'ready');assert.equal(h.ui.getTerrainAssessment().state,'unknown');assert.match(h.ui.getTerrainAssessment().reasons[0],/route.*incomplete/);assert.equal(h.ui.getPatch().flight.geospatialEvidence.forecast.state,'not_requested');}finally{h.ui.dispose();}
+});
+
+test('Partial coverage and masked requested samples never advertise the whole GEE context as ready',async()=>{
+ const variants=[
+  data=>{data.state='partial';return data;},
+  data=>{data.terrain.samples[1].elevationM=null;return data;},
+  data=>{data.terrain.homeElevationM=null;return data;},
+  data=>{data.landcover.coveragePct=98;data.landcover.unknownPct=2;return data;},
+  data=>{data.quality.coveragePct=98;return data;}
+ ];
+ for(const transform of variants){const h=harness({transform});try{await h.ui.refresh();assert.equal(h.ui.getState().status,'partial');assert.equal(h.node('trial-geospatial-badge').textContent,'Some GEE data unavailable');assert.ok(h.ui.getPatch().flight.geospatialEvidence);assert.equal(h.ui.getPatch().flight.geospatialEvidence.forecast.state,'ready');assert.equal(h.home.value,'');}finally{h.ui.dispose();}}
+});
+
+test('An unavailable response with contradictory ready data cannot supply context or a Home altitude',async()=>{
+ for(const state of ['unavailable','not_configured','error']){const h=harness({transform:data=>({...data,state})});try{await h.ui.refresh();assert.equal(h.ui.getState().status,'error');assert.equal(h.ui.getContext(),null);assert.equal(h.ui.getPatch().flight.geospatialEvidence,null);assert.equal(h.ui.useModelHomeEstimate(),false);assert.equal(h.home.value,'');}finally{h.ui.dispose();}}
 });

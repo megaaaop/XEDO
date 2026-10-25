@@ -54,10 +54,11 @@
 #trial-map-views { display: flex; gap: 2px; flex-shrink: 0; }
 .coastal-mission .trial-map-head .button[aria-pressed=true] { background: var(--accent-soft); color: var(--accent); }
 #trial-map, #trial-3d-wrap { height: clamp(440px, 53vh, 620px); background: var(--inset); position: relative; }
+#trial-3d-wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: minmax(0, 1fr) auto; }
 #trial-map { touch-action: none; }
 #trial-map:focus-visible { outline-offset: -3px; }
-#trial-canvas { width: 100%; height: 100%; touch-action: none; display: block; }
-#trial-3d-reset { position: absolute; top: 14px; right: 14px; }
+#trial-canvas { grid-column: 1 / -1; grid-row: 1; width: 100%; height: 100%; min-height: 0; touch-action: none; display: block; }
+#trial-3d-reset { grid-column: 2; grid-row: 2; position: static; align-self: center; margin: 10px 12px 10px 0; }
 #trial-3d-empty { position: absolute; top: 45%; left: 12%; right: 12%; text-align: center; color: var(--muted); }
 .coastal-mission #trial-map .ol-control button { width: 36px; height: 36px; }
 .coastal-mission #trial-map .ol-attribution { max-width: calc(100% - 20px); font-size: 12px !important; }
@@ -216,3 +217,15 @@
 #trial-environment-badge[data-state=ready] { color: var(--accent); }
 #trial-environment-badge[data-state=partial] { color: var(--amber); }
 #trial-environment-badge[data-state=error], #trial-environment-badge[data-state=stale] { color: var(--error); }
+
+.trial-launch-panel { padding:18px 0; margin-bottom:20px; border-block:1px solid var(--border); }
+.trial-launch-panel p,.trial-schedule-summary { font-size:12px; line-height:1.6; color:var(--muted); }
+.trial-launch-actions { display:flex; flex-wrap:wrap; gap:8px; }
+.trial-terrain-settings { padding:16px; margin:16px 0; border:1px solid var(--border); border-radius:8px; }
+.trial-terrain-settings > label { display:block; margin-top:12px; }
+.trial-terrain-settings p { font-size:13px; line-height:1.6; }
+#trial-replan { margin-bottom:16px; font-size:12px; }
+#trial-readiness-dialog { width:min(620px,calc(100vw - 32px)); }
+#trial-readiness-inline { margin:22px 0 14px; }
+#trial-readiness-inline .trial-readiness-row { padding:12px 0; }
+@media(max-width:680px) { .coastal-mission .mission-header { flex-wrap:wrap; gap:10px; } .mission-header-actions { flex-wrap:wrap; justify-content:flex-end; } }

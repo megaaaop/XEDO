@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {fileTrialAPI} from '../src/planning-file-api.js';
 import {applyFixedPlanningSettings} from '../src/planning-fixed-settings.js';
+import {assessPlanningTerrain} from '../src/planning-terrain.js';
 function fixture(){const now=Date.now(),iso=m=>new Date(now+m*60000).toISOString(),home=[101.22,12.62];return applyFixedPlanningSettings({geometry:{type:'Polygon',coordinates:[[[101.22,12.62],[101.222,12.62],[101.222,12.621],[101.22,12.621],[101.22,12.62]]]},driftEnabled:false,flight:{home,windEastMps:0,windNorthMps:0,windLimitMps:8,maxAirspeedMps:12,usableWh:100,reserveWh:20,powerW:180,takeoffS:20,landingS:20,turnS:3},export:{firmware:'PX4',homeAmslM:12,ceilingM:60,corridorM:5,plannedTakeoffAt:iso(15),plannedEndAt:iso(120),validUntil:iso(180),source:'Synthetic software test constraints; not a field clearance',noGo:{type:'FeatureCollection',features:[]},homeConfirmed:true,flatSurfaceConfirmed:true,airspaceReviewed:true,homeElevationEvidence:{mode:'gee_estimate',reviewed:true,home,valueM:12,verticalDatum:'EGM2008',datasetId:'COPERNICUS/DEM/GLO30_2024_1',acceptedAt:iso(0)}},oil:{areaM2:1000,thicknessLowUm:10,thicknessHighUm:30}});}
 const calculate=input=>fileTrialAPI('',{method:'POST',body:JSON.stringify(input)});
 test('Reviewed static GEE Home evidence can accompany the four engines without altering route heights',async()=>{
@@ -13,4 +14,19 @@ test('Changed Home, altitude, datum, dataset or missing review blocks checked fi
 });
 test('Manual Home values remain independent and zero is valid when explicitly reviewed',async()=>{
  const input=fixture();input.export.homeAmslM=0;input.export.homeElevationEvidence.valueM=0;assert.equal((await calculate(input)).exportCheck.pass,true);input.export.homeElevationEvidence=null;input.export.homeAmslM=17;assert.equal((await calculate(input)).exportCheck.pass,true);
+});
+function modelFixture(){
+ const input=fixture(),now=Date.now(),fetchedAt=new Date(now).toISOString(),expiresAt=new Date(now+600000).toISOString(),home=input.flight.home,routePoints=[[101.219,12.619]],terrain={state:'ready',datasetId:'COPERNICUS/DEM/GLO30_2024_1',verticalDatum:'EGM2008',resolutionM:30,homeElevationM:12,samples:[{longitude:home[0],latitude:home[1],elevationM:12,role:'home'},{longitude:101.221,latitude:12.6205,elevationM:13,role:'area'},{longitude:routePoints[0][0],latitude:routePoints[0][1],elevationM:12,role:'route'}]};
+ const report={fetchedAt,expiresAt,request:{geometry:input.geometry,home,routePoints},terrain};
+ input.export.terrainAssessment=assessPlanningTerrain(report,{geometry:input.geometry,home,now});
+ input.flight.geospatialEvidence={mode:'gee_context',fetchedAt,expiresAt,geometry:structuredClone(input.geometry),home:[...home],routePoints};
+ input.export.homeElevationEvidence={mode:'gee_model',reviewed:false,home:[...home],valueM:12,verticalDatum:'EGM2008',datasetId:terrain.datasetId,resolutionM:30,acceptedAt:fetchedAt,fetchedAt,expiresAt};
+ return input;
+}
+test('A ready matching GEE model supports trial export without fabricating a human review or changing four calculators',async()=>{
+ const input=modelFixture(),before=structuredClone(input),result=await calculate(input);assert.deepEqual(input,before);assert.equal(result.exportCheck.pass,true);assert.equal(input.export.homeElevationEvidence.reviewed,false);assert.equal(result.oil.volumeLowL,10);assert.ok(result.flight.plan.waypoints.every(point=>point.altitudeM===50));assert.ok(result.exportCheck.warnings.some(w=>w.includes('unverified model tolerance')));const file=await fileTrialAPI('/export',{method:'POST',body:JSON.stringify(input)});assert.equal(JSON.parse(file.text).mission.plannedHomePosition[2],12);assert.equal(file.hardwareControl,false);
+});
+test('Unknown, mismatched or stale model context cannot bypass export through a flat-surface flag',async()=>{
+ const variants=[i=>{i.export.terrainAssessment.state='unknown';},i=>{i.export.terrainAssessment.state='review';},i=>{i.export.homeElevationEvidence=null;},i=>{i.export.terrainAssessment=null;},i=>{i.export.homeAmslM=13;},i=>{i.export.terrainAssessment.geometry.coordinates[0][0][0]+=.001;},i=>{i.export.terrainAssessment.home=[101.3,12.6];},i=>{i.flight.geospatialEvidence.routePoints=[];},i=>{i.export.terrainAssessment.coverage={known:2,total:3,fraction:2/3};},i=>{i.export.terrainAssessment.homeOffsetM=10;},i=>{i.export.terrainAssessment.toleranceM=0;},i=>{i.export.terrainAssessment.source.verticalDatum='ellipsoid';},i=>{i.export.terrainAssessment.expiresAt=new Date(Date.now()-1).toISOString();},i=>{i.export.homeElevationEvidence.fetchedAt=new Date(Date.now()-1000).toISOString();}];
+ for(const edit of variants){const input=modelFixture();edit(input);const result=await calculate(input);assert.equal(result.exportCheck.pass,false);assert.ok(result.exportCheck.checks.some(check=>check.id==='terrain-model-evidence'));assert.equal(result.oil.volumeLowL,10);await assert.rejects(fileTrialAPI('/export',{method:'POST',body:JSON.stringify(input)}),error=>error.code==='TRIAL_CHECKS_INCOMPLETE');}
 });

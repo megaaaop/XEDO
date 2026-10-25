@@ -34,9 +34,9 @@ const mask=image=>f('Image.mask',{image});
 const unmask=input=>f('Image.unmask',{input,value:constant(0),sameFootprint:c(false)});
 const and=(a,b)=>binary('and',a,b),or=(a,b)=>binary('or',a,b);
 const areaImage=indicator=>binary('multiply',f('Image.pixelArea'),indicator);
-const mosaic=(id,geometry,home=null)=>{
+const mosaic=(id,geometry,home=null,routePoints=[])=>{
  const intersects=g=>f('Filter.intersects',{leftField:c('.all'),rightValue:f('Feature',{geometry:g})});
- const filters=[intersects(polygon(geometry)),...(home?[intersects(point(home))]:[])];
+ const filters=[intersects(polygon(geometry)),...(home?[intersects(point(home))]:[]),...routePoints.map(coordinates=>intersects(point(coordinates)))];
  const filter=filters.length===1?filters[0]:f('Filter.or',{filters:array(filters)});
  return f('ImageCollection.mosaic',{collection:f('Collection.filter',{collection:f('ImageCollection.load',{id:c(id)}),filter})});
 };
@@ -64,7 +64,7 @@ function timestamp(value,label){
  return new Date(value).toISOString();
 }
 function normalizedInput(input,{now=Date.now()}={}){
- if(!record(input)||Object.keys(input).some(key=>!['geometry','home','sceneId','startAt','endAt'].includes(key)))throw Error('Use only an inspection polygon, home, selected scene and mission window.');
+ if(!record(input)||Object.keys(input).some(key=>!['geometry','home','sceneId','startAt','endAt','routePoints'].includes(key)))throw Error('Use only an inspection polygon, home, selected scene, mission window and bounded route samples.');
  const area=validateGeometry(input.geometry),ring=input.geometry.coordinates[0];
  if(ring.length>121||area>MAX_AREA)throw Error('GEE context supports at most 120 vertices and 100 km².');
  if(ring.some(([x,y])=>x<97||x>106||y<5||y>21))throw Error('GEE context is limited to the Thailand region (97–106° E, 5–21° N).');
@@ -72,6 +72,8 @@ function normalizedInput(input,{now=Date.now()}={}){
  if(distance(low,[high[0],low[1]])>100000||distance(low,[low[0],high[1]])>100000)throw Error('GEE context must fit within a 100 km extent.');
  const home=input.home??null;
  if(home!==null&&(!Array.isArray(home)||home.length!==2||!home.every(finite)||Math.abs(home[0])>180||Math.abs(home[1])>85||distance(home,[(low[0]+high[0])/2,(low[1]+high[1])/2])>100000))throw Error('Home must be a valid coordinate within 100 km of the inspection area.');
+ const routePoints=input.routePoints;
+ if(routePoints!==undefined&&(!Array.isArray(routePoints)||routePoints.length>24||routePoints.some(p=>!Array.isArray(p)||p.length!==2||!p.every(finite)||p[0]<97||p[0]>106||p[1]<5||p[1]>21||distance(p,[(low[0]+high[0])/2,(low[1]+high[1])/2])>100000)))throw Error('Use at most 24 Thailand route coordinates within 100 km of the inspection area.');
  const sceneId=input.sceneId??null;
  if(sceneId!==null&&(typeof sceneId!=='string'||!/^gee:COPERNICUS\/S2_SR_HARMONIZED\/\d{8}T\d{6}_\d{8}T\d{6}_T[A-Z0-9]{5}$/.test(sceneId)))throw Error('Select a canonical Sentinel-2 scene returned by XEDO.');
  const startAt=input.startAt==null||input.startAt===''?null:timestamp(input.startAt,'Mission start'),endAt=input.endAt==null||input.endAt===''?null:timestamp(input.endAt,'Mission end');
@@ -79,15 +81,18 @@ function normalizedInput(input,{now=Date.now()}={}){
  if(!finite(at))throw Error('The context clock is invalid.');
  if((startAt===null)!==(endAt===null))throw Error('Supply both mission start and end, or leave both unknown.');
  if(startAt!==null&&(Date.parse(endAt)<Date.parse(startAt)||Date.parse(endAt)-Date.parse(startAt)>DAY||Date.parse(startAt)<at-5*DAY||Date.parse(endAt)>at+7*DAY))throw Error('Use an ordered mission window of at most 24 hours, within five days back and seven days ahead.');
- return {geometry:structuredClone(input.geometry),home:home?[...home]:null,sceneId,startAt,endAt};
+ return {geometry:structuredClone(input.geometry),home:home?[...home]:null,sceneId,startAt,endAt,...(routePoints===undefined?{}:{routePoints:routePoints.map(p=>[...p])})};
 }
 export function validateMissionContextRequest(input,options={}){try{return normalizedInput(input,options);}catch(error){throw Object.assign(new Error(error.message),{code:'GEE_CONTEXT_INPUT_INVALID',status:422});}}
 
 export function missionContextSamplePoints(request){
  const geometry=request.geometry,ring=geometry.coordinates[0].slice(0,-1),points=[];
- const add=(coordinates,home=false)=>{if(!home&&!pointWithin(coordinates,geometry))return;const existing=points.find(p=>distance(p.coordinates,coordinates)<.01);if(existing){if(home)existing.home=true;return;}if(points.length<MAX_SAMPLES)points.push({coordinates:[...coordinates],home});};
+ const add=(coordinates,home=false,route=false)=>{if(!home&&!route&&!pointWithin(coordinates,geometry))return;const existing=points.find(p=>distance(p.coordinates,coordinates)<.01);if(existing){if(home)existing.home=true;if(route)existing.route=true;return;}if(points.length<MAX_SAMPLES)points.push({coordinates:[...coordinates],home,...(route?{route:true}:{})});};
  if(request.home)add(request.home,true);
- const count=Math.min(24,ring.length);for(let i=0;i<count;i++)add(ring[Math.floor(i*ring.length/count)]);
+ for(const coordinates of request.routePoints||[])add(coordinates,false,true);
+ // Reserve all 49 grid positions as well as Home and every requested route
+ // point before using the remaining budget for polygon boundary samples.
+ const count=Math.min(24,ring.length,MAX_SAMPLES-points.length-49);for(let i=0;i<count;i++)add(ring[Math.floor(i*ring.length/count)]);
  const xs=ring.map(p=>p[0]),ys=ring.map(p=>p[1]),bounds=[Math.min(...xs),Math.min(...ys),Math.max(...xs),Math.max(...ys)];
  for(let y=0;y<7;y++)for(let x=0;x<7;x++)add([bounds[0]+(x+.5)/7*(bounds[2]-bounds[0]),bounds[1]+(y+.5)/7*(bounds[3]-bounds[1])]);
  return points;
@@ -95,7 +100,7 @@ export function missionContextSamplePoints(request){
 function terrainExpression(request){
  const points=missionContextSamplePoints(request);
  return {result:'result',values:{
-  image:rename(select(mosaic(GEE_MISSION_DATASETS.terrain.id,request.geometry,request.home),['DEM']),'elevation'),
+  image:rename(select(mosaic(GEE_MISSION_DATASETS.terrain.id,request.geometry,request.home,request.routePoints),['DEM']),'elevation'),
   points:f('Collection',{features:array(points.map((p,i)=>f('Feature',{geometry:point(p.coordinates),metadata:c({sample_index:i})})))}),
   result:f('Image.reduceRegions',{image:ref('image'),collection:ref('points'),reducer:f('Reducer.setOutputs',{reducer:f('Reducer.first'),outputs:c(['elevation'])}),scale:c(30),crs:f('Projection',{crs:c('EPSG:4326')}),maxPixelsPerRegion:c(4)})
  }};
@@ -150,7 +155,7 @@ function terrainResult(result,request){
  const out=emptyTerrain(),points=missionContextSamplePoints(request),features=result?.features;
  if(result?.type!=='FeatureCollection'||!Array.isArray(features)||features.length!==points.length)throw Error('Invalid terrain samples.');
  const rows=new Map();for(const feature of features){const i=feature?.properties?.sample_index;if(feature?.type!=='Feature'||!Number.isInteger(i)||i<0||i>=points.length||rows.has(i))throw Error('Invalid terrain identifiers.');rows.set(i,parsedNumber(feature.properties.elevation,-12000,10000));}
- out.samples=points.map((p,i)=>({longitude:p.coordinates[0],latitude:p.coordinates[1],elevationM:rows.get(i),role:p.home?'home':'area'}));
+ out.samples=points.map((p,i)=>({longitude:p.coordinates[0],latitude:p.coordinates[1],elevationM:rows.get(i),role:p.home?'home':p.route?'route':'area'}));
  const elevations=out.samples.filter(p=>pointWithin([p.longitude,p.latitude],request.geometry)).map(p=>p.elevationM).filter(finite);
  if(out.samples.some(p=>finite(p.elevationM)))out.state='ready';
  if(elevations.length){out.minElevationM=Math.min(...elevations);out.maxElevationM=Math.max(...elevations);}
@@ -238,7 +243,7 @@ export async function fetchGEEMissionContext(env,input,{fetchImpl=fetch,signal,n
  const expressions=missionContextExpressions(request,{now:nowMs}),parsers={terrain:terrainResult,landcover:landResult,quality:qualityResult,forecast:forecastResult};
  try{
   await Promise.all(Object.entries(expressions).filter(([,expression])=>expression).map(async([kind,expression])=>{
-   const staticKey=kind==='terrain'||kind==='landcover'?digest+'\0static:'+kind+'\0'+JSON.stringify({geometry:request.geometry,...(kind==='terrain'?{home:request.home}:{})}):null;
+   const staticKey=kind==='terrain'||kind==='landcover'?digest+'\0static:'+kind+'\0'+JSON.stringify({geometry:request.geometry,...(kind==='terrain'?{home:request.home,...(request.routePoints===undefined?{}:{routePoints:request.routePoints})}:{})}):null;
    const prior=useCache&&staticKey&&cache.get(staticKey);
    if(prior&&Date.parse(prior.expiresAt)>nowMs){base[kind]=structuredClone(prior.data);return;}
    let phase='compute';

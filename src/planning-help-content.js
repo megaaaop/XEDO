@@ -6,6 +6,24 @@ const fixed=FIXED_PLANNING_SETTINGS;
 
 /** Contextual, read-only help shared by the hosted and local-file planners. */
 export const planningHelpTopics = {
+  readiness: {
+    title: 'Flight readiness',
+    paragraphs: ['The three mission steps use four background calculators. This checklist shows the remaining planning checks beside the download button.'],
+    bullets: ['Select a launch and return coordinate on the map. Routes include outbound and return travel.', 'Automatic takeoff is one hour after the first successful route analysis. Refreshing data keeps that anchor. Replan creates a new anchor; editing the times selects a manual schedule.', 'The mission window includes assessed flight duration, a five-minute scheduling buffer and ten minutes between sorties. These are scheduling assumptions.', 'GEE surface samples support a model comparison. They do not certify obstacles, launch-site suitability or flight clearance.', 'The route and current airspace review remains an explicit user check. Downloading a file does not command the aircraft.'],
+    formulas: []
+  },
+  launch: {
+    title: 'Launch and return point',
+    paragraphs: ['Choose where the drone starts and returns. This is separate from the capsule release area.'],
+    bullets: ['Choose Set launch point, then click the map. Move launch point replaces it; Clear point removes it.', 'The point may be outside the inspection polygon. Both travel legs are included in distance, battery and surface sampling.', 'Selecting a coordinate does not verify the physical site. Changing it revokes affected route reviews.'],
+    formulas: []
+  },
+  terrain: {
+    title: 'GEE surface comparison',
+    paragraphs: ['Automatic GEE mode compares Home, inspection-area and sparse route samples from the 30 m Copernicus DSM in EGM2008. Missing samples remain unknown.'],
+    bullets: ['The default two-metre tolerance is a configurable model comparison assumption, not a certified aircraft safety limit.', 'A ready comparison can supply the model Home height and the flat-reference assumption for this trial. The source remains labelled GEE model.', 'Large height differences or missing samples need review. Manual mode allows an independently reviewed reference instead.', 'The DSM can include vegetation and buildings. Sparse historical samples do not establish continuous terrain coverage or present obstacle clearance. The route remains constant height above Home.'],
+    formulas: []
+  },
   estimatedDemo: {
     title: 'Estimated demo',
     paragraphs: [
@@ -16,7 +34,7 @@ export const planningHelpTopics = {
       'Starting usable energy: 177.6 Wh. Landing reserve: 44.4 Wh. Mission budget: 133.2 Wh. Average power: 600 W.',
       'Test wind threshold: 8 m/s. Test maximum airspeed: 12 m/s. Takeoff/climb: 30 s. Landing: 30 s. Each turn: 5 s.',
       ...ESTIMATED_DEMO_PROFILE.notes,
-      'The demo reviews the bundled dated satellite image and calculates locally. Automatic environment/GEE requests and saved-inspection writes are paused. Changing the demo area retains its demo label.',
+      'The demo reviews the bundled dated satellite image and calculates locally. When a local or hosted API is configured, it may read actual GEE terrain and historical land-cover samples, labelled separately from the aircraft estimates. Weather requests, selected-image GEE quality requests and saved-inspection writes remain paused. Changing the demo area retains its demo label.',
       'Demo snapshots include the profile and assumed inputs. Demo mission filenames are labelled; the existing export checks still apply.'
     ],
     formulas: ['Mission budget = 177.6 − 44.4 = 133.2 Wh', 'Budget duration at constant 600 W = 133.2 ÷ 600 × 60 = 13.32 minutes']
@@ -29,11 +47,12 @@ export const planningHelpTopics = {
     ],
     bullets: [
       'Copernicus DEM GLO30_2024_1 is a roughly 30 m digital surface model in the EGM2008 height reference. Buildings and vegetation can be part of its surface. Model heights do not prove current terrain or obstacle clearance.',
-      'The Home estimate remains a suggestion until you check the launch elevation and its compatible height reference, then choose Use reviewed estimate. The trial does not convert a GNSS ellipsoid height or automatically certify AMSL. Changing Home revokes an unchanged owned estimate; a manually edited value remains your responsibility.',
+      'Automatic surface mode uses a fresh, complete model comparison and a separately labelled GEE model Home height. Manual mode retains an independently reviewed height/reference option. The trial does not convert a GNSS ellipsoid height or certify AMSL. Changing Home revokes an unchanged owned estimate; a manually edited value remains your responsibility.',
       'WorldCover v200 describes 2021 land cover at 10 m, including permanent water and mangroves. Fractions are historical area estimates; they do not establish a current shoreline, channel current, protected-area boundary or official no-fly zone.',
       'Selected-image quality is calculated for the inspection area. Cloud probability or the documented SCL fallback is a classification estimate. Missing pixels remain Unknown, and neither image quality nor a dark water patch confirms oil.',
       'The GEE GFS reference describes 10 m wind and available gusts at one forecast time on a roughly 28 km grid. It is not 50 m flight wind or full-mission weather coverage; the existing automatic weather/current API remains the calculation source.',
-      'Area, Home, image and time changes cancel an older request. Context expires after at most ten minutes. Missing credentials, masked values, source errors, offline mode and file mode never become zero elevation, calm wind or a completed review.',
+      'Area, Home, image, time and route-sample changes cancel an older request. Context expires after at most ten minutes. Refresh GEE data retries the current request; failed or expired data cannot stay ready. Missing credentials, masked values, source errors, offline mode and file mode never become zero elevation, calm wind or a completed review.',
+      'Some GEE data unavailable means a source or requested terrain sample is missing/unknown, or mapped/image-quality coverage is below 99%. Usable independent data stays visible. A data-ready badge does not approve the surface comparison, launch site or flight export.',
       'The 3D view can show available surface-model sample points alongside the flat flight-height illustration. Route heights, terrain following, airspace checks and onboard geofences are not generated from these layers.'
     ],
     formulas: ['Estimated sampled elevation range = highest available DSM sample − lowest available DSM sample']
@@ -96,6 +115,7 @@ export const planningHelpTopics = {
     ],
     bullets: [
       'The standalone prototype contains a stored Sentinel-2 image captured on 29 September 2026. Areas outside its prepared crop cannot use that image.',
+      'Hosted mode searches real GEE Sentinel-2 acquisitions by area and date, then waits for the selected image pixels to load. The background mosaic and the reviewed single acquisition have separate readiness checks; a failed request never silently selects the stored image.',
       'The full workspace, when configured, uses its image catalogue and saved image sources. A saved survey reopens its original frozen boundary and image.',
       'A stored preview and an original image asset are different display sources. Source identity, coverage and acquisition time must match the selected inspection.',
       'Viewing an image does not confirm oil. This trial does not automatically detect or confirm a spill with AI.'
@@ -109,6 +129,7 @@ export const planningHelpTopics = {
     ],
     bullets: [
       'Inspection area: the cyan boundary selected for satellite review. Background imagery is navigation context; Review area image loads a single dated acquisition before mission preparation.',
+      'The background metadata request retries once for a transient timeout, connection failure or supported temporary server error. Changing the view cancels that retry. Missing configuration, invalid responses and empty imagery remain explicit errors; use Retry background map after a failed load.',
       'Forecast: purple outlines showing the nominal shifted boundary at arrival and survey end. Search envelope: the dashed amber box enclosing the supplied drift scenarios and margin.',
       'Route: pale yellow flight lines. Assessed sorties include outbound travel and return to the configured home; a geometric route can appear before those assessments are complete.',
       'The 3D view is a flat-surface height diagram. It does not verify terrain, obstacles or clearance. Use 2D to review the source image and boundary.'
@@ -119,7 +140,7 @@ export const planningHelpTopics = {
     title: 'About this trial',
     paragraphs: [
       'Use three steps: select an area, review satellite imagery, then prepare a drone mission. Drift, flight, export and oil/material calculations run behind that flow. Mission settings holds the inputs; Calculation details explains the results.',
-      'A fixed XEDO profile supplies candidate camera geometry, route assumptions and project model constants. View them through the profile Information button in Mission settings. Other unknown physical inputs stay blank. Load test example uses the same fixed profile with synthetic mission, weather and material inputs; it does not turn the archived satellite image into a current oil observation.'
+      'A fixed XEDO profile supplies candidate camera geometry, route assumptions and project model constants. View them through the profile Information button in Mission settings. Other unknown physical inputs stay blank. Estimated demo uses the same fixed profile with assumed aircraft, weather and material inputs; it does not turn the archived satellite image into a current oil observation.'
     ],
     bullets: [
       'In the standalone prototype, including static hosting, the calculators, stored image and downloads work without an API server. Basemap tiles need internet. Saved survey lookup by ID needs the separate full workspace service.',
@@ -153,7 +174,7 @@ export const planningHelpTopics = {
     bullets: [
       'Geometry assumes a nadir camera over a flat surface, with image width across track. Height is in m AGL; sensor dimensions and focal length are in mm. The fixed overlap settings are ' + fixed.flight.sideOverlap * 100 + '% across track and ' + fixed.flight.frontOverlap * 100 + '% along track; formulas use the equivalent fractions.',
       'Speed is commanded ground speed. Required airspeed is estimated from each route leg and the supplied wind. Wind and airspeed limits are checked separately.',
-      'Each assessed sortie includes outbound transit, survey travel, return to the manually entered home, takeoff, landing and turn allowances. Each sortie starts with a fresh energy budget and retains the final reserve.',
+      'Each assessed sortie includes outbound transit, survey travel, return to the selected or supplied home, takeoff, landing and turn allowances. Each sortie starts with a fresh energy budget and retains the final reserve. Automatic scheduling adds five minutes of buffer and ten minutes between sorties; these are scheduling assumptions, not airborne energy use.',
       'The model uses uniform power and fixed ground speed. Payload effects, battery ageing, manoeuvres, terrain and obstacles require aircraft-specific validation. Downloaded files do not contain camera-trigger commands.'
     ],
     formulas: [
@@ -170,7 +191,8 @@ export const planningHelpTopics = {
       'This trial exports one QGroundControl .plan file per selected sortie for the explicitly chosen PX4 or ArduPilot multicopter profile. The fixed target version is ' + fixed.export.qgcVersion + '. Firmware remains unknown until checked against the controller. DJI KMZ export is not implemented.'
     ],
     bullets: [
-      'Camera, wind and battery checks must pass. Confirm the real home, home AMSL altitude and the reviewed flat surface at the same ground level as home. Exported heights are relative to home; this is not terrain following.',
+      'Camera, wind and battery checks must pass. Review the real launch point. Automatic surface mode requires fresh matching GEE samples and labelled model Home-height provenance; manual surface mode requires an independently reviewed Home AMSL and flat reference. Exported heights are relative to home; this is not terrain following.',
+      'Automatic takeoff is anchored one hour after route analysis. Its window includes assessed flight duration, a five-minute buffer and ten minutes between sorties. Replan creates a new anchor; add further delays through a reviewed manual schedule. An expired takeoff blocks download.',
       'Supply the ceiling, constraint source, planned time, validity, corridor and reviewed no-go polygons. An explicit empty collection means no polygons were found in your review; missing constraints remain unknown.',
       'The full outbound, survey and return route is checked against the supplied polygons and corridor. These are manual inputs, with no automatic CAAT/NOTAM lookup. The checks do not install onboard geofences or verify obstacle clearance.',
       'Recheck the manual confirmations when inputs change. Download sends no commands to an aircraft. Native QGC import, firmware compatibility and isolated SITL acceptance remain untested.'

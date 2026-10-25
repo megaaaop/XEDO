@@ -1,10 +1,12 @@
 import {pointWithin} from './domain.js';
+import {assessPlanningTerrain} from './planning-terrain.js';
 const TTL=600000,MAX_RESPONSE_BYTES=524288;
 const DEM='COPERNICUS/DEM/GLO30_2024_1';
 const clone=value=>value==null?value:structuredClone(value);
 const finite=value=>typeof value==='number'&&Number.isFinite(value);
 const pair=value=>Array.isArray(value)&&value.length===2&&value.every(finite)&&Math.abs(value[0])<=180&&Math.abs(value[1])<=85;
 const same=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
+const samePoint=(a,b)=>pair(a)&&pair(b)&&a.every((value,index)=>Math.abs(value-b[index])<1e-7);
 const percent=value=>finite(value)&&value>=0&&value<=100;
 const elevation=value=>finite(value)&&value>=-12000&&value<=10000;
 const instant=value=>typeof value==='string'&&Number.isFinite(Date.parse(value))?new Date(value).toISOString():null;
@@ -14,7 +16,7 @@ const displayTime=value=>instant(value)?new Date(value).toLocaleString('en-GB',{
 const warningList=value=>Array.isArray(value)?value.filter(item=>typeof item==='string').slice(0,100):[];
 const aborted=()=>new DOMException('The planning-data request was cancelled.','AbortError');
 
-/** Read-only GEE context. It never changes route heights, weather vectors or approvals. */
+/** Read-only GEE context. Home may use a labelled model estimate; no physical approval is inferred. */
 export function initializePlanningGeospatialUI({root=document,localFile=false,getMission,onChange=()=>{},fetchImpl=fetch,now=Date.now,timers=globalThis}={}){
   if(typeof getMission!=='function'||typeof onChange!=='function'||typeof fetchImpl!=='function'||typeof now!=='function')throw new TypeError('Planning-data callbacks are required.');
   const $=selector=>root.querySelector(selector),create=(tag,props={})=>Object.assign(root.createElement(tag),props);
@@ -41,9 +43,11 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
   const notify=reason=>onChange({reason});
   function mission(){
     const source=clone(getMission()||{});
-    const payload={geometry:source.geometry??null,home:pair(source.home)?source.home:null,sceneId:typeof source.sceneId==='string'&&source.sceneId?source.sceneId:null,startAt:instant(source.startAt),endAt:instant(source.endAt)};
-    const contextKey=JSON.stringify({payload,acquiredAt:instant(source.acquiredAt)});
-    const blocked=localFile?'file':source.example?'example':root.hidden?'hidden':globalThis.navigator?.onLine===false?'offline':!payload.geometry?'geometry':null;
+    // Demo may read static terrain and land cover. Synthetic scene/time inputs
+    // must never trigger image-quality or forecast queries or replace weather.
+    const payload={geometry:source.geometry??null,home:pair(source.home)?source.home:null,sceneId:!source.example&&typeof source.sceneId==='string'&&source.sceneId?source.sceneId:null,startAt:source.example?null:instant(source.startAt),endAt:source.example?null:instant(source.endAt),...(source.routePoints===undefined?{}:{routePoints:clone(source.routePoints)})};
+    const contextKey=JSON.stringify({payload,acquiredAt:source.example?null:instant(source.acquiredAt)});
+    const blocked=localFile?'file':root.hidden?'hidden':globalThis.navigator?.onLine===false?'offline':!payload.geometry?'geometry':null;
     return {source,payload,key:contextKey,blocked};
   }
   function clearTimer(name){if(name==='debounce'&&debounce!==null){timers.clearTimeout(debounce);debounce=null;}if(name==='expiry'&&expiry!==null){timers.clearTimeout(expiry);expiry=null;}if(name==='deadline'&&deadline!==null){timers.clearTimeout(deadline);deadline=null;}}
@@ -74,7 +78,8 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
   }
   function normalize(data,context){
     if(!data||data.schema_version!=='xedo-gee-mission-context/1'||!['complete','partial','unavailable','not_configured','error'].includes(data.state))throw Error('The GEE planning-data response is invalid.');
-    const request=data.request||{},normal={geometry:request.geometry??null,home:request.home??null,sceneId:request.sceneId??null,startAt:instant(request.startAt),endAt:instant(request.endAt)};
+    if(['unavailable','not_configured','error'].includes(data.state)&&['terrain','landcover','quality','forecast'].some(name=>data[name]?.state==='ready'))throw Error('The GEE planning-data availability is inconsistent.');
+    const request=data.request||{},normal={geometry:request.geometry??null,home:request.home??null,sceneId:request.sceneId??null,startAt:instant(request.startAt),endAt:instant(request.endAt),...(request.routePoints===undefined?{}:{routePoints:request.routePoints})};
     if(!same(normal,context.payload))throw Error('GEE planning data does not match the current area, home, image or time.');
     const fetched=Date.parse(data.fetchedAt),expires=Date.parse(data.expiresAt);
     if(!Number.isFinite(fetched)||fetched>now()+60000||now()-fetched>TTL||!Number.isFinite(expires)||expires<=now())throw Error('GEE planning data is expired or has no verified timestamp.');
@@ -82,7 +87,8 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     const terrain=report.terrain||{};
     const goodTerrain=terrain.state==='ready'&&terrain.datasetId===DEM&&terrain.verticalDatum==='EGM2008'&&terrain.resolutionM===30&&Array.isArray(terrain.samples)&&terrain.samples.length<=80;
     const inArea=point=>pointWithin(point,context.payload.geometry);
-    const samples=goodTerrain?terrain.samples.filter(s=>pair([s.longitude,s.latitude])&&(inArea([s.longitude,s.latitude])||same([s.longitude,s.latitude],context.payload.home))&&(s.elevationM===null||elevation(s.elevationM))):[];
+    const isRoute=coordinates=>Array.isArray(context.payload.routePoints)&&context.payload.routePoints.some(p=>same(p,coordinates));
+    const samples=goodTerrain?terrain.samples.filter(s=>pair([s.longitude,s.latitude])&&(inArea([s.longitude,s.latitude])||same([s.longitude,s.latitude],context.payload.home)||isRoute([s.longitude,s.latitude]))).map(s=>({...s,elevationM:elevation(s.elevationM)?s.elevationM:null})):[];
     if(!goodTerrain||!samples.some(s=>elevation(s.elevationM))){report.terrain={...terrain,state:'unavailable',samples:[],homeElevationM:null,minElevationM:null,maxElevationM:null};}
     else{
       report.terrain.samples=samples;
@@ -100,16 +106,17 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
   }
   function render(){
     const report=response;
-    const labels={waiting:'Choose an inspection area',loading:'Checking GEE planning data…',ready:'GEE planning data ready',partial:'Some GEE data unavailable',unavailable:'GEE planning data unavailable',not_configured:'GEE connection not configured',error:'GEE planning data unavailable',stale:'GEE planning data expired',skipped:localFile?'GEE data needs the local API':'Test example · GEE data off',paused:'GEE checks paused',offline:'Offline · GEE data unknown'};
+    const labels={waiting:'Choose an inspection area',loading:'Checking GEE planning data…',ready:'GEE planning data ready',partial:'Some GEE data unavailable',unavailable:'GEE planning data unavailable',not_configured:'GEE connection not configured',error:'GEE planning data unavailable',stale:'GEE planning data expired',skipped:'GEE data needs the local API',paused:'GEE checks paused',offline:'Offline · GEE data unknown'};
     const label=labels[state.status]||'GEE data unknown';badge.textContent=label;badge.dataset.state=state.status;status.textContent=label;
     const terrain=report?.terrain,land=report?.landcover,quality=report?.quality,forecast=report?.forecast;
-    const rows=[['Surface elevation',terrain?.state==='ready'&&elevation(terrain.minElevationM)&&elevation(terrain.maxElevationM)?format(terrain.minElevationM)+' – '+format(terrain.maxElevationM,' m')+' · DSM estimate':'Unknown'],['Home elevation estimate',terrain?.state==='ready'&&elevation(terrain.homeElevationM)?format(terrain.homeElevationM,' m')+' · EGM2008':mission().payload.home?'Unknown':'Choose a Home position'],['Water / mangrove',land?.state==='ready'?format(land.waterPct,'%')+' / '+format(land.mangrovePct,'%')+' · 2021':'Unknown'],['Image quality',quality?.state==='ready'?format(quality.clearPct,'% clear')+' · '+format(quality.coveragePct,'% coverage'):mission().payload.sceneId?'Unknown':'Choose a GEE image'],['GFS 10 m reference',forecast?.state==='ready'?format(forecast.windSpeedMps,' m/s')+' · Gust '+format(forecast.gustMps,' m/s'):'Unknown']];
+    const context=mission(),assessment=assessPlanningTerrain(report,{geometry:context.payload.geometry,home:context.payload.home,toleranceM:context.source.terrainToleranceM??2,now:now()});
+    const rows=[['Surface elevation',terrain?.state==='ready'&&elevation(terrain.minElevationM)&&elevation(terrain.maxElevationM)?format(terrain.minElevationM)+' – '+format(terrain.maxElevationM,' m')+' · DSM estimate':'Unknown'],['Home elevation estimate',terrain?.state==='ready'&&elevation(terrain.homeElevationM)?format(terrain.homeElevationM,' m')+' · EGM2008':context.payload.home?'Unknown':'Choose a Home position'],['GEE model assessment',assessment.label+' · '+format(assessment.toleranceM,' m')+' tolerance (unverified)'],['Water / mangrove',land?.state==='ready'?format(land.waterPct,'%')+' / '+format(land.mangrovePct,'%')+' · 2021':'Unknown'],...(!context.source.example?[['Image quality',quality?.state==='ready'?format(quality.clearPct,'% clear')+' · '+format(quality.coveragePct,'% coverage'):context.payload.sceneId?'Unknown':'Choose a GEE image'],['GFS 10 m reference',forecast?.state==='ready'?format(forecast.windSpeedMps,' m/s')+' · Gust '+format(forecast.gustMps,' m/s'):'Unknown']]:[])];
     summary.innerHTML='<dl>'+rows.map(([name,value])=>'<dt>'+escape(name)+'</dt><dd>'+escape(value)+'</dd>').join('')+'</dl>';
-    const context=mission(),homeReady=terrain?.state==='ready'&&elevation(terrain.homeElevationM)&&same(report.request.home,context.payload.home)&&pair(context.payload.home)&&Date.parse(state.expiresAt)>now();
+    const homeReady=terrain?.state==='ready'&&elevation(terrain.homeElevationM)&&same(report.request.home,context.payload.home)&&pair(context.payload.home)&&Date.parse(state.expiresAt)>now();
     review.disabled=!homeReady;accept.disabled=!homeReady||!review.checked;refresh.disabled=state.status==='loading'||!!context.blocked;
-    hint.textContent=accepted?'Reviewed estimate retained for this Home position. Other export checks still require review.':'30 m DSM · EGM2008 estimate. Confirm the actual launch level and compatible height reference.';
+    hint.textContent=accepted?.mode==='gee_model'?'GEE model estimate retained for this Home · EGM2008. Actual launch level and flight clearance are not verified.':accepted?'Reviewed estimate retained for this Home position. Other export checks still require review.':'30 m DSM · EGM2008 estimate. Confirm the actual launch level and compatible height reference.';
     const lines=[];
-    if(report){lines.push('Checked: '+displayTime(report.fetchedAt),'Context expires: '+displayTime(report.expiresAt));
+    if(report){lines.push('Checked: '+displayTime(report.fetchedAt),'Context expires: '+displayTime(report.expiresAt),'GEE model sample completeness: '+assessment.coverage.known+'/'+assessment.coverage.total+'; this is not continuous area coverage.',...assessment.reasons);
       if(terrain)lines.push('Surface model: '+(terrain.datasetId||'Unknown')+' · '+format(terrain.resolutionM,' m')+' · '+(terrain.verticalDatum||'Height reference unknown'));
       if(land?.state==='ready')lines.push('WorldCover '+land.year+' · '+format(land.resolutionM,' m')+' · Coverage '+format(land.coveragePct,'%')+' · Unknown '+format(land.unknownPct,'%'),'Water area: '+format(land.waterAreaM2,' m²')+' · Mangrove area: '+format(land.mangroveAreaM2,' m²'));
       if(quality?.state==='ready')lines.push('Selected image: '+quality.sceneId+' · Acquired '+displayTime(quality.acquiredAt),'Quality method: '+(quality.method||'Unknown')+' · '+format(quality.resolutionM,' m')+' · Cloud '+format(quality.cloudPct,'%'));
@@ -123,7 +130,12 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     if(disposed||mission().key!==context.key||mission().blocked)return;
     response=clone(report);review.checked=false;
     const ready=['terrain','landcover','quality','forecast'].filter(name=>report[name]?.state!=='not_requested').map(name=>report[name]?.state==='ready');
-    const next=report.state==='not_configured'?'not_configured':ready.length&&ready.every(Boolean)?'ready':ready.some(Boolean)?'partial':report.state==='error'?'error':'unavailable';
+    // Source availability and sample completeness are different. Keep usable
+    // parts visible, but never call a partially masked/missing context ready.
+    const terrain=report.terrain,samples=terrain?.samples||[];
+    const missingTerrain=terrain?.state==='ready'&&(samples.some(sample=>!elevation(sample.elevationM))||context.payload.home&&!elevation(terrain.homeElevationM)||(context.payload.routePoints||[]).some(point=>!samples.some(sample=>samePoint(point,[sample.longitude,sample.latitude]))));
+    const incomplete=report.state==='partial'||missingTerrain||report.landcover?.state==='ready'&&report.landcover.coveragePct<99||report.quality?.state==='ready'&&report.quality.coveragePct<99;
+    const next=report.state==='not_configured'?'not_configured':ready.length&&ready.every(Boolean)&&!incomplete?'ready':ready.some(Boolean)?'partial':report.state==='error'?'error':'unavailable';
     state={status:next,reason:null,fetchedAt:report.fetchedAt,expiresAt:report.expiresAt};armExpiry();render();notify('context');
   }
   function schedule(delay=600){clearTimer('debounce');if(disposed||mission().blocked)return;debounce=timers.setTimeout(()=>{debounce=null;refreshContext({force:false});},delay);}
@@ -155,9 +167,17 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     })();pending={key:context.key,controller,promise:task};return task;
   }
   function getContext(){const data=current();if(data?.terrain?.state!=='ready')return null;return {state:'connected',provider:'Google Earth Engine',samples:clone(data.terrain.samples),datasets:[{id:data.terrain.datasetId,label:'Copernicus surface elevation estimate',resolutionM:data.terrain.resolutionM,verticalDatum:data.terrain.verticalDatum}],sampledAt:data.fetchedAt,expiresAt:data.expiresAt,geometry:clone(data.request.geometry),warnings:warningList(data.terrain.warnings)};}
+  function getTerrainAssessment({toleranceM=2}={}){const data=current(),context=mission();return assessPlanningTerrain(data,{geometry:context.payload.geometry,home:context.payload.home,toleranceM,now:now()});}
+  function useModelHomeEstimate(){
+    const data=current(),home=mission().payload.home,t=data?.terrain;reconcileHome();
+    if(t?.state!=='ready'||!elevation(t.homeElevationM)||!pair(home)||!same(home,data.request.home))return false;
+    if(homeField.value!==''&&!(accepted?.mode==='gee_model'&&homeField.value===accepted.fieldValue&&same(home,accepted.home)))return false;
+    if(accepted?.mode==='gee_model'&&accepted.valueM===t.homeElevationM&&accepted.fetchedAt===data.fetchedAt)return true;
+    homeField.value=String(t.homeElevationM);accepted={mode:'gee_model',reviewed:false,home:clone(home),valueM:t.homeElevationM,verticalDatum:'EGM2008',datasetId:DEM,resolutionM:30,acceptedAt:new Date(now()).toISOString(),fetchedAt:data.fetchedAt,expiresAt:data.expiresAt,fieldValue:homeField.value};review.checked=false;render();notify('home-model');return true;
+  }
   function getPatch(){
     const data=current();reconcileHome();let evidence=null;
-    if(data){const t=data.terrain,l=data.landcover,q=data.quality,f=data.forecast;evidence={mode:'gee_context',fetchedAt:data.fetchedAt,expiresAt:data.expiresAt,geometry:clone(data.request.geometry),home:clone(data.request.home),sceneId:data.request.sceneId,terrain:{state:t?.state,datasetId:t?.datasetId,verticalDatum:t?.verticalDatum,minElevationM:t?.minElevationM??null,maxElevationM:t?.maxElevationM??null,elevationRangeM:t?.state==='ready'&&elevation(t.minElevationM)&&elevation(t.maxElevationM)?t.maxElevationM-t.minElevationM:null},landcover:{state:l?.state,year:l?.year,waterPct:l?.state==='ready'?l.waterPct:null,mangrovePct:l?.state==='ready'?l.mangrovePct:null,coveragePct:l?.state==='ready'?l.coveragePct:null},quality:{state:q?.state,acquiredAt:q?.acquiredAt??null,cloudPct:q?.state==='ready'?q.cloudPct:null,clearPct:q?.state==='ready'?q.clearPct:null,coveragePct:q?.state==='ready'?q.coveragePct:null},forecast:{state:f?.state,scope:f?.scope,referenceHeightM:10,modelRunAt:f?.modelRunAt??null,validAt:f?.validAt??null,windSpeedMps:f?.state==='ready'?f.windSpeedMps:null,gustMps:f?.state==='ready'?f.gustMps??null:null}};}
+    if(data){const t=data.terrain,l=data.landcover,q=data.quality,f=data.forecast;evidence={mode:'gee_context',fetchedAt:data.fetchedAt,expiresAt:data.expiresAt,geometry:clone(data.request.geometry),home:clone(data.request.home),routePoints:clone(data.request.routePoints||[]),sceneId:data.request.sceneId,terrain:{state:t?.state,datasetId:t?.datasetId,verticalDatum:t?.verticalDatum,minElevationM:t?.minElevationM??null,maxElevationM:t?.maxElevationM??null,elevationRangeM:t?.state==='ready'&&elevation(t.minElevationM)&&elevation(t.maxElevationM)?t.maxElevationM-t.minElevationM:null},landcover:{state:l?.state,year:l?.year,waterPct:l?.state==='ready'?l.waterPct:null,mangrovePct:l?.state==='ready'?l.mangrovePct:null,coveragePct:l?.state==='ready'?l.coveragePct:null},quality:{state:q?.state,acquiredAt:q?.acquiredAt??null,cloudPct:q?.state==='ready'?q.cloudPct:null,clearPct:q?.state==='ready'?q.clearPct:null,coveragePct:q?.state==='ready'?q.coveragePct:null},forecast:{state:f?.state,scope:f?.scope,referenceHeightM:10,modelRunAt:f?.modelRunAt??null,validAt:f?.validAt??null,windSpeedMps:f?.state==='ready'?f.windSpeedMps:null,gustMps:f?.state==='ready'?f.gustMps??null:null}};}
     return {flight:{geospatialEvidence:evidence},export:{homeElevationEvidence:accepted?clone(Object.fromEntries(Object.entries(accepted).filter(([name])=>name!=='fieldValue'))):null}};
   }
   review.addEventListener('change',render);
@@ -169,5 +189,5 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
   opener.onclick=()=>{$('#trial-settings-dialog').showModal();panel.scrollIntoView({block:'start'});};
   const visibility=()=>changed(),connectivity=()=>changed();root.addEventListener('visibilitychange',visibility);globalThis.addEventListener('online',connectivity);globalThis.addEventListener('offline',connectivity);
   changed();
-  return {changed,getContext,getPatch,revokeHomeEstimate,getState(){current();return {...clone(state),response:clone(response)};},refresh:refreshContext,dispose(){if(disposed)return;disposed=true;cancel();response=null;cache.clear();root.removeEventListener('visibilitychange',visibility);globalThis.removeEventListener('online',connectivity);globalThis.removeEventListener('offline',connectivity);}};
+  return {changed,getContext,getPatch,getTerrainAssessment,useModelHomeEstimate,revokeHomeEstimate,getState(){current();return {...clone(state),response:clone(response)};},refresh:refreshContext,dispose(){if(disposed)return;disposed=true;cancel();response=null;cache.clear();root.removeEventListener('visibilitychange',visibility);globalThis.removeEventListener('online',connectivity);globalThis.removeEventListener('offline',connectivity);}};
 }

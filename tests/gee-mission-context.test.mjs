@@ -58,6 +58,16 @@ test('Deterministic samples include an explicit outside home while area samples 
  const normalized=validateMissionContextRequest(input,{now:NOW}),points=missionContextSamplePoints(normalized);
  assert.ok(points.length<=80);assert.deepEqual(points[0],{coordinates:input.home,home:true});assert.ok(points.filter(p=>!p.home).every(p=>pointWithin(p.coordinates,input.geometry)));assert.deepEqual(points,missionContextSamplePoints(normalized));
 });
+test('Optional route samples are bounded Thailand coordinates and preserve the legacy request shape when absent',()=>{
+ const input={...request(),routePoints:[[101.228,12.618],[101.232,12.622]]},normalized=validateMissionContextRequest(input,{now:NOW});assert.deepEqual(normalized,input);normalized.routePoints[0][0]=100;assert.equal(input.routePoints[0][0],101.228);
+ for(const points of [null,{},Array.from({length:25},()=>[101.23,12.62]),[[107,12]],[[101,22]],[[97.1,5.1]],[[NaN,12]],[[101,12,0]]])assert.throws(()=>validateMissionContextRequest({...request(),routePoints:points},{now:NOW}),error=>error.code==='GEE_CONTEXT_INPUT_INVALID');
+ assert.equal(Object.hasOwn(validateMissionContextRequest(request(),{now:NOW}),'routePoints'),false);
+});
+test('Route points outside AOI are deterministic and do not displace Home or the 7 by 7 area grid',()=>{
+ const input={...request(),routePoints:Array.from({length:24},(_,i)=>[101.225+i*.00001,12.615])},normalized=validateMissionContextRequest(input,{now:NOW}),points=missionContextSamplePoints(normalized);
+ assert.ok(points.length<=80);assert.equal(points[0].home,true);assert.equal(points.filter(p=>p.route).length,24);assert.ok(points.filter(p=>!p.home&&!p.route).every(p=>pointWithin(p.coordinates,input.geometry)));assert.deepEqual(points,missionContextSamplePoints(normalized));
+ const area=points.filter(p=>!p.home&&!p.route);assert.equal(area.length,52);const expression=JSON.stringify(missionContextExpressions(normalized,{now:NOW}).terrain);for(const route of input.routePoints)assert.ok(expression.includes(JSON.stringify(route)));
+});
 
 test('Fixed expression trees retain dataset versions, pixel-area partitions, bounds and exact source identity',()=>{
  const e=missionContextExpressions(validateMissionContextRequest(request(),{now:NOW}),{now:NOW}),text=JSON.stringify(e);
@@ -216,6 +226,10 @@ test('Cache clones responses, isolates credential/AOI/home/time scopes and expir
  await lookup(v,request(),{now:NOW+600001});assert.equal(v.calls.compute,11);
  const otherEnv={...v.env,GEE_PROJECT_ID:v.env.GEE_PROJECT_ID+'-other'};await fetchGEEMissionContext(otherEnv,request(),{now:NOW,fetchImpl:async(url,options)=>url==='https://oauth2.googleapis.com/token'?Response.json({access_token:'other',token_type:'Bearer',expires_in:3600}):Promise.reject(Error('No source'))});
  const before=v.calls.compute;await lookup(v);assert.equal(v.calls.compute,before);
+});
+test('Route sampling is read only, role-labelled and independently scoped in static terrain caches',async()=>{
+ const v=fixture(),input={...request(),sceneId:null,startAt:null,endAt:null,routePoints:[[101.228,12.618]]},first=await lookup(v,input);assert.equal(v.calls.compute,2);assert.equal(first.terrain.samples.filter(p=>p.role==='route').length,1);assert.equal(first.quality.state,'not_requested');assert.equal(first.forecast.state,'not_requested');assert.deepEqual(first.request.routePoints,input.routePoints);
+ await lookup(v,input);assert.equal(v.calls.compute,2);const next={...input,routePoints:[[101.227,12.617]]};await lookup(v,next);assert.equal(v.calls.compute,3,'Only terrain changes; landcover is reusable');assert.equal(v.calls.bodies.at(-1).kind,'terrain');assert.equal(first.hardwareControl,false);assert.equal(first.releaseControl,false);
 });
 
 test('Provider failures, oversized bodies, bad JSON and malformed result partitions are sanitized',async()=>{

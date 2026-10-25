@@ -7,6 +7,7 @@ import {FIXED_PLANNING_SETTINGS,FIXED_SEARCH_SETTINGS,isFixedPlanningField,apply
 import {fileTrialAPI} from '../src/planning-file-api.js';
 import {validateGeometry} from '../src/domain.js';
 import {ESTIMATED_DEMO_PROFILE,createEstimatedDemoInputs} from '../src/planning-estimated-demo.js';
+import {createPlanningSchedule} from '../src/planning-schedule.js';
 
 const client=await readFile(new URL('../src/planning-trial-client.js',import.meta.url),'utf8');
 const polygon=()=>({type:'Polygon',coordinates:[[[101.31,12.71],[101.313,12.71],[101.313,12.712],[101.31,12.712],[101.31,12.71]]]});
@@ -17,7 +18,7 @@ function section(from,to){const start=client.indexOf(from),end=client.indexOf(to
 // browser/map/network adapters. Hidden controls remain in queries as in the DOM.
 function harness(){
   const nodes=[];
-  const explicitControls=new Set(['trial-camera-preset','drift-enabled','export-home-confirmed','export-flat-confirmed','export-airspace-reviewed','export-nogo','oil-emulsion','trial-environment-mode','trial-environment-site']);
+  const explicitControls=new Set(['trial-camera-preset','drift-enabled','export-home-confirmed','export-flat-confirmed','export-airspace-reviewed','export-nogo','oil-emulsion','trial-environment-mode','trial-environment-site','trial-terrain-mode','trial-terrain-tolerance']);
   class Element{
     constructor(tag='input'){this.tagName=tag.toUpperCase();this.type=tag==='select'?'select-one':'text';this.children=[];this.dataset={};this.attributes={};this.textContent='';this.hidden=false;this.readOnly=false;this.disabled=false;this.checked=false;this._value='';nodes.push(this);}
     set value(value){this._value=String(value);} get value(){return this._value;}
@@ -33,13 +34,22 @@ function harness(){
     querySelectorAll(selector){const named=nodes.filter(node=>node.name);if(selector==='#trial-settings input[name],#trial-settings select[name]')return named;if(selector==='#trial-settings input[id],#trial-settings select[id],#trial-settings textarea[id]')return nodes.filter(node=>node.id&&(node.name||explicitControls.has(node.id)));const prefix=selector.match(/^\[name\^="([^"]+)"\]$/)?.[1];assert.ok(prefix,'Unsupported selector: '+selector);return named.filter(item=>item.name.startsWith(prefix));}
   };
   for(const id of explicitControls)document.querySelector('#'+id);
+  document.querySelector('#trial-terrain-mode').value='manual';
+  document.querySelector('#trial-terrain-tolerance').value='2';
   document.querySelector('#trial-back').setAttribute('href','/mission.html');
   const calls={stopDraw:0,loadSurvey:0,setGeometry:0,invalidate:0,errors:[],downloads:[]};
-  const context=vm.createContext({document,calls,structuredClone,Date,JSON,XEDO_HARDWARE_PROFILE,FIXED_PLANNING_SETTINGS,FIXED_SEARCH_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,fixedSettingConflicts,validateGeometry,ESTIMATED_DEMO_PROFILE,createEstimatedDemoInputs});
+  // Browser modules share a realm; JSON-boundary cloning gives the imported pure
+  // helper the same plain-record semantics while VM form functions remain real.
+  function scheduleFactory(options){
+    const helper=createPlanningSchedule(options);
+    return {...helper,restore:(metadata,fields)=>helper.restore(metadata==null?metadata:plain(metadata),fields==null?fields:plain(fields)),setManual:fields=>helper.setManual(plain(fields))};
+  }
+  const context=vm.createContext({document,calls,structuredClone,Date,JSON,createPlanningSchedule:scheduleFactory,XEDO_HARDWARE_PROFILE,FIXED_PLANNING_SETTINGS,FIXED_SEARCH_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,fixedSettingConflicts,validateGeometry,ESTIMATED_DEMO_PROFILE,createEstimatedDemoInputs});
   vm.runInContext(`
     const $=selector=>document.querySelector(selector);
-    let geometry=${JSON.stringify(polygon())},surveyId=null,revision=0,example=false,draw={active:true},selectHome=false,result=null;
-    const fileMode=true,runtime={label:'Local trial'},geeHosted=false,basemap=null;
+    let geometry=${JSON.stringify(polygon())},surveyId=null,revision=0,example=false,draw={active:true},selectHome=false,result=null,working=false,currentStep=3,review={ready:true};
+    const fileMode=true,runtime={label:'Local trial',localFile:true},geeHosted=false,basemap=null;
+    const number=(value,places=2)=>Number.isFinite(value)?value.toLocaleString('en-US',{maximumFractionDigits:places}):'Unknown';
     function stopDraw(){calls.stopDraw++;draw=null;}
     async function loadSurvey(){calls.loadSurvey++;return true;}
     function resetSurvey(){}
@@ -50,9 +60,12 @@ function harness(){
     function error(message=''){calls.errors.push(message);}
     function announce(){}
     function download(text,filename,mime){calls.downloads.push({text,filename,mime});}
-    function state(){return {geometry,surveyId,draw,example,estimatedDemo,hasMissionBackup:missionBackup!==null};}
+    function state(){return {geometry,surveyId,draw,example,estimatedDemo,hasMissionBackup:missionBackup!==null,schedule:schedule.getPatch(),routePoints};}
     function setResult(value){result=value;draw=null;}
+    function setGeospatial(value){geospatialUI=value;}
+    function setEnvironment(value){environmentUI=value;}
     ${section('const fields={','let geometry=null')}
+    ${section('function field(','function updateHardwareProfileState()')}
     ${section('function updateHardwareProfileState()','function resetReview(')}
     ${section('function resetReview(','function api(')}
     ${section('function setGeometry(','async function loadSurvey(')}
@@ -61,7 +74,7 @@ function harness(){
     ${section('function compatibleInputs(','function changed(')}
     ${section("$('#trial-example').onclick=","window.addEventListener('pagehide'")}
   `,context);
-  return {context,document,calls,input:(group,key)=>document.querySelector('#f-'+group+'-'+key),node:id=>document.querySelector('#'+id),body:()=>plain(context.body()),state:()=>plain(context.state()),restore:input=>context.restoreInputs(input),saveSnapshot(result){context.setResult(result);document.querySelector('#trial-snapshot').onclick();return calls.downloads.at(-1);},async snapshot(input){const text=JSON.stringify(input),target={files:[{size:text.length,text:async()=>text}],value:'selected.json'};await document.querySelector('#trial-restore').onchange({target});return target;}};
+  return {context,document,calls,schedule:vm.runInContext('schedule',context),input:(group,key)=>document.querySelector('#f-'+group+'-'+key),node:id=>document.querySelector('#'+id),body:()=>plain(context.body()),state:()=>plain(context.state()),restore:input=>context.restoreInputs(input),saveSnapshot(result){context.setResult(result);document.querySelector('#trial-snapshot').onclick();return calls.downloads.at(-1);},async snapshot(input){const text=JSON.stringify(input),target={files:[{size:text.length,text:async()=>text}],value:'selected.json'};await document.querySelector('#trial-restore').onchange({target});return target;}};
 }
 function assertConstants(input){for(const [group,settings]of Object.entries(FIXED_PLANNING_SETTINGS))for(const [key,expected]of Object.entries(settings))assert.equal(input[group][key],expected,group+'.'+key);}
 
@@ -179,4 +192,77 @@ test('Restoring an ordinary mission snapshot from demo removes assumed values an
   const result=await fileTrialAPI('',{method:'POST',body:JSON.stringify(restored)}),download=ui.saveSnapshot(result),saved=JSON.parse(download.text);
   assert.match(download.filename,/^XEDO-planning-trial-.*\.json$/);assert.equal(saved.exampleData,false);assert.equal(Object.hasOwn(saved,'demoProfile'),false);assert.equal(saved.inputs.flight.powerW,null);
   ui.node('trial-demo-exit').onclick();assert.equal(ui.body().flight.usableWh,90);
+});
+
+test('Downloaded mission snapshots preserve automatic schedule anchor and restore it with fresh review checks',async()=>{
+  const ui=harness();
+  const first=ui.schedule.begin();ui.context.syncScheduleFields(first);
+  const completed=ui.schedule.complete({plan:{status:'generated',estimates:{durationS:1250}},battery:{totalDurationS:1800,sorties:[{},{}]}});
+  ui.context.syncScheduleFields(completed);
+  const input=ui.body();
+  assert.deepEqual(input.export.schedule,completed.schedule);
+  assert.equal(input.export.plannedTakeoffAt,completed.plannedTakeoffAt);
+  assert.equal(input.export.plannedEndAt,completed.plannedEndAt);
+  const result=await fileTrialAPI('',{method:'POST',body:JSON.stringify(input)});
+  const saved=JSON.parse(ui.saveSnapshot(result).text);
+  assert.deepEqual(saved.inputs.export.schedule,completed.schedule);
+  const target=harness();await target.snapshot(saved);
+  assert.deepEqual(target.state().schedule,completed);
+  assert.equal(target.body().export.plannedTakeoffAt,completed.plannedTakeoffAt);
+  assert.equal(target.body().export.plannedEndAt,completed.plannedEndAt);
+  assert.equal(target.node('trial-terrain-mode').value,'manual');
+  for(const key of ['homeConfirmed','flatSurfaceConfirmed','airspaceReviewed'])assert.equal(target.body().export[key],false,key);
+});
+
+test('A demo visit restores raw mission times, schedule metadata and terrain choices together',()=>{
+  const ui=harness();
+  ui.input('export','plannedTakeoffAt').value='2026-11-01T17:02:00.000';
+  ui.input('export','plannedEndAt').value='2026-11-01T18:07:00.000';
+  ui.schedule.setManual(ui.context.read('export'));
+  ui.node('trial-terrain-mode').value='manual';ui.node('trial-terrain-tolerance').value='3.500';
+  const original=ui.state().schedule;
+  ui.node('trial-example').onclick();
+  assert.equal(ui.state().schedule.schedule.mode,'idle');
+  ui.input('export','plannedTakeoffAt').value='2026-11-02T10:00';
+  ui.node('trial-terrain-mode').value='automatic';ui.node('trial-terrain-tolerance').value='99';
+  ui.node('trial-demo-exit').onclick();
+  assert.equal(ui.input('export','plannedTakeoffAt').value,'2026-11-01T17:02:00.000');
+  assert.equal(ui.input('export','plannedEndAt').value,'2026-11-01T18:07:00.000');
+  assert.deepEqual(ui.state().schedule,original);
+  assert.equal(ui.node('trial-terrain-mode').value,'manual');
+  assert.equal(ui.node('trial-terrain-tolerance').value,'3.500');
+});
+
+test('Invalid schedule snapshot is rejected before changing drawing, reviews, polygon, metadata or raw fields',async()=>{
+  const ui=harness();
+  ui.schedule.begin();ui.context.syncScheduleFields(ui.schedule.complete({plan:{status:'generated',estimates:{durationS:900}}}));
+  for(const id of ['export-home-confirmed','export-flat-confirmed','export-airspace-reviewed'])ui.node(id).checked=true;
+  ui.input('flight','usableWh').value='42.5000';ui.node('trial-terrain-tolerance').value='3.500';
+  const before=ui.body(),stateBefore=ui.state(),invalid=structuredClone(before);
+  invalid.geometry=null;invalid.flight.usableWh=999;invalid.export.terrainMode='automatic';
+  invalid.export.schedule.analysedAt=new Date(Date.parse(invalid.export.schedule.analysedAt)+1000).toISOString();
+  const target=await ui.snapshot({schema_version:'xedo-planning-trial/1',inputs:invalid});
+  assert.deepEqual(ui.body(),before);assert.deepEqual(ui.state(),stateBefore);
+  assert.equal(ui.input('flight','usableWh').value,'42.5000');assert.equal(ui.node('trial-terrain-tolerance').value,'3.500');
+  for(const id of ['export-home-confirmed','export-flat-confirmed','export-airspace-reviewed'])assert.equal(ui.node(id).checked,true);
+  for(const key of ['stopDraw','loadSurvey','setGeometry','invalidate'])assert.equal(ui.calls[key],0,key);
+  assert.match(ui.calls.errors.at(-1),/timestamps do not match the saved analysis/);
+  assert.equal(target.value,'');
+});
+
+test('Demo can consume explicit GEE terrain evidence while manual mode retains its own height reference',()=>{
+  const ui=harness();ui.node('trial-example').onclick();
+  const assessment={mode:'gee_model',state:'ready',label:'GEE model samples ready',coverage:{known:6,total:6},reasons:[]};
+  const patch={flight:{geospatialEvidence:{mode:'gee_context',source:'Google Earth Engine'}},export:{homeAmslM:1.25,homeElevationEvidence:{mode:'gee_model',valueM:1.25}}};
+  ui.context.setGeospatial({getPatch:()=>patch,getTerrainAssessment:()=>assessment});
+  ui.node('trial-terrain-mode').value='automatic';
+  const automatic=ui.body();
+  assert.equal(automatic.export.homeAmslM,1.25);assert.deepEqual(automatic.export.terrainAssessment,assessment);
+  assert.equal(automatic.export.flatSurfaceConfirmed,true);assert.equal(automatic.export.homeElevationEvidence.mode,'gee_model');
+  assert.equal(automatic.flight.geospatialEvidence.source,'Google Earth Engine');
+  assert.equal(automatic.flight.windEastMps,0);assert.equal(automatic.flight.windNorthMps,0);
+  assert.equal(automatic.drift.currentEastMps,createEstimatedDemoInputs().drift.currentEastMps);
+  ui.node('trial-terrain-mode').value='manual';ui.input('export','homeAmslM').value='7.5';
+  const manual=ui.body();assert.equal(manual.export.homeAmslM,7.5);assert.equal(manual.export.flatSurfaceConfirmed,false);
+  assert.equal(Object.hasOwn(manual.export,'homeElevationEvidence'),false);assert.equal(Object.hasOwn(manual.export,'terrainAssessment'),false);
 });

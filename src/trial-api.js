@@ -65,7 +65,7 @@ export async function calculatePlanningTrial(db,body){
     }
   }
   applyEnvironmentExportGate(exportCheck,{...body,geometry:original.geometry});
-  applyGeospatialExportGate(exportCheck,body);
+  applyGeospatialExportGate(exportCheck,{...body,geometry:original.geometry});
   const oil=attempt(()=>calculateOil(body.oil||{}),{missing:[],areaM2:null,volumeLowL:null,volumeHighL:null,oilMassLowKg:null,oilMassHighKg:null,capsulesLowKg:null,capsulesHighKg:null,warnings:[]});
   const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(canonical({source:original,...body})))),x=>x.toString(16).padStart(2,'0')).join('');
   return {schema_version:'xedo-planning-trial/1',purpose:'planning_trial_only',generatedAt:new Date().toISOString(),inputHash:hash,source:original,inputs:structuredClone(body),target,drift,flight,exportCheck,oil,hardwareControl:false,releaseControl:false};

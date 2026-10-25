@@ -3,6 +3,15 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {ESTIMATED_DEMO_PROFILE} from '../src/planning-estimated-demo.js';
+import {createPlanningSchedule} from '../src/planning-schedule.js';
+
+const plain=value=>JSON.parse(JSON.stringify(value));
+// VM callers and imported modules have separate Object prototypes. JSON is the
+// real transport boundary for saved inputs and preserves all tested metadata.
+function scheduleFactory(options){
+  const helper=createPlanningSchedule(options);
+  return {...helper,restore:(metadata,fields)=>helper.restore(metadata==null?metadata:plain(metadata),fields==null?fields:plain(fields)),setManual:fields=>helper.setManual(plain(fields))};
+}
 
 const source = await readFile(new URL('../src/planning-trial-client.js', import.meta.url), 'utf8');
 function production(start, end) {
@@ -48,6 +57,8 @@ function harness(overrides = {}) {
     satelliteToken: 0, satelliteAbort: null, satelliteTimer: null, satelliteExpiryTimer: null,
     satelliteRaster: null, satelliteScenes: [], satelliteSearchGeometry: null,
     lastSurveyArchived: false, lastSatelliteAction: 'search', selectHome: false,
+    schedule: scheduleFactory(), routePoints: [], environmentUI: null, geospatialUI: null,
+    syncScheduleFields(patch) { events.push(['schedule', patch]); return true; },
     $: node,
     setTimeout(fn, ms) { const timer = {fn, ms}; timers.add(timer); return timer; },
     clearTimeout(timer) { timers.delete(timer); },
@@ -99,7 +110,7 @@ test('Explicit saved-source lookup keeps the original adapter so snapshot import
   assert.equal(events.at(-1)[2], '/source?survey=SUR_example');
 });
 
-test('Hosted demo reviews stored imagery and prepares step three without GEE or workspace mutations', async () => {
+test('Hosted demo reviews stored imagery and prepares step three without live imagery or workspace mutations', async () => {
   const {context, events, timers} = harness();
   await context.surveySatellite();
   assert.equal(context.currentStep, 2);
@@ -118,6 +129,11 @@ test('Hosted demo reviews stored imagery and prepares step three without GEE or 
   assert.equal(context.surveyId, null);
   assert.equal(context.satelliteBusy, false);
   assert.equal(events.filter(event => event[0] === 'calculate').length, 1);
+  const scheduling=events.filter(event=>event[0]==='schedule');
+  assert.equal(scheduling.length,1);
+  assert.equal(scheduling[0][1].schedule.mode,'automatic');
+  assert.equal(scheduling[0][1].schedule.pending,true);
+  assert.equal(Date.parse(scheduling[0][1].plannedEndAt)-Date.parse(scheduling[0][1].plannedTakeoffAt),1800000);
 });
 
 test('Non-demo hosted satellite survey still delegates to the existing GEE search', async () => {
@@ -176,7 +192,7 @@ test('Failed real-source snapshot lookup keeps the current demo mode and origina
   }}]};
   const restoreControl = {};
   const context = vm.createContext({
-    ESTIMATED_DEMO_PROFILE, JSON, revision: 0, fileMode: false,
+    ESTIMATED_DEMO_PROFILE, JSON, createPlanningSchedule:scheduleFactory, revision: 0, fileMode: false,
     estimatedDemo: true, example: true, missionBackup: backup,
     $: () => restoreControl,
     compatibleInputs: value => value,
