@@ -5,13 +5,13 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **27 ตุลาคม 2026 — เพิ่มโหมดพื้น Diagram / Satellite ใน 3D ผ่านการตรวจในเครื่อง เตรียมเผยแพร่**
+- อัปเดตล่าสุด: **27 ตุลาคม 2026 — เพิ่มและเผยแพร่พื้น Diagram / Satellite ใน 3D ตรวจเว็บหลักแล้ว**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
 - จุดประสงค์รอบนี้: เพิ่มพื้น 3D สลับ Diagram เดิม / Satellite จาก GEE จริง คงขนาด preview และพื้นเดิม แล้ว push/deploy เว็บหลัก
-- สถานะปัจจุบัน: เขียนแผนก่อน code ใน Markdown ทั้งสองแล้ว ผ่าน syntax/tests **482/482** และ build ทั้ง 3 รูปแบบ รวม browser ในเครื่องที่โหลด GEE จริง ตรวจ desktop/mobile แล้ว เตรียม push/deploy
+- สถานะปัจจุบัน: ผ่าน syntax/tests **482/482**, buildทั้ง3แบบ และ browserในเครื่อง/Production; push code `dc4743c` ไปmainแล้ว Vercel `dpl_HRWQ22Sxg1cM2b8KzrxTHVCWM1vw` READY ตรงรุ่น CI `40488389541` success โหมดSatelliteโหลดGEEจริงและสลับDiagramได้บนเว็บหลัก
 - **คำอนุญาตล่าสุด:** ผู้ใช้อนุญาตแก้ code, push และ deploy โหมดพื้น 3D นี้โดยตรง ขอบเขตนี้ไม่ครอบคลุมการเริ่มทุก feature ที่ยังอยู่ในคิว
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
@@ -22,7 +22,7 @@
 
 ### สถานะล่าสุดที่มีหลักฐาน
 
-**รอบ 3D satellite ground 27 ต.ค. 2026:** เพิ่มปุ่ม Diagram / Satellite ใช้ภาพ tile GEE Sentinel-2 ตามพิกัดพื้นเดิม ไม่ใช้ thumbnail; source mosaic มีวันที่และความละเอียดแยกจากภาพ review; ผ่าน **482 tests** และ3builds ตรวจ browser โหลดภาพจริง/สลับโหมด/หมุนด้วย keyboard/กรอบ440pxdesktopและ340pxmobile/AOIเดิม/ไม่มีแนวนอนล้น390pxแล้ว สถานะก่อน push: local verified ยังไม่อ้างว่าเผยแพร่จนกว่าจะตรวจ deployment
+**รอบ 3D satellite ground 27 ต.ค. 2026 เผยแพร่แล้ว:** เพิ่มปุ่ม Diagram / Satellite ใช้ภาพ tile GEE Sentinel-2 ตามพิกัดพื้นเดิม ไม่ใช้ thumbnail; source mosaic มีวันที่และความละเอียดแยกจากภาพ review; ผ่าน **482 tests** และ3builds ตรวจ browser โหลดภาพจริง/สลับโหมด/หมุนด้วย keyboard/กรอบ440pxdesktopและ340pxmobile/AOIเดิม/ไม่มีแนวนอนล้น390px รวมตรวจเว็บหลัก code `dc4743c` + deploymentREADY + CIsuccessแล้ว เอกสารfollow-upนี้ไม่เปลี่ยนapplication bundle; exactidentityสุดท้ายเก็บในreceiptของรอบนี้
 
 **ชุดแก้ล่าสุด 27 ต.ค. 2026 เผยแพร่แล้ว:** GEE status/progress/error, ภาพบริบทรอบ AOI ประมาณ1กม., module/rendering cleanup และ scroll performance ที่ code commit `8452df2939d7a839885077e574ee6901944b6a91` ตรวจ deployment `dpl_FhXkVvUtYWRAA8rkqZkJwFeC5JBe` READY และ alias เว็บหลักตรงรุ่นนี้ CI [40484759102](https://github.com/megaaaop/XEDO/actions/runs/40484759102) success ผลทดสอบใหม่ **458 ผ่าน / 0 ล้มเหลว / 0 ข้าม**; browser ตรวจภาพและ GEE stages33→100/source Ready พร้อม intentional INPUT/HTTP422 แล้วคืนข้อมูลได้ เก็บรายละเอียดในรอบประจำวันท้ายไฟล์
 
@@ -502,3 +502,13 @@ Release นี้เปลี่ยน source, tests, scripts และเอก
 - Browserภายใน: localhost5187 ใช้polygonอ้างอิงสาธารณะ101.22–101.226,12.65–12.656 โหลดGEEจริง image/dateพร้อม สร้างnormalrouteแล้ว3D SatelliteReady; source29ก.ย.–22ต.ค.2026; ดูภาพเต็มพื้นจริง สลับDiagram↔Satellite/ArrowRight/ArrowLeftได้ไม่มีconsole errorที่พบ ค่าAOIเดิมเท่ากันทุกmode; desktopwrap440/canvas376px mobilewrap340px;390pxscrollWidth375ไม่ล้นแนวนอน คืนviewportแล้ว ไม่วัดFPS
 - หลักฐาน: `output/release-check/3d-satellite-ground-2026-10-27/` มี test/check/build logs, local-browser.json/local-mobile.json และภาพlocal-satellite.jpg/local-mobile.jpg (ไฟล์outputถูกignoreตามเดิม)
 - รอคำตอบ: ไม่มี งานในคิวอื่นไม่ถูกเริ่ม; สถานะก่อนcommitนี้ยังไม่เผยแพร่ รอตรวจmain/CI/VercelและProductionหลังpush
+
+### 3D satellite ground — ผลเผยแพร่และตรวจเว็บหลัก 27 ต.ค. 2026
+
+- Push main สำเร็จที่ application commit `dc4743caf16e270d900fabe906ba6a41c9831e84` โดยไม่force ไม่สร้างpreview branchเพิ่ม
+- Vercel alias `xedo-eight.vercel.app` ตรง deployment `dpl_HRWQ22Sxg1cM2b8KzrxTHVCWM1vw` READY และcodeSHAเดียวกัน; CI [40488389541](https://github.com/megaaaop/XEDO/actions/runs/40488389541) success
+- ตรวจProductionผ่านbrowserจริง: เลือกAOIอ้างอิง → ภาพ22ต.ค.2026ready → Prepare → 3D → Satellite; GEEพื้นmosaic29ก.ย.–22ต.ค.readyและcanvasระบุgeoreferenced satellite imagery; สลับDiagramกลับSatelliteพร้อมArrowRightแล้วReadyทันที ขอบเขตภารกิจเดิมและขนาดwrap440pxเท่ากัน ไม่พบconsole errorที่ตรวจ
+- Sourceheaderของแผนที่พื้นหลังทั่วไปอาจมีช่วงวันที่ต่างจาก3Dfloor เพราะใช้boundedareaคนละกรอบ วันที่ของพื้น3DแสดงในบรรทัดGroundโดยเฉพาะ ภาพจริงอาจมีเมฆ/รายละเอียดตามsource10m;ไม่ได้ใช้thumbnailหรือเพิ่มรายละเอียดเทียม
+- หลักฐานเพิ่ม `production-browser.json`, `production-satellite.jpg`; เปิดProductionแท็บผลตรวจไว้ให้ผู้ใช้ ไม่มีการส่งคำสั่งให้อากาศยาน
+- อัปเดตMarkdownทั้งสองและqueueหลังตรวจเว็บหลักแล้ว เอกสารfollow-upไม่แก้codeและไม่รัน482testsซ้ำสำหรับMarkdown-only การpushเอกสารอาจเลื่อนdeploymentSHAโดยbundleเดิม ให้ดู`release-receipt.json`ในevidenceDirectoryสำหรับidentityสุดท้าย
+- งานค้าง: ข้อใหม่1–4ส่วนอื่นและพัก5–6ยังตามคิวเดิม ไม่มีคำตอบผู้ใช้ค้างที่ขวางงาน3Dรอบนี้

@@ -45,10 +45,10 @@
   },
   "currentImplementationScope": {
     "id": "3d-satellite-ground-2026-10-27",
-    "status": "local_verified_ready_to_publish",
-    "applicationCommit": null,
-    "verifiedDeploymentId": null,
-    "ciRunId": null,
+    "status": "published",
+    "applicationCommit": "dc4743caf16e270d900fabe906ba6a41c9831e84",
+    "verifiedDeploymentId": "dpl_HRWQ22Sxg1cM2b8KzrxTHVCWM1vw",
+    "ciRunId": 40488389541,
     "items": ["Diagram/Satellite 3D ground mode switch", "Real georeferenced GEE Sentinel-2 tile texture across the existing floor", "Preserve preview dimensions, floor extent and camera state", "Bounded display-only imagery lifecycle, progress, attribution, retry and cancellation"],
     "planWrittenBeforeImplementation": "docs/WEBSITE_DETAILS.md",
     "documentationPaths": ["docs/XEDO_WORK_LOG.md", "docs/WEBSITE_DETAILS.md"],
@@ -61,7 +61,7 @@
       "builds": ["build", "build:workspace", "build:file"],
       "localLiveApi": "Browser actual GEE basemap and native-scale tile texture ready; diagram/satellite switching, keyboard orbit, same AOI and canvas dimensions verified; mobile390px no horizontal overflow",
       "evidenceDirectory": "output/release-check/3d-satellite-ground-2026-10-27",
-      "production": "not deployed for this scope yet"
+      "production": "Production alias READY at exact application commit and CI success. Browser normal flow loads a reviewed scene, prepares route, renders real GEE satellite ground Ready, switches Diagram/Satellite and keyboard orbit with unchanged AOI and viewport. No console error found. Evidence: production-browser.json and production-satellite.jpg."
     },
     "preserve": ["three workflow steps", "four calculators", "original inspection/review/calculation geometry", "truthful Unknown and freshness checks", "existing 3D preview size, floor extent and camera fit"],
     "outsideThisRelease": ["aircraft simulation defaults in the normal flow", "user-start/derived-end schedule change", "account implementation", "AI integration", "Pi and experimental reports"]
@@ -303,15 +303,15 @@
     }
   ],
   "latestPublishedRelease": {
-    "commit": "8452df2939d7a839885077e574ee6901944b6a91",
-    "productionDeploymentId": "dpl_FhXkVvUtYWRAA8rkqZkJwFeC5JBe",
+    "commit": "dc4743caf16e270d900fabe906ba6a41c9831e84",
+    "productionDeploymentId": "dpl_HRWQ22Sxg1cM2b8KzrxTHVCWM1vw",
     "url": "https://xedo-eight.vercel.app",
     "sourceBranch": "main",
-    "ciRunId": 40484759102,
+    "ciRunId": 40488389541,
     "ciConclusion": "success",
     "publishedOn": "2026-10-27",
     "timezone": "Asia/Bangkok",
-    "scopeId": "gee-status-context-scroll-2026-10-27",
+    "scopeId": "3d-satellite-ground-2026-10-27",
     "verificationRecord": "Application-code release verified before this documentation-only follow-up. Later documentation commits may advance the deployment Git SHA without changing the verified application bundle; the local release receipt records exact final identity."
   }
 }
