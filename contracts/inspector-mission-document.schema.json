@@ -1,0 +1,500 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "XEDO client-editable private mission document v1",
+  "description": "Phase1 contract artifact; API/DB implementation is not present yet. Noowner/reviewer/server timestamps or readiness seals are accepted from this document. Runtime bytebudget1MiB; calculator inputs≤64KiB. RawAIcatalog remainsimmutable.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "title",
+    "inputMode",
+    "searchGeometry",
+    "imageSelection",
+    "analysisRef",
+    "riskDraft",
+    "planningInputs"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "xedo-inspector-mission/1"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 160
+    },
+    "inputMode": {
+      "enum": [
+        "mission",
+        "estimated_demo"
+      ]
+    },
+    "searchGeometry": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "type",
+            "coordinates"
+          ],
+          "properties": {
+            "type": {
+              "const": "Polygon"
+            },
+            "coordinates": {
+              "type": "array",
+              "minItems": 1,
+              "maxItems": 1,
+              "items": {
+                "type": "array",
+                "minItems": 4,
+                "maxItems": 121,
+                "items": {
+                  "type": "array",
+                  "minItems": 2,
+                  "maxItems": 2,
+                  "prefixItems": [
+                    {
+                      "type": "number",
+                      "minimum": -180,
+                      "maximum": 180
+                    },
+                    {
+                      "type": "number",
+                      "minimum": -85,
+                      "maximum": 85
+                    }
+                  ],
+                  "items": false
+                }
+              }
+            }
+          },
+          "description": "Confirmation/planning geometry only. Runtime must also enforce closure,3-120distinctvertices,noholes,self-intersection,area,coverage and mission limits. Structural schema alone does not establish validity."
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "imageSelection": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "provider",
+            "sceneId",
+            "acquiredAt",
+            "selectionGeometry"
+          ],
+          "properties": {
+            "provider": {
+              "enum": [
+                "gee",
+                "archived"
+              ]
+            },
+            "sceneId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 300
+            },
+            "acquiredAt": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "selectionGeometry": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "type",
+                "coordinates"
+              ],
+              "properties": {
+                "type": {
+                  "const": "Polygon"
+                },
+                "coordinates": {
+                  "type": "array",
+                  "minItems": 1,
+                  "maxItems": 1,
+                  "items": {
+                    "type": "array",
+                    "minItems": 4,
+                    "maxItems": 121,
+                    "items": {
+                      "type": "array",
+                      "minItems": 2,
+                      "maxItems": 2,
+                      "prefixItems": [
+                        {
+                          "type": "number",
+                          "minimum": -180,
+                          "maximum": 180
+                        },
+                        {
+                          "type": "number",
+                          "minimum": -85,
+                          "maximum": 85
+                        }
+                      ],
+                      "items": false
+                    }
+                  }
+                }
+              },
+              "description": "Confirmation/planning geometry only. Runtime must also enforce closure,3-120distinctvertices,noholes,self-intersection,area,coverage and mission limits. Structural schema alone does not establish validity."
+            }
+          },
+          "description": "Durable image identity only; no tile session, expiring URL, credential or current ready flag. Server must verify identity/coverage when used."
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "analysisRef": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "resultId",
+            "manifestSha256",
+            "candidatesSha256",
+            "coverageSha256"
+          ],
+          "properties": {
+            "resultId": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 160
+            },
+            "manifestSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "candidatesSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "coverageSha256": {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$"
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "riskDraft": {
+      "anyOf": [
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "baseReviewRevision",
+            "decisions",
+            "areas",
+            "selectedAreaId"
+          ],
+          "properties": {
+            "baseReviewRevision": {
+              "anyOf": [
+                {
+                  "type": "integer",
+                  "minimum": 1
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "decisions": {
+              "type": "array",
+              "maxItems": 256,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "candidateId",
+                  "action",
+                  "areaId"
+                ],
+                "properties": {
+                  "candidateId": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 120
+                  },
+                  "action": {
+                    "enum": [
+                      "accept",
+                      "edit",
+                      "reject"
+                    ]
+                  },
+                  "areaId": {
+                    "anyOf": [
+                      {
+                        "type": "string",
+                        "format": "uuid"
+                      },
+                      {
+                        "type": "null"
+                      }
+                    ]
+                  }
+                }
+              }
+            },
+            "areas": {
+              "type": "array",
+              "maxItems": 128,
+              "items": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "id",
+                  "origin",
+                  "sourceCandidateIds",
+                  "rings"
+                ],
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "format": "uuid"
+                  },
+                  "origin": {
+                    "enum": [
+                      "candidate",
+                      "edited_candidate",
+                      "manual"
+                    ]
+                  },
+                  "sourceCandidateIds": {
+                    "type": "array",
+                    "maxItems": 256,
+                    "uniqueItems": true,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1,
+                      "maxLength": 120
+                    }
+                  },
+                  "rings": {
+                    "type": "array",
+                    "maxItems": 64,
+                    "items": {
+                      "type": "array",
+                      "maxItems": 4097,
+                      "items": {
+                        "type": "array",
+                        "minItems": 2,
+                        "maxItems": 2,
+                        "prefixItems": [
+                          {
+                            "type": "number",
+                            "minimum": -180,
+                            "maximum": 180
+                          },
+                          {
+                            "type": "number",
+                            "minimum": -85,
+                            "maximum": 85
+                          }
+                        ],
+                        "items": false
+                      }
+                    }
+                  }
+                },
+                "description": "Editable sketch; incomplete/open/temporarily invalid rings are permitted in a saved draft. Confirmation requires a separate validated planning Polygon."
+              }
+            },
+            "selectedAreaId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            }
+          }
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "planningInputs": {
+      "$ref": "planning-trial-request.schema.json"
+    }
+  },
+  "$defs": {
+    "point": {
+      "type": "array",
+      "minItems": 2,
+      "maxItems": 2,
+      "prefixItems": [
+        {
+          "type": "number",
+          "minimum": -180,
+          "maximum": 180
+        },
+        {
+          "type": "number",
+          "minimum": -85,
+          "maximum": 85
+        }
+      ],
+      "items": false
+    },
+    "hash": {
+      "type": "string",
+      "pattern": "^[a-f0-9]{64}$"
+    },
+    "uuid": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "planningPolygon": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "coordinates"
+      ],
+      "properties": {
+        "type": {
+          "const": "Polygon"
+        },
+        "coordinates": {
+          "type": "array",
+          "minItems": 1,
+          "maxItems": 1,
+          "items": {
+            "type": "array",
+            "minItems": 4,
+            "maxItems": 121,
+            "items": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                {
+                  "type": "number",
+                  "minimum": -85,
+                  "maximum": 85
+                }
+              ],
+              "items": false
+            }
+          }
+        }
+      },
+      "description": "Confirmation/planning geometry only. Runtime must also enforce closure,3-120distinctvertices,noholes,self-intersection,area,coverage and mission limits. Structural schema alone does not establish validity."
+    },
+    "analysisRef": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "resultId",
+        "manifestSha256",
+        "candidatesSha256",
+        "coverageSha256"
+      ],
+      "properties": {
+        "resultId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 160
+        },
+        "manifestSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "candidatesSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        },
+        "coverageSha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "riskAreaDraft": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "origin",
+        "sourceCandidateIds",
+        "rings"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "uuid"
+        },
+        "origin": {
+          "enum": [
+            "candidate",
+            "edited_candidate",
+            "manual"
+          ]
+        },
+        "sourceCandidateIds": {
+          "type": "array",
+          "maxItems": 256,
+          "uniqueItems": true,
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "rings": {
+          "type": "array",
+          "maxItems": 64,
+          "items": {
+            "type": "array",
+            "maxItems": 4097,
+            "items": {
+              "type": "array",
+              "minItems": 2,
+              "maxItems": 2,
+              "prefixItems": [
+                {
+                  "type": "number",
+                  "minimum": -180,
+                  "maximum": 180
+                },
+                {
+                  "type": "number",
+                  "minimum": -85,
+                  "maximum": 85
+                }
+              ],
+              "items": false
+            }
+          }
+        }
+      },
+      "description": "Editable sketch; incomplete/open/temporarily invalid rings are permitted in a saved draft. Confirmation requires a separate validated planning Polygon."
+    }
+  }
+}

@@ -1,0 +1,158 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "XEDO authenticated mission save/confirm request v1",
+  "description": "Inspector API implements save_draft; its production database migration is applied. Real-account acceptance awaits team provisioning. confirm_risk is reserved and rejected by the current API/RPC. Atomic CAS, append-only revisions and idempotent receipts; owner/actor/time/hashes are server-derived. Schema validation is not authorization or complete geometry validation.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "missionId",
+    "expectedRevision",
+    "mutationId",
+    "intent",
+    "document"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "xedo-inspector-save/1"
+    },
+    "missionId": {
+      "anyOf": [
+        {
+          "type": "string",
+          "format": "uuid"
+        },
+        {
+          "type": "null"
+        }
+      ]
+    },
+    "expectedRevision": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "mutationId": {
+      "type": "string",
+      "format": "uuid"
+    },
+    "intent": {
+      "enum": [
+        "save_draft",
+        "confirm_risk"
+      ]
+    },
+    "document": {
+      "$ref": "inspector-mission-document.schema.json"
+    },
+    "confirmation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "baseReviewRevision",
+        "target"
+      ],
+      "properties": {
+        "baseReviewRevision": {
+          "anyOf": [
+            {
+              "type": "integer",
+              "minimum": 1
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "target": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "origin",
+            "areaId",
+            "sourceCandidateIds",
+            "geometry"
+          ],
+          "properties": {
+            "origin": {
+              "enum": [
+                "candidate",
+                "edited_candidate",
+                "manual"
+              ]
+            },
+            "areaId": {
+              "anyOf": [
+                {
+                  "type": "string",
+                  "format": "uuid"
+                },
+                {
+                  "type": "null"
+                }
+              ]
+            },
+            "sourceCandidateIds": {
+              "type": "array",
+              "maxItems": 256,
+              "uniqueItems": true,
+              "items": {
+                "type": "string",
+                "minLength": 1,
+                "maxLength": 120
+              }
+            },
+            "geometry": {
+              "$ref": "inspector-mission-document.schema.json#/$defs/planningPolygon"
+            }
+          }
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "missionId": {
+            "type": "null"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "expectedRevision": {
+            "const": 0
+          }
+        }
+      },
+      "else": {
+        "properties": {
+          "expectedRevision": {
+            "minimum": 1
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "intent": {
+            "const": "confirm_risk"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "confirmation"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "confirmation"
+          ]
+        }
+      }
+    }
+  ]
+}

@@ -5,6 +5,10 @@
   "buildCommand": "npm run build",
   "outputDirectory": "dist",
   "functions": {
+    "api/inspector.mjs": {
+      "maxDuration": 30,
+      "includeFiles": "contracts/*.schema.json"
+    },
     "api/gee.mjs": {
       "maxDuration": 60
     },
@@ -16,6 +20,10 @@
     }
   },
   "rewrites": [
+    {
+      "source": "/api/v1/inspector/:path*",
+      "destination": "/api/inspector?route=:path*"
+    },
     {
       "destination": "/api/planning-context",
       "source": "/api/v1/gee/planning-context"

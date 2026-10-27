@@ -5,14 +5,14 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **27 ตุลาคม 2026 — เพิ่มและเผยแพร่พื้น Diagram / Satellite ใน 3D ตรวจเว็บหลักแล้ว**
+- อัปเดตล่าสุด: **28 ตุลาคม 2026 — ผู้ใช้อนุมัติ push/deploy ระบบบัญชีแล้ว ตรวจใหม่500tests/syntax/3buildsผ่าน กำลังเผยแพร่และตรวจ Login บนเว็บจริง บัญชีผู้ทดลองให้ทีมสร้างภายหลัง**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
-- จุดประสงค์รอบนี้: เพิ่มพื้น 3D สลับ Diagram เดิม / Satellite จาก GEE จริง คงขนาด preview และพื้นเดิม แล้ว push/deploy เว็บหลัก
-- สถานะปัจจุบัน: ผ่าน syntax/tests **482/482**, buildทั้ง3แบบ และ browserในเครื่อง/Production; push code `dc4743c` ไปmainแล้ว Vercel `dpl_HRWQ22Sxg1cM2b8KzrxTHVCWM1vw` READY ตรงรุ่น CI `40488389541` success โหมดSatelliteโหลดGEEจริงและสลับDiagramได้บนเว็บหลัก
-- **คำอนุญาตล่าสุด:** ผู้ใช้อนุญาตแก้ code, push และ deploy โหมดพื้น 3D นี้โดยตรง ขอบเขตนี้ไม่ครอบคลุมการเริ่มทุก feature ที่ยังอยู่ในคิว
+- จุดประสงค์รอบนี้: push/deploy Inspector foundation และตรวจหน้าLogin/APIจริง โดยไม่สร้างบัญชีผู้ทดลอง ฐานข้อมูลใช้แล้วและไม่applyซ้ำ
+- สถานะปัจจุบัน: application release เดิมคือ `dc4743c` และ docs HEAD `28d7e9d1b852f1d55ecf115681ff24a13f968918`; receipt สุดท้ายจากรอบก่อนคือ Vercel `dpl_CtoT3UAo4iwD4QTvTj27WZdSwHi5` READY และ CI `40488898952` success ผล **482/482** และ 3 builds เป็นหลักฐานรอบเผยแพร่ก่อนหน้า รอบ28ต.ค.มีเฉพาะInspector DB migrationและตรวจฐานข้อมูลจริง ไม่ตรวจหรือเปลี่ยนfrontend deploymentใหม่
+- **ขอบเขตคำสั่งล่าสุด:** ผู้ใช้อนุมัติpush/deployระบบบัญชีและตรวจหน้าLoginโดยตรงแล้ว ใช้Git→Vercelของprojectเดิม เผยแพร่Inspectorfoundationและเอกสารที่เกี่ยวข้อง ไม่สร้างบัญชี ไม่applyDBซ้ำ ไม่ทำUX/AIeditorหรือprofile/เวลาใหม่ในreleaseนี้
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
 
@@ -21,6 +21,12 @@
 ## 2. สรุป
 
 ### สถานะล่าสุดที่มีหลักฐาน
+
+**Inspector ฐานข้อมูลจริงใช้แล้วและตรวจสิทธิ์แล้ว:** ผู้ใช้อนุมัติ SQL โดยตรงเมื่อ28ต.ค. ไฟล์ SHA256ตรงเดิม applyผ่านconnection **megaphijak** ไปยัง `xedo / tstmjnlhwidwtzetqxbu` สำเร็จ migration **20261027184951 / xedo_inspector_foundation** มี5private tables เปิดRLSทุกตาราง ไม่มีanon/authenticated direct table/column grants ตรวจfunction permissions/bodyและnegative role/sessionรวม **15checksผ่าน** ไม่มีบัญชี/ภารกิจจริง Security advisorมีINFO5ตามRPC-only design ไม่มีWARN/ERROR PerformanceมีINFO FKindex2/unusedindex1 เก็บรายละเอียดใน `INSPECTOR_DATABASE_VERIFICATION_2026-10-28.md` ส่วนโค้ดBFF/UIยังlocal ไม่มีcommit/push/deploy ผล500tests/3builds/QAจำลองเป็นหลักฐาน27ต.ค. ไม่รันใหม่รอบนี้ ไม่มีคำถามmigrationค้าง ไม่ให้ผู้ใช้reconnectหรืออนุมัติซ้ำ
+
+**กติกางานคู่ขนานล่าสุด:** แชทนี้แก้websiteเพียงแชทเดียว อีกแชทส่งpreparedSARใน`outputs/XEDO_Parallel_Handoff_2026-10-27/support/`แล้ว รายงาน32data checksผ่าน/14candidates;แชทหลักตรวจSHA256ของcore12ไฟล์ตรงแล้ว แต่ยังไม่รันconversionหรือwebsiteintegrationซ้ำ ต่อไปให้supportเตรียมrisk-editfixtures/testaddendumโดยไม่แก้corepackageหรือเว็บ
+
+**แผนปิดงานล่าสุด:** เหลือหลัก3กลุ่มที่ผู้ใช้อนุมัติ (ล่าสุด1UX/2บัญชี/3AI ตรงก่อนหน้า2/3/4 และเดิม4/5/6) กับพัก2กลุ่ม (ล่าสุด4/5 ตรงเดิม7/8) ข้อก่อนหน้า1/เดิม3ถูกตัดจากเกณฑ์ปิดงานโดยผู้ใช้ยอมรับprototypeเดิม ไม่บังคับprofile/schedule/normaldownloadใหม่ AIต้องแก้/เพิ่ม/ปฏิเสธพื้นที่เสี่ยงได้และเก็บreviewส่วนตัว กรอบ4ชั่วโมงยังมีcheckpointbackendและตรวจเว็บจริง รายละเอียดล่าสุดอยู่WEBSITE_DETAILS3.15และAI_INTEGRATION_PLAN3.15
 
 **รอบ 3D satellite ground 27 ต.ค. 2026 เผยแพร่แล้ว:** เพิ่มปุ่ม Diagram / Satellite ใช้ภาพ tile GEE Sentinel-2 ตามพิกัดพื้นเดิม ไม่ใช้ thumbnail; source mosaic มีวันที่และความละเอียดแยกจากภาพ review; ผ่าน **482 tests** และ3builds ตรวจ browser โหลดภาพจริง/สลับโหมด/หมุนด้วย keyboard/กรอบ440pxdesktopและ340pxmobile/AOIเดิม/ไม่มีแนวนอนล้น390px รวมตรวจเว็บหลัก code `dc4743c` + deploymentREADY + CIsuccessแล้ว เอกสารfollow-upนี้ไม่เปลี่ยนapplication bundle; exactidentityสุดท้ายเก็บในreceiptของรอบนี้
 
@@ -34,18 +40,17 @@
 
 ### ลำดับใหม่สำหรับงานที่เหลือ — ใช้อ้างอิงคำสั่งถัดไป
 
-**ประเด็นที่เพิ่มในข้อใหม่ 1:** ภาพผู้ใช้แสดงว่า GEE context ใช้งานไม่ได้และไม่มี Home elevation ให้ใช้ ยืนยันจากโค้ดว่าหน้าจอรวมข้อผิดพลาดหลายแบบเป็นข้อความเดียวและแนะนำ local server แม้เปิด Production สาเหตุจริงของคำขอผู้ใช้ยังไม่ยืนยัน API พื้นที่อ้างอิงที่ตรวจเวลา 14:17 น. ไทยยังตอบ terrain/landcover/quality ได้ จึงไม่สรุปว่าทั้งระบบล่ม นอกจากนี้ผู้ใช้ยืนยันรูปแบบเวลาที่ต้องการคือ **กรอกเวลาเริ่มบิน แล้วเว็บคำนวณเวลาจบเอง** ซึ่งต้องปรับจาก implementation ปัจจุบัน รายละเอียดอยู่ในข้อ 3.5 ด้านล่าง
+**ประเด็นเดิมในข้อก่อนหน้า1/เดิม3:** GEEdiagnosticsเผยแพร่แล้ว ส่วนprofileปกติและการกรอกstart/derivedendยังไม่implementและถูกผู้ใช้ตัดจากเกณฑ์ปิดงานล่าสุด เก็บรายละเอียดเดิมข้อ3.5ไว้เป็นประวัติ ไม่ให้งานที่ตัดกลับมาขวางUX/บัญชี/AI
 
-**เหลืองานหลัก 4 ขั้น และงานที่พักไว้อีก 2 รายการ รวมงานที่ยังไม่เสร็จ 6 รายการ** ข้อเดิม 1–2 เสร็จและเผยแพร่แล้ว จึงไม่รวมในจำนวนนี้
+**เหลืองานหลัก3ขั้นที่อนุมัติ และงานที่พักไว้อีก2รายการ รวม5รายการในคิวล่าสุด** ข้อก่อนหน้า1/เดิม3ตัดออกจากรอบนี้ ไม่ถูกนับว่าimplementเสร็จ ข้อเดิม1–2เผยแพร่แล้ว
 
-| เลขใหม่ | เลขเดิม | งาน | สถานะ/เกณฑ์ที่ต้องทำต่อ |
+| เลขล่าสุด | เลขเดิม | งาน | สถานะ/เกณฑ์ที่ต้องทำต่อ |
 | --- | --- | --- | --- |
-| **1** | **3** | เตรียม normal flow ให้สร้างแผนได้ครบ | GEE diagnostics/progress เผยแพร่แล้ว; profile ปกติและเวลาเริ่มกรอกเอง/เวลาจบอัตโนมัติยังอยู่ในคิว |
-| **2** | **4** | เก็บ UX และวางแผนความพร้อมใช้งาน/เผยแพร่ | ภาพบริบท 1 กม./scroll และ module cleanup เผยแพร่แล้ว; งาน UX ที่เหลือ เช่นเอาป้าย Prototype ออกทั้งหมดและ capacity ยังไม่รวม release นี้ |
-| **3** | **5** | บัญชี Inspector ภารกิจส่วนตัว Save และ history | ข้อกำหนดหลักตอบครบแล้ว: ทีมสร้างบัญชี อีเมล/รหัสผ่าน ไม่มี Google เห็น/แก้เฉพาะภารกิจตนเอง; ยังไม่ implement |
-| **4** | **6** | เชื่อม AI → Inspector review → พื้นที่บินตรวจ → planner | ขยายแผนละเอียดใน `docs/AI_INTEGRATION_PLAN.md` แล้ว: fixture/contract/adapter/review/planner → private history → ภาพใหม่/worker; ยังไม่ implement หรือทดสอบ |
-| **5** | **7** | Pi / ภาพ / telemetry | **พักตามคำสั่งผู้ใช้** ไม่จำเป็นต่อเป้าหมายวิเคราะห์พื้นที่เสี่ยงและสร้างแผนก่อนบิน |
-| **6** | **8** | ผลทดลองและรายงานก่อน–หลัง | **งานค้าง — ยังไม่ทำตามคำสั่งผู้ใช้** ไม่เป็นเงื่อนไขปิด planner |
+| **1** (ก่อนหน้า2) | **4** | UXและข้อความ | **อนุมัติimplementation** เอาป้ายPrototypeออก เก็บflowและmobile คงสามขั้น/สี่ตัวคำนวณ/2D3D |
+| **2** (ก่อนหน้า3) | **5** | บัญชีInspector Save/historyส่วนตัว | **โค้ดตรวจในเครื่องแล้ว+DBจริงตรวจแล้ว** รอทีมสร้างบัญชีจริง/real-account acceptance/frontend release ไม่มีGoogle ownerบังคับที่server |
+| **3** (ก่อนหน้า4) | **6** | preparedAI+Inspectorแก้พื้นที่เสี่ยง+planner | **อนุมัติimplementation** dataพร้อมhashverified;เพิ่มedit/move/add/reject/undo/cancel/reviewrevisionsและprivateSave |
+| **4** (ก่อนหน้า5) | **7** | Pi / ภาพ / telemetry | **พักตามคำสั่งผู้ใช้** |
+| **5** (ก่อนหน้า6) | **8** | ผลทดลองและรายงานก่อน–หลัง | **พักตามคำสั่งผู้ใช้** |
 
 การรับคำสั่งใหม่ที่ระบุเพียง “ข้อ 1/2/3…” ให้ใช้ **เลขใหม่** จากตารางนี้ หากผู้ใช้บอก “เลขเดิม” หรืออ้างข้อความเก่า ให้จับคู่ตามบริบท รายละเอียดเชิงเทคนิคและประวัติที่บันทึกก่อนรอบเรียงใหม่นี้ รวมทั้ง HTML แผน AI เดิม ยังใช้เลขเดิมเมื่อไม่ได้ระบุว่าเป็นเลขใหม่
 
@@ -59,12 +64,12 @@
 | 2 | ทดสอบ GEE และข้อมูลสภาพแวดล้อมจริง | **เสร็จและเผยแพร่แล้ว** | ตรวจซ้ำตามพื้นที่และเวลาของแต่ละภารกิจ ไม่ถือว่ารอบเดียวครอบคลุมทุกพื้นที่ |
 | 3 | ใช้โปรไฟล์โดรนจำลองที่คิดไว้แล้วใน flow หลัก | **ร่างแผนแล้ว ยังไม่ได้ลงมือ** | แยกโปรไฟล์เครื่องจำลองออกจากโหมดข้อมูลตัวอย่าง ให้ flow ปกติคำนวณได้โดยใช้ข้อมูลภารกิจจริง |
 | 4 | ทำ UX ให้เหมือนเว็บไซต์ใช้งานจริง และวางแผนรองรับการใช้งานจริง | **ร่างแผนแล้ว ยังไม่ได้ลงมือ** | เอาป้าย Prototype ออกทั้งหมดตามคำสั่งล่าสุด ลบ note ซ้ำ จัด flow หลัก; บันทึกแผนตรวจรับ/capacity สำหรับอนาคต ยังไม่ทดสอบในรอบวางแผน |
-| 5 | บัญชี Inspector, บันทึกภารกิจ และประวัติ | **ยืนยันข้อกำหนดหลักแล้ว ยังไม่ลงมือ** | เห็น/แก้เฉพาะภารกิจตนเองช่วงทดลอง; login อีเมล/รหัสผ่านบน XEDO ไม่มี Google; ทีมสร้างบัญชีให้ผู้ทดลองก่อน |
+| 5 | บัญชี Inspector, บันทึกภารกิจ และประวัติ | **โค้ดตรวจในเครื่องแล้ว และ DB จริงใช้/ตรวจแล้ว28ต.ค.** | รอทีมสร้างAuthusers+Inspector roster, real-account acceptanceและfrontend release; ไม่มีGoogle เห็น/แก้เฉพาะภารกิจตนเอง |
 | 6 | เชื่อมผล AI เข้าหน้าเว็บ | **จัดทำแผนละเอียดใน HTML แล้ว ยังไม่ลงมือเชื่อม** | เริ่มจากผล SAR ที่มี georeference เป็น fixture → Inspector ตรวจเลือกพื้นที่เสี่ยง → planner; แยกพื้นที่เสี่ยงจากหลักฐานน้ำมัน/ความหนา |
 | 7 | เชื่อมภาพและ telemetry จาก Raspberry Pi / โดรน | **พักตามคำสั่งผู้ใช้** | ไม่จำเป็นต่อเป้าหมายวิเคราะห์พื้นที่เสี่ยงและสร้างแผน; ตรวจแล้วไม่มี Pi dependency |
 | 8 | ผลทดลองและรายงานภารกิจ | **งานค้าง — ยังไม่ทำตามคำสั่งผู้ใช้** | เก็บไว้สำหรับอนาคต ไม่เป็นเงื่อนไขการสร้างแผนตรวจพื้นที่ |
 
-**ลำดับทำต่อคือข้อใหม่ 1 → 2 → 3 → 4** ซึ่งตรงกับข้อเดิม 3 → 4 → 5 → 6 งานบัญชีได้คำตอบหลักครบแล้ว ไม่ต้องนำงานฮาร์ดแวร์จริงหรือ Pi มาขวางการปิดเว็บไซต์จำลอง
+**ลำดับล่าสุดคือUX/บัญชีเป็นฐาน → AIพร้อมrisk-edit/review → ตรวจรวม** (ล่าสุด1–3/เดิม4–6) อีกแชททำdata/testขนาน งานบัญชีได้คำตอบหลักครบแล้วและprofile/เวลาใหม่ถูกตัด ไม่ต้องถามอนุมัติสามงานนี้ซ้ำ
 
 ### ข้อกำหนดที่ผู้ใช้ยืนยันแล้ว
 
@@ -512,3 +517,297 @@ Release นี้เปลี่ยน source, tests, scripts และเอก
 - หลักฐานเพิ่ม `production-browser.json`, `production-satellite.jpg`; เปิดProductionแท็บผลตรวจไว้ให้ผู้ใช้ ไม่มีการส่งคำสั่งให้อากาศยาน
 - อัปเดตMarkdownทั้งสองและqueueหลังตรวจเว็บหลักแล้ว เอกสารfollow-upไม่แก้codeและไม่รัน482testsซ้ำสำหรับMarkdown-only การpushเอกสารอาจเลื่อนdeploymentSHAโดยbundleเดิม ให้ดู`release-receipt.json`ในevidenceDirectoryสำหรับidentityสุดท้าย
 - งานค้าง: ข้อใหม่1–4ส่วนอื่นและพัก5–6ยังตามคิวเดิม ไม่มีคำตอบผู้ใช้ค้างที่ขวางงาน3Dรอบนี้
+
+### แผนปิดงานวันนี้ — รับขอบเขตและทบทวนโค้ด 27 ต.ค. 2026
+
+**หัวข้อ:** สรุปงานค้างและจัดเวลา4ชั่วโมงที่ผู้ใช้พร้อมอยู่ดู
+
+**สรุป:** เหลืองานหลัก4กลุ่ม (ใหม่1–4/เดิม3–6) และพัก2กลุ่ม (ใหม่5–6/เดิม7–8) ผู้ใช้ตอบคำถามขอบเขตแล้วว่า **ต้องมีบัญชีส่วนตัวและAIจากผลที่เตรียมไว้ด้วย** จึงไม่เสนอปิดเพียงplanner/UXแล้วเรียกว่าทั้งโปรเจกต์เสร็จ ขอบเขตวันนี้เป็นรุ่นใช้งานขั้นต่ำครบเส้นทาง login → เลือกผลAIเดิม/พื้นที่ → Inspectorreview → plan/เวลา → saveส่วนตัว/history → reopen/download
+
+**รายละเอียดที่ตรวจจริง:**
+
+- Gitเริ่มรอบclean HEAD28d7e9d; Vercelaliasตรวจซ้ำในรอบนี้READYที่`dpl_CtoT3UAo4iwD4QTvTj27WZdSwHi5`/SHA28d7e9d1b852f1d55ecf115681ff24a13f968918 ไม่ได้เปิดbrowserหรือรันทดสอบซ้ำ ผล482testsเป็นของrelease3Dก่อนหน้า
+- Planner: hardwareprofileมีcamera/height/speed แต่battery/windlimits/allowancesยังอยู่ในEstimatedDemo; exportต้องมีtarget/height/constraints/reviewsครบ ไม่แก้เพียงปลดปุ่มdownload; schedule.completeยังอัปเดตเฉพาะautomatic ส่วนmanualรับstart+endคู่ จึงยังไม่ใช่userstart/derivedend
+- UX: GEEstatus/context/scrollและ3Dgroundเสร็จแล้ว เหลือป้ายPrototypeซ้ำ/ข้อความ/flowหลัก และตรวจหลังเชื่อมfeatureใหม่ การทดสอบcapacityเต็มรูปแบบไม่รวมเป้าหมาย4ชั่วโมง
+- Accounts: hostedvercel.jsonมีเฉพาะGEE/environment/context ไม่มีlogin/session/privateMissionAPI;db/schema.tsไม่มีaccount/session/ownerสำหรับภารกิจ `actor`ในworkerเป็นauditmetadataและstoragequeryยังglobal จึงไม่ใช่privateownership มีsnapshot/revision/eventsที่reuseได้แต่ต้องทำserverownershipจริง
+- AI: ตรวจชุดไฟล์อ้างอิงSARจริงใน`outputs/SYSTEM_FIX_2026-10-11/real_gee_results/XEDO_SAR_20261011T130518Z_6152a5/` ยังมีscore/mask/source/summary/preview วันที่ภาพ9ต.ค.2026/run11ต.ค. exportgrid1317×1340,EPSG32647,10m มี15248candidatepixels ใช้affineของexportedcropไม่ใช่originของsourceทั้งแผ่น ค่าaccuracy_validated_on_gee=falseและยังมีlookalike/land จึงแสดงเป็นcandidateให้Inspectorตรวจ ไม่เป็นoilconfirmed/thickness
+
+**ขอบเขตขั้นต่ำที่ต้องปิดวันนี้:**
+
+1. ใหม่1/เดิม3: normalflowใช้profileค่าที่มีอยู่ร่วมกับข้อมูลภารกิจจริง เลือกพื้นที่/Homeและกรอกstartแล้วคำนวณendตามsorties/turnaround/buffer รักษาstartเมื่อreplan ดาวน์โหลดplanได้เมื่อเงื่อนไขครบ
+2. ใหม่2/เดิม4: เอาป้ายPrototypeออกจากUXหลัก เก็บข้อความและการนำทาง คง3ขั้น/4calculators/2D3D/ขนาดpreview ตรวจmobileหลังรวมfeature
+3. ใหม่3/เดิม5: email/passwordfirstpartyUI ทีมprovisionบัญชี ทุกคนInspectorเท่ากัน/session/logout; Save/List/Open/Updateและประวัติsnapshotบนserverตามowner; ทดสอบสองบัญชีอ่าน/แก้/artifactข้ามกันไม่ได้ รวมlogout/reload
+4. ใหม่4/เดิม6: หนึ่งpreparedSARreference/พื้นที่ครอบคลุมจริง → georeferencedcandidateoverlay → Inspectorเลือก/แก้หนึ่งinspectionpolygonต่อplan → planner → privateSaveพร้อมsource/model/time/grid/threshold/reviewprovenance ไม่แสดงว่าเป็นการรันโมเดลกับภาพใหม่
+
+**แผนเวลาแบบทำคู่ขนาน — นับจากเริ่มimplementationจริง:**
+
+| นาที | เป้าหมาย |
+| --- | --- |
+| 0–20 | ตรวจสิทธิ์และความพร้อมauth+durableDB/backendที่จะdeployได้ เลือกทางสั้นสุดโดยใช้authที่ดูแลต่อได้ ตรึงcontract/เกณฑ์จบและจัดเจ้าของไฟล์ |
+| 20–135 | ทำ3สายคู่ขนาน: Aบัญชี/privateSave/history, Bprofile/schedule/UX, CAIadapter/overlay/review แต่ละสายตรวจของตนเอง หลีกเลี่ยงแก้coordinatorไฟล์เดียวทับกัน |
+| 135–180 | รวมสายที่เสร็จก่อนกับplanner/privateSave ขณะสายbackendเก็บงาน ยุติเพิ่มfeatureเมื่อครบ180นาที |
+| 180–215 | ตรวจend-to-endและ2บัญชี/ผิดowner/session/save-reopen/history/AIarea-grid/start-end/expireddata/missinginputs/mobile พร้อมsuite/build |
+| 215–230 | ให้ผู้ใช้ตรวจเส้นทางสั้นครบหนึ่งภารกิจ แก้เฉพาะข้อขัดขวางส่งมอบ |
+| 230–240 | เมื่อได้รับคำสั่งเผยแพร่และchecksผ่าน จึงpush/deploy/ยืนยันรุ่นจริงและอัปเดตเอกสารทั้งสอง |
+
+**ความเป็นไปได้:** 4ชั่วโมงเป็นเป้าเร่งในกรณีbackendพร้อม ไม่รับประกันครบทุกส่วนจากsourceที่ยังขาด auth/private-saveเพียงส่วนเดียวประเมินคร่าวๆ3–6ชั่วโมงเมื่อinfraพร้อมแล้ว จึงกัน contingencyเพิ่ม2–4ชั่วโมงหากต้องตั้งบริการหรือแก้integration ไม่ลดprivacyหรือทำเพียงloginหน้าตา/localStorageเพื่อเรียกว่าเสร็จ ต้องแจ้งผลcheckpoint20นาทีและ180นาทีตามจริง ผู้ใช้ระบุ4ชั่วโมงคือเวลาที่อยู่ดู อาจมีเวลางานมากกว่านั้น ไม่ถือเป็นคำสั่งทำงานต่อเบื้องหลังอัตโนมัติหรือกำหนดเวลาเผยแพร่โดยไม่ตรวจ
+
+**สิ่งที่พัก:** Pi/telemetry,ผลทดลอง/รายงานก่อนหลัง,AIภาพใหม่/workerใหม่/training,capacitybenchmarkเต็มรูปแบบ ไม่เป็นเกณฑ์ปิดรุ่นนี้
+
+**ผลตรวจ/เปลี่ยนแปลงรอบนี้:** read-onlysource+queue+AIartifact+deploymentmetadata; แก้เฉพาะXEDO_WORK_LOG.md/WEBSITE_DETAILS.md/implementation-queue.json ไม่แก้ฟังก์ชัน ไม่รันtests/inference ไม่สร้างบัญชีหรือDB ไม่commit/push/deployในรอบวางแผนนี้
+
+**รอคำตอบ:** ไม่มีคำถามผลิตภัณฑ์ค้าง ขอบเขตวันนี้ตอบแล้ว เรื่องbackendเป็น **รอตรวจความพร้อม** ไม่ใช่ให้ผู้ใช้ตอบrole/login/visibilityซ้ำ
+
+### แผนแชทสนับสนุนคู่ขนาน — 27 ต.ค. 2026
+
+**หัวข้อ:** ให้แชทหลักแก้websiteเพียงแชทเดียว อีกแชทเตรียมAIและกรณีทดสอบ
+
+**สรุป:** ผู้ใช้ต้องการใช้แชทอื่นช่วยงานก่อนส่งกลับ ไม่ให้แชทอื่นแก้เว็บไซต์ จัดbriefพร้อมoutputfolderและtemplateกรณีทดสอบแล้ว คงเป้าหมายวันนี้บัญชีส่วนตัว+preparedAI+plannerตามแผนเดิม แชทสนับสนุนยังไม่ได้เริ่มงานจากbriefนี้และยังไม่ได้สร้าง/ส่งข้อความไปuser-ownedchatอื่น
+
+**รายละเอียดการแบ่งงาน:**
+
+- แชทหลัก: source/UI/API/schema/config/packages/build/testsของเว็บ,auth/privateSave,profile/schedule/UX,AIcontract/review/plannerintegration,การตรวจทั้งflowและการเผยแพร่ตามคำสั่ง รวมสถานะกลาง/queue
+- แชทสนับสนุน: อ่านsourceและSARเดิม เตรียมmanifest/rawWGS84candidates/provenance/validation+reproducibleutilityนอกcheckout ออกแบบtestcases ให้รายงานbugพร้อมtrigger/evidenceโดยไม่patchเว็บ ไม่เปลี่ยนmodel/threshold/source ไม่inferenceใหม่ ไม่Gitmutation/accountDBsetup/deploy
+- รูปแบบส่งกลับ: `HANDOFF.md`สามส่วนหัวข้อ/สรุป/รายละเอียด พร้อมabsolute pathsของไฟล์จริง และcompleted/blocked/not_run ให้ผู้ใช้ส่งpathกลับแชทหลัก แชทหลักตรวจแล้วจึงปรับdataเข้ากับwebsitecontracts ไม่รับผลของอีกแชทเป็นreviewconfirmedหรือtestpassedโดยอัตโนมัติ
+- เอกสารกลาง: รักษากติกาAGENTSทุกturn supportappendรายงานสั้นของตนเองพร้อมlinkโดยอ่านล่าสุดก่อน ไม่เขียนทับoverview/คิวของแชทหลัก แชทหลักรวมรายละเอียดและสถานะรวม
+
+**แผนเวลา:** ข้อค้นพบชุดแรกเป้า20นาที เน้นruntime/sourcegrid/schema/blocker;data+validationเป้า45–90นาทีหากruntimeพร้อม;ตามด้วยtestdesign/bugreview แชทหลักทำบัญชี/plannerและร่างจุดเชื่อมได้โดยไม่รอpackageเต็ม งานเตรียมข้อมูลช่วยลดเวลาบางส่วนแต่ไม่ทำให้authbackendที่ยังขาดเสร็จอัตโนมัติ เป้า4ชั่วโมงยังมีความเสี่ยงเดิม
+
+**หลักฐานอ่านแบบไม่แก้:** read-onlysupportตรวจmetadataเดิม: crop1317×1340,EPSG32647,affineoutput[10,0,736833.2274242942,0,-10,1392898.152845362],threshold0.3,mask0/1/255,scoreNoData-9999,valid1,061,830/candidate15,248/area1,524,800m² ต้องยืนยันจากrasterจริงอีกครั้งก่อนถือว่าvalid ไม่ใช้summaryแทนผลตรวจ การpolygonize→rasterizeบนgridเดิมต้องนับmismatchจริงและรักษาholes/components
+
+**อุปสรรคที่ทราบ:** supportprobeพบdefaultPythonไม่มีrasterio/numpy/shapely/pyproj จึงให้ตรวจruntimeก่อน ใช้runtimeที่พร้อมหรือenvironmentแยกในsupportfolder ไม่ติดตั้งglobal ถ้าsetupติดให้ส่งblockedพร้อมerror/schema/testplanก่อน ไม่แต่งGeoJSONหรือผลpass
+
+**ไฟล์ที่สร้าง/แก้รอบนี้:**
+
+- `C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/SUPPORT_CHAT_BRIEF.md`
+- `C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/TEST_PLAN_TEMPLATE.md` มี20กรณีสถานะdesigned_not_run
+- `C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/HANDOFF_STATUS.json` statusbrief_ready_support_work_not_started
+- อัปเดตXEDO_WORK_LOG.md/WEBSITE_DETAILS.md/implementation-queue.jsonเก็บroleและhandoffpolicy ไม่แก้codeเว็บไซต์
+
+**ผลตรวจ:** ตรวจsyntaxJSONของqueue/statusและdiffcheckเอกสารเท่านั้น ไม่รันapplicationtests/rasterconversion/inference ไม่ได้ตรวจProductionซ้ำในรอบนี้ ไม่มีcommit/push/deployหรือสร้างแชทใหม่ ผล482testsยังเป็นreleaseก่อนหน้า
+
+**รอคำตอบ:** ไม่มี ผู้ใช้เลือกส่งbriefไปแชทสนับสนุนได้เลย ไม่ต้องให้แชทสนับสนุนเริ่มแก้codeเว็บ
+
+
+<!-- support-sar-handoff-2026-10-27-01a17cf8 -->
+### 27 ตุลาคม 2026 17:58 น. — แชทสนับสนุนส่งชุด prepared SAR (local)
+
+- **หัวข้อ:** เตรียมผล AI/SAR เดิมพร้อม metadata/พิกัด/หลักฐานตรวจซ้ำ และออกแบบกรณีทดสอบ ส่งให้แชทหลักเป็นผู้เชื่อมเว็บไซต์เพียงแชทเดียว
+- **สรุป:** ชุดข้อมูลพร้อมตรวจรับในเครื่องที่ [HANDOFF.md](C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/support/HANDOFF.md); utility ตรวจจริง32checksผ่าน valid1,061,830/candidate15,248/NoData702,950; raw14components/0holes/area1,524,800m²; nativeและserializedWGS84→UTM roundtripต่าง0pixel มี44websitecasesสถานะdesigned_not_runทั้งหมด
+- **รายละเอียด/ไฟล์:** เขียนเฉพาะsupport/ ตามbrief: manifest.json,candidates.raw.geojson,coverage.raw.geojson,source_footprints.geojson,coordinate_reference.json,validation.json,prepare_result.py,requirements.lock.txt,package_checksums.json,preparation-run.log,PROVENANCE_AUDIT.md,provenance.evidence.json,TEST_PLAN.md,HANDOFF.md,delivery_status.json,continuity_receipt.json,record_delivery.py และสำเนาartifacts5ไฟล์ตรงhash; appendบันทึกเฉพาะสองMarkdownกลางตามAGENTS ไม่แก้overviewหรือimplementation-queue.json
+- **ผลตรวจจริง:** source HEADที่อ่าน28d7e9d1b852f1d55ecf115681ff24a13f968918; output1317×1340/EPSG32647/10m/affinecropตรงraster; mask0/1/255และscoreNoData-9999ตรงกัน; threshold0.3pixelwiseตรง; checkpointและoriginalinputs3ไฟล์hashตรง; sourceไฟล์ไม่เปลี่ยนและcopiesตรงbytes; all848candidateverticesCRSroundtripmax2.108e-9m; coveragevalid/NoDataroundtrip0; corepackage12hashesตรง เปิดpreviewเดิมตรวจแล้ว (ไม่ใช้PNGแทนgeoreference)
+- **อุปสรรค/งานต่อ:** runtimeproxyติดตั้งครั้งแรกไม่สำเร็จ แก้แล้วด้วยenvironmentแยกsupport/.venvจากPyPI ไม่แตะglobal/sitepackagesของเว็บ; candidate-00012มี378verticesเกินplanner120ต้องให้mainกำหนดpolicyและInspectorreviewก่อนส่งหนึ่งplanningPolygon; รักษาวันภาพ9ต.ค./inferenceเดิม11ต.ค.2026,land/lookalikes,accuracy_validated_on_gee=falseและunknownversionsเป็นnull
+- **ไม่รัน/ไม่แก้:** ไม่มีwebsiteunit/integration/browser/auth/privacy/save/exportchecksใหม่ ไม่มีinference/training/accuracy/liveGEE/hardware; ไม่ใช้482testsเก่าเป็นผลรอบนี้ ไม่แก้source/API/DB/schema/config/package/website tests หรือผลbuild
+- **การเผยแพร่:** local-only ไม่มีcommit/push/deploy ไม่มีข้อความส่งไปuser-ownedchatอื่น ผู้ใช้นำabsoluteHANDOFFpathให้mainอ่านต่อ แชทหลักเป็นผู้รวมstatus/queueและดูแลintegration/releaseตามคำสั่งผู้ใช้
+- **รอคำตอบ:** ไม่มีคำถามผู้ใช้ค้าง; geometry/contractpolicyเป็นงานออกแบบของแชทหลักก่อนintegration
+
+### ปรับแผนตามannotation1–4 — UX/บัญชี/AIพร้อมแก้พื้นที่เสี่ยง — 27 ต.ค. 2026
+
+**หัวข้อ:** ลดงานปิดprototypeและอนุมัติสามงานหลัก โดยสองแชททำคนละหน้าที่
+
+**สรุปคำตอบครบทั้ง4จุด:**
+
+1. ข้อก่อนหน้า1/เดิม3 normalflow/profile/เวลาใหม่: ผู้ใช้ตัดออกเพราะprototypeเดิมนำเสนอได้แล้ว ไม่ถือว่าcodeนั้นimplementเสร็จ ไม่บังคับnormaldownloadครบหรือstartderivedendใหม่เป็นเกณฑ์ปิด ไม่ปลดreadinessหรือสร้างค่าทดแทนเพื่อให้ดูผ่าน
+2. ข้อก่อนหน้า2/เดิม4 UX: ผู้ใช้อนุมัติimplementation เอาป้ายPrototype/ข้อความซ้ำออก คงsource/date/error/reviewที่จำเป็นและ3ขั้น/4calculators/2D3D
+3. ข้อก่อนหน้า3/เดิม5 บัญชี: ผู้ใช้อนุมัติimplementation email/passwordทีมสร้างInspector เห็นและแก้เฉพาะงานตนSave/reopen/history บังคับownerที่server
+4. ข้อก่อนหน้า4/เดิม6 preparedAI: ผู้ใช้สั่งทำและเพิ่มInspectorแก้จุด/ขอบเขตพื้นที่เสี่ยงได้เพราะMLผิดได้ มีaccept/edit/move/manualadd/reject/undo/cancel/confirmreviewและversionedprivateSave
+
+**เลขล่าสุด:** active1UX/2บัญชี/3AI ตรงก่อนหน้า2/3/4และเดิม4/5/6;พัก4Pi/5รายงานตรงเดิม7/8 ข้อก่อนหน้า1ตัดจากรอบนี้เป็นประวัติ ไม่มีการนับว่าเสร็จโดยimplementation
+
+**พบความคืบหน้าจากsupportระหว่างรอบ:** รักษารายการส่งมอบ17:58ของsupportไว้ทั้งหมด อ่าน`support/HANDOFF.md`และdataจริง supportรายงาน32checksผ่าน/14rawcandidates/44websitecasesdesigned_not_run แชทหลักรันread-onlySHA256core12ไฟล์ตรงและนับ14features;ยังไม่รันconversion/datautilityซ้ำหรือwebsitechecks Candidate00012มี378verticesเกินplanner120 ห้ามตัดจุด/hullอัตโนมัติแล้วอ้างrawเดิม ให้แสดงrawและInspectorกำหนดขอบเขตบินใหม่อย่างชัดเจน
+
+**แผนeditor:** เก็บrawAnalysisimmutable → InspectorRiskDraft/decisions → confirmedreviewrevision → planningtargetrevision → plan แต่ละฉบับอ้างresult/source/geometryhash และผู้แก้+เวลาจากsession/server เปิดเปรียบเทียบAIต้นฉบับได้ แก้/ย้าย/เพิ่ม/ปฏิเสธไม่เขียนทับraw การเพิ่มนอกAIcoverageเก็บmanualoriginและไม่อ้างAIตรวจแล้ว ถ้าออกนอกภาพ/ภารกิจที่reviewให้ผ่านreviewขอบเขตใหม่ก่อนplan การconfirmแก้หลังสร้างplaninvalidateแผนเก่า;draftระหว่างแก้ล็อกการใช้แผน/ดาวน์โหลด Undo/Cancelคืนdraft/confirmedgeometryโดยตรวจreadinessปัจจุบัน ไม่คืนReadyหมดอายุ Savefailเก็บdraft/retry;revisionconflictไม่ทับเงียบ
+
+**จุดเชื่อมที่ต้องระวัง:** `setGeometry()`ปัจจุบันresetSurvey/resetReview/schedule จึงห้ามเรียกทุกvertexdrag editorต้องแยกลifecycleจากsearchAOI/selectedscene และคงพฤติกรรมเวลาเดิม ขยายrevisionguardก่อน/หลังexportresponseให้รวมreview/target/session ป้องกันfileเก่าหลังedit/logout
+
+**สองแชท/เวลาเป้าหมาย4ชั่วโมง:**
+
+| นาที | แชทหลักแก้เว็บเท่านั้น | แชทสนับสนุนไม่แก้เว็บ |
+| --- | --- | --- |
+| 0–20 | ตรวจauth/DBพร้อมและตรึงmission/review/draftcontract รับpackageที่hashผ่านแล้ว | ใช้packageเดิม เตรียมกรณีriskedit/378จุด ส่งfindingsแรก |
+| 20–100 | บัญชี/session/ownerSaveเป็นฐาน เก็บUXและจุดรับAI | ออกแบบfixtureaddendum/testcasesการแก้/Undo/Save/conflict/privacy เป้า45–60นาที |
+| 100–165 | ต่อAIoverlay+InspectorRiskDraft/review+plannerเดิม+privateSave/history | ตรวจข้อเสนอgeometry/revisionและหลักฐานที่mainส่ง ไม่patchweb |
+| 165–205 | ตรวจสองบัญชี/editedsave-reopen/staleplan/lateexport/errors/mobile/suite/build | ตรวจช่องว่างtestplanเทียบหลักฐาน แยกdesignedจากexecuted |
+| 205–225 | ผู้ใช้ลองภารกิจที่แก้riskแล้ว แก้blocker | ส่งข้อสรุปที่ยังติด |
+| 225–240 | ปิดเอกสาร/หลักฐานreleaseและตรวจProductionตามขอบเขตอนุญาต | ส่งhandoffเท่านั้น ไม่มีGit/deploy |
+
+เวลาเป็นtimeboxไม่ใช่guarantee แม้ตัดข้อ1และdataพร้อมแล้ว authdurablebackendยังcritical ถ้าinfraไม่พร้อมแจ้งcheckpoint20นาทีและประเมินใหม่ ไม่ลดprivacyหรือเสกtestpassเพื่อให้ทัน4ชั่วโมง
+
+**ไฟล์รอบนี้:** อัปเดตcanonicalMarkdownสองไฟล์,implementation-queue.json,AI_INTEGRATION_PLAN.md;ปรับSUPPORT_CHAT_BRIEF/TEST_PLAN_TEMPLATE/HANDOFF_STATUSในoutputแม่;เพิ่มREVIEW_EDIT_ADDENDUM.mdสั่งsupportเขียนเฉพาะ`support/review-edit/` ไม่แตะcorepackage/checksums/validation/TEST_PLAN44กรณีเดิม
+
+**ผลตรวจ/เผยแพร่:** primaryhash12ไฟล์ตรง/อ่าน14features;ตรวจJSONและdiffเอกสาร ไม่มีapplicationcodeeditหรือapplicationtests/inference/DBaccountchanges ไม่มีcommit/push/deploy ไม่ใช้482testsของreleaseก่อนเป็นผลใหม่ อนุมัติimplementationของสามงานถูกบันทึกแล้วไม่ต้องถามซ้ำ รอคำตอบผลิตภัณฑ์: ไม่มี
+
+### Promptพร้อมใช้สำหรับแชทคู่ขนานขั้นแรก — 27 ต.ค. 2026
+
+**หัวข้อ:** เขียนคำสั่งละเอียดให้แชทสนับสนุนเริ่มจากข้อมูลล่าสุดโดยไม่ทำซ้ำหรือแก้เว็บ
+
+**สรุป:** สร้าง `C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/PARALLEL_STEP_1_PROMPT.md` เป็นpromptเต็มพร้อมคัดลอก บทบาทขั้นแรกคือรับpackageSARเดิมแบบอ่านอย่างเดียว แล้วเตรียมrisk-editfixtures/testmatrixให้main ไม่ใช่เริ่มconversionใหม่ ชุดsupport17:58ยังคงอยู่ ผล32data checksและmain12hashesเป็นผลรอบก่อน ไม่ถือว่าตรวจซ้ำใหม่ในรอบเขียนprompt
+
+**รายละเอียด:** promptกำหนดขอบเขตล่าสุด3งานและงานprofile/scheduleที่ตัดออก;ลำดับอ่านAGENTS/log/queue/website/AIplan/handoff+actualfiles;readonlyHEAD/status;writeเฉพาะsupport/review-edit/พร้อมappendcanonicalMarkdownสั้นตามAGENTS;ไม่มีsource/API/DB/config/tests/package/build/Git/deploy/account/inferencechanges อธิบายraw/draft/confirmedtarget/revision/session/privacy/coverage/378pointlimitและตัวอย่างfixturesที่ต้องมี แยกexecuteddatachecksจากdesignedwebsitecases กำหนดไฟล์ส่งมอบและcheckpoint20นาที/45–60นาทีพร้อมblockerreportและabsolutehandoffpath
+
+**ป้องกันการเขียนทับ:** support/prepare_result.pyมีdefaultregeneratecorepackage จึงห้ามรันหรือimportในงานขั้นแรกนี้ ใช้read-onlychecksumและutilityfixtureแยก รักษาoriginalmanifest/validation/hash/44caseTEST_PLAN runtimesupport/.venvมีแล้วให้probeก่อนsetupใหม่ ไม่แตะglobal/runtimeของweb
+
+**ไฟล์ที่เปลี่ยน:** เพิ่มpromptไฟล์ข้างต้น อัปเดตqueueให้มีfirstStepPromptPath/scope/status และappendบันทึกในXEDO_WORK_LOG.mdกับWEBSITE_DETAILS.mdเท่านั้น ไม่สร้างfixtureจริงในรอบนี้ ไม่เปลี่ยนผลส่งมอบsupport
+
+**ผลตรวจ/เผยแพร่:** ตรวจเนื้อหาprompt/pathและJSON/diffcheckเอกสาร ไม่มีappcodeedit/applicationtests/datautility/fixturevalidation/newinference/hashrerunใหม่ ไม่มีcommit/push/deploy ไม่สร้างหรือส่งข้อความไปแชทอื่นเอง ผู้ใช้คัดลอกpromptไปเริ่มงานได้ รอคำตอบ:ไม่มี
+
+
+<!-- support-review-edit-2026-10-27-01a17cf8 -->
+### 27 ตุลาคม 2026 21:19 น. — Support ส่ง Inspector risk-edit fixtures
+
+- **หัวข้อ:** ตรวจรับcoreSARเดิมแบบread-only และสร้างfixture/testaddendumสำหรับInspectorแก้/เพิ่ม/ย้าย/ปฏิเสธพื้นที่เสี่ยง โดยmainแก้websiteเพียงแชทเดียว
+- **สรุป:** พร้อมส่ง [HANDOFF_ADDENDUM.md](C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/support/review-edit/HANDOFF_ADDENDUM.md) ในsupport/review-edit/ มี19geometryfixtures/14scenariosRE01–RE14/TEST_PLAN_EDITING.md/STATE_FLOW.md/utility+acceptance/validation ไม่สร้างcorepackageซ้ำและไม่รันหรือimportprepare_result.py
+- **ผลตรวจใหม่จริง:** core12SHA256ตรง,metadata/runtimeเดิมพร้อม;fixtureassertions298executed_passed/0failed;manualvalid400backgroundpixelsไม่ทับraw14candidate;crossing399valid+1NoData;NoDataonly400pixels;outsidefootprint20,000m²;rawcandidate00012ยัง378จุดexactgeometry;22watchedcore/source/checkpoint/doc hashesก่อน–หลังไม่เปลี่ยน มี3coveragechecksnot_runสำหรับintentionallyinvalidgeometryเพราะintersectionไม่นิยาม แต่ตรวจrejectionแล้ว ไม่ใช้32data checksหรือ482webtestsเก่าเป็นผลรอบใหม่
+- **ข้อเสนอ/งานmain:** rawimmutable→draft/decisions→confirmedreview→planningtarget→plan;setGeometryresetภาพ/review/scheduleจึงไม่ใช้ต่อvertex;surveyIdresolveกลับfrozenoriginalboundaryต้องมีtargetadapter;ขยายepoch/result/review/target/sessionguardก่อนและหลังawait/export;Savefail/conflictรักษาdraft,Cancelตรวจreadinessใหม่ RE01–RE14webcasesทั้งหมดdesigned_not_run/executed0
+- **ไฟล์/ประวัติ:** เขียนเฉพาะreview-edit/และappendสองMarkdownกลางตามAGENTS ไม่แตะcoremanifest/checksums/validation/TEST_PLAN44กรณีเดิม Initialzero-area fixtureconstructionเคยfailedจากnonlinearreprojection เก็บvalidation.initial-fixture-construction.json แล้วแก้เฉพาะfixtureWGS84;ผลปัจจุบันผ่าน พร้อมdelivery_status/continuity_receipt/source_drift_observation
+- **ขอบเขตล่าสุด:** ไม่เพิ่มnormalprofile/batterydefaults/userstart-derivedend/fullnormalexportgateที่ผู้ใช้ตัดออก เก็บplanner/เวลา/export/readinessเดิม แผนเก่าPL01/PL02และgateที่ขัดกันถูกsupersedeเฉพาะscopeโดยไม่แก้coretestplan
+- **Source/งานขนาน:** HEADอ่าน28d7e9d1b852f1d55ecf115681ff24a13f968918 มีdocsdirty4ตั้งแต่เริ่ม;ท้ายรอบพบmainเพิ่มuntrackedinspector-mission-document/save schemasและexamples อ่านสองschemaเท่านั้น/ไม่แก้ บันทึกhashและmappingข้อเสนอในhandoff§3.7 ต้องตรวจcontractล่าสุดก่อนintegration ไม่ถือschemaartifactเป็นAPI/DBที่deployแล้ว
+- **ไม่รัน/เผยแพร่:** ไม่มีwebsiteeditor/API/auth/privacy/save/history/browser/staleexportexecutionหรือProductioncalls ไม่มีnewinference/training/accountDBservicechanges/Gitmutation/commit/push/deploy Supportไม่แก้source/config/schema/packages/tests/buildของweb
+- **งานค้าง/รอคำตอบ:** ไม่มีdata/runtimeblockerหรือคำถามผู้ใช้ค้าง Mainใช้fixtureทำcontract/editor/ownership/persistenceและรันRE01–RE14จริง ผู้ใช้นำabsolutehandoffpathส่งต่อmain ไม่มีการส่งข้อความไปuser-ownedchatอื่นเอง
+
+### Phase1 เริ่มจริง — ตรวจ backend และสัญญาข้อมูล — 27 ต.ค. 2026
+
+**หัวข้อ:** ตรวจความพร้อมบัญชี/ฐานข้อมูลและกำหนดmission/reviewก่อนเชื่อมfeature
+
+**สรุป:** ผู้ใช้สั่งเริ่มขั้นแรก0–20นาทีและแจ้งsupportทำงานแล้ว ทำส่วนที่ไม่ต้องใช้สิทธิ์backendครบเป็นlocalcontract2schemas+2examplesและread-onlyartifactchecks แต่ยังไม่ยืนยันliveDBschema/Auth/privateSave เพราะconnectorไม่เห็นXEDO ผู้ใช้ยืนยันprojectURLตรงเดิมและรายงานteaminvite/refreshแล้ว ตรวจหลังrefreshยังdenied จึงแยกเป็นexternalaccessgate ไม่สรุปว่าฐานข้อมูลล่มและไม่ถือว่าphase1ด้านbackendผ่าน
+
+**ผลตรวจบริการจริง:**
+
+- Supabase projectที่ผู้ใช้ยืนยัน:`tstmjnlhwidwtzetqxbu`/dashboardURLตรงตัวอ้างอิงเดิม ผู้ใช้บอกโปรเจกต์อยู่กับอีกemailและเชิญemailนี้เข้าteamแล้ว ต่อมาแจ้งrefreshconnectorแล้วด้วย
+- MCP listprojectsหลังrefreshยังคืน2โปรเจกต์อื่นและlistorganizationsมี1องค์กรส่วนตัว getprojectXEDOคืนpermissiondenied ไม่ตรวจตาราง/ข้อมูลของโปรเจกต์อื่น ไม่รู้actualmembership/acceptedinvite/projectrole/OAuthorggrantขององค์กรXEDO
+- BrowserfallbackไปDashboardที่ผู้ใช้ส่งมาredirectหน้าSignIn ไม่มีprojectsession ไม่กรอกcredentialหรือกดgrantใดๆ สถานะนี้ไม่ใช่หลักฐานว่าSupabaseprojectเสีย
+- Vercelmetadataของproject`prj_x35WcipWxA767cYwv3f0CXcdyea3`อ่านได้ แต่envmetadata API403forbidden;ไม่มีVercelCLIที่ติดตั้งให้ใช้fallback จึงไม่อ้างว่ารู้ค่าหรือความพร้อมProductionenv ไม่decrypt/listsecretvalues
+- Localruntimeตรวจเฉพาะpresence booleans:SupabaseURL/publishable/secret-serviceRole/DatabaseURL/Cloudflareaccount-tokenไม่มีที่ตั้งไว้ ไม่พิมพ์ค่าหรือcredentialfiles ไม่มีการเปลี่ยน.env
+- อ่านofficialSupabaseAuth/RLS/MCPdocsและchangelogก่อนออกแบบ `.md`changelogถูกwebreaderปฏิเสธcontenttypeจึงตรวจofficialHTMLchangelogแทน ไม่ปรับsettingตามข่าวโดยไม่จำเป็น
+
+**สัญญาข้อมูลที่สร้างจริง:**
+
+- `contracts/inspector-mission-document.schema.json`: clienteditabletitle/inputMode/searchGeometry/durableimageidentity/analysisrefbyhash/riskDraft/planningInputs ค่าที่กำลังวาดอาจยังไม่สมบูรณ์และSaveDraftได้ ไม่รับowner/reviewer/serverclock/readinesssealในdocument
+- `contracts/inspector-mission-save.schema.json`: missionId(nullเมื่อcreate)/expectedRevision/mutationId/intent(save_draftหรือconfirm_risk)/document;confirmationต้องมีtargetPolygonหนึ่งวง≤120จุด ไม่มีรู ส่วนclosure/topology/coverageต้องruntimevalidate ไม่อ้างJSONschemaว่าพิสูจน์ได้เอง
+- `contracts/examples/inspector-save-draft.json` และ `inspector-confirm-risk.json`: ตัวอย่างUUIDสมมุติและcandidate00001จริง8verticesผูกhashcatalog ไม่ได้ส่งrequestจริงหรือยืนยันแทนInspector ตัวอย่างgeometryผ่านdomainvalidatorและ≤120จุด Payload≤1MiB/plannerinputs≤64KiB
+- rawAI/resultอยู่นอกmissioneditable เป็นcatalogimmutable ส่วนprivateRiskDraft/decisions/review/targetผูกmissionowner/revision AI/reviewไม่ถูกยัดเป็นtopfieldใหม่ในcalculatorAPIเดิมเพราะstrictallowlist
+
+**storage/saveหลักที่กำหนด:** mission_heads(owner/currentrevision),append-onlymission_revisions(document/hash/actor/time),mutation_receipts(owner+mutationId/requesthash/committedresponse) หนึ่งCASrevisioncounter;transactionตรวจreceiptก่อนCAS→samebodyreturnreceiptเดิม/differentbody409→owner/headrevision→appendrevision/updatehead/receiptพร้อมกัน confirmสร้างreview/targetrevisionเท่ากับrevisionใหม่และinvalidateplanatomically draftsaveรักษาconfirmedrefsเดิม ไม่เชื่อowner/reviewer/timeจากrequest unknownหรือforeignmission404,sameownerstale409 UIรักษาdraftเมื่อfailหรือSaveAตอบช้าหลังeditB
+
+**เปิดกลับและsession:** เก็บsource identity/วันที่/grid/hash ไม่persistGEEtileURL/session เมื่อopenต้องreacquireimagery/refreshconditions/readiness Storedpass/readyเป็นประวัติไม่ใช่ความพร้อมปัจจุบัน;exportguardผูกsessionepoch/user/mission/review/target/input/localeditก่อนและหลังawait การlogout/revocationต้องออกแบบและทดสอบจริงในimplementation ไม่อ้างแค่getUserว่าพิสูจน์logoutoldtokenแล้ว การใช้Supabaseเป็นทางที่เสนอสำหรับauth/privatepersistenceในprojectเดิม ไม่ใช่ย้ายD1/R2workspaceเดิมโดยอัตโนมัติ
+
+**ผลตรวจใหม่ในเครื่อง:** coreSAR12SHA256ตรง/raw14candidate/candidate00012ยัง378จุด;parse3schemaJSONรวมของเดิม/resolve3relativeRefs/parse2examples/ตรวจsamplegeometryและbytebudgets/ไม่มีownerreviewerfieldsในclientexample ผ่าน Report`output/release-check/phase1-inspector-backend-2026-10-27/contract-artifact-checks.json` FullJSONSchemaenginevalidationยังไม่รันเพราะruntimeที่มีไม่พบvalidatorและไม่ติดตั้งเพิ่มเพื่อรอบนี้ ไม่มีwebsiteunit/API/privacy/browserflow/buildหรือDBtransactiontestใหม่ ไม่มีnewinference/conversionrerun
+
+**รับsupportเพิ่มเติมระหว่างรอบ:** รักษารายการsupport21:19ไว้ อ่าน`support/review-edit/HANDOFF_ADDENDUM.md`และvalidationแล้ว พบ19geometryfixtures/14REscenarios supportรายงาน298fixtureassertionsผ่านและ3coveragechecksnot_runสำหรับinvalidgeometries Webcasesยังdesigned_not_run/executed0 Mainยังไม่รันutilityนี้ซ้ำ ไม่ใช้ผลนั้นอ้างว่าeditorของเว็บทำงานแล้ว
+
+**หลักฐาน/ไฟล์อื่น:** `output/release-check/phase1-inspector-backend-2026-10-27/readiness.json`สถานะแต่ละบริการที่ปลอดsecret;อัปเดตqueue/สองcanonicalMarkdown ไม่มีDDL/account/permission/servicechanges ไม่มีcommit/push/deploy applicationruntime/UIยังเดิม
+
+**รอดำเนินการ/รอคำตอบ:** ProjectURL/teaminvite/refreshผู้ใช้ตอบแล้ว ห้ามถามซ้ำ ประเด็นที่เหลือคือยืนยันacceptedmembership/projectscopeและอนุญาตconnectorให้เห็นองค์กรที่เป็นเจ้าของXEDO เครื่องมือsessionนี้ยังเห็นแค่องค์กรส่วนตัวหลังrefresh ไม่ขอpassword/APIkey/PATหรือยกระดับroleโดยอัตโนมัติ
+
+### 27 ตุลาคม 2026 21:41 น. — ยืนยัน Dashboard องค์กร megaphijak และจัดขั้นตอน OAuth
+
+**หัวข้อ:** ผู้ใช้ส่งภาพยืนยันว่าเข้า xedo ใน Supabase ได้จริง และขอขั้นตอนอนุญาตการเชื่อมต่ออย่างละเอียด
+
+**สรุป:** รับหลักฐานใหม่ว่าบัญชีใน Chrome เปิด project `tstmjnlhwidwtzetqxbu` ภายใต้องค์กร **megaphijak** ได้และ Dashboard แสดง Healthy การเข้าถึง browser จึงยืนยันแล้ว ส่วนสิทธิ์ OAuth ของ connector ยังรอผล ขั้นตอนที่ให้เริ่มจาก Supabase plugin เดิมและเลือกองค์กรนี้ในหน้าอนุญาต ไม่ตีความว่าผู้ใช้ยังเข้า Dashboard ไม่ได้ ไม่สั่งแก้เว็บไซต์หรือบัญชีตามคำถาม how-to นี้
+
+**รายละเอียดและไฟล์ที่เปลี่ยน:**
+
+- อ่าน log/queue และ Git status ของ active checkout ก่อนทำงาน HEAD `28d7e9d1b852f1d55ecf115681ff24a13f968918` มี docs/contracts ค้างจาก phase1 รักษารายการ support ทั้ง 17:58 และ 21:19 และงานเดิมไว้
+- อ่าน local config เฉพาะรายการ plugin/MCP ที่ไม่เปิดเผย secret และ manifest/.app.json พบ Supabase app ID `asdk_app_69d3e5ee6a708191baa733f7b8931995`; เปิด public plugin page ผ่าน IAB ตรวจชื่อ/Apps/version แต่ session นั้นไม่ได้ล็อกอิน จึงไม่เห็นปุ่มจัดการ connection ส่วนตัว ไม่ใช้ข้อความที่เดาชื่อเมนูเป็นข้อเท็จจริง
+- ใช้ OpenAI Docs และ Supabase skill ตรวจ official docs/source; subagent ช่วยค้นแบบ read-only พบ OpenAI Plugins → Installed → Supabase และ Apps/connection details ตาม client; OAuth ต้องเลือก **megaphijak** และ xedo ถ้ามี project selector Browser OAuth account อาจต่างจากบัญชีใน screenshot จึงให้ตรวจ Authorizing as
+- ตรวจทางเข้า Supabase Organization Settings → Connections → OAuth Apps → Authorized apps จาก source ทางการ เพื่อดู grant ที่มีอยู่ ไม่ให้สร้าง Published app ใหม่ และไม่อนุมาน organization slug จากชื่อ megaphijak การเข้า Organization Settings จาก project breadcrumb ยังไม่ได้กดตรวจจริง จึงไม่ชี้รูปเฟืองในภาพแบบเดา
+- Member-bound grant ใน source อาจอนุญาตตาม role โดยไม่ต้อง admin เพิ่ม จึงไม่บังคับเปลี่ยนเป็น Owner หากยังไม่มี actual role error ไม่ขอ PAT/password/API key ไม่เปลี่ยนสิทธิ์/ถอด connection/สร้าง OAuth app แทนผู้ใช้
+- อัปเดต `docs/WEBSITE_DETAILS.md` ข้อ3.18 ด้วยขั้นตอนหลัก ทางตรวจ grant กรณีไม่พบองค์กร และเกณฑ์ตรวจหลังผู้ใช้ทำเสร็จ; อัปเดต `docs/implementation-queue.json` ยืนยัน organization/browser access และคง pending เฉพาะ connector grant
+
+**การตรวจรอบนี้:** ภาพจริง + metadata/plugin page + official documents/source เท่านั้น ไม่เรียก Supabase permission-denied ซ้ำ ไม่มี application source/DB/schema/account/config/permission changes ไม่รัน app tests/builds ใหม่ ไม่ทดสอบ login/private Save และไม่อ้างผล 482 tests ของ release เก่าเป็นผลรอบนี้ ตรวจ parse ของ queue และความเรียบร้อย diff เอกสารก่อนจบ
+
+**สถานะเผยแพร่:** documentation changes ในเครื่อง ยังไม่มี commit/push/deploy รอบนี้ application release เดิมคงตาม receipt ที่บันทึกไว้ก่อนหน้า ไม่ตรวจ deployment ใหม่
+
+**รอคำตอบ/รอดำเนินการ:** ผลการอนุญาต Supabase plugin ให้เข้าถึง **megaphijak** และ target xedo เมื่อผู้ใช้ทำแล้วจึงตรวจ `get_project`/schema แบบ read-only ต่อ หรือใช้ภาพหน้า Organization/error ที่เกิดขึ้นจริงวิเคราะห์ โดยไม่ถามชื่อองค์กร/Project Ref/teaminvite เดิมซ้ำ
+
+### 27 ตุลาคม 2026 22:55 น. — เข้า Supabase ได้และเตรียม Inspector foundation ในเครื่อง
+
+**หัวข้อ:** ตรวจ connection ใหม่และทำขั้นถัดไปของบัญชี Inspector/ภารกิจส่วนตัว ตามคำสั่งให้ต่อเมื่อเข้า xedo ได้
+
+**สรุป:** เข้าได้จริงผ่าน connection **megaphijak** แล้ว เตรียม login อีเมล/รหัสผ่าน, Save draft, My missions, version history และ SQL ที่แยก owner/session ไว้ครบสำหรับขั้น foundation ผ่าน **500 tests**, syntax, 3 builds และ browser QA แบบใช้บัญชีจำลอง/ฐานข้อมูล PostgreSQL ในเครื่อง การสร้าง schema จริงถูก auto-review ปฏิเสธและยังไม่ได้เกิดขึ้น ผู้ใช้ตอบว่า **ยังไม่มีบัญชีทดลอง — เตรียมระบบก่อน ทีมสร้างบัญชีภายหลัง** จึงไม่สร้างบัญชีใด
+
+**สิ่งที่ตรวจจากบริการจริง:**
+
+- คำขอแรกยังใช้ connection เดิมแล้ว denied ระหว่างรอบ metadata ของเครื่องมืออัปเดตให้เลือก `link_id` ได้ 2 connections; ระบุ link ของ **megaphijak** แล้ว get_project สำเร็จ ไม่ใช่ฐานข้อมูลกลับมาจากอาการล่ม และไม่ใช่ผู้ใช้ยังไม่ได้อนุญาต
+- get_project: `xedo`, ref `tstmjnlhwidwtzetqxbu`, organization `rphjcbkprrafgiregduu`/megaphijak, ACTIVE_HEALTHY, PostgreSQL 17.11, eu-west-1
+- public tables=[]; migrations=[]; security advisor lints=[]; ตรวจ auth.sessions columns เพื่อรองรับ session_id/user_id/not_after; Auth users=0 ไม่อ่านรายการอีเมลหรือ credential
+- ใช้ publishable key ที่เครื่องมือส่งให้ตรวจ public Auth settings จริง: Auth reachable, email enabled=true, disable_signup=false ไม่ขอ service-role key และไม่เปลี่ยน Auth config
+- หลังคำขอ migration ถูกปฏิเสธ ตรวจจริงซ้ำได้ `private_schema_exists=false`, `rpc_exists=false`, `auth_user_count=0`
+
+**โค้ด/ไฟล์ที่เพิ่มหรือแก้:**
+
+- `api/inspector.mjs`: same-origin JSON BFF และ Node bridge ใช้ JWT ของผู้ใช้กับ Supabase ไม่คืน token ให้ JS; cookie HttpOnly/Secure/SameSite ใน HTTPS, ไม่มี refresh token, ต้อง sign in ใหม่เมื่อหมดอายุ ตรวจ expected actor เทียบตัวตนจริงก่อน private RPC เพื่อกันการเปลี่ยนบัญชีในอีกแท็บ; logout พยายาม revoke ทั้ง app/Supabase และรายงานหากยืนยัน server revocation ไม่ได้
+- `src/inspector-project.js`: URL และ publishable key ซึ่งเป็น public configuration ของ target ที่ผู้ใช้ยืนยัน ไม่ใช่ admin secret; pin project ป้องกัน env เดิมชี้อีกโครงการโดยเงียบ
+- `src/inspector-validation.js`: AJV 2020/formats ตรวจ schema/UUID/เวลา/geometry/ขนาด 1 MiB และ planning inputs64KiB; ปฏิเสธ confirm_risk จนขั้น AI review พร้อม
+- `src/inspector-client.js`, `inspector-state.js`, `inspector.css`: login/My missions/Save/copy/history, mutation retry, session/edit epochs, pending save/newer edits, discard prompt สำหรับ Open/New/Logout, มือถือ และเก็บร่างเมื่อ service ล้มเหลว
+- `src/planning-trial-client.js`: capture/restore mission, ไม่ใช้ saved readiness อนุมัติ export, ตรวจ session และ context ก่อน await แรก/หลัง freshness/หลังผล export/ก่อน download; Start another inspection เริ่ม identity ภารกิจใหม่ ไม่บันทึกทับงานเดิมโดยเงียบ; รักษา 3 ขั้นและ4 calculators/normal profile/schedule
+- `server.mjs`, `vercel.json`: Inspector route ก่อน hosted GEE catch-all; Vercel include schema files; browser calculation flow เดิมไม่ถูกเปลี่ยนไปเรียก calculator backend
+- `db/inspector-foundation.sql`: ร่าง migration schema private/5 tables/RLS/owner/session/append-only/CAS/receipts และ RPC ไม่ได้ใช้จริง ดู review file/hash
+- `tests/inspector-api.test.mjs`, `tests/inspector-database.test.mjs`, `tests/helpers/inspector-db.mjs`, `tests/planning-workflow.test.mjs`: tests ใหม่ของ auth/API/account epochs/SQL และ export race
+- `scripts/preview-inspector.mjs`: QA server ที่ใช้ Auth จำลอง+PGlite in-memory เท่านั้น; `scripts/check-inspector-readiness.mjs`: public Auth metadata probe
+- `package.json`/lock: AJV8.20.0, formats3.0.1 และ dev PGlite0.5.12 แบบ exact versions; เพิ่ม check/test/QA scripts; ปรับคำอธิบาย save contract ว่า local implementation และยังไม่ deploy
+- `docs/INSPECTOR_MIGRATION_REVIEW.md`: target, SQL hash, เปลี่ยนอะไร/ไม่เปลี่ยนอะไร, ผลตรวจ, ข้อจำกัด และ approval request; อัปเดต canonical docs/queue โดยรักษารายการ support เดิม
+
+**ผลตรวจใหม่:**
+
+| การตรวจ | ผลและขอบเขต |
+| --- | --- |
+| Standard test suite | **500 ผ่าน / 0 ล้มเหลว / 0 ข้าม** |
+| Syntax / production / workspace / portable HTML | ผ่าน; log อยู่ output/release-check/inspector-foundation-2026-10-27 |
+| SQL/roles ใน PGlite | owner/foreign404/history/idempotency/stale409/owner spoof/anonymous/direct grants/session expiry+revocation ผ่าน ไม่ใช่ hosted Auth หรือ multi-connection concurrency |
+| Browser QA | loginจำลองA→Savev1/v2→history→เปิดv1→staleSaveถูกกัน→logout→Bไม่เห็นA; Saveพื้นที่24,131m²/reload/openกลับและexportยังdisabled; มี3steps/4calculatornodes |
+| Mobile | viewport390/dialog362/page375 px ไม่ล้นแนวนอน เก็บภาพไว้ |
+| Dependency audit | moderate4/high0/critical0 ใน dev toolchain เดิม ไม่ force-fix หรือขยาย scope อัปเกรดเดิม |
+
+Regression รอบแรกพบ VM test harness ยังไม่มี inspectorUI หลังเพิ่ม dependency จึง bind stub ที่ boundary และเพิ่มกรณีจริงของ logout/account switch/session expiry ระหว่าง export ก่อนรัน500ผ่าน ไม่ลด assertions เดิม การ review แบบ read-only เพิ่มแก้ logout failure, null action, RPC basic shape limits, startup dirty tracking และ cross-tab actor binding ก่อนปิดรอบ
+
+**คำขอที่ถูกปฏิเสธ:** `apply_migration` ชื่อ `xedo_inspector_foundation` ใน live xedo ถูก auto-review ปฏิเสธ เพราะสร้าง schema/tables/RLS/security-definer functions/RPC/grants ถาวร ยังไม่มี explicit approval ของ migration นี้และตอนนั้น SQL ยังตรวจไม่ครบ จึงไม่ retry และไม่ใช้ execute_sql หลบ ปัจจุบัน SQL ผ่าน local PostgreSQL/tests แล้ว แต่ยังต้องขออนุมัติ live action แบบชัดเจน SHA256 `62fe9b38623b3e3b8ce4fd04ad2cbb9aace6ca8553ae817ef34e31f6cc1633d2`
+
+**สถานะเผยแพร่/งานคงเหลือ:** ไม่มี production DB mutation, ไม่มีบัญชีผู้ทดลองใหม่, ไม่มี commit/push/deploy Application ที่เผยแพร่ยังเป็น release เดิม ระบบบัญชีนี้ local-only; ต้องใช้ migration หลังอนุมัติ ตรวจ grant/advisorจริง แล้วให้ทีมสร้างบัญชี+team roster และทดสอบจริง2บัญชีก่อนนับข้อบัญชีเสร็จ ขั้น UX และ prepared AI/risk editing ยังอยู่ในคิว ไม่อ้างว่าเชื่อมแล้ว Pi/รายงานพักเหมือนเดิม
+
+**รอคำตอบ:** อนุมัติ migration ตามไฟล์/hash/target ใน `docs/INSPECTOR_MIGRATION_REVIEW.md` หรือไม่? สิทธิ์องค์กรได้รับและตรวจสำเร็จแล้ว ส่วนการสร้างบัญชีไม่มีคำถามค้าง ผู้ใช้เลือกให้ทีมทำภายหลัง
+
+### 28 ตุลาคม 2026 — ชี้แจงสถานะระบบ account ให้แยกในเครื่องกับเว็บจริง
+
+**หัวข้อ:** ผู้ใช้ถามว่าระบบ account เสร็จแล้วหรือไม่
+
+**สรุป:** โค้ด foundation ของบัญชี Inspector และภารกิจส่วนตัวทำและตรวจในเครื่องแล้ว แต่ยังนับว่าเปิดใช้งานจริงเสร็จไม่ได้ เพราะ migration ยังไม่ถูกใช้กับ Supabase และยังไม่เผยแพร่โค้ดชุดนี้ ต้องรออนุมัติชุด SQL ที่ระบุไว้ ให้ทีมสร้างบัญชี/เพิ่มรายชื่อ Inspector แล้วทดสอบบัญชีจริงและเผยแพร่ตามขอบเขตที่ได้รับอนุญาต
+
+**รายละเอียด:** อ่าน canonical log/queue, WEBSITE_DETAILS, migration review และ Git status ของ active checkout ยืนยันสถานะเอกสารตรงกันว่า migrationApplied=false, realAccountsCreated=false, realAccountAcceptanceRun=false, commitPushDeploy=false โค้ดที่มีครอบคลุม email/password, logout/session, My missions, Save/copy/history และ owner/session guards ผล 500 tests/3 builds/QA ด้วย Auth จำลองเป็นหลักฐานรอบ 27 ต.ค. ไม่ใช่การรันใหม่หรือการทดสอบบัญชีจริงในรอบนี้ ไม่ตรวจบริการสด ไม่แก้ source/SQL/config ไม่สร้างบัญชี และไม่มี commit/push/deploy อัปเดตสอง Markdown เท่านั้น สถานะ/ข้อกำหนดใน implementation-queue.json ยังตรงเดิมจึงไม่เปลี่ยน queue
+
+**รอคำตอบ:** อนุมัติ live migration `db/inspector-foundation.sql` บน xedo/ref `tstmjnlhwidwtzetqxbu` ตาม review/hash เดิม คำถามผู้ใช้เรื่องสถานะครั้งนี้ไม่ใช่คำอนุมัติ migration ระบบตรวจอนุมัติอัตโนมัติเคยปฏิเสธเพราะเปลี่ยน schema/tables/RLS/functions/grants ถาวรและยังไม่มีอนุมัติชุดนี้อย่างชัดเจน ไม่ลองหลบหรือส่งคำขอซ้ำ การสร้างบัญชีให้ทีมทำภายหลังตามคำตอบเดิม ไม่มีคำถามค้างเรื่องวิธีสมัครหรือ role
+
+### 28 ตุลาคม 2026 — อนุมัติ ใช้ Inspector migration และตรวจสิทธิ์จริง
+
+**หัวข้อ:** ผู้ใช้สั่งใช้ `db/inspector-foundation.sql` กับ Supabase xedo และตรวจตาราง/สิทธิ์ ให้ทีมสร้างบัญชีผู้ทดลองภายหลัง
+
+**สรุป:** ทำครบตามคำสั่งฐานข้อมูลแล้ว ไฟล์SHA256 `62fe9b38623b3e3b8ce4fd04ad2cbb9aace6ca8553ae817ef34e31f6cc1633d2` ตรงชุดที่อนุมัติ ใช้ผ่านMCP apply_migrationสำเร็จ ประวัติ **20261027184951 / xedo_inspector_foundation** จากนั้นตรวจจริง15checksผ่าน รวม5negative probes ไม่มีAuth usersหรือข้อมูลภารกิจ ไม่แก้source/SQL ไม่commit/push/deploy คำอนุมัติที่รอได้รับแล้ว ไม่เหลือคำถามmigration
+
+**รายละเอียด/ก่อนใช้:** อ่านlog/queue/skill/SQL/Gitstatusของactivecheckout มีงานlocalค้างเดิม รักษาทั้งหมดและsupportmarkers2รายการ ตรวจtargetผ่านconnectionmegaphijakเป็นACTIVE_HEALTHY ก่อนใช้public/private tables+migrationsว่าง privateSchema/RPC=false Authusers0 อ่านSupabasefunctions/RLSdocs+changelogปัจจุบัน (.mdcontenttypeอ่านไม่ได้ใช้officialHTMLแทน) subagentช่วยreviewreadonlyของhash/permissionsไม่มีblocker ไม่เขียนไฟล์หรือเรียกliveDBแทนmain คำอนุญาตใหม่แก้เหตุปฏิเสธรอบก่อนแล้วจึงส่งapply_migrationด้วยไฟล์เดิม ไม่ใช้execute_sqlหลบ
+
+**ตรวจหลังใช้จริง:** มี5tablesตรงชื่อทุกตัว เปิดRLSและPK/FK/CHECK/indexตามSQL ตรวจanon/authenticatedไม่มีdirecttableสิทธิ์7แบบและcolumnสิทธิ์4แบบ authenticatedมีschemaUSAGEไม่มีCREATE ส่วนanonไม่มีทั้งคู่ มีprivateDEFINER2/publicINVOKER1 ตั้งsearch_pathว่าง PUBLIC/anonไม่มีEXECUTE identityhelperไม่เปิดให้authenticated แต่entry/wrapperเปิดเฉพาะauthenticated เทียบbody3functionsจากฐานข้อมูลกลับกับไฟล์ตรงกัน ทุกตารางและAuthusersยัง0
+
+**ผลปฏิเสธที่คาดหวังและรันจริง:** anonเรียกRPC→42501; authenticatedไม่มีclaims/session→PT401; authenticatedอ่านmission_headsตรง→42501; authenticatedเรียกrequire_inspectorตรง→42501; claimsจำลองในtransactionแต่ไม่มีauth.sessionsจริง→PT401 ทุกprobeเป็นreadonly/localrole ไม่มีการสร้างAuthuser/session/JWT/ข้อมูลทดสอบ SQLqueryตรวจcatalogครั้งแรกsyntaxวงเล็บเกินแก้เฉพาะSELECTแล้วผ่าน ไม่เปลี่ยนmigration
+
+**Advisors:** Securityไม่มีWARN/ERROR แต่มีINFO `rls_enabled_no_policy`5 เพราะแบบRPC-onlyไม่ให้clientเข้าตารางและdefaultdeny ตรงเจตนา ไม่เพิ่มallowpolicyเพื่อปิดINFO PerformanceINFO FKไม่มีcoveringindex2จุด (`mission_revisions.created_by`, `revoked_sessions.user_id`) เก็บเป็นmaintenanceเมื่อขยายข้อมูล และunusedindex1เพราะเพิ่งสร้าง ไม่มีfollow-upDDLนอกไฟล์ที่อนุมัติ รายงานมีremediationlinksให้ตรวจต่อ
+
+**ไฟล์/หลักฐาน:** เพิ่ม `docs/INSPECTOR_DATABASE_VERIFICATION_2026-10-28.md` อัปเดต `INSPECTOR_MIGRATION_REVIEW.md` ว่าapproved/applied;อัปเดตtopstatus+entryในlogนี้และ `WEBSITE_DETAILS.md` §3.21;queueเอาapprovalออกunanswered/เพิ่มresolved,migrationApplied=true/liveverification15checks. Fullsafe receipt `output/release-check/inspector-live-migration-2026-10-28/verification.json` ไม่มีcredentials เวลาDB18:50UTC27ต.ค.คือ01:50ไทย28ต.ค. จึงแสดงวันที่28ตามtimezoneผู้ใช้
+
+**การตรวจ/เผยแพร่:** รอบนี้ทดสอบฐานข้อมูลจริงและตรวจJSON/diffเอกสารเท่านั้น ไม่มีapplicationtests/build/browserrerun ผล500testsและ3buildsเป็น27ต.ค. ไม่อ้างใหม่ ไม่มีrealpasswordlogin/A-Bownership/concurrencyacceptance ยังไม่สร้างบัญชีและไม่มีcommit/push/deploy DBmigrationใช้จริงแล้วแต่frontend/APIบัญชียังอยู่ในworkingtree งานUX/AIeditorยังคงคิวเดิม งานprofile/scheduleที่ตัดไม่ถูกรื้อกลับ
+
+**รอดำเนินการ/รอคำตอบ:** ไม่มีคำถามผู้ใช้ค้างสำหรับmigration ทีมสร้างAuthusers+เพิ่มrosterภายหลัง แล้วทดสอบจริงA/B/Save/history/logout/expiredsession/concurrencyและreleasefrontendตามคำสั่งรอบนั้น ไม่ขออนุมัติmigrationนี้ซ้ำและไม่สร้างบัญชีแทนทีม
+
+<!-- inspector-account-release-2026-10-28 -->
+### 28 ตุลาคม 2026 — เผยแพร่ระบบบัญชี Inspector และตรวจหน้า Login
+
+**หัวข้อ:** ผู้ใช้อนุมัติpush/deployระบบบัญชีขึ้นเว็บจริง ตรวจLoginและให้ทีมสร้างบัญชีภายหลัง
+
+**สรุป:** อนุมัติreleaseชัดเจนแล้ว ตรวจcurrentcheckout/originmainตรงHEAD28d7e9dก่อนทำงาน รันใหม่500tests/0failed/0skipped syntaxและ3buildsผ่าน กำลังpush/deployผ่านGitintegrationและรอตรวจproduction ไม่อ้างว่าLoginสำเร็จด้วยบัญชีจริงเพราะยังไม่มีบัญชี
+
+**รายละเอียด/ไฟล์:** เผยแพร่BFFapi/inspector.mjs,InspectorUI/state/validation/projectpublicconfig/CSS,plannerSave/restore/sessionguards,routes/package/lock/contracts/SQLที่ใช้แล้ว/tests/QAhelpersและเอกสารที่ค้างจากรอบเตรียม รวมแผนAIเป็นเอกสารเท่านั้นไม่มีAIeditorimplementation แก้descriptionในsavecontractว่าmigrationใช้แล้ว ไม่เปลี่ยนvalidationrule/SQL ไม่มีadminsecretในชุดบัญชี
+
+**ผลตรวจรอบนี้:** freshnpmtest500ผ่าน;syntaxผ่าน;production/workspace/portablebuildผ่าน;diffcheckผ่าน ใช้Verceldeployments/verificationskills+officialGit/Nodefunctiondocs reviewreadonlyไม่พบmaterialblocker ต้องตรวจproductionroute/schema-packaging/JSONanonymoussession/401private/403origin/invalidlogin+desktop/mobileก่อนนับdeploymentverified
+
+**หลักฐาน/ขอบเขต:** output/release-check/inspector-account-release-2026-10-28/ เก็บtests/syntax/buildlogs DB15checksเป็นรอบmigrationก่อนหน้าไม่รันซ้ำ ไม่มีการสร้างAuthusers/rosterหรือแก้Authsettings ยังไม่ทดสอบsuccessfulpasswordlogin/realA-BSavehistory รอทีมสร้างบัญชี ผลเผยแพร่และproductionchecksเติมในentryนี้หลังตรวจจริง
+
+**รอคำตอบ:** ไม่มี ผู้ใช้อนุมัติreleaseแล้ว บัญชีให้ทีมสร้างภายหลังตามเดิม

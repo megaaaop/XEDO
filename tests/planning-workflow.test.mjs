@@ -74,6 +74,7 @@ function harness() {
     number:(value,places=2)=>Number.isFinite(value)?value.toFixed(places):'Unknown',
     map:{on:(name,handler)=>events.set(name,handler)},toLonLat:value=>value,
     environmentUI:{changed(){calls.environment++;},getPatch(){return null;},async ensureFresh(){return true;}},
+    inspectorUI:null,
     setTimeout:()=>1,clearTimeout(){},
     queueCalculations(){calls.queued++;},
     drawMap(){},update3D(){},statuses(){},fit(){},refreshFlow(){},updateHardwareProfileState(){},
@@ -353,4 +354,29 @@ test('A response for a still-ready mission downloads normally after the same asy
   assert.equal(h.calls.error,'');
   assert.equal(h.context.working,false);
   assert.notEqual(h.context.result,null);
+});
+
+test('Account change during the first asynchronous export check prevents the export request', async()=>{
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+  let key='account-a',release;h.context.inspectorUI={contextKey:()=>key,changed(){},ensureSession:()=>new Promise(resolve=>{release=resolve;})};
+  const pending=h.node('trial-qgc').onclick();key='signed-out';release(true);await pending;
+  assert.equal(h.calls.requests.length,1);assert.deepEqual(h.calls.downloads,[]);
+});
+
+test('Account change after the export response was requested prevents a late download', async()=>{
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+  let key='account-a';h.context.inspectorUI={contextKey:()=>key,changed(){},async ensureSession(){return true;}};
+  const resolve=h.holdExport(),pending=h.node('trial-qgc').onclick();
+  for(let i=0;i<20&&h.calls.requests.length<2;i++)await Promise.resolve();
+  assert.equal(h.calls.requests.length,2);key='account-b';resolve({text:'private plan',filename:'trial.plan',mime:'application/json'});await pending;
+  assert.deepEqual(h.calls.downloads,[]);
+});
+
+test('A session that expires while the export is being prepared cannot download the response',async()=>{
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+  let checks=0;h.context.inspectorUI={contextKey:()=> 'same-tab',changed(){},async ensureSession(){return ++checks===1;}};
+  const resolve=h.holdExport(),pending=h.node('trial-qgc').onclick();
+  for(let i=0;i<20&&h.calls.requests.length<2;i++)await Promise.resolve();
+  resolve({text:'expired plan',filename:'trial.plan',mime:'application/json'});await pending;
+  assert.equal(checks,2);assert.deepEqual(h.calls.downloads,[]);
 });

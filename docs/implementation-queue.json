@@ -1,25 +1,92 @@
 {
   "schemaVersion": 1,
-  "updatedOn": "2026-10-27",
+  "updatedOn": "2026-10-28",
   "timezone": "Asia/Bangkok",
   "numbering": {
-    "effectiveOn": "2026-10-26",
+    "effectiveOn": "2026-10-27",
     "legacyStageIdField": "stages[].number",
     "currentUserFacingOrderField": "remainingWorkOrder[].newNumber",
-    "defaultForNewInstructions": "Use the new remaining-work number unless the user explicitly refers to the old numbering or an earlier quoted instruction.",
+    "defaultForNewInstructions": "Use the 2026-10-27 revised numbering. Match quotations/annotations to their source numbering: previous1/legacy3 removed; revised1=previous2/legacy4, revised2=previous3/legacy5, revised3=previous4/legacy6.",
     "historicalReferences": "Existing stage IDs, resolved-decision stage references, release scope and prior publication authorization retain their legacy numbers.",
-    "activeRemainingCount": 4,
+    "activeRemainingCount": 3,
     "deferredRemainingCount": 2,
-    "totalRemainingCount": 6,
-    "completedLegacyStageIds": [1, 2]
+    "totalRemainingCount": 5,
+    "completedLegacyStageIds": [
+      1,
+      2
+    ],
+    "excludedFromCurrentCloseoutLegacyStageIds": [
+      3
+    ],
+    "previousRemainingOrder": [
+      {
+        "previousNumber": 1,
+        "legacyStageNumber": 3,
+        "outcome": "removed_from_current_closeout_by_user"
+      },
+      {
+        "previousNumber": 2,
+        "legacyStageNumber": 4,
+        "newNumber": 1
+      },
+      {
+        "previousNumber": 3,
+        "legacyStageNumber": 5,
+        "newNumber": 2
+      },
+      {
+        "previousNumber": 4,
+        "legacyStageNumber": 6,
+        "newNumber": 3
+      },
+      {
+        "previousNumber": 5,
+        "legacyStageNumber": 7,
+        "newNumber": 4
+      },
+      {
+        "previousNumber": 6,
+        "legacyStageNumber": 8,
+        "newNumber": 5
+      }
+    ]
   },
   "remainingWorkOrder": [
-    {"newNumber": 1, "legacyStageNumber": 3, "scope": "active", "name": "Use the existing aircraft simulation profile in the normal planner flow"},
-    {"newNumber": 2, "legacyStageNumber": 4, "scope": "active", "name": "Production-like UX without Prototype badges, with future verification and capacity/release planning"},
-    {"newNumber": 3, "legacyStageNumber": 5, "scope": "active", "name": "Team-created Inspector accounts, private missions, save and history"},
-    {"newNumber": 4, "legacyStageNumber": 6, "scope": "active", "name": "AI candidate analysis, Inspector review and planner handoff"},
-    {"newNumber": 5, "legacyStageNumber": 7, "scope": "deferred", "name": "Raspberry Pi images and telemetry"},
-    {"newNumber": 6, "legacyStageNumber": 8, "scope": "deferred", "name": "Experiment results and before-after reports"}
+    {
+      "newNumber": 1,
+      "previousNumber": 2,
+      "legacyStageNumber": 4,
+      "scope": "active",
+      "name": "Approved UX cleanup preserving accepted prototype behavior"
+    },
+    {
+      "newNumber": 2,
+      "previousNumber": 3,
+      "legacyStageNumber": 5,
+      "scope": "active",
+      "name": "Approved private Inspector accounts, saved missions and history"
+    },
+    {
+      "newNumber": 3,
+      "previousNumber": 4,
+      "legacyStageNumber": 6,
+      "scope": "active",
+      "name": "Approved prepared AI integration with Inspector risk-area editing and reviewed planner handoff"
+    },
+    {
+      "newNumber": 4,
+      "previousNumber": 5,
+      "legacyStageNumber": 7,
+      "scope": "deferred",
+      "name": "Raspberry Pi images and telemetry"
+    },
+    {
+      "newNumber": 5,
+      "previousNumber": 6,
+      "legacyStageNumber": 8,
+      "scope": "deferred",
+      "name": "Experiment results and before-after reports"
+    }
   ],
   "purpose": "Queued XEDO implementation requirements and unresolved user decisions for this conversation.",
   "conversationPolicy": {
@@ -31,17 +98,172 @@
       "readBeforeProjectWork": true,
       "updateEveryProjectTurnBeforeFinalReply": true,
       "includesPlanningRequirementsAndDocumentationTurns": true,
-      "mainParts": ["หัวข้อ", "สรุป", "รายละเอียด"],
+      "mainParts": [
+        "หัวข้อ",
+        "สรุป",
+        "รายละเอียด"
+      ],
       "preserveOtherChatsEntries": true,
       "websiteDetailsPath": "docs/WEBSITE_DETAILS.md",
       "updateBothForWebsiteImplementationAndInvestigation": true
     },
-    "execution": "The latest user request on 2026-10-27 authorizes adding Diagram/Satellite ground modes to the existing 3D preview, using real satellite imagery across the current floor while preserving preview dimensions and extent. Write the plan before code and maintain both Markdown documents. Other queued product requirements remain queued.",
-    "publication": "The user explicitly authorizes code changes, push and direct production deployment for the 3D satellite ground modes. Verify the affected flow, tests and builds, then publish to the existing production project. This is scoped authorization, not permission to implement/publish every queued feature.",
+    "execution": "User annotations approve UX, private Inspector accounts and prepared-AI integration, now including Inspector editing/adding/rejecting risk areas. Prior normal-flow/profile/schedule work is removed from this closeout. This turn revises the plan and two-chat handoff; implementation approval is recorded and application changes have not started.",
+    "publication": "Previous publishing approval covered completed releases. Latest annotations approve implementation of legacy4/5/6 and request a revised plan; do not treat those annotations as authorization to create external service accounts, disclose credentials or publish unrelated work. No push/deploy in this planning turn.",
     "authorizedPublicationStages": [
       1,
       2
-    ]
+    ],
+    "authorizedImplementationLegacyStages": [
+      4,
+      5,
+      6
+    ],
+    "implementationApprovalOn": "2026-10-27"
+  },
+  "parallelChatPolicy": {
+    "confirmedOn": "2026-10-27",
+    "websiteImplementationOwner": "this_primary_chat_only",
+    "primaryResponsibilities": [
+      "All website source/API/schema/configuration changes",
+      "Approved UX cleanup",
+      "Login/private mission save/history",
+      "Prepared-AI display, editable Inspector risk layer, review and planner integration",
+      "Website tests/browser verification and release within user authorization",
+      "Canonical overview and queue maintenance"
+    ],
+    "supportResponsibilities": [
+      "Read-only analysis and data verification",
+      "Prepared SAR package already delivered: maintain immutable core package",
+      "Risk-edit scenario/fixture addendum outside checkout",
+      "Test design for raw evidence, drafts, accept/edit/reject/add, undo/cancel, revisions and privacy",
+      "Evidence-based bug reports; no website patch"
+    ],
+    "supportForbidden": [
+      "Website source/test/API/database/config/package/build changes",
+      "Git mutations, commits, pushes, deployments and service/account provisioning",
+      "Changing source rasters/model/threshold or running new inference/training",
+      "Fabricated results or reporting designed tests as executed"
+    ],
+    "supportOutputDirectory": "C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/support",
+    "briefPath": "C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/SUPPORT_CHAT_BRIEF.md",
+    "testPlanTemplatePath": "C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/TEST_PLAN_TEMPLATE.md",
+    "sharedDocumentation": "Keep AGENTS-required records. A support chat may append a short evidence/report reference after rereading the current canonical Markdown; only the primary chat changes overall summaries, ownership rules and queue state.",
+    "handoff": "Support posts its absolute HANDOFF.md path plus completed/blocked/not-run status; user can pass this to the primary chat. No other user-owned chat was created or messaged in this planning turn.",
+    "timing": {
+      "firstFindingsTargetMinutes": 20,
+      "packageTargetMinutes": [
+        45,
+        90
+      ],
+      "targetIsGuarantee": false,
+      "primaryMayStartIndependentWorkBeforeFullPackage": true
+    },
+    "acceptanceGate": [
+      "Actual source/grid/CRS/NoData/hash validated",
+      "Raw candidates preserve holes and components",
+      "Polygonize/rasterize roundtrip results recorded",
+      "Provenance distinguishes precomputed result from new inference",
+      "Primary review before adapting data to website contracts or applying any change"
+    ],
+    "runtimeDependency": "Geospatial packages were absent in the default Python probed by the read-only support review; use an existing suitable runtime or isolated output-only environment. Report setup blockers instead of inventing data.",
+    "currentHandoffStatus": {
+      "path": "C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/support/HANDOFF.md",
+      "supportReportedChecksPassed": 32,
+      "primaryReadOnlySha256FilesMatched": 12,
+      "rawCandidates": 14,
+      "largestCandidateVertices": 378,
+      "webIntegrationTested": false,
+      "primaryDataConversionRerun": false,
+      "reviewEditAddendum": {
+        "path": "C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/support/review-edit/HANDOFF_ADDENDUM.md",
+        "supportReportedFixtureAssertionsPassed": 298,
+        "geometryFixtures": 19,
+        "reviewScenarios": 14,
+        "websiteCasesExecuted": 0,
+        "primaryUtilityRerun": false
+      }
+    },
+    "editingAddendumPath": "C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/REVIEW_EDIT_ADDENDUM.md",
+    "firstStepPromptPath": "C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/PARALLEL_STEP_1_PROMPT.md",
+    "firstStepPromptScope": "Read-only acceptance of already delivered SAR core package; prepare Inspector risk-edit fixtures and test-design addendum under support/review-edit only. Do not rerun/import core prepare_result.py or modify website/core package.",
+    "firstStepPromptStatus": "ready_to_copy_not_dispatched"
+  },
+  "currentPlanningScope": {
+    "id": "same-day-closeout-2026-10-27",
+    "status": "inspector_account_release_authorized_preflight_passed",
+    "userAvailabilityMinutes": 240,
+    "userAvailabilityIsHardWorkLimit": false,
+    "confirmedByUser": [
+      "Accept current prototype normal-flow/profile/schedule behavior and remove prior1 from closeout",
+      "Approve UX cleanup",
+      "Approve private Inspector accounts/save/history",
+      "Approve prepared AI integration and allow Inspector to edit/add/reject risk areas"
+    ],
+    "currentRemainingStageNumbers": [
+      1,
+      2,
+      3
+    ],
+    "legacyStageNumbers": [
+      4,
+      5,
+      6
+    ],
+    "deferredStageNumbers": [
+      4,
+      5
+    ],
+    "firstCheckpointMinutes": 20,
+    "criticalDependency": "Verify an accessible hosted authentication and durable database deployment path; current Vercel production has no account/private-mission API and workspace actor metadata is not ownership enforcement.",
+    "schedule": [
+      {
+        "fromMinute": 0,
+        "toMinute": 20,
+        "primary": "Check available auth/durable database path, freeze private mission/risk-review draft schema, receive verified prepared SAR package",
+        "support": "Use delivered core package; identify risk-edit cases and the378-vertex planner mismatch without regenerating data"
+      },
+      {
+        "fromMinute": 20,
+        "toMinute": 100,
+        "primary": "Account/session/private-save foundation plus UX cleanup; define AI-to-editor adapter",
+        "support": "Prepare separate risk-edit fixtures and test-design addendum; first actionable findings by20min, supplement target45-60min"
+      },
+      {
+        "fromMinute": 100,
+        "toMinute": 165,
+        "primary": "Implement editable Inspector risk layer, accept/reject/add/undo/cancel, confirmed target and private save/reopen lineage",
+        "support": "Check proposed geometry/revision behavior against evidence and report boundary cases without website edits"
+      },
+      {
+        "fromMinute": 165,
+        "toMinute": 205,
+        "primary": "Run cross-account, editable-risk/reopen/history/stale-plan/late-export/error/mobile and standard checks/builds",
+        "support": "Review supplied evidence and missing cases; designed cases remain not_run until executed"
+      },
+      {
+        "fromMinute": 205,
+        "toMinute": 225,
+        "primary": "User acceptance of one edited-risk private mission, fix only release blockers",
+        "support": "Deliver final findings and unresolved limitations"
+      },
+      {
+        "fromMinute": 225,
+        "toMinute": 240,
+        "primary": "Finish release evidence/docs and production checks within publication authorization",
+        "support": "Final handoff only; no Git or deployment"
+      }
+    ],
+    "estimateCaveat": "Four hours remains a timebox target, not a guarantee. Removing prior1 and receiving the prepared SAR data saves work, but hosted authentication and durable private ownership are still critical. Re-estimate at minute20 if infrastructure is unavailable; preserve actual privacy/review rather than claiming completion early.",
+    "notIncludedToday": [
+      "Prior normal-flow simulation defaults and user-start/derived-end rewrite",
+      "Fresh-image AI inference or model training",
+      "Pi/telemetry",
+      "Experiment/before-after reports",
+      "Broad capacity benchmark",
+      "New paid service provisioning without user authorization"
+    ],
+    "verificationThisTurn": "2026-10-28: user explicitly approved exact Inspector SQL; applied migration20261027184951 to xedo via megaphijak. Live table/RLS/grant/function-body/session-negative verification15checks passed. Five INFO RLS-no-policy notices match RPC-only design; performance INFO2missing-FK-index/1unused-new-index retained. No trial users, source edits, application tests/builds/browser reruns or commit/push/deploy. Prior500tests remain 2026-10-27 local evidence.",
+    "acceptedBaseline": "Existing planner/demo, schedule, export/readiness, three steps and four calculators remain. New user-start/derived-end scheduling and normal-flow full-export work are not release gates."
   },
   "currentImplementationScope": {
     "id": "3d-satellite-ground-2026-10-27",
@@ -49,22 +271,50 @@
     "applicationCommit": "dc4743caf16e270d900fabe906ba6a41c9831e84",
     "verifiedDeploymentId": "dpl_HRWQ22Sxg1cM2b8KzrxTHVCWM1vw",
     "ciRunId": 40488389541,
-    "items": ["Diagram/Satellite 3D ground mode switch", "Real georeferenced GEE Sentinel-2 tile texture across the existing floor", "Preserve preview dimensions, floor extent and camera state", "Bounded display-only imagery lifecycle, progress, attribution, retry and cancellation"],
+    "items": [
+      "Diagram/Satellite 3D ground mode switch",
+      "Real georeferenced GEE Sentinel-2 tile texture across the existing floor",
+      "Preserve preview dimensions, floor extent and camera state",
+      "Bounded display-only imagery lifecycle, progress, attribution, retry and cancellation"
+    ],
     "planWrittenBeforeImplementation": "docs/WEBSITE_DETAILS.md",
-    "documentationPaths": ["docs/XEDO_WORK_LOG.md", "docs/WEBSITE_DETAILS.md"],
+    "documentationPaths": [
+      "docs/XEDO_WORK_LOG.md",
+      "docs/WEBSITE_DETAILS.md"
+    ],
     "pushAuthorized": true,
     "productionDeployAuthorized": true,
     "separateUserTrialRequested": false,
     "verification": {
-      "automatedTests": {"passed": 482, "failed": 0, "skipped": 0},
+      "automatedTests": {
+        "passed": 482,
+        "failed": 0,
+        "skipped": 0
+      },
       "syntax": "passed",
-      "builds": ["build", "build:workspace", "build:file"],
+      "builds": [
+        "build",
+        "build:workspace",
+        "build:file"
+      ],
       "localLiveApi": "Browser actual GEE basemap and native-scale tile texture ready; diagram/satellite switching, keyboard orbit, same AOI and canvas dimensions verified; mobile390px no horizontal overflow",
       "evidenceDirectory": "output/release-check/3d-satellite-ground-2026-10-27",
       "production": "Production alias READY at exact application commit and CI success. Browser normal flow loads a reviewed scene, prepares route, renders real GEE satellite ground Ready, switches Diagram/Satellite and keyboard orbit with unchanged AOI and viewport. No console error found. Evidence: production-browser.json and production-satellite.jpg."
     },
-    "preserve": ["three workflow steps", "four calculators", "original inspection/review/calculation geometry", "truthful Unknown and freshness checks", "existing 3D preview size, floor extent and camera fit"],
-    "outsideThisRelease": ["aircraft simulation defaults in the normal flow", "user-start/derived-end schedule change", "account implementation", "AI integration", "Pi and experimental reports"]
+    "preserve": [
+      "three workflow steps",
+      "four calculators",
+      "original inspection/review/calculation geometry",
+      "truthful Unknown and freshness checks",
+      "existing 3D preview size, floor extent and camera fit"
+    ],
+    "outsideThisRelease": [
+      "aircraft simulation defaults in the normal flow",
+      "user-start/derived-end schedule change",
+      "account implementation",
+      "AI integration",
+      "Pi and experimental reports"
+    ]
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
@@ -76,7 +326,8 @@
       "endTime": "Computed automatically from the assessed mission duration, sortie turnaround and scheduling buffer; not a second required manual entry.",
       "replanning": "Preserve the chosen start time and recompute the end when route/profile or other duration inputs change. An expired start must be corrected rather than silently moved.",
       "currentImplementationGap": "The existing implementation uses analysis time plus one hour in automatic mode. Editing either time enters manual mode, and complete() only recalculates automatic schedules; user-selected start with derived end is not yet implemented.",
-      "reportedFailureContext": "The user used automatic time when the GEE screenshot occurred. Exact area and request payload are still unknown."
+      "reportedFailureContext": "The user used automatic time when the GEE screenshot occurred. Exact area and request payload are still unknown.",
+      "currentCloseoutStatus": "Historical requirement retained for reference; excluded from this closeout by latest user annotation. Preserve currently implemented timing."
     },
     "calculators": [
       "drift",
@@ -93,7 +344,12 @@
       "scope": "own_missions_only",
       "phase": "experimental_trial",
       "crossInspectorSharing": false,
-      "appliesTo": ["mission list and details", "edits and history", "images and AI artifacts", "snapshots and plan downloads"],
+      "appliesTo": [
+        "mission list and details",
+        "edits and history",
+        "images and AI artifacts",
+        "snapshots and plan downloads"
+      ],
       "enforcement": "Enforce authenticated ownership on the server and artifact access, not only by hiding other users' missions in the UI."
     },
     "signIn": {
@@ -108,7 +364,40 @@
     "inspectorWorkflow": "The Inspector analyzes candidate oil-risk areas before flight; the website generates an inspection flight plan from reviewed target areas and mission inputs.",
     "primaryWebsiteGoal": "Pre-flight risk-area analysis and drone inspection planning.",
     "deviceConnectivityRequiredForPlanning": false,
-    "deferredByUser": ["Raspberry Pi images and telemetry integration", "Experiment results and before-after reports"]
+    "deferredByUser": [
+      "Raspberry Pi images and telemetry integration",
+      "Experiment results and before-after reports"
+    ],
+    "normalFlowCloseoutDecision": {
+      "status": "removed_from_current_closeout_by_user",
+      "previousNumber": 1,
+      "legacyStageNumber": 3,
+      "acceptedPrototypeBaseline": true,
+      "notImplementedNewProfileOrSchedule": true
+    },
+    "inspectorRiskEditing": {
+      "approved": true,
+      "actions": [
+        "accept",
+        "edit_boundary",
+        "move_area",
+        "add_manual_area",
+        "reject",
+        "undo_draft",
+        "cancel_draft",
+        "reset_draft_to_original",
+        "confirm_review"
+      ],
+      "rawAIImmutable": true,
+      "editableLayerSeparate": true,
+      "reviewerFromAuthenticatedSession": true,
+      "privateVersionedHistory": true,
+      "planningTargetsPerPlan": 1,
+      "planningTargetMaxVertices": 120,
+      "rawRiskGeometryMayRemainComplex": true,
+      "changesAfterConfirmationInvalidatePlan": true,
+      "outsideAICoverageMustNotClaimAIOrigin": true
+    }
   },
   "stages": [
     {
@@ -128,11 +417,13 @@
     {
       "number": 3,
       "name": "Use the existing aircraft simulation profile in the main prototype workflow",
-      "status": "partially_implemented",
-      "implementationStatus": "GEE diagnostics published; normal-flow profile and user-start/derived-end scheduling remain queued",
+      "status": "removed_from_current_closeout_by_user",
+      "implementationStatus": "Published GEE diagnostics retained; new normal-flow profile and start/derived-end work removed from closeout, not marked implemented.",
       "requirement": "Reuse the previously calculated profile; actual hardware field verification is not a prerequisite for completing this prototype website. Keep real mission-data sources independent from aircraft simulation defaults.",
       "userTrialClarification": "The assistant first implements the normal-flow profile integration; the user can then try area/Home selection, route calculation and plan download. This is not only a request for the user to test the currently unfinished normal flow. The reported GEE data error must also be investigated before user acceptance.",
-      "issueIds": ["gee_context_generic_error_2026_10_26"],
+      "issueIds": [
+        "gee_context_generic_error_2026_10_26"
+      ],
       "plannedSubsteps": [
         "1.1 Diagnose the reported GEE context failure and expose safe actionable error categories; validate recovery once implementation is requested",
         "1.2 Connect the existing aircraft simulation profile to the normal flow without changing real mission data",
@@ -152,20 +443,23 @@
         "Connect the existing aircraft/battery profile without replacing real mission sources or requiring Pi",
         "Derive end time from assessed duration and turnaround/buffer, preserve the selected start, and recalculate coverage/readiness when inputs change",
         "When implementation is requested, verify locally before the user's acceptance trial and record evidence; publish only within explicit release authorization"
-      ]
+      ],
+      "latestDecisionOverridesHistoricalPlan": true
     },
     {
       "number": 4,
       "name": "Production-like interface and controlled online release",
       "status": "partially_implemented",
-      "implementationStatus": "Selected imagery context and scroll/rendering fixes published; broader UX and capacity items remain queued",
-      "requirement": "Unify the primary flow and remove every Prototype badge and repeated prototype note. Preserve useful data/readiness states. Document future mobile/desktop, error and capacity verification; do not execute it in the current planning-only turn. Implementation, validation and publication remain separate future actions under the user's instructions."
+      "implementationStatus": "approved_not_started_revised_plan",
+      "requirement": "Remove all Prototype badges/repeated notes and clean up UX while preserving source/error/review states, three steps, four calculators and accepted existing prototype behavior. Implementation approved; this turn is revised planning.",
+      "implementationApproved": true,
+      "approvedOn": "2026-10-27"
     },
     {
       "number": 5,
       "name": "Accounts, saved missions and history",
-      "status": "core_requirements_confirmed",
-      "implementationStatus": "not_started",
+      "status": "account_release_in_progress_real_accounts_pending",
+      "implementationStatus": "bff_ui_local_verified_sql_applied_to_xedo_frontend_not_deployed",
       "confirmed": [
         "One application role: Inspector",
         "All users can use all offered options",
@@ -174,24 +468,40 @@
         "The team creates Inspector accounts for trial participants; no public self-registration"
       ],
       "pendingDecisionIds": [],
-      "implementationConsiderations": ["Use a maintained authentication/password/session implementation", "Scope mission and artifact queries to authenticated ownership", "Design account setup, password changes/recovery and session lifecycle when implementation starts", "Team provisioning is an operational process, not an extra application user role"]
+      "implementationConsiderations": [
+        "Use a maintained authentication/password/session implementation",
+        "Scope mission and artifact queries to authenticated ownership",
+        "Design account setup, password changes/recovery and session lifecycle when implementation starts",
+        "Team provisioning is an operational process, not an extra application user role"
+      ],
+      "implementationApproved": true,
+      "approvedOn": "2026-10-27",
+      "teamProvisioning": "User confirms no accounts; team creates Auth users and enables Inspector roster later"
     },
     {
       "number": 6,
       "name": "AI result integration",
       "status": "detailed_plan_prepared",
-      "implementationStatus": "not_started",
-      "requestedDeliverable": "Detailed implementation plan expanded after the user's four annotations, starting from existing georeferenced SAR results and independent of Pi connectivity; documentation only, no implementation or tests this turn.",
+      "implementationStatus": "approved_not_started_revised_plan",
+      "requestedDeliverable": "Prepared SAR display plus Inspector-editable risk areas and private review/history, with only the main chat implementing the website.",
       "planPath": "C:/mega/codex/iENA/outputs/XEDO_AI_Integration_Plan_2026-10-26/report.html",
       "detailedMarkdownPlanPath": "docs/AI_INTEGRATION_PLAN.md",
       "plannedMilestones": [
-        "A: reference manifest, pre-flight contracts, raster-to-map adapter, Inspector review and validated planner handoff",
-        "B: private mission persistence and provenance using the confirmed account requirements from new step 3 / legacy stage 5",
-        "C: compatible fresh Sentinel-1 input preparation and asynchronous inference worker feeding the same result adapter",
-        "D: future acceptance and capacity checks, with no tests executed during planning"
+        "A: consume existing prepared data and validate raw geometry/provenance",
+        "B: editable Inspector risk layer and confirmed one-polygon planner target",
+        "C: save/reopen private mission and review history with account ownership",
+        "Future only: fresh SAR inference worker and capacity"
       ],
       "proposedFirstMilestone": "Import a historical georeferenced SAR result as an integration fixture; preserve its original timestamps and coverage, let the Inspector review candidate zones, then pass a validated selected inspection polygon to the existing planner.",
-      "guardrails": ["Risk candidates are not field-confirmed oil or thickness", "Current hosted planner has no AI inference integration", "Do not reuse post-flight run/capture contracts by inventing Pi captures", "Do not assume RGB marine model is validated on Sentinel-2 rendered imagery"]
+      "guardrails": [
+        "Risk candidates are not field-confirmed oil or thickness",
+        "Current hosted planner has no AI inference integration",
+        "Do not reuse post-flight run/capture contracts by inventing Pi captures",
+        "Do not assume RGB marine model is validated on Sentinel-2 rendered imagery"
+      ],
+      "implementationApproved": true,
+      "approvedOn": "2026-10-27",
+      "preparedPackageStatus": "delivered_local_support32checks_primary12hashes_verified"
     },
     {
       "number": 7,
@@ -221,7 +531,7 @@
     {
       "id": "gee_context_generic_error_2026_10_26",
       "legacyStageNumber": 3,
-      "newRemainingWorkNumber": 1,
+      "newRemainingWorkNumber": null,
       "status": "diagnostics_published_original_failure_unproven",
       "reportedOn": "2026-10-26",
       "environment": "production",
@@ -229,7 +539,11 @@
       "reportedSymptom": "GEE planning data unavailable; terrain/Home/landcover/image quality/GFS show Unknown and Use reviewed estimate is disabled.",
       "userTimingAnswer": "Used automatic time; intended product behavior is user-entered start time with automatically calculated end time.",
       "confirmedSourceFinding": "planning-geospatial-ui.js:165 discards non-abort errors from HTTP, response parsing and context validation and displays the same local-server message on production. The screenshot matches that branch; it does not identify the underlying failure.",
-      "productionIdentity": {"commit": "8b1a7220010e0f927739b6a8d14ca0f761e85e78", "deploymentId": "dpl_H1ApPeo75RkdzX18Q9BoK6KzJtLC", "readyState": "READY"},
+      "productionIdentity": {
+        "commit": "8b1a7220010e0f927739b6a8d14ca0f761e85e78",
+        "deploymentId": "dpl_H1ApPeo75RkdzX18Q9BoK6KzJtLC",
+        "readyState": "READY"
+      },
       "boundedDiagnosis": {
         "checkedAt": "2026-10-26T07:17:56.848Z",
         "scope": "Two read-only context lookups using the existing public Rayong reference area, not the user's unknown mission payload",
@@ -241,11 +555,91 @@
       "rootCause": "Not established for the user's request. Automatic time use is confirmed, but the affected area and exact request/response are still unknown. Do not label the whole GEE service down or blame battery/default inputs or manual time entry.",
       "proposedRepair": "Retain safe error categories/status codes and request correlation, distinguish invalid input/transport/response mismatch from upstream unavailability, use production-appropriate guidance, and preserve Unknown/disabled estimate until data is valid. Add bounded retry only for transient failures after diagnosis.",
       "implementationStatus": "published",
-      "pendingDecisionIds": []
+      "pendingDecisionIds": [],
+      "previousRemainingWorkNumber": 1,
+      "currentCloseoutStatus": "GEE diagnostics published; broader legacy3 work removed by user"
     }
   ],
   "unansweredDecisions": [],
   "resolvedDecisions": [
+    {
+      "id": "inspector_account_production_release_approval",
+      "status": "approved",
+      "answeredOn": "2026-10-28",
+      "answer": "User explicitly authorizes push/deploy of Inspector account system to production and Login verification; team creates trial accounts later.",
+      "scope": "Inspector foundation code, routes, tests and continuity documents; no trial accounts or unrelated UX/AI implementation"
+    },
+    {
+      "id": "inspector_production_migration_approval",
+      "type": "explicit_live_migration_approval",
+      "status": "approved_applied_verified",
+      "answeredOn": "2026-10-28",
+      "answer": "User explicitly approved db/inspector-foundation.sql on Supabase xedo and requested table/permission checks; team will create trial accounts later.",
+      "sqlSha256": "62fe9b38623b3e3b8ce4fd04ad2cbb9aace6ca8553ae817ef34e31f6cc1633d2",
+      "projectRef": "tstmjnlhwidwtzetqxbu",
+      "migrationVersion": "20261027184951",
+      "source": "Direct user authorization in this chat, followed by successful MCP apply_migration and live verification",
+      "reviewPath": "docs/INSPECTOR_MIGRATION_REVIEW.md",
+      "verificationPath": "docs/INSPECTOR_DATABASE_VERIFICATION_2026-10-28.md",
+      "excludes": ["Trial account creation", "Frontend push/deploy", "Billing or Auth-provider settings", "Unrelated queued work"]
+    },
+    {
+      "id": "supabase_megaphijak_connection_access_verified",
+      "status": "answered_and_verified",
+      "answeredOn": "2026-10-27",
+      "answer": "User authorized megaphijak. Refreshed tool metadata exposes two connections; selecting megaphijak explicitly reads xedo ACTIVE_HEALTHY under organization rphjcbkprrafgiregduu. No reconnect question remains.",
+      "source": "Direct user instruction plus successful live get_project/list_organizations using new connection"
+    },
+    {
+      "id": "inspector_trial_accounts_not_yet_created",
+      "status": "answered",
+      "answeredOn": "2026-10-27",
+      "answer": "No trial accounts yet. Prepare the system first; the team will create participants later. Do not create real users or request passwords in chat.",
+      "source": "Direct asynchronous user answer during Inspector foundation turn"
+    },
+    {
+      "id": "supabase_dashboard_owner_organization_confirmed",
+      "status": "answered",
+      "answeredOn": "2026-10-27",
+      "answer": "User screenshot confirms signed-in Dashboard access to project xedo / tstmjnlhwidwtzetqxbu under organization megaphijak, with Healthy status. Browser access is confirmed; connector OAuth access is a separate pending verification.",
+      "source": "Direct user screenshot codex-clipboard-7c7fbbac-e7d3-4f23-9626-dfe125d36914.png"
+    },
+    {
+      "id": "supabase_connector_refreshed_by_user",
+      "status": "answered",
+      "answeredOn": "2026-10-27",
+      "answer": "User reports connection/permissions refreshed and requests recheck. Recheck still exposes1organization/2unrelatedprojects and denies confirmed XEDO project.",
+      "source": "Direct asynchronous user reply and subsequent live read-only check"
+    },
+    {
+      "id": "supabase_project_ref_confirmed",
+      "status": "answered",
+      "answeredOn": "2026-10-27",
+      "answer": "User directly supplied https://supabase.com/dashboard/project/tstmjnlhwidwtzetqxbu, confirming the expected project ref. Do not ask again for the URL/ref.",
+      "source": "Direct user reply in phase1"
+    },
+    {
+      "id": "supabase_existing_project_team_access",
+      "status": "answered",
+      "answeredOn": "2026-10-27",
+      "answer": "User says the project belongs to another email and that email has already invited this email into the team. Actual invitation acceptance/project role/connector authorization are not yet verified.",
+      "source": "Direct user reply in phase1"
+    },
+    {
+      "id": "revised_scope_and_editable_risk_2026_10_27",
+      "status": "answered",
+      "answeredOn": "2026-10-27",
+      "source": "Direct user annotations1-4",
+      "answer": "Remove prior1/legacy3 from closeout; approve prior2/3/4 UX/accounts/preparedAI; Inspector must be able to edit risk areas. Main chat alone changes website; support data/test design stays parallel."
+    },
+    {
+      "id": "same_day_completion_scope_2026_10_27",
+      "status": "answered",
+      "question": "Does closing today include private accounts and AI, and at what level?",
+      "answer": "Include private accounts and AI from prepared results. New-image inference is not required for today's target.",
+      "answeredOn": "2026-10-27",
+      "source": "Direct user reply to the asynchronous scope question in this turn"
+    },
     {
       "id": "gee_error_mission_context",
       "stage": 3,
@@ -313,5 +707,172 @@
     "timezone": "Asia/Bangkok",
     "scopeId": "3d-satellite-ground-2026-10-27",
     "verificationRecord": "Application-code release verified before this documentation-only follow-up. Later documentation commits may advance the deployment Git SHA without changing the verified application bundle; the local release receipt records exact final identity."
+  },
+  "removedFromCurrentCloseout": [
+    {
+      "legacyStageNumber": 3,
+      "previousNumber": 1,
+      "decision": "removed_by_user",
+      "reason": "The existing prototype is sufficient for presentation; proceed with the other stages.",
+      "doesNotMeanImplemented": true,
+      "keepExistingBehavior": true,
+      "excludedChanges": [
+        "Normal-flow simulation aircraft/battery default integration",
+        "User-entered-start/automatically-derived-end scheduling rewrite",
+        "Making normal-flow full export a new completion gate"
+      ]
+    }
+  ],
+  "phase1Execution": {
+    "id": "backend-readiness-and-data-contracts-2026-10-27",
+    "status": "access_verified_contracts_prepared",
+    "userAuthorized": true,
+    "projectRef": "tstmjnlhwidwtzetqxbu",
+    "projectRefConfirmedByUser": true,
+    "organizationDisplayName": "megaphijak",
+    "organizationNameEvidence": "user_dashboard_screenshot_2026-10-27",
+    "userBrowserDashboardAccess": "confirmed_by_screenshot",
+    "userDashboardHealth": "Healthy_screenshot_only",
+    "userReportedTeamInvitation": true,
+    "liveSupabaseProjectRead": "success",
+    "supabaseSchemaRead": true,
+    "vercelProjectMetadataRead": true,
+    "vercelEnvMetadataRead": "403_forbidden",
+    "localAuthDatabaseConfiguration": "not_configured",
+    "browserFallback": "Agent IAB has no signed-in Supabase or ChatGPT session; user Chrome screenshot separately confirms target Dashboard access",
+    "oauthGuidance": {
+      "status": "resolved_explicit_megaphijak_connection_verified",
+      "pluginAppId": "asdk_app_69d3e5ee6a708191baa733f7b8931995",
+      "pluginDetailsUrl": "https://chatgpt.com/plugins/plugin_asdk_app_69d3e5ee6a708191baa733f7b8931995",
+      "targetOrganization": "megaphijak",
+      "organizationSettingsInspection": "Connections > OAuth Apps > Authorized apps; actual organization slug is not inferred from display name",
+      "authenticatedPluginSettingsInspected": false,
+      "newSupabasePermissionRetryThisTurn": true,
+      "accessOrRoleChanged": false,
+      "detailsSection": "WEBSITE_DETAILS.md#3.18"
+    },
+    "contractPaths": [
+      "contracts/inspector-mission-document.schema.json",
+      "contracts/inspector-mission-save.schema.json",
+      "contracts/examples/inspector-save-draft.json",
+      "contracts/examples/inspector-confirm-risk.json"
+    ],
+    "checks": {
+      "preparedPackageHashesMatched": 12,
+      "rawCandidates": 14,
+      "largeCandidateVertices": 378,
+      "relativeSchemaReferencesResolved": 3,
+      "positiveExampleGeometryValidated": true,
+      "fullJSONSchemaValidatorRun": true,
+      "applicationTestsRun": false
+    },
+    "evidenceDirectory": "output/release-check/phase1-inspector-backend-2026-10-27",
+    "externalMutations": false,
+    "commitPushDeploy": false,
+    "userReportedConnectorRefresh": true,
+    "afterRefresh": {
+      "visibleOrganizations": 1,
+      "visibleProjects": 2,
+      "projectRead": "permission_denied"
+    },
+    "userReportedOrganizationAuthorization": true,
+    "afterOrganizationAuthorization": {
+      "selectedConnection": "megaphijak",
+      "organizationId": "rphjcbkprrafgiregduu",
+      "projectRead": "success",
+      "projectName": "xedo",
+      "status": "ACTIVE_HEALTHY",
+      "publicTables": 0,
+      "migrations": 0,
+      "securityAdvisories": 0,
+      "authUsers": 0,
+      "privateSchemaExists": false,
+      "publicRPCExists": false
+    }
+  },
+  "phase2Execution": {
+    "id": "inspector-foundation-2026-10-27",
+    "status": "account_release_in_progress_live_database_verified",
+    "implemented": [
+      "Email-password BFF with HttpOnly access cookie",
+      "Inspector private draft Save/list/open/history/copy",
+      "Expected actor comparison for cross-tab account changes",
+      "Schema/geometry/budget validation",
+      "Private owner/session/CAS/idempotency SQL draft",
+      "Session/mission/edit epochs and export guards before/after waits"
+    ],
+    "sqlPath": "db/inspector-foundation.sql",
+    "sqlSha256": "62fe9b38623b3e3b8ce4fd04ad2cbb9aace6ca8553ae817ef34e31f6cc1633d2",
+    "reviewPath": "docs/INSPECTOR_MIGRATION_REVIEW.md",
+    "migrationApplied": true,
+    "migrationVersion": "20261027184951",
+    "migrationAppliedOn": "2026-10-28",
+    "automaticApprovalReview": {
+      "rejected": true,
+      "reason": "Exact live production schema/tables/RLS/security-definer routines/RPC/grants were not explicitly approved; complete review required",
+      "workaroundAttempted": false,
+      "resolvedAfterExplicitUserApproval": true,
+      "approvedExactMigrationAppliedSuccessfully": true
+    },
+    "realAccountsCreated": false,
+    "realAccountAcceptanceRun": false,
+    "multiConnectionConcurrencyRun": false,
+    "authPublicSettings": {
+      "reachable": true,
+      "emailEnabled": true,
+      "signupDisabled": false,
+      "changed": false
+    },
+    "checks": {
+      "testsPassed": 500,
+      "failed": 0,
+      "skipped": 0,
+      "syntaxPassed": true,
+      "productionBuildPassed": true,
+      "workspaceBuildPassed": true,
+      "portableBuildPassed": true,
+      "localPostgresAuthorizationPassed": true,
+      "simulatedAuthBrowserPassed": true,
+      "mobile390Overflow": false,
+      "realSupabasePasswordLoginTested": false
+    },
+    "limitations": [
+      "Access-token-only sessions; re-login on expiry; no retained refresh token",
+      "confirm_risk remains rejected until AI review validation is implemented",
+      "Real-account privacy/login/concurrency acceptance remains after migration/team provisioning",
+      "Provider signup remains enabled; app has no signup route and checks team roster",
+      "4 moderate existing dev-toolchain audit findings;0high/critical"
+    ],
+    "evidenceDirectory": "output/release-check/inspector-foundation-2026-10-27",
+    "externalDatabaseMutations": true,
+    "commitPushDeploy": false,
+    "liveVerification": {
+      "date": "2026-10-28",
+      "projectRef": "tstmjnlhwidwtzetqxbu",
+      "selectedConnection": "megaphijak",
+      "checksPassed": 15,
+      "checksFailed": 0,
+      "privateTables": 5,
+      "allRlsEnabled": true,
+      "directAnonAndAuthenticatedTableAndColumnPrivileges": false,
+      "publicOrAnonymousFunctionExecute": false,
+      "functionSecurityModelAndBodiesMatchApprovedSql": true,
+      "negativeRoleAndSessionProbesPassed": 5,
+      "authUsers": 0,
+      "allPrivateRows": 0,
+      "securityInfoRlsNoPolicyExpected": 5,
+      "securityWarningOrErrorCount": 0,
+      "performanceInfoUnindexedForeignKeys": 2,
+      "performanceInfoUnusedNewIndex": 1,
+      "applicationTestsBuildsBrowserRerun": false,
+      "record": "docs/INSPECTOR_DATABASE_VERIFICATION_2026-10-28.md",
+      "evidenceDirectory": "output/release-check/inspector-live-migration-2026-10-28"
+    },
+    "nextActions": [
+      "Team creates Auth users and Inspector roster entries later",
+      "Real-account login/logout/private Save/history/foreign-ID/expiry/concurrency acceptance after team provisioning",
+      "Frontend/API deployment remains pending a release within authorized scope",
+      "Retain two foreign-key index maintenance items for data scale review; no unapproved follow-up DDL"
+    ]
   }
 }

@@ -2,10 +2,10 @@
 
 ## 1. หัวข้อ
 
-**ข้อใหม่ 4 / ข้อเดิม 6 — เชื่อมภาพดาวเทียม → ผล AI → Inspector review → พื้นที่บินตรวจ → planner → บันทึกภารกิจ**
+**ลำดับล่าสุด3 / ก่อนหน้า4 / เดิม6 — prepared AI → Inspectorแก้พื้นที่เสี่ยง → ยืนยันพื้นที่บินตรวจ → planner → ภารกิจส่วนตัว**
 
-- วันที่: 26 ตุลาคม 2026 ตามเวลา Asia/Bangkok
-- สถานะ: **แผนงานเท่านั้น ยังไม่ implement และยังไม่รันทดสอบตามแผนนี้**
+- วันที่เริ่ม26ตุลาคม2026; ปรับล่าสุด27ตุลาคม2026 ตามเวลา Asia/Bangkok
+- สถานะ: **ผู้ใช้อนุมัติimplementationแล้ว รอบนี้ปรับแผนและeditorrequirements; applicationยังไม่implement ชุดpreparedSARส่งมอบแล้ว supportรายงาน32data checks/mainตรวจ12filehashes ไม่ใช่website testผลใหม่**
 - เอกสารสถานะกลาง: [XEDO_WORK_LOG.md](XEDO_WORK_LOG.md) และ [implementation-queue.json](implementation-queue.json)
 - เอกสารนี้ลงรายละเอียดการออกแบบ ไม่ใช่บันทึกสถานะอีกชุด หากมีความคืบหน้าให้อัปเดต work log และ queue กลางด้วย
 - รอบนี้ไม่เปลี่ยน source ของเว็บไซต์ ไม่เรียก inference ไม่สร้างบัญชีจริง และไม่ commit/push/deploy
@@ -13,6 +13,8 @@
 ## 2. สรุป
 
 ให้ Inspector เลือกพื้นที่ ค้น/เลือกภาพที่ตรงกับโมเดล วิเคราะห์และตรวจพื้นที่ที่ระบบเสนอ จากนั้นใช้พื้นที่ที่ Inspector เลือกสร้างแผนให้โดรนไปตรวจ โดยไม่ต้องรอ Pi หรือ telemetry
+
+**ขอบเขตล่าสุด27ต.ค.:** วันนี้เริ่มจากชุดผลSARที่เตรียมไว้ ผู้ใช้ตัดงานnormalflow/profileและstart-derived-endใหม่ออกจากเกณฑ์ปิดงาน ยอมรับprototypeplannerเดิม อนุมัติUX/บัญชี/AI และกำหนดให้Inspectorแก้ตำแหน่ง/ขอบเขตพื้นที่เสี่ยง เพิ่มเองหรือปฏิเสธผลAIได้ แชทหลักแก้เว็บเพียงแชทเดียว ส่วนsupportทำdata/testdesign รายละเอียดeditorข้อ3.15มีผลแทนแผนเก่าที่ขัดกัน
 
 คงขั้นตอนบนเว็บไซต์ **3 ขั้น**: เลือกพื้นที่ → ตรวจภาพและผลวิเคราะห์ → เตรียมแผนโดรน การเพิ่ม AI/review อยู่ภายในขั้นที่ 2 ไม่เพิ่มหน้า wizard ขั้นที่ 4 คงตัวคำนวณ Drift, กล้อง–การบิน–แบตเตอรี่, Export–readiness และน้ำมัน–แคปซูลครบ
 
@@ -27,7 +29,7 @@
 | C: วิเคราะห์ภาพใหม่ | ค้นภาพ SAR ที่รองรับ → worker วิเคราะห์ → ผลเข้าทางเดียวกับ A → สร้างแผน | ผลโมเดลยังเป็นพื้นที่เสนอให้ตรวจ ไม่ใช่การยืนยันน้ำมันหน้างาน |
 | D: ตรวจรับและเตรียม release | หลักฐานจาก build เดียวกัน ครบกรณีปกติ/ผิดพลาด/สิทธิ์/การเปลี่ยน revision | ยังไม่ทดสอบในรอบวางแผน และยังไม่มีคำสั่งเผยแพร่รุ่นนี้ |
 
-ข้อใหม่ 1 (เดิม 3) ต้องเชื่อมโปรไฟล์โดรนใน flow ปกติก่อนให้ผู้ใช้ลองสร้างแผน ข้อใหม่ 3 (เดิม 5) ต้องมีบัญชี/ownership ก่อนเปิด hosted AI history ให้ผู้ทดลองใช้ร่วมระบบ การเตรียม adapter ด้วยไฟล์อ้างอิงทำได้ก่อน แต่ไม่ข้ามเงื่อนไขนี้เมื่อเปิดใช้งานจริง
+งานก่อนหน้า1/เดิม3ถูกตัดจากรอบนี้ ไม่เป็นdependencyของAIอีกต่อไป งานบัญชีล่าสุด2/เดิม5ยังต้องมีownershipก่อนเปิดprivateAIhistory การเตรียมadapterทำขนานกับบัญชีได้ และไม่เปลี่ยนexport/readinessของprototypeเดิมเพื่อทำให้ดูผ่าน
 
 ## 3. รายละเอียด
 
@@ -110,7 +112,8 @@ Contract ต้องมี `schemaVersion`, error code และหน่วย
 การ review มีอย่างน้อย:
 
 - **เลือกไปตรวจ:** รับ candidate หรือหลาย candidate มาเป็นชุดงานตรวจ
-- **แก้พื้นที่บินตรวจ:** ปรับขอบเขตที่โดรนจะบินโดยเก็บผล AI ต้นฉบับไว้
+- **แก้พื้นที่เสี่ยง:** ย้ายพื้นที่/ลากเพิ่มลบจุดขอบเขตหรือวาดใหม่ในlayerของInspector เก็บผลAIต้นฉบับและrevisionแยก
+- **เพิ่มเอง:** วาดบริเวณที่Inspectorเห็นว่าเสี่ยงแม้AIไม่เสนอ เก็บที่มาmanual ไม่อ้างว่าเป็นผลAI
 - **ไม่เลือก:** เก็บว่า Inspector ไม่ใช้พื้นที่นั้น ไม่ลบผลย้อนหลัง
 - **ยืนยันพื้นที่บินตรวจ:** บันทึก review revision และสร้าง planning target
 
@@ -125,7 +128,7 @@ Planner รับ Polygon วงเดียวไม่เกิน 120 จุ�
 | ตัวคำนวณเดิม | เชื่อมข้อมูลอย่างไร |
 | --- | --- |
 | Drift | เปิดใช้เมื่อมี observation time และ wind/current ที่สอดคล้องกับบริบทจริง ไม่เลื่อนคราบจากผลอ้างอิงเก่าหลายวันด้วยข้อมูลลมวันนี้โดยอัตโนมัติ พื้นที่บินตรวจแบบคงที่ต้องใช้งานได้เมื่อปิด Drift |
-| กล้อง–การบิน–แบตเตอรี่ | ใช้ inspection polygon + Home + โปรไฟล์โดรนจากข้อใหม่ 1 สร้างแนวบิน transit, sortie และพลังงาน |
+| กล้อง–การบิน–แบตเตอรี่ | ส่งconfirmedinspectionpolygon+Homeเข้าengine/profile/flowสาธิตเดิมตามที่ผู้ใช้ยอมรับ ไม่เพิ่มnormalprofileหรือscheduleใหม่ที่ถูกตัดจากรอบนี้ |
 | Export–readiness | ใช้ route/profile/schedule/terrain/conditions และการ review ที่ตรง revision คงการตรวจซ้ำหลังรอ export response |
 | น้ำมัน–แคปซูล | คงไว้ครบ แต่ใช้หลักฐาน oil area/thickness ของตนเอง ไม่ใส่ inspection area หรือพื้นที่ AI เสนอเป็นน้ำมันยืนยันอัตโนมัติ และไม่ล็อก inspection plan เพราะยังไม่รู้ความหนา |
 
@@ -227,10 +230,22 @@ Cache/reuse ต้องผูก source hash + model hash + preprocessing + thr
 
 ### 3.14 ลำดับการลงมือและเรื่องที่ยังไม่สั่งให้ทำ
 
-ลำดับหลักยังเป็น **ข้อใหม่ 1 → 2 → 3 → 4** (ข้อเดิม 3 → 4 → 5 → 6) ภายในข้อใหม่ 4 ให้ทำ **A1 → A2 → A3 → A4 → A5 → B → C1 → C2 → ตรวจรับ** โดยใช้ผลที่บันทึกไว้พิสูจน์เส้นทางก่อน แล้วค่อยเปิดวิเคราะห์ภาพใหม่
+ลำดับล่าสุดคือ **1UX/2บัญชี → 3preparedAI+Inspector risk editing → ตรวจรวม** (เดิม4/5/6) แชทสนับสนุนเตรียมข้อมูลและกรณีทดสอบขนานได้ ชุดSARเตรียมแล้วจึงเริ่มadapter/reviewจากชุดนี้ ขั้นวิเคราะห์ภาพใหม่C1/C2เป็นอนาคต ไม่ใช่เกณฑ์ปิดวันนี้
 
 - ไม่มีคำถามจากผู้ใช้ที่ถามไปแล้วและยังค้างคำตอบในรอบนี้
 - รายละเอียด backend/worker/storage และเกณฑ์ทรัพยากรเป็นงานออกแบบในช่วง implementation ยังไม่เลือกหรือ provision บริการภายนอก ไม่ขอเปิดระบบในรอบวางแผน
 - Pi/telemetry (ข้อใหม่ 5/เดิม 7) และผลทดลอง/รายงานก่อน–หลัง (ข้อใหม่ 6/เดิม 8) ยังพักตามคำสั่ง ไม่เป็นเงื่อนไขการสร้าง inspection plan
 - การตรวจรับและ capacity ข้างต้นเป็นแผนอนาคต รอบนี้ไม่ได้รันทดสอบเว็บ/โมเดล/โหลด และไม่ได้ใช้ผลทดสอบเก่าเป็นผลรอบใหม่
 - การอนุญาตเผยแพร่ครั้งก่อนครอบคลุมข้อเดิม 1–2 ที่เผยแพร่แล้ว ไม่ใช่คำอนุญาต push/deploy งานข้อใหม่ 1–4
+
+### 3.15 Inspectorแก้พื้นที่เสี่ยง — ข้อกำหนดอนุมัติล่าสุด27ต.ค.2026
+
+ผู้ใช้อนุมัติimplementationpreparedAIและขอInspectorแก้จุดเสี่ยงได้ ขอบเขตขั้นต่ำภายในขั้น2: accept/editboundary/move/manualadd/reject พร้อมUndo/Cancel/resetdraft/confirmreview เก็บAIrawและInspectorRiskDraft/decisions/reviewversionคนละชุด snapshotส่วนตัวต้องเปิดคืนeditedriskได้พร้อมrawเดิม ผู้แก้และเวลาอ้างsession/server ไม่เชื่อowner/reviewerจากclient
+
+เปิดeditไม่เรียกsetGeometryทุกvertexเพราะจะresetSurvey/image/schedule ต้องมีedit lifecycleแยก raw→draft→confirmedriskreview→oneplanningtarget→plan เมื่อconfirmareaเปลี่ยน invalidateplanเก่า ขยายreview/target/sessionrevisionguardทั้งก่อนและหลังexportresponse Cancelคืนgeometryก่อนแก้แต่ตรวจreadinessล่าสุด;Saveล้มเหลวเก็บdraftไว้และไม่แสดงsaved/reviewconfirmedผิดๆ
+
+rawgeometrycomplex/holes/multiplecomponentsคงไว้ plannerยังPolygonเดียวไม่มีรู3–120จุด จึงไม่ลดrawเงียบๆ ชุดที่ส่งมามี14Polygonไม่มีรู13ชิ้นเข้าlimitและcandidate00012มี378จุด ให้แสดงrawและให้Inspectorวาดขอบเขตบินที่reviewใหม่ เป้าแรกใช้redraw ไม่จำเป็นautosimplify หากmanualtargetอยู่นอกvalidAIcoverageรักษาoriginmanual;ออกนอกimagereviewต้องตรวจพื้นที่ภาพ/conditionsใหม่ ไม่อ้างAIครอบคลุม
+
+supportส่งdataแล้ว: raw14candidate/32utilitychecksตามรายงาน;mainตรวจ12SHA256ตรงโดยไม่รันconversionซ้ำ นัดงานต่อเป็นriskeditfixtures/tests14กรณีในREVIEW_EDIT_ADDENDUM.md ส่วนUX/บัญชี/AIwebintegrationเป็นงานmainเท่านั้น เวลาสร้างnormalprofileและscheduleใหม่ถูกตัดจากเกณฑ์ปิดงาน ไม่ถือว่าส่วนนั้นimplementแล้ว
+
+การยืนยันคุณสมบัตินี้ต้องมีหลักฐานedit/undo/cancel/rawhash/reopen/history/twotabconflict/crossowner/staleexport/378pointlimit/manualcoverageจริง รายการออกแบบทดสอบไม่ใช่ผลผ่านapplication รอบแก้แผนนี้ไม่มีapplicationimplementation/tests/newinference/pushdeploy
