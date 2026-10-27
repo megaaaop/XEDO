@@ -17,7 +17,7 @@ function fixture(payload,now=EPOCH){
  quality:{state:payload.sceneId?'ready':'not_requested',sceneId:payload.sceneId,acquiredAt:payload.sceneId?acquiredAt:null,method:'S2 cloud probability',resolutionM:10,coveragePct:100,cloudPct:10,clearPct:90,warnings:[]},
  forecast:{state:payload.startAt&&payload.endAt?'ready':'not_requested',scope:'takeoff_reference_only',modelRunAt:iso(now-6*3600000),validAt:payload.startAt,referenceHeightM:10,resolutionM:27830,windEastMps:3,windNorthMps:4,windSpeedMps:5,windFromDeg:216.869897645844,gustMps:7,warnings:[]},warnings:[],hardwareControl:false,releaseControl:false};
 }
-function harness({localFile=false,example=false,hidden=false,held=false,transform=value=>value,replyType='application/json'}={}){
+function harness({localFile=false,example=false,hidden=false,held=false,transform=value=>value,replyType='application/json',replyStatus=200,replyBody=null}={}){
  const nodes=[],events=new EventTarget(),calls=[],changes=[],jobs=new Map();let time=EPOCH,nextId=1,hold=held;
  class Element{
   constructor(tag='div'){this.tagName=tag.toUpperCase();this.children=[];this.parentElement=null;this.events=new Map();this.attributes=new Map();this.value='';this.textContent='';this.innerHTML='';this.dataset={};this.checked=false;this.disabled=false;this.hidden=false;nodes.push(this);}
@@ -40,11 +40,11 @@ function harness({localFile=false,example=false,hidden=false,held=false,transfor
  const timers={setTimeout(fn,delay){const id=nextId++;jobs.set(id,{fn,at:time+delay});return id;},clearTimeout(id){jobs.delete(id);}};
  const fetchImpl=(url,init)=>{
   assert.equal(url,'/api/v1/gee/planning-context');assert.equal(init.method,'POST');assert.equal(init.credentials,'same-origin');assert.equal(init.redirect,'error');assert.equal(init.cache,'no-store');
-  const payload=JSON.parse(init.body),report=transform(fixture(payload,time)),reply={ok:true,headers:{get:name=>name==='content-type'?replyType:null},json:async()=>report};
+  const payload=JSON.parse(init.body),report=replyBody??transform(fixture(payload,time)),reply={ok:replyStatus>=200&&replyStatus<300,status:replyStatus,headers:{get:name=>name==='content-type'?replyType:null},json:async()=>report};
   let resolve,reject;const promise=new Promise((yes,no)=>{resolve=yes;reject=no;});calls.push({payload,signal:init.signal,report,resolve:()=>resolve(reply),reject});return hold?promise:Promise.resolve(reply);
  };
  const ui=initializePlanningGeospatialUI({root,localFile,getMission:()=>structuredClone(mission),onChange:event=>changes.push(event.reason),fetchImpl,now:()=>time,timers});
- return {ui,node,root,mission,calls,changes,settings,legacy,bar,home,jobs,setHeld:value=>{hold=value;},setTime:value=>{time=value;},async tick(ms){const target=time+ms;for(;;){const next=[...jobs].filter(([,job])=>job.at<=target).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;time=next[1].at;jobs.delete(next[0]);next[1].fn();await flush();}time=target;await flush();},async accept(){node('trial-geospatial-home-reviewed').checked=true;node('trial-geospatial-home-reviewed').dispatch();return node('trial-geospatial-use-home').onclick();},async hidden(value){root.hidden=value;events.dispatchEvent(new Event('visibilitychange'));await flush();}};
+ return {ui,node,root,mission,calls,changes,settings,legacy,bar,home,jobs,setReply(status,body=null){replyStatus=status;replyBody=body;},setHeld:value=>{hold=value;},setTime:value=>{time=value;},async tick(ms){const target=time+ms;for(;;){const next=[...jobs].filter(([,job])=>job.at<=target).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;time=next[1].at;jobs.delete(next[0]);next[1].fn();await flush();}time=target;await flush();},async accept(){node('trial-geospatial-home-reviewed').checked=true;node('trial-geospatial-home-reviewed').dispatch();return node('trial-geospatial-use-home').onclick();},async hidden(value){root.hidden=value;events.dispatchEvent(new Event('visibilitychange'));await flush();}};
 }
 
 test('The dynamic GEE panel uses a direct form child and preserves nested environment source details',()=>{
@@ -185,5 +185,31 @@ test('A response arriving after the deadline cannot overwrite stopped progress o
   const pending=h.ui.refresh();await h.tick(30000);await pending;
   assert.equal(h.ui.getState().errorCode,'TIMEOUT');const stopped=h.node('trial-geospatial-progress-label').textContent;
   h.calls[0].resolve();await flush();assert.equal(h.ui.getState().progress.percent,33);assert.equal(h.node('trial-geospatial-progress-label').textContent,stopped);assert.equal(h.ui.getContext(),null);
+ }finally{h.ui.dispose();}
+});
+test('Unsupported mission times load static GEE context without silently shortening the forecast',async()=>{
+ const h=harness();try{
+  h.mission.endAt=iso(EPOCH+53*3600000);h.ui.changed();await h.ui.refresh();
+  assert.equal(h.calls[0].payload.startAt,null);assert.equal(h.calls[0].payload.endAt,null);assert.equal(h.calls[0].payload.sceneId,sceneId);
+  assert.equal(h.ui.getState().status,'partial');assert.equal(h.ui.getTerrainAssessment().state,'ready');
+  const evidence=h.ui.getPatch().flight.geospatialEvidence;assert.equal(evidence.forecast.state,'not_requested');assert.equal(evidence.forecast.windSpeedMps,null);assert.equal(evidence.quality.state,'ready');
+  assert.match(h.node('trial-geospatial-error').textContent,/52 h.*24 hours/);assert.equal(h.mission.endAt,iso(EPOCH+53*3600000));
+  h.mission.endAt=iso(EPOCH+54*3600000);h.ui.changed();await h.ui.refresh();assert.equal(h.calls.length,2);assert.match(h.node('trial-geospatial-error').textContent,/53 h/);
+  h.mission.endAt=iso(EPOCH+2*3600000);h.ui.changed();await h.ui.refresh();assert.equal(h.calls[2].payload.endAt,h.mission.endAt);assert.equal(h.ui.getState().status,'ready');assert.equal(h.ui.getPatch().flight.geospatialEvidence.forecast.state,'ready');assert.equal(h.node('trial-geospatial-error').hidden,true);
+ }finally{h.ui.dispose();}
+});
+test('A rejected request gives Surface Unknown its true error while loading and expired data stay distinct',async()=>{
+ const failure={code:'GEE_CONTEXT_INPUT_INVALID',message:'Use an ordered mission window of at most 24 hours, within five days back and seven days ahead.'};
+ const h=harness({held:true,replyStatus:422,replyBody:failure});try{
+  const request=h.ui.refresh();assert.match(h.ui.getTerrainAssessment().reasons[0],/Loading GEE terrain/);
+  h.calls[0].resolve();await request;const assessment=h.ui.getTerrainAssessment();assert.equal(assessment.state,'unknown');assert.match(assessment.reasons[0],/mission request was rejected.*24 hours/);assert.doesNotMatch(assessment.reasons[0],/does not match/);assert.equal(h.ui.useModelHomeEstimate(),false);
+  h.setReply(200);h.setHeld(false);await h.ui.refresh();assert.equal(h.ui.getTerrainAssessment().state,'ready');
+  h.setTime(EPOCH+600001);const expired=h.ui.getTerrainAssessment();assert.equal(expired.state,'unknown');assert.match(expired.reasons[0],/expired/);assert.equal(h.ui.getContext(),null);
+ }finally{h.ui.dispose();}
+});
+test('A late old422 cannot overwrite terrain or the reason for a newer mission',async()=>{
+ const h=harness({held:true,replyStatus:422,replyBody:{code:'GEE_CONTEXT_INPUT_INVALID',message:'Use an ordered mission window of at most 24 hours, within five days back and seven days ahead.'}});try{
+  const old=h.ui.refresh();h.mission.home=[101.21,12.61];h.setReply(200);h.setHeld(false);h.ui.changed();await h.ui.refresh();
+  assert.equal(h.ui.getTerrainAssessment().state,'ready');h.calls[0].resolve();await old;await flush();assert.equal(h.ui.getTerrainAssessment().state,'ready');assert.equal(h.node('trial-geospatial-error').hidden,true);
  }finally{h.ui.dispose();}
 });

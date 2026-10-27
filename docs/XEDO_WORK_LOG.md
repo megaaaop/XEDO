@@ -5,14 +5,14 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **28 ตุลาคม 2026 — push/deploy ระบบบัญชีแล้ว ตรวจ Login desktop/mobile และ APIจริง7กรณีผ่าน;501tests/CIผ่าน บัญชีผู้ทดลองให้ทีมสร้างภายหลัง**
+- อัปเดตล่าสุด: **28 ตุลาคม 2026 — แก้เวลาเกิน24ชม./Surface reasonsในเครื่องแล้ว510testsผ่าน ตรวจbrowserกับGEEจริงทั้งauto55ชม./staticcontext/422reason/mobile390 กำลังpush/deployตามอนุมัติ**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
-- จุดประสงค์รอบนี้: push/deploy Inspector foundation และตรวจหน้าLogin/APIจริง โดยไม่สร้างบัญชีผู้ทดลอง ฐานข้อมูลใช้แล้วและไม่applyซ้ำ
+- จุดประสงค์รอบนี้: แก้สองruntimeissuesเรื่องเวลาอัตโนมัติเกิน24ชั่วโมงและSurfaceUnknownreason ทดสอบ บันทึกสองMarkdownและpush/deployตามคำสั่งล่าสุด ไม่สร้างบัญชีหรือเปลี่ยนDB
 - สถานะปัจจุบัน: applicationบัญชี+rewritefix `afac1c7f256075eb2202fdcae16102a0e34a43ca` pushmain/branchและVercel `dpl_635dXNArvjRDicq8WgZVmHgZZ9r8` READY aliasเว็บหลักตรงรุ่นนี้ CI `40565947316` success พร้อม501tests/3builds;เอกสารfollow-upอาจทำให้deploymentSHAใหม่โดยapplicationไม่เปลี่ยน exactfinalreceiptอยู่output/release-check/inspector-account-release-2026-10-28/
-- **ขอบเขตคำสั่งล่าสุด:** ผู้ใช้อนุมัติpush/deployระบบบัญชีและตรวจหน้าLoginโดยตรงแล้ว ใช้Git→Vercelของprojectเดิม เผยแพร่Inspectorfoundationและเอกสารที่เกี่ยวข้อง ไม่สร้างบัญชี ไม่applyDBซ้ำ ไม่ทำUX/AIeditorหรือprofile/เวลาใหม่ในreleaseนี้
+- **ขอบเขตคำสั่งล่าสุด:** ผู้ใช้อนุมัติแก้time-window/Surface-messageทั้งสอง ทดสอบและpush/deployโดยตรงแล้ว คง3ขั้น/4calculators ไม่clampเวลาจริง ไม่เปิดUX/AIeditorหรือnormal-profile/user-start-derived-endrewriteที่อยู่นอกscope ไม่สร้างบัญชีหรือapplyDBซ้ำ
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
 
@@ -23,6 +23,8 @@
 ### สถานะล่าสุดที่มีหลักฐาน
 
 **Inspector เผยแพร่แล้วและตรวจ Login บนเว็บจริงแล้ว:** code`afac1c7`/VercelREADY/CI40565947316success รันใหม่501testsผ่าน ตรวจpublicAPIจริง7กรณีและLogin1280/390pxผ่าน รวมgenericinvalid-login/passwordmask/required/close/Escape ไม่มีแนวนอนล้น แก้Vercelrewritecapture404ที่พบจากproductionก่อนปิดงาน ฐานข้อมูลxedoใช้migration20261027184951และตรวจ15checksในรอบก่อนหน้าแล้ว ยังไม่มีบัญชีผู้ทดลองและยังไม่ทดสอบsuccessfulpasswordlogin/realA-BSavehistory ทีมสร้างAuthusers+rosterภายหลัง ไม่อ้างว่างานบัญชีผ่านreal-accountacceptanceครบแล้ว ไม่มีคำถามผู้ใช้ค้าง
+
+**Known issue ที่วินิจฉัยเพิ่มหลังrelease:** ผู้ใช้ส่งภาพGEEINPUT/TIME_WINDOWและยืนยันว่าเว็บคำนวณเวลาอัตโนมัติ 27ต.ค.20:24:05.270→30ต.ค.01:15:37.015 รวม52ชม.51นาที31.745วินาที เกิน24ชม.ของvalidator จึงถูก422ก่อนเรียกGEE ตัวscheduleยังแสดงreadyได้โดยไม่ตรวจเพดานเดียวกัน เป็นvalidation-consistencygapที่ยืนยันด้วยlocalprobe ไม่ทราบส่วนประกอบflightduration/sortieจริงของภารกิจนี้ ยังไม่แก้sourceหรือdeployรอบวินิจฉัย ไม่รื้อscopeprofile/scheduleใหม่ที่ผู้ใช้ตัดไว้
 
 **กติกางานคู่ขนานล่าสุด:** แชทนี้แก้websiteเพียงแชทเดียว อีกแชทส่งpreparedSARใน`outputs/XEDO_Parallel_Handoff_2026-10-27/support/`แล้ว รายงาน32data checksผ่าน/14candidates;แชทหลักตรวจSHA256ของcore12ไฟล์ตรงแล้ว แต่ยังไม่รันconversionหรือwebsiteintegrationซ้ำ ต่อไปให้supportเตรียมrisk-editfixtures/testaddendumโดยไม่แก้corepackageหรือเว็บ
 
@@ -817,3 +819,68 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 **การเผยแพร่เอกสาร:** อัปเดตสองcanonicalMarkdown/queueและcontractdescriptionให้ตรงstatus Pushเอกสารผลตรวจfollow-upในscopeเดียวกันโดยไม่เปลี่ยนapplication;receiptบันทึกidentityสุดท้ายหลังfollow-up ไม่วนสร้างdoccommitเพียงเพื่อบันทึกSHAของตัวเอง
 
 **รอคำตอบ:** ไม่มี ผู้ใช้อนุมัติreleaseแล้ว บัญชีให้ทีมสร้างภายหลังตามเดิม
+
+### 28 ตุลาคม 2026 — ชี้แจงว่าต้องมีบัญชีที่ทีมเปิดสิทธิ์ก่อน Login
+
+**หัวข้อ:** ผู้ใช้ถามก่อนเริ่มsessionถัดไปว่าเปิดเว็บไซต์และLoginเข้าไปได้เลยหรือไม่
+
+**สรุป:** เปิดเว็บไซต์และหน้าInspectoraccountได้แล้ว แต่ถ้าทีมยังไม่สร้างบัญชีและเปิดสิทธิ์Inspector จะยังLoginเข้าใช้งานภารกิจส่วนตัวไม่ได้ การเผยแพร่ระบบไม่ได้สร้างบัญชีผู้ใช้ให้อัตโนมัติ
+
+**รายละเอียด:** ทีมต้องสร้างAuthuserด้วยอีเมล/รหัสผ่าน แล้วเพิ่มAuthuserIDในxedo_private.inspector_accountsพร้อมenabled=true จากนั้นผู้ใช้เปิดเว็บ→Inspectoraccount→ใส่บัญชีที่ทีมจัดให้ ไม่มีpublicsignupบนหน้าเว็บ บัญชีนี้เป็นบัญชีXEDO ไม่ใช่บัญชีเข้าSupabaseDashboard ผลตรวจreleaseเดิมยืนยันหน้าLogin/invalidcredentials/APIเท่านั้น ยังไม่ใช่successful-login/realSavehistoryacceptance อ่านlog/queue/WEBSITE_DETAILSและGitstatusรอบนี้ ไม่มีsource/SQL/account/config changes ไม่มีtests/build/browser/live-service verificationใหม่ อัปเดตสองMarkdownเท่านั้น ไม่เปลี่ยนสถานะqueueเพราะไม่มีข้อกำหนดใหม่ และไม่มีcommit/push/deployรอบคำถามนี้
+
+**รอคำตอบ:** ไม่มี คงคำสั่งให้ทีมสร้างบัญชีภายหลัง ไม่ถือว่าคำถามนี้เป็นการสั่งสร้างบัญชี
+
+### 28 ตุลาคม 2026 — วินิจฉัย GEE ปฏิเสธเวลาภารกิจอัตโนมัติเกิน24ชั่วโมง
+
+**หัวข้อ:** ผู้ใช้ส่งภาพGEEplanningdataunavailable พร้อมข้อความTIME_WINDOW และprogress67%/2of3 แล้วถามสาเหตุ
+
+**สรุป:** ได้รับคำตอบเวลาเริ่ม10/27/2026 08:24:05.270PM/สิ้นสุด10/30/2026 01:15:37.015AM และยืนยันว่าเว็บคำนวณอัตโนมัติ ระยะเวลาบนฐานtimezoneเดียวกันเท่ากับ **52ชั่วโมง51นาที31.745วินาที** (190291745ms) มากกว่า24ชม. จึงยืนยันdurationclauseที่ทำให้serverตอบGEE_CONTEXT_INPUT_INVALID/HTTP422 ไม่ใช่หลักฐานGEE/networkล่ม ตัวคำนวณscheduleขาดเพดานร่วมกับAPIและยังเรียกสถานะreadyได้สำหรับwindowยาวเกิน
+
+**รายละเอียดหลักฐาน:** อ่านภาพ/log/queue/Gitstatus/sourceและใช้subagentreadonlyวิเคราะห์ src/gee-mission-context.js:83ตรวจend<start/duration>24h/start<serverNow−5d/end>serverNow+7dแบบรวม ต่อมาclientplanning-context-request.js:50แสดงข้อความตามภาพ validateที่line240เกิดก่อนupstreamGEE/credentials call ข้อมูลผู้ใช้เพียงพอระบุdurationผิดเงื่อนไข ไม่ต้องขอพิกัดเพื่อวินิจฉัยประเด็นนี้ ไม่มีการโทษการกรอกเวลาของผู้ใช้
+
+**ช่องว่างโค้ด:** planning-schedule.js:90–102คำนวณduration+buffer300s+(sorties−1)*turnaround600s ไม่มีmax24h getReadiness:171–174ตรวจordering/futureแต่ไม่max/horizon ส่วนclientline705ส่งเวลาของexportตรงไปGEE วันที่ภาพเป็นอีกfield ไม่ได้ใช้แทนmissionstart จึงไม่อ้างว่าเกิดเพราะภาพดาวเทียมเก่า ต้องดูผลroute/flightduration/sortiesจริงหากจะตรวจว่าเหตุใดภารกิจนี้คำนวณยาว52ชม.
+
+**Progress/Retry:** readingstage2/3คือได้รับHTTPresponseแล้วและยังไม่รับข้อมูลว่าvalid จึง67% ไม่ใช่GEEคำนวณค้าง67%;inputfailureไม่retryจึงหยุดattempt1/2ตามแบบ การRefresh/Replanอย่างเดียวไม่แก้เมื่อdurationยังเกิน24h
+
+**ผลตรวจใหม่รอบนี้:** pureNodeprobeคำนวณdeltaของเวลาผู้ใช้และส่งvalidatorด้วยfixedclockได้422ตามข้อความจริง อีกsynthetic1-sortieflightใช้durationที่ตั้งให้windowตรง52ชม.51นาทีแล้วscheduleคืนready ยืนยันgapได้ ไม่ใช่การคำนวณแผน/ระยะทาง/จำนวนเที่ยวจริงของผู้ใช้ Subagentมีprobe25ชม.5นาทีready→422แยกกัน ไม่มีfulltest/build/browser/liveAPI/GEE/DBverificationใหม่ และไม่ใช้501testsของreleaseมาอ้างใหม่
+
+**แนวทางซ่อมที่บันทึกไว้ ยังไม่ลงมือ:** ใช้windowlimitsร่วมกันในschedule/UI/server ก่อนเรียกAPI บอกจำนวนชั่วโมงที่เกินอย่างเจาะจง ไม่ทำreadyสำหรับช่วงไม่รองรับ ตรวจactualflight-duration/sortiesเพื่อหาตัวขยายเวลา และให้ลดพื้นที่/แบ่งภารกิจเมื่อรวมเกิน24h ห้ามตัดendหรือclampdurationให้ดูผ่านโดยไม่เปลี่ยนแผนจริง พิจารณาโหลดstaticterrain/landcover/qualityแยกจากforecastเป็นขั้นออกแบบ ไม่ยืดขอบเขตforecastโดยไม่มีหลักฐาน ไม่รื้อuser-start/derived-endrewriteที่ตัดจากscope
+
+**ไฟล์/สถานะ:** อัปเดตสองcanonicalMarkdownและqueue.runtimeIssuesด้วยknownissue,คำตอบและverificationboundary รักษาบันทึกLoginclarificationที่dirtyอยู่เดิม ไม่มีsource/SQL/config/accountchange ไม่มีcommit/push/deploy ชุดapplicationจริงยังเป็นreleaseเดิม ไม่มีคำสั่งแก้หรือเผยแพร่bugนี้จากคำถามสาเหตุอย่างเดียว
+
+**รอคำตอบ:** ไม่มี ได้เวลาและโหมดอัตโนมัติครบแล้ว ส่วนflightduration/sortieรายละเอียดเป็นหลักฐานที่ต้องตรวจเมื่อเริ่มซ่อม ไม่ใช่คำถามผู้ใช้ค้างในรอบนี้
+
+### 28 ตุลาคม 2026 — Surface Unknown หลังคำขอ GEE ล้มเหลวและข้อความ mismatch กำกวม
+
+**หัวข้อ:** ผู้ใช้ส่งภาพSurface model Unknown/“GEE terrain does not match the current inspection area and Home.” แล้วถามว่าเป็นปัญหาเดียวกับเวลาเกิน24ชม.หรือไม่
+
+**สรุป:** ยืนยันcodepathว่าคำขอ422เดิมทำให้reportถูกล้างเป็นnull แล้วตัวประเมินแสดงข้อความตามภาพได้โดยตรง หากเป็นภารกิจเดียวกันจึงสอดคล้องกับผลต่อเนื่องจากเวลา52ชม.51นาที มีbugการอธิบายสถานะเพิ่ม: ใช้ข้อความเดียวกันทั้งไม่มีreportและมีreportแต่geometry/Homeไม่ตรง ภาพนี้จึงไม่พิสูจน์ว่าผู้ใช้เลือกHomeผิดหรือพื้นที่ไม่ตรงจริง
+
+**รายละเอียด/หลักฐาน:** planning-geospatial-ui.js:196รับerror→invalidate('error',failure.message),line77ล้างresponse=null; getTerrainAssessment:201ส่งcurrent()ที่เป็นnullไปassessPlanningTerrain; planning-terrain.js:21รวม!requestเข้ากับgeometry/Homemismatch; planning-trial-client.js:155เอาassessment.reasons[0]มาแสดงแทนupstreamerrorreason จึงเกิดchainเวลาเกิน→GEE422→ไม่มีterrain→Unknownพร้อมข้อความmismatch แม้Homeไม่เปลี่ยน Subagentreadonlyยืนยันchainเดียวกัน ไม่ตัดกรณีเปลี่ยนHome/ขอบเขตจริงออกจากภาพอย่างเดียว
+
+**ผลตรวจใหม่:** pureNodeprobe2กรณี missingreport/null และactualHome-mismatch ต่างคืนunknownและข้อความตรงภาพเหมือนกัน ยืนยันความกำกวมของข้อความ ไม่ใช่replaymission/browserจริง ไม่มีfulltests/build/liveAPI/GEE/DBหรือdeploymentverificationใหม่ ผล501testsยังเป็นหลักฐานreleaseก่อนหน้า
+
+**แนวซ่อมที่บันทึก ยังไม่implement:** แยกmissing/loading/error/expiredreportออกจากactualmismatch ให้Surface modelแสดงสาเหตุrequestจริง เช่นยังไม่มีพื้นผิวเพราะช่วงภารกิจเกิน24ชม.;คงUnknownและexportlockจนได้samplesตรงcurrentarea/Homeจริง ทดสอบ422→null→reasonถูกต้องและกรณีHome/geometrymismatchจริงแยกกัน ซ่อมร่วมกับtime-windowissueโดยไม่ปลดreadinessหรือใช้ข้อมูลเก่าทำready
+
+**ไฟล์/สถานะ/รอคำตอบ:** อัปเดตสองcanonicalMarkdownและเพิ่มrelatedruntimeissueในqueue รักษาเอกสารที่dirtyจากรอบก่อน ไม่มีsource/SQL/config/accountchange ไม่มีcommit/push/deploy ไม่มีคำถามผู้ใช้ค้าง ไม่ถือคำถามเปรียบเทียบอาการเป็นคำสั่งเผยแพร่
+
+<!-- time-surface-repair-2026-10-28 -->
+### 28 ตุลาคม 2026 — แก้ time-window และ Surface model ตามคำสั่งเผยแพร่
+
+**หัวข้อ:** ผู้ใช้อนุมัติแก้ทั้งสองปัญหา ทดสอบ อัปเดตสองMarkdown และpush/deploy
+
+**สรุป:** implementationในเครื่องเสร็จ Shared24hwindowchecksทำให้automatic/manual/restoredlongplanblockedและdirectexportไม่ผ่านเวลารวมจริง แต่คงเวลาเดิมไม่clamp GEEยังโหลดterrain/landcover/qualityได้โดยส่งforecasttimesnullเมื่อไม่รองรับ แสดงforecastomissionพร้อมpartial Surfaceไม่มีreportแสดงmissing/loading/error/staleตามจริง ไม่เหมารวมHome mismatch Fresh73targetedและ510fullsuiteผ่าน syntax/3buildsผ่าน ตรวจlocalbrowser+GEEจริงแล้ว กำลังเผยแพร่และรอตรวจproduction
+
+**รายละเอียดการแก้:** เพิ่มsrc/planning-time-window.jsร่วมกับschedule/GEEvalidator/export ภารกิจเกิน24hบอกactualdurationและแนะนำลดพื้นที่/แบ่งงาน scheduleเก็บfullend;exportตรวจหลังรวมsorties+declaredendป้องกันย่อช่องendเพื่อผ่าน Genericmanualexportคงfuture-datebehaviorเดิมด้วยcheckForecastDates:false ส่วนGEE/scheduleใช้forecastdates5วันย้อนหลัง/7วันล่วงหน้าเหมือนserverเดิม
+
+**GEE/Surface:** planning-geospatial-uiสร้างstatic-onlypayloadเมื่อwindowผิดโดยคงgeometry/Home/scene/routeและoriginaltimes+problemcodeในkey ยกเลิกforecastvalues/ทำnot_requested+warning/partial ไม่อ้างweatherreadyจากterrainอย่างเดียว;planning-terrainแยก!requestจากactualgeometry/Home mismatch ตัวcontrollerใช้rootclassifiedstate.reasonกับunknownและloading/stale/offlineข้อความจริง ใช้helperเดียวในrender/getTerrainAssessmentหลังcurrent() ไม่มีnotificationcycleใหม่ แก้helpให้บอกlimit/actionตรงพฤติกรรม
+
+**การทดสอบ:** เพิ่มtestssharedwindow/exact24h+1ms/user52h/restored/manual/real55hroute/shortdeclaredendexportbypass/staticfallback52→53hkey/validrecovery/422rootreason/loading/stale/lateold422/actualHomeและgeometrymismatch Freshtargeted73/73และfull510/510/0failed/0skipped Syntaxและ3buildsผ่าน Fullsuiteครั้งแรกdefaultconcurrencyหยุดค้างโดยยังไม่รายงานfailureจึงinterruptเฉพาะsessionตัวเอง แล้วรันไฟล์ทั้งหมดด้วย--test-concurrency=4ผ่าน ไม่ลดtest/assertions ชุดtargetedครั้งแรกพบexportfuture-horizonกระทบgenericmanualfixture จึงจำกัดforecastdatechecksเฉพาะขอบเขตที่เกี่ยวข้อง ไม่เปลี่ยนfixtureเพื่อให้ผ่าน
+
+**Browserจริงในเครื่อง:** ใช้builtfrontend+localhost5182กับGEE/weatherจริง พื้นที่ทดสอบ48,266m²/Home101.2,12.6 time52h→terrain/HomeReady,GFSnotrequested,SurfacewithinTolerance,TakeoffBlocked/downloadlocked ต่อด้วยrectangle18.0945km²ผ่าน3ขั้นและreviewSentinel-2จริง27ต.ค.2026 สร้างroute998.11km/automatic55h32m3s→blockedคงfullend/staticterrainกลับมาreviewneededตามrangeจริง ไม่ใช่mismatch ป้อนพื้นที่>100km²ให้API422จริง แล้วSurfaceUnknownแสดงAREA_LIMITreasonแทนHome-mismatch Mobile390/readinessdialog358/page375pxไม่ล้น คืนviewportแล้ว ภาพอยู่output/release-check/time-surface-fix-2026-10-28/
+
+**Review/ข้อจำกัด:** subagentsreadonly2ชุดไม่พบmaterialblocker ไม่พบunit/double-countingbugในflightduration เวลายาวเกิดจากroute/transitได้ ตัวอย่างทดสอบไม่ใช่พื้นที่ของผู้ใช้จริง ไม่มีautomaticpartitionหลายภารกิจเพิ่ม แผนยาวต้องลดพื้นที่หรือแบ่งงานเอง Forecast/staticแยกเฉพาะcontextrequestไม่ปลดenvironment/exportgates ไม่มีhardware/SITL/QGCใหม่ ไม่มีAuthaccounts/DB/configchangesหรือAI/UXfeatureเพิ่ม
+
+**ไฟล์:** src/planning-time-window.js,planning-schedule.js,gee-mission-context.js,trial-export.js,planning-terrain.js,planning-geospatial-ui.js,planning-help-content.js;tests/planning-time-window.test.mjsและ4testfilesเดิม พร้อมcanonicalMarkdown/queue ผลproduction/identityเติมหลังdeploy ไม่ใช้501testsของบัญชีเป็นผลรอบนี้
+
+**รอคำตอบ:** ไม่มี อนุมัติimplementation/push/deployครบแล้ว บัญชีผู้ทดลองยังให้ทีมสร้างภายหลังตามเดิม

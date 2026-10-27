@@ -936,5 +936,124 @@
     "authSettingsChanged": false,
     "evidenceDirectory": "output/release-check/inspector-account-release-2026-10-28",
     "documentationFollowup": "Follow-up documentation commit may advance deployment identity without changing application code; final identity recorded in local release-receipt.json"
+  },
+  "runtimeIssues": [
+    {
+      "id": "gee_automatic_mission_window_over_24_hours",
+      "reportedOn": "2026-10-28",
+      "status": "implemented_local_verified_release_pending",
+      "implementationApprovedForThisIssue": true,
+      "userConfirmedAutomaticTiming": true,
+      "reportedStart": "10/27/2026 08:24:05.270 PM",
+      "reportedEnd": "10/30/2026 01:15:37.015 AM",
+      "durationSameTimezoneMs": 190291745,
+      "durationText": "52h51m31.745s",
+      "requestLimitHours": 24,
+      "rejection": "GEE_CONTEXT_INPUT_INVALID / HTTP422 / TIME_WINDOW, before upstream GEE",
+      "rootCause": "Automatic schedule can generate a mission window beyond24h and getReadiness can still report ready; GEE request validator rejects the same window. User duration confirms the over24h clause.",
+      "codePointers": [
+        "src/planning-schedule.js:90",
+        "src/planning-schedule.js:171",
+        "src/gee-mission-context.js:83",
+        "src/gee-mission-context.js:240",
+        "src/planning-context-request.js:50"
+      ],
+      "verification": "Read screenshot/source; computed exact duration and pure fixed-clock validator422; synthetic generated-flight schedule reproduced same long window with readiness=ready. No actual user route/sortie replay, full application tests/builds/browser/live API/GEE/DB run.",
+      "stillUnknown": "Actual route estimate, flight duration and sortie count that produced52h; no proof that duration arithmetic itself is incorrect or that timezone caused it.",
+      "repairPlan": [
+        "Shared duration/date-window checks before request and readiness",
+        "Explain actual duration and the24h limit",
+        "Inspect actual route/flight/sortie duration; reduce area or split missions if over24h",
+        "Never clamp the end time without changing the real mission plan",
+        "Consider static-context and forecast separation during design"
+      ],
+      "scopeBoundary": "Diagnosis only. Does not reopen removed normal-flow aircraft/default/profile or user-start-derived-end rewrite. No source edits or push/deploy in this turn.",
+      "pendingUserAnswers": [],
+      "record": "docs/WEBSITE_DETAILS.md#324-gee-mission-window-rejection-จากเวลาอัตโนมัติเกิน24ชั่วโมง",
+      "approvedOn": "2026-10-28",
+      "repairRecord": "docs/WEBSITE_DETAILS.md#326-shared-mission-window-limits-และ-surface-state-repair--28-ตุลาคม-2026"
+    },
+    {
+      "id": "surface_missing_report_shows_area_home_mismatch",
+      "reportedOn": "2026-10-28",
+      "status": "implemented_local_verified_release_pending",
+      "implementationApprovedForThisIssue": true,
+      "relatedIssueId": "gee_automatic_mission_window_over_24_hours",
+      "observedMessage": "GEE terrain does not match the current inspection area and Home.",
+      "rootCause": "Request failure clears response to null. Terrain assessor merges missing request and true geometry/Home mismatch into one reason; readiness displays it instead of upstream failure reason.",
+      "sameMissionRelationship": "If this is the same52h mission, the422 failure can directly produce this Surface Unknown. Screenshot alone does not prove an actual Home/geometry change.",
+      "codePointers": [
+        "src/planning-geospatial-ui.js:77",
+        "src/planning-geospatial-ui.js:196",
+        "src/planning-geospatial-ui.js:201",
+        "src/planning-terrain.js:21",
+        "src/planning-trial-client.js:155"
+      ],
+      "verification": "Fresh pure Node probe: null report and a genuinely different Home both return Unknown and identical screenshot reason. Read-only independent review confirms422→invalidate→null→mismatch-text chain. No browser/live mission replay, full suite/build/service calls.",
+      "repairPlan": [
+        "Separate missing/loading/error/expired report from actual geometry/Home mismatch",
+        "Propagate root request failure reason to Surface readiness",
+        "Keep Unknown and export locked until current matching usable samples exist",
+        "Test422/null-report reason and actual mismatch separately"
+      ],
+      "scopeBoundary": "Diagnosis only; no source changes or push/deploy authorized by this symptom question.",
+      "pendingUserAnswers": [],
+      "record": "docs/WEBSITE_DETAILS.md#325-surface-unknown-ไม่มี-report-ถูกแสดงเป็น-areahome-mismatch",
+      "approvedOn": "2026-10-28",
+      "repairRecord": "docs/WEBSITE_DETAILS.md#326-shared-mission-window-limits-และ-surface-state-repair--28-ตุลาคม-2026"
+    }
+  ],
+  "timeSurfaceRepairExecution": {
+    "id": "time-surface-fix-2026-10-28",
+    "status": "implemented_local_verified_release_pending",
+    "authorizedOn": "2026-10-28",
+    "pushDeployAuthorized": true,
+    "scope": "Shared24h schedule/GEE/export checks, static GEE fallback and truthful missing/error terrain reasons; preserve actual times and existing3steps4calculators",
+    "changes": [
+      "src/planning-time-window.js",
+      "src/planning-schedule.js",
+      "src/gee-mission-context.js",
+      "src/trial-export.js",
+      "src/planning-geospatial-ui.js",
+      "src/planning-terrain.js",
+      "src/planning-help-content.js"
+    ],
+    "checks": {
+      "targetedPassed": 73,
+      "fullSuitePassed": 510,
+      "failed": 0,
+      "skipped": 0,
+      "fullSuiteConcurrency": 4,
+      "syntaxPassed": true,
+      "productionBuildPassed": true,
+      "workspaceBuildPassed": true,
+      "portableBuildPassed": true,
+      "localRealGeeStaticContextPassed": true,
+      "localAutomaticLongMissionBlocked": true,
+      "localSurfaceActual422ReasonPassed": true,
+      "mobile390": {
+        "dialogWidth": 358,
+        "pageWidth": 375,
+        "horizontalOverflow": false
+      }
+    },
+    "testExecutionNote": "Initial unrestricted parallel full suite stalled without reporting failures and was interrupted; all test files passed with --test-concurrency=4. No tests/assertions removed.",
+    "realBrowserFixture": {
+      "areaKm2": 18.09454,
+      "routeKm": 998.11,
+      "automaticWindow": "55h32m3s",
+      "takeoffState": "blocked",
+      "downloadEnabled": false,
+      "surface": "review required from actual samples",
+      "notUserExactGeometry": true
+    },
+    "limitations": [
+      "No automatic mission partitioning; long actual times remain visible and need smaller area/split work",
+      "No real trial accounts or Auth/DB changes",
+      "No physical flight/SITL/QGC acceptance"
+    ],
+    "evidenceDirectory": "output/release-check/time-surface-fix-2026-10-28",
+    "productionVerified": false,
+    "commitPushDeploy": false
   }
 }

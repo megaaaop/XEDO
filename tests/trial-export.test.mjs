@@ -61,6 +61,13 @@ test('Manual review validity covers takeoff, every sortie, and explicit ground-d
   assert.equal(check(flight,{...settings,plannedEndAt:'2098-12-31T00:00:00Z'}).state,'blocked');
   for(const key of ['plannedTakeoffAt','validUntil','plannedEndAt'])assert.equal(check(flight,{...settings,[key]:'2099-01-01T12:00:00'}).state,'blocked',key);
 });
+test('Direct export blocks a long actual sortie sum even when the declared end is shortened',()=>{
+  const {flight,settings}=fixture();flight.battery.sorties[0].durationS=90000;
+  settings.plannedEndAt='2099-01-01T01:00:00Z';settings.validUntil='2099-01-04T00:00:00Z';
+  const report=check(flight,settings);assert.equal(report.pass,false);assert.ok(report.checks.some(c=>c.id==='mission-window'&&c.state==='blocked'));
+  assert.match(report.errors.join(' '),/maximum supported window is 24 hours/);
+  assert.throws(()=>buildQGCPlan(flight,settings),e=>e.code==='TRIAL_EXPORT_BLOCKED');
+});
 
 test('No-go checking examines full outbound/return segments, including crossing between endpoints',()=>{
   const outbound=controlledRoute([home,[101.202,12.6],home]);

@@ -1,5 +1,6 @@
 import {validateGeometry,pointWithin} from './domain.js';
 import {accessToken,invalidateGEEToken,publicGEEError} from './gee-connection.js';
+import {missionWindowProblem} from './planning-time-window.js';
 
 const HOUR=3600000,DAY=24*HOUR,TTL=600000,MAX_JSON=512*1024;
 const MAX_SAMPLES=80,MAX_AREA=100000000,MAX_PIXELS=1500000;
@@ -80,7 +81,7 @@ function normalizedInput(input,{now=Date.now()}={}){
  const at=typeof now==='function'?now():now;
  if(!finite(at))throw Error('The context clock is invalid.');
  if((startAt===null)!==(endAt===null))throw Error('Supply both mission start and end, or leave both unknown.');
- if(startAt!==null&&(Date.parse(endAt)<Date.parse(startAt)||Date.parse(endAt)-Date.parse(startAt)>DAY||Date.parse(startAt)<at-5*DAY||Date.parse(endAt)>at+7*DAY))throw Error('Use an ordered mission window of at most 24 hours, within five days back and seven days ahead.');
+ if(missionWindowProblem(startAt,endAt,{now:at}))throw Error('Use an ordered mission window of at most 24 hours, within five days back and seven days ahead.');
  return {geometry:structuredClone(input.geometry),home:home?[...home]:null,sceneId,startAt,endAt,...(routePoints===undefined?{}:{routePoints:routePoints.map(p=>[...p])})};
 }
 export function validateMissionContextRequest(input,options={}){try{return normalizedInput(input,options);}catch(error){throw Object.assign(new Error(error.message),{code:'GEE_CONTEXT_INPUT_INVALID',status:422});}}

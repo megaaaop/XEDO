@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createPlanningSchedule } from '../src/planning-schedule.js';
+import {buildTrialFlight} from '../src/trial-flight.js';
+import {createHardwareFlightDefaults} from '../src/planning-hardware-profile.js';
 
 const START = Date.parse('2026-10-25T10:00:00.000Z');
 const iso = value => new Date(value).toISOString();
@@ -187,4 +189,22 @@ test('clock and timing settings are validated before updating state', () => {
   const schedule = createPlanningSchedule({ now: () => NaN });
   assert.throws(() => schedule.begin(), TypeError);
   assert.equal(schedule.getState().mode, 'idle');
+});
+test('Automatic and restored long schedules retain their real end and cannot report ready',()=>{
+  const start=Date.parse('2026-10-27T20:24:05.270Z'),end=Date.parse('2026-10-30T01:15:37.015Z');
+  const schedule=createPlanningSchedule({now:()=>start-3600000});schedule.begin();
+  const patch=schedule.complete(flight((end-start)/1000-300));
+  assert.equal(patch.plannedEndAt,iso(end));assert.equal(schedule.getReadiness().status,'blocked');assert.match(schedule.getReadiness().message,/52 h.*24 hours/);
+  const restored=createPlanningSchedule({now:()=>start-3600000});restored.restore(patch.schedule,patch);assert.equal(restored.getReadiness().status,'blocked');
+  schedule.complete(flight(1200));assert.equal(schedule.getReadiness().status,'ready');assert.equal(schedule.getPatch().plannedTakeoffAt,patch.plannedTakeoffAt);
+});
+test('A real long fixed-camera route and manual windows cannot bypass the24h planning limit',()=>{
+  const geometry={type:'Polygon',coordinates:[[[101.2,12.6],[101.21,12.6],[101.21,12.75],[101.2,12.75],[101.2,12.6]]]};
+  const result=buildTrialFlight(geometry,{...createHardwareFlightDefaults(),home:[101.2,12.6]});
+  assert.equal(result.plan.status,'generated');assert.ok(result.plan.estimates.durationS>86400);
+  const schedule=createPlanningSchedule({now:()=>START});schedule.begin();const patch=schedule.complete(result);
+  assert.equal(schedule.getReadiness().status,'blocked');assert.ok(Date.parse(patch.plannedEndAt)-Date.parse(patch.plannedTakeoffAt)>86400000);
+  schedule.setManual({plannedTakeoffAt:iso(START+3600000),plannedEndAt:iso(START+3600000+86400001)});assert.equal(schedule.getReadiness().status,'blocked');
+  schedule.setManual({plannedTakeoffAt:iso(START+3600000),plannedEndAt:iso(START+3600000+86400000)});assert.equal(schedule.getReadiness().status,'ready');
+  schedule.setManual({plannedTakeoffAt:iso(START+7*86400000),plannedEndAt:iso(START+7*86400000+3600000)});assert.equal(schedule.getReadiness().status,'blocked');
 });

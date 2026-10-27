@@ -1,5 +1,6 @@
 import proj4 from 'proj4';
 import {validateGeometry} from './domain.js';
+import {missionWindowProblem} from './planning-time-window.js';
 
 const VERSION='xedo-qgc-trial/1';
 const MAX_SORTIES=40,MAX_WAYPOINTS=500,MAX_TOTAL_WAYPOINTS=5000,MAX_NO_GO=32,MAX_NO_GO_VERTICES=2000;
@@ -157,6 +158,8 @@ export function checkTrialExport(flight,settings={},nowMs=Date.now()){
       if(explicitEnd===null||explicitEnd<plannedTakeoffMs)add('planned-end','blocked','Planned end must be a valid timestamp at or after takeoff.');
       else plannedEndMs=Math.max(plannedEndMs,explicitEnd);
     }
+    const windowProblem=missionWindowProblem(new Date(plannedTakeoffMs).toISOString(),new Date(plannedEndMs).toISOString(),{now:nowMs,checkForecastDates:false});
+    if(windowProblem)add('mission-window','blocked',windowProblem.message);
     if(validUntilMs!==null)add('time-coverage',validUntilMs>=plannedEndMs?'pass':'blocked',validUntilMs>=plannedEndMs?'Manual constraint validity covers the summed sortie durations and declared end time.':'Manual constraint validity does not cover all planned sorties.');
   }
   if(project&&polygons&&corridorM!==null&&routeValid&&targetValid)try{

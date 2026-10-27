@@ -1,3 +1,4 @@
+import {missionWindowProblem} from './planning-time-window.js';
 const HOUR_MS = 60 * 60 * 1000;
 const FALLBACK_DURATION_S = 1800;
 const VERSION = 1;
@@ -172,6 +173,8 @@ export function createPlanningSchedule({ now = Date.now, bufferS = 300, turnarou
       return { status: 'blocked', message: 'Mission end must be later than takeoff.', expiresAt };
     }
     if (Date.parse(plannedTakeoffAt) <= clock()) return { status: 'expired', message: 'Takeoff time has passed. Replan or choose a future time.', expiresAt };
+    const problem=missionWindowProblem(plannedTakeoffAt,plannedEndAt,{now:clock()});
+    if(problem)return {status:'blocked',message:problem.message,expiresAt};
     return { status: 'ready', message: schedule.mode === 'automatic' ? 'Takeoff is scheduled one hour after route analysis.' : 'Manual schedule is ready.', expiresAt };
   }
 

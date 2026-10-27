@@ -9,7 +9,7 @@ const samePoint=(a,b)=>pair(a)&&pair(b)&&a.every((value,index)=>Math.abs(value-b
 const clone=value=>value==null?value:structuredClone(value);
 
 /** A sampled DSM model check, never a surveyed launch level or flight clearance. */
-export function assessPlanningTerrain(report,{geometry=null,home=null,toleranceM=2,now=Date.now()}={}){
+export function assessPlanningTerrain(report,{geometry=null,home=null,toleranceM=2,now=Date.now(),unavailableReason=null}={}){
  const time=typeof now==='function'?now():now,terrain=report?.terrain,request=report?.request;
  const routePoints=request?.routePoints===undefined?[]:request.routePoints;
  const result={mode:'gee_model',state:'unknown',label:'GEE model assessment unknown',reasons:[],coverage:{known:0,total:0,fraction:0},terrainRangeM:null,homeOffsetM:null,homeElevationM:null,minElevationM:null,maxElevationM:null,toleranceM:finite(toleranceM)&&toleranceM>0?toleranceM:null,toleranceVerified:false,geometry:clone(geometry),home:clone(home),routePoints:clone(routePoints),source:{datasetId:terrain?.datasetId??null,resolutionM:terrain?.resolutionM??null,verticalDatum:terrain?.verticalDatum??null},verticalDatum:terrain?.verticalDatum??null,fetchedAt:report?.fetchedAt??null,expiresAt:report?.expiresAt??null};
@@ -18,7 +18,8 @@ export function assessPlanningTerrain(report,{geometry=null,home=null,toleranceM
  if(!geometry||!pair(home))return unknown('Select an inspection area and Home position.');
  try{validateGeometry(geometry);}catch{return unknown('The inspection boundary is invalid.');}
  if(!Array.isArray(routePoints)||routePoints.length>24||routePoints.some(point=>!pair(point)))return unknown('The requested terrain route coordinates are invalid.');
- if(!request||!same(request.geometry,geometry)||!samePoint(request.home,home))return unknown('GEE terrain does not match the current inspection area and Home.');
+ if(!request)return unknown(unavailableReason||'GEE terrain data has not been loaded for this inspection.');
+ if(!same(request.geometry,geometry)||!samePoint(request.home,home))return unknown('GEE terrain does not match the current inspection area and Home.');
  const fetched=Date.parse(report.fetchedAt),expires=Date.parse(report.expiresAt);
  if(!finite(time)||!Number.isFinite(fetched)||fetched>time+60000||time-fetched>TTL||!Number.isFinite(expires)||expires<=time||expires>fetched+TTL)return unknown('Fresh, time-bounded GEE terrain is required.');
  if(terrain?.state!=='ready'||terrain.datasetId!==DEM||terrain.verticalDatum!=='EGM2008'||terrain.resolutionM!==30||!Array.isArray(terrain.samples)||terrain.samples.length>80)return unknown('The supported 30 m Copernicus surface model and EGM2008 reference are unavailable.');

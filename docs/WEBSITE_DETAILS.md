@@ -338,3 +338,53 @@ Save เป็น draft-only ใช้ session advisory lock→mutation lock→r
 **ไฟล์/หลักฐาน:** savecontractdescriptionตรงmigrationที่ใช้แล้ว validation/SQLไม่เปลี่ยน เพิ่มselectedRouteและregressiontest หลักฐานoutput/release-check/inspector-account-release-2026-10-28/มีtests/buildlogs/APIJSON/desktop-error-mobilePNG/release-receipt.json เอกสารผลตรวจfollow-upอาจเปลี่ยนdeploymentSHAโดยapplicationเดิม receiptเก็บfinalidentity UX/AIriskeditorยังอยู่อีกงาน ไม่รวมreleaseนี้
 
 **Runtime routing repair:** releaseแรกfunctionตรง200แต่publicrewrite404 แก้api/inspector.mjs selectedRouteรับVercelpathcaptureเป็นสำเนาตรงกันของendpoint ไม่ให้overridepathname/route Rejectqueryซ้ำ/ค่าขัดกัน/unknownkeys Unitregressionใหม่501ผ่านและหลังdeploypublicroute/API7/UIจริงผ่าน ปิดdefectโดยเก็บผลinitial404ไว้ ไม่ใช้directrouteผ่านแทนactualUI/API
+
+### 3.23 เงื่อนไขก่อนผู้ทดลอง Login — 28 ตุลาคม 2026
+
+**หัวข้อ:** แยกสถานะหน้าLoginเผยแพร่แล้วออกจากการมีบัญชีพร้อมใช้
+
+**สรุป:** เปิดเว็บและหน้าInspectoraccountได้ แต่ต้องให้ทีมสร้างAuthuserและเพิ่มInspector rosterก่อนจึงเข้าใช้งานภารกิจส่วนตัวได้ การdeployไม่สร้างบัญชีอัตโนมัติ
+
+**รายละเอียด:** ใช้อีเมล/รหัสผ่านของบัญชีXEDOที่ทีมจัดให้ ไม่ใช่บัญชีSupabaseDashboard ต้องมีuser_idในxedo_private.inspector_accountsและenabled=trueด้วย ไม่มีsignupUIให้ผู้ทดลองสมัครเอง คงให้ทีมสร้างภายหลังตามคำตอบเดิม รอบชี้แจงนี้อัปเดตเอกสารอย่างเดียว ไม่ตรวจบริการสดหรือรันทดสอบใหม่ ไม่แก้source/DB/config/account และไม่commit/push/deploy ไม่มีคำถามผู้ใช้ค้าง
+
+### 3.24 GEE mission-window rejection จากเวลาอัตโนมัติเกิน24ชั่วโมง
+
+**หัวข้อ:** ปัญหาที่รับรายงานหลังaccountrelease 28ตุลาคม2026 — วินิจฉัยแล้ว ยังไม่แก้source
+
+**สรุป:** ผู้ใช้ยืนยันauto start27ต.ค.20:24:05.270/end30ต.ค.01:15:37.015 รวม52h51m31.745s เกินrequestlimit24h จึงตอบHTTP422ก่อนupstreamGEE ประเด็นไม่เกี่ยวกับInspectorlogin การเปิดแผนยาวเกิน24hแล้วscheduleยังreadyเป็นgapที่ต้องซ่อม ไม่เปลี่ยนrequirementprototype/profile/scheduleที่ตัดไว้
+
+**รายละเอียดโค้ด/พฤติกรรม:** gee-mission-context.js:83กำหนดwindow≤24h/startย้อนหลัง≤5วัน/endล่วงหน้า≤7วันบนserverclock (และendไม่ก่อนstart) ทุกข้อรวมข้อความเดียว planning-context-request.js:50แสดงTIME_WINDOW Progress67%=ได้รับHTTPresponseที่stage2/3แล้วไม่ผ่านvalidation ไม่ใช่GEEcompute67%;inputไม่retry จึงattempt1/2หยุด ตัวschedulecompleteคำนวณflightduration+buffer+turnaroundsไม่ตรวจ24h ส่วนgetReadinessตรวจแค่ordering/future จึงพร้อมขัดกับAPIได้ ข้อมูลภาพacquiredAtแยกจากmissiontimes ไม่มีหลักฐานtimezonebug
+
+**สิ่งที่พิสูจน์/ยังไม่ทราบ:** pureNodeคำนวณ190291745msและvalidator422โดยfixedclock อีกsyntheticgeneratedflightทำให้schedulewindowตรงข้อมูลนี้/readyก่อนGEErejectได้ เป็นการพิสูจน์validationgap ไม่ใช่replayactualflightresult จึงยังไม่ทราบflightduration/sorties/พื้นที่ที่ทำให้ผู้ใช้ได้52h ไม่มีfulltests/build/browser/liveGEEหรือDBchecksใหม่
+
+**แนวทางซ่อมสำหรับรอบถัดไป:** sharedtime-windowvalidationก่อนrequest+readiness+ข้อความactualduration/limit ตรวจrouteestimateและsortiesจริง ถ้ารวมเกินให้ลดขอบเขตหรือแบ่งภารกิจ ห้ามย่อend/clampเวลาให้ผ่านแทนแผนจริง พิจารณาแยกstaticcontextจากforecastเพื่อไม่ให้ข้อจำกัดforecastบดบังterrain/landcover/qualityที่อาจใช้ได้ ต้องออกแบบและทดสอบก่อนลงมือ ไม่ถือว่าข้อเสนอถูกimplementแล้ว
+
+**สถานะ/ไฟล์:** บันทึกknownissueในqueue.runtimeIssuesและXEDO_WORK_LOG อัปเดตเอกสารเท่านั้น ไม่แก้source/config/SQL ไม่สร้างบัญชี ไม่commit/push/deploy ไม่ถามวันเวลา/โหมดซ้ำเพราะผู้ใช้ตอบครบแล้ว
+
+### 3.25 Surface Unknown: ไม่มี report ถูกแสดงเป็น area/Home mismatch
+
+**หัวข้อ:** วิเคราะห์ภาพSurface model Unknownจากผู้ใช้หลังTIME_WINDOWerror
+
+**สรุป:** มีcodepathต่อเนื่องจาก3.24โดยตรง แต่ข้อความภาพอย่างเดียวแยกไม่ได้ระหว่างreportไม่มีและreportผิดarea/Home ยืนยันtext-statebugแล้ว ยังไม่แก้source
+
+**รายละเอียด:** planning-geospatial-uiรับerror422แล้วinvalidateล้างresponse=null current/getTerrainAssessmentส่งnullให้planning-terrain ตัวassessline21ตรวจ!requestร่วมกับgeometry/Homeต่างแล้วคืน“GEE terrain does not match the current inspection area and Home.” ส่วนreadinessStateแสดงreasons[0]ไม่ใช้GEEstate.reason หากภารกิจเดิม52hทำให้422 ภาพนี้จึงเป็นผลต่อเนื่องได้ แม้ผู้ใช้ไม่เปลี่ยนHome ไม่สรุปจากภาพว่าHomeผิดจริง
+
+**หลักฐาน/แนวซ่อม:** freshpureNodeprobeกรณีnullreportและactualHomeต่างจริงได้unknown+ข้อความเดียวกัน ต้องแยกmissing/loading/error/staleจากactualgeometry/Home mismatch และส่งrootrequestreasonมาแสดงต่อ คงUnknown/exportlockจนมีsamplesปัจจุบันที่ใช้ได้ เพิ่มกรณี422→responsecleared→SurfaceUnknownreasonถูกต้องควบคู่actualmismatch ไม่มีfullsuite/build/browser/liveGEE/DBใหม่ รักษาเดิม3steps/4calculators ไม่ปลดreadinessเพื่อให้ผ่าน
+
+**สถานะ:** relatedruntimeissueในqueueเป็นdiagnosed_not_implemented อัปเดตสองMarkdownตามคำสั่ง ไม่แก้source/SQL/config ไม่สร้างบัญชี ไม่commit/push/deploy ไม่มีคำถามผู้ใช้ค้าง
+
+### 3.26 Shared mission-window limits และ Surface state repair — 28 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้อนุมัติimplementation/test/push/deployของสองissuesใน3.24–3.25
+
+**สรุป:** แก้ในเครื่องแล้ว รอproductionverification คงเวลาจริงของแผนที่เกิน24hและblockreadiness/export GEEstaticcontextยังโหลดได้โดยไม่อ้างforecastสำหรับช่วงผิด SurfaceUnknownแสดงactualmissing/loading/error/stale แยกจากgeometry/Homemismatchจริง รักษา3ขั้น/4calculators
+
+**Architecture/พฤติกรรม:** planning-time-window.jsรวมduration24hและforecastdates5วันย้อนหลัง/7วันล่วงหน้า scheduleใช้ก่อนreadyพร้อมactualduration/action;GEEserverใช้helperแต่คง422errorcontractเดิม;exportตรวจdurationหลังderiveendจากsortietotal/declaredend กันย่อendช่องกรอก Genericmanualexportไม่บังคับforecastdatesใหม่ scheduleไม่clampendและยังคงautomaticanchorหลังanalysisเดิม
+
+**Static fallback:** geospatialmission()ประเมินunsupportedwindowแล้วส่งstartAt/endAtnullคู่กันพร้อมgeometry/Home/scene/routeเดิม Originalrawtimes+problemcodeอยู่contextkey/cacheidentityเพื่อกันlate/staleresponse Forecastถูกล้างเป็นnot_requestedพร้อมwarningและcontextpartial แสดงGFSnotrequestedอย่างชัดเจน Surfaceassessmentยังใช้samplesที่ตรวจครบตรงarea/Home/route/timestampsได้ แต่schedule/environment/exportไม่ถูกปลดล็อก
+
+**Surface reasons:** pureassessorแยกไม่มีrequestจากactualmismatchและรับunavailableReasonภายในcontroller helperกลางใช้ทั้งrender/getter สาเหตุerrorผ่านclassifiedallowlistเดิม Readcurrentก่อนเลือกรากเหตุเพื่อให้expiry/missionchangeinvalidateก่อน การไม่มีgeometry/Home/validtoleranceหรือsampleไม่ครบยังมีreasonsเดิม ไม่แทนunknownด้วย0และไม่คงreadyจากงานเก่า
+
+**Verificationใหม่:**73targeted/510fullsuitepassด้วยconcurrency4หลังdefaultparallelrunค้างและถูกinterrupt ไม่มีassertionลด Syntax/3buildsผ่าน LocalbrowserกับGEEจริงตรวจshortAOI52hstaticready/forecastnotrequested/blocked,normal3step+Sentinel2reviewบน18.0945km²ได้route998.11km/auto55h32m3sblockedและSurfaceReviewneededตามsamplesจริง;พื้นที่>100km²ทำ422SurfaceUnknownแสดงAREA_LIMITได้จริง ไม่ใช้ข้อความHomewrong Mobile390dialog358/page375pxไม่overflow หลักฐานoutput/release-check/time-surface-fix-2026-10-28/ รอเติมproductionidentity/resultsหลังdeploy
+
+**ขอบเขต:** ไม่มีการแบ่งภารกิจอัตโนมัติหรือบีบเวลาที่คำนวณจริง งานprofile/scheduleใหม่ที่ตัดไม่กลับมา ไม่มีDB/Auth/Pi/AI/UXimplementationอื่น ทีมสร้างtrialaccountsภายหลังเหมือนเดิม

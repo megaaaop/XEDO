@@ -1,6 +1,7 @@
 import {pointWithin} from './domain.js';
 import {assessPlanningTerrain} from './planning-terrain.js';
 import {requestPlanningContext,planningContextError,classifyPlanningContextError} from './planning-context-request.js';
+import {missionWindowProblem} from './planning-time-window.js';
 const TTL=600000;
 const DEM='COPERNICUS/DEM/GLO30_2024_1';
 const clone=value=>value==null?value:structuredClone(value);
@@ -53,10 +54,13 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     const source=clone(getMission()||{});
     // Demo may read static terrain and land cover. Synthetic scene/time inputs
     // must never trigger image-quality or forecast queries or replace weather.
-    const payload={geometry:source.geometry??null,home:pair(source.home)?source.home:null,sceneId:!source.example&&typeof source.sceneId==='string'&&source.sceneId?source.sceneId:null,startAt:source.example?null:instant(source.startAt),endAt:source.example?null:instant(source.endAt),...(source.routePoints===undefined?{}:{routePoints:clone(source.routePoints)})};
-    const contextKey=JSON.stringify({payload,acquiredAt:source.example?null:instant(source.acquiredAt)});
+    const windowProblem=source.example?null:missionWindowProblem(source.startAt,source.endAt,{now:now()});
+    const payload={geometry:source.geometry??null,home:pair(source.home)?source.home:null,sceneId:!source.example&&typeof source.sceneId==='string'&&source.sceneId?source.sceneId:null,startAt:source.example||windowProblem?null:instant(source.startAt),endAt:source.example||windowProblem?null:instant(source.endAt),...(source.routePoints===undefined?{}:{routePoints:clone(source.routePoints)})};
+    // Static context remains useful when forecast dates are unsupported. Retain
+    // the real dates in the identity so omitted forecasts never reuse stale work.
+    const contextKey=JSON.stringify({payload,acquiredAt:source.example?null:instant(source.acquiredAt),missionTimes:source.example?null:[source.startAt??null,source.endAt??null],windowProblem:windowProblem?.code??null});
     const blocked=localFile?'file':root.hidden?'hidden':globalThis.navigator?.onLine===false?'offline':!payload.geometry?'geometry':null;
-    return {source,payload,key:contextKey,blocked};
+    return {source,payload,key:contextKey,blocked,windowProblem};
   }
   function clearTimer(name){if(name==='debounce'&&debounce!==null){timers.clearTimeout(debounce);debounce=null;}if(name==='expiry'&&expiry!==null){timers.clearTimeout(expiry);expiry=null;}if(name==='deadline'&&deadline!==null){timers.clearTimeout(deadline);deadline=null;}if(name==='progress'&&progressTimer!==null){timers.clearTimeout(progressTimer);progressTimer=null;}}
   function cancel(){revision++;clearTimer('debounce');clearTimer('expiry');clearTimer('deadline');clearTimer('progress');pending?.controller.abort();pending=null;}
@@ -110,7 +114,12 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     if(quality.state==='ready'&&(!context.payload.sceneId||quality.sceneId!==context.payload.sceneId||!instant(quality.acquiredAt)||(instant(context.source.acquiredAt)&&instant(quality.acquiredAt)!==instant(context.source.acquiredAt))||![quality.coveragePct,quality.cloudPct,quality.clearPct].every(percent)))report.quality={...quality,state:'unavailable',warnings:[...warningList(quality.warnings),'Image-quality values do not match the reviewed image.']};
     const forecast=report.forecast||{},run=Date.parse(forecast.modelRunAt),valid=Date.parse(forecast.validAt),from=Date.parse(context.payload.startAt),to=Date.parse(context.payload.endAt);
     if(forecast.state==='ready'&&(forecast.scope!=='takeoff_reference_only'||forecast.referenceHeightM!==10||!Number.isFinite(run)||run>now()+300000||now()-run>86400000||!Number.isFinite(valid)||!Number.isFinite(from)||!Number.isFinite(to)||valid<from||valid>to||!finite(forecast.windEastMps)||!finite(forecast.windNorthMps)||!finite(forecast.windSpeedMps)||forecast.windSpeedMps<0||Math.abs(forecast.windSpeedMps-Math.hypot(forecast.windEastMps,forecast.windNorthMps))>1e-5||forecast.gustMps!==null&&forecast.gustMps!==undefined&&(!finite(forecast.gustMps)||forecast.gustMps<0)))report.forecast={...forecast,state:'unavailable'};
+    if(context.windowProblem)report.forecast={state:'not_requested',scope:'takeoff_reference_only',warnings:['GFS forecast not requested: '+context.windowProblem.message]};
     return report;
+  }
+  function terrainAssessment(report,context,toleranceM){
+    const missingReasons={waiting:'GEE terrain data has not been loaded for this inspection.',loading:'Loading GEE terrain data for the current inspection and Home.',stale:'GEE terrain data has expired. Refresh it for the current inspection.',error:'GEE terrain data could not be loaded. Refresh to try again.',offline:'GEE terrain data is unavailable while the browser is offline.',paused:'GEE terrain checks are paused.',skipped:'GEE terrain data needs the hosted planning-data service.',not_configured:'The GEE terrain connection is not configured.'};
+    return assessPlanningTerrain(report,{geometry:context.payload.geometry,home:context.payload.home,toleranceM,now:now(),unavailableReason:state.reason||missingReasons[state.status]||'GEE terrain data is unavailable for this inspection.'});
   }
   function textIfChanged(element,text){if(element.textContent!==text)element.textContent=text;}
   function htmlIfChanged(element,html){if(element.innerHTML!==html)element.innerHTML=html;}
@@ -132,13 +141,15 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
   }
   function render(){
     const report=response;
+    const context=mission();
     const labels={waiting:'Choose an inspection area',loading:'Checking GEE planning data…',ready:'GEE planning data ready',partial:'Some GEE data unavailable',unavailable:'GEE planning data unavailable',not_configured:'GEE connection not configured',error:'GEE planning data unavailable',stale:'GEE planning data expired',skipped:'GEE data needs the local API',paused:'GEE checks paused',offline:'Offline · GEE data unknown'};
     const label=labels[state.status]||'GEE data unknown';textIfChanged(badge,label);badge.dataset.state=state.status;textIfChanged(status,label);
-    failureDetails.hidden=!state.reason;textIfChanged(failureDetails,state.reason||'');renderProgress();
+    const reason=state.reason||(context.windowProblem?'GFS forecast not requested: '+context.windowProblem.message:null);
+    failureDetails.hidden=!reason;textIfChanged(failureDetails,reason||'');renderProgress();
     const terrain=report?.terrain,land=report?.landcover,quality=report?.quality,forecast=report?.forecast;
     sourceStatus.hidden=!report;
     if(report)htmlIfChanged(sourceStatus,Object.entries({terrain,landcover:land,quality,forecast}).map(([name,part])=>'<li data-state="'+escape(part?.state||'unavailable')+'"><strong>'+escape({terrain:'Terrain / Home',landcover:'Water / mangrove',quality:'Image quality',forecast:'GFS reference'}[name])+'</strong>: '+escape(part?.state==='ready'?'Ready':part?.state==='not_requested'?'Not requested':part?.failure?.message||'Unavailable for this area, image or time')+'</li>').join(''));
-    const context=mission(),assessment=assessPlanningTerrain(report,{geometry:context.payload.geometry,home:context.payload.home,toleranceM:context.source.terrainToleranceM??2,now:now()});
+    const assessment=terrainAssessment(report,context,context.source.terrainToleranceM??2);
     const rows=[['Surface elevation',terrain?.state==='ready'&&elevation(terrain.minElevationM)&&elevation(terrain.maxElevationM)?format(terrain.minElevationM)+' – '+format(terrain.maxElevationM,' m')+' · DSM estimate':'Unknown'],['Home elevation estimate',terrain?.state==='ready'&&elevation(terrain.homeElevationM)?format(terrain.homeElevationM,' m')+' · EGM2008':context.payload.home?'Unknown':'Choose a Home position'],['GEE model assessment',assessment.label+' · '+format(assessment.toleranceM,' m')+' tolerance (unverified)'],['Water / mangrove',land?.state==='ready'?format(land.waterPct,'%')+' / '+format(land.mangrovePct,'%')+' · 2021':'Unknown'],...(!context.source.example?[['Image quality',quality?.state==='ready'?format(quality.clearPct,'% clear')+' · '+format(quality.coveragePct,'% coverage'):context.payload.sceneId?'Unknown':'Choose a GEE image'],['GFS 10 m reference',forecast?.state==='ready'?format(forecast.windSpeedMps,' m/s')+' · Gust '+format(forecast.gustMps,' m/s'):'Unknown']]:[])];
     htmlIfChanged(summary,'<dl>'+rows.map(([name,value])=>'<dt>'+escape(name)+'</dt><dd>'+escape(value)+'</dd>').join('')+'</dl>');
     const homeReady=terrain?.state==='ready'&&elevation(terrain.homeElevationM)&&same(report.request.home,context.payload.home)&&pair(context.payload.home)&&Date.parse(state.expiresAt)>now();
@@ -152,6 +163,7 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
       if(forecast?.state==='ready')lines.push('GFS model run: '+displayTime(forecast.modelRunAt)+' · Forecast valid: '+displayTime(forecast.validAt),'GFS reference is at 10 m on a '+format(forecast.resolutionM/1000,' km')+' grid for one takeoff reference time. It does not replace 50 m flight wind or whole-flight weather coverage.');
       lines.push(...warningList(report.warnings));for(const [name,part]of Object.entries({terrain,landcover:land,quality,forecast}))lines.push(...warningList(part?.warnings).map(text=>name+': '+text));
     }else if(state.reason)lines.push(state.reason);
+    if(context.windowProblem)lines.push('GFS forecast not requested: '+context.windowProblem.message);
     if(state.errorCode)lines.push('Failure category: '+state.errorCode+(state.httpStatus?' · HTTP '+state.httpStatus:'')+(state.requestId?' · Request '+state.requestId:''));
     htmlIfChanged(detailsBody,'<ul>'+[...new Set(lines)].map(text=>'<li>'+escape(text)+'</li>').join('')+'</ul><p>Sources: <a href="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_DEM_GLO30_2024_1" target="_blank" rel="noopener noreferrer">Copernicus DEM</a> · <a href="https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200" target="_blank" rel="noopener noreferrer">ESA WorldCover</a> · <a href="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_CLOUD_PROBABILITY" target="_blank" rel="noopener noreferrer">Sentinel-2 quality</a> · <a href="https://developers.google.com/earth-engine/datasets/catalog/NOAA_GFS0P25" target="_blank" rel="noopener noreferrer">NOAA GFS</a></p>');
   }
@@ -164,7 +176,7 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     // parts visible, but never call a partially masked/missing context ready.
     const terrain=report.terrain,samples=terrain?.samples||[];
     const missingTerrain=terrain?.state==='ready'&&(samples.some(sample=>!elevation(sample.elevationM))||context.payload.home&&!elevation(terrain.homeElevationM)||(context.payload.routePoints||[]).some(point=>!samples.some(sample=>samePoint(point,[sample.longitude,sample.latitude]))));
-    const incomplete=report.state==='partial'||missingTerrain||report.landcover?.state==='ready'&&report.landcover.coveragePct<99||report.quality?.state==='ready'&&report.quality.coveragePct<99;
+    const incomplete=!!context.windowProblem||report.state==='partial'||missingTerrain||report.landcover?.state==='ready'&&report.landcover.coveragePct<99||report.quality?.state==='ready'&&report.quality.coveragePct<99;
     const next=report.state==='not_configured'?'not_configured':ready.length&&ready.every(Boolean)&&!incomplete?'ready':ready.some(Boolean)?'partial':report.state==='error'?'error':'unavailable';
     clearTimer('progress');if(requestProgress)requestProgress.elapsedMs=now()-requestStartedAt;
     state={status:next,reason:null,fetchedAt:report.fetchedAt,expiresAt:report.expiresAt};armExpiry();render();notify('context');
@@ -198,7 +210,7 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     })();pending={key:context.key,controller,promise:task};return task;
   }
   function getContext(){const data=current();if(data?.terrain?.state!=='ready')return null;return {state:'connected',provider:'Google Earth Engine',samples:clone(data.terrain.samples),datasets:[{id:data.terrain.datasetId,label:'Copernicus surface elevation estimate',resolutionM:data.terrain.resolutionM,verticalDatum:data.terrain.verticalDatum}],sampledAt:data.fetchedAt,expiresAt:data.expiresAt,geometry:clone(data.request.geometry),warnings:warningList(data.terrain.warnings)};}
-  function getTerrainAssessment({toleranceM=2}={}){const data=current(),context=mission();return assessPlanningTerrain(data,{geometry:context.payload.geometry,home:context.payload.home,toleranceM,now:now()});}
+  function getTerrainAssessment({toleranceM=2}={}){const data=current(),context=mission();return terrainAssessment(data,context,toleranceM);}
   function useModelHomeEstimate(){
     const data=current(),home=mission().payload.home,t=data?.terrain;reconcileHome();
     if(t?.state!=='ready'||!elevation(t.homeElevationM)||!pair(home)||!same(home,data.request.home))return false;

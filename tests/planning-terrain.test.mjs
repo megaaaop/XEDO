@@ -33,3 +33,10 @@ test('Invalid or unbound references, timestamps and Home cannot pass the model a
  for(const value of [null,0,-1,Infinity,'2'])assert.equal(assess(fixture(),{toleranceM:value}).state,'unknown');
  assert.equal(assess(null).state,'unknown');assert.equal(assess(fixture(),{home:null}).state,'unknown');assert.equal(assess(fixture(),{geometry:{type:'Polygon',coordinates:[]}}).state,'unknown');
 });
+test('Missing terrain and real Home or geometry mismatches have different reasons',()=>{
+  const missing=assess(null);assert.equal(missing.state,'unknown');assert.match(missing.reasons[0],/not been loaded/);assert.doesNotMatch(missing.reasons[0],/does not match/);
+  assert.match(assess(null,{unavailableReason:'The mission request was rejected because the window exceeds24hours.'}).reasons[0],/exceeds24hours/);
+  const data=fixture();data.request.home=[101.18,12.59];assert.match(assess(data).reasons[0],/does not match/);
+  const moved=fixture();moved.request.geometry.coordinates[0][1][0]+=.001;assert.match(assess(moved).reasons[0],/does not match/);
+  assert.match(assess(null,{home:null,unavailableReason:'Request failed.'}).reasons[0],/Select an inspection area and Home/);
+});
