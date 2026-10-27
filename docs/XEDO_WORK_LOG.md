@@ -810,4 +810,6 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 
 **หลักฐาน/ขอบเขต:** output/release-check/inspector-account-release-2026-10-28/ เก็บtests/syntax/buildlogs DB15checksเป็นรอบmigrationก่อนหน้าไม่รันซ้ำ ไม่มีการสร้างAuthusers/rosterหรือแก้Authsettings ยังไม่ทดสอบsuccessfulpasswordlogin/realA-BSavehistory รอทีมสร้างบัญชี ผลเผยแพร่และproductionchecksเติมในentryนี้หลังตรวจจริง
 
+**ปัญหาที่พบระหว่างproductioncheckและแก้ก่อนปิดงาน:** code618fe123f3a47f8177b123e743fd2b3c31d7a7a9 pushmain/branchแล้ว Verceldpl_7J7WL7KTkCrnrCJx7TPJ4FB8PmY4READY/CI40565384813success แต่publicInspectorrewriteตอบ404 ขณะที่direct/api/inspector?route=sessionได้200 พิสูจน์function/schemaเริ่มได้ แก้selectorให้รับwildcardcapturepathที่ตรงrouteเท่านั้นและrejectduplicate/conflictingroute/path/offset/revision/unknownkeys เพิ่มregressiontest Fresh501testsผ่านและsyntaxผ่านหลังแก้ เก็บผลแรกproduction-api.initial-404.json ไม่ลบทิ้ง รอdeployfixแล้วตรวจpublicroute/UIซ้ำจึงจะนับผ่าน
+
 **รอคำตอบ:** ไม่มี ผู้ใช้อนุมัติreleaseแล้ว บัญชีให้ทีมสร้างภายหลังตามเดิม

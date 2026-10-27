@@ -27,6 +27,14 @@ test('Only safe provider errors are returned; unapproved accounts receive no coo
   let calls=0;const response=await inspectorFetch(req('login',{body:{email:user.email,password:'test-only'}}),{fetchImpl:async url=>{calls++;if(url.includes('/token?'))return ok({user,access_token:'a.b.c',expires_in:3600});if(url.includes('/logout?'))return new Response(null,{status:204});return Response.json({message:'private allowlist detail'},{status:403});}});
   assert.equal(response.status,403);assert.equal(response.headers.get('set-cookie'),null);assert.equal(calls,3);
 });
+test('Vercel rewrite captures must match the selected endpoint and cannot override it',async()=>{
+  let calls=0;const options={fetchImpl:async()=>{calls++;throw Error('No provider call expected');}};
+  for(const path of ['/api/inspector?route=session&path=session','/api/v1/inspector/session?route=session&path=session']){
+    const response=await inspectorFetch(new Request(origin+path),options);assert.equal(response.status,200);assert.deepEqual(await response.json(),{user:null});
+  }
+  for(const path of ['/api/inspector?route=session&route=logout','/api/inspector?route=session&path=logout','/api/inspector?route=session&path=session&path=session','/api/v1/inspector/session?route=logout','/api/v1/inspector/session?path=logout','/api/inspector?route=session&unknown=session','/api/inspector?route=session&offset=0&offset=1','/api/inspector?route=session&revision=1&revision=2'])assert.equal((await inspectorFetch(new Request(origin+path),options)).status,404);
+  assert.equal(calls,0);
+});
 test('Private save validates the full schema, blocks confirmation and never supplies client ownership to RPC',async()=>{
   let saves=0;const fetchImpl=async(url,options)=>{if(url.endsWith('/user'))return ok(user);const body=JSON.parse(options.body);assert.equal(body.p_action,'save');assert.equal(body.p_payload.document.title,draft.document.title);saves++;return ok({missionId:user.id,revision:1});};
   assert.equal((await inspectorFetch(req('missions',{body:draft,headers:{cookie}}),{fetchImpl})).status,200);

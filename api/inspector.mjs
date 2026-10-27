@@ -7,6 +7,17 @@ const fail=(status,code,message)=>Object.assign(Error(message),{status,code});
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const messages={401:'Sign in again to access your missions.',403:'Your Inspector account has not been enabled by the team.',404:'Mission not found.',409:'This mission changed, or the save request was reused. Open the latest version or save a new copy.',422:'Check the mission data before saving.',429:'Too many requests. Try again shortly.'};
 
+function selectedRoute(url){
+  const prefix='/api/v1/inspector/',routes=url.searchParams.getAll('route'),captures=url.searchParams.getAll('path');
+  if([...url.searchParams.keys()].some(k=>!['route','path','offset','revision'].includes(k)||url.searchParams.getAll(k).length>1))return null;
+  const publicRoute=url.pathname.startsWith(prefix)?url.pathname.slice(prefix.length):null;
+  const route=url.pathname==='/api/inspector'?routes[0]||'session':publicRoute;
+  // Vercel carries the :path* rewrite capture into the function query. It is
+  // accepted only when it identifies the same endpoint as the request path.
+  if(!route||!/^\w+(?:\/[A-Za-z0-9-]+)*$/.test(route)||(publicRoute!==null&&routes.length&&routes[0]!==publicRoute)||(captures.length&&captures[0]!==route))return null;
+  return route;
+}
+
 function cookieSettings(url){
   const local=url.protocol==='http:'&&['127.0.0.1','localhost','[::1]'].includes(url.hostname);
   if(url.protocol!=='https:'&&!local)throw fail(400,'HTTPS_REQUIRED','Use HTTPS to sign in.');
@@ -40,8 +51,8 @@ export async function inspectorFetch(request,{env=process.env,fetchImpl=fetch}={
     if(![null,'none','same-origin'].includes(request.headers.get('sec-fetch-site')))throw fail(403,'ORIGIN_DENIED','Use your XEDO website.');
     const origin=request.headers.get('origin');
     if((origin&&origin!==url.origin)||(!['GET','HEAD'].includes(request.method)&&origin!==url.origin))throw fail(403,'ORIGIN_DENIED','Use your XEDO website.');
-    const route=url.pathname==='/api/inspector'?url.searchParams.get('route')||'session':url.pathname.startsWith('/api/v1/inspector/')?url.pathname.slice(18):null;
-    if(!route||!/^\w+(?:\/[A-Za-z0-9-]+)*$/.test(route)||[...url.searchParams.keys()].some(k=>!['route','offset','revision'].includes(k)))throw fail(404,'NOT_FOUND','Endpoint not found.');
+    const route=selectedRoute(url);
+    if(!route)throw fail(404,'NOT_FOUND','Endpoint not found.');
     const base=env.SUPABASE_URL||INSPECTOR_PROJECT_URL,key=env.SUPABASE_PUBLISHABLE_KEY||INSPECTOR_PUBLISHABLE_KEY;
     if(base!==INSPECTOR_PROJECT_URL||!/^sb_publishable_[A-Za-z0-9_-]+$/.test(key))throw fail(503,'AUTH_UNCONFIGURED','Inspector sign-in is not configured for the XEDO project.');
     const upstream=async(path,{body,access}={})=>{
