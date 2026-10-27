@@ -704,15 +704,15 @@
     }
   ],
   "latestPublishedRelease": {
-    "commit": "afac1c7f256075eb2202fdcae16102a0e34a43ca",
-    "productionDeploymentId": "dpl_635dXNArvjRDicq8WgZVmHgZZ9r8",
+    "commit": "d5ec33fbb186145440acffed718972c9b8fc8063",
+    "productionDeploymentId": "dpl_8tjaooDbxEodG8kmHiE5yJfNLwac",
     "url": "https://xedo-eight.vercel.app",
     "sourceBranch": "main",
-    "ciRunId": 40565947316,
+    "ciRunId": 40574633798,
     "ciConclusion": "success",
     "publishedOn": "2026-10-28",
     "timezone": "Asia/Bangkok",
-    "scopeId": "inspector-account-release-2026-10-28",
+    "scopeId": "time-surface-fix-2026-10-28",
     "verificationRecord": "Follow-up documentation commit may advance deployment identity without changing application code; final identity recorded in local release-receipt.json"
   },
   "removedFromCurrentCloseout": [
@@ -941,7 +941,7 @@
     {
       "id": "gee_automatic_mission_window_over_24_hours",
       "reportedOn": "2026-10-28",
-      "status": "implemented_local_verified_release_pending",
+      "status": "fixed_production_verified",
       "implementationApprovedForThisIssue": true,
       "userConfirmedAutomaticTiming": true,
       "reportedStart": "10/27/2026 08:24:05.270 PM",
@@ -958,7 +958,7 @@
         "src/gee-mission-context.js:240",
         "src/planning-context-request.js:50"
       ],
-      "verification": "Read screenshot/source; computed exact duration and pure fixed-clock validator422; synthetic generated-flight schedule reproduced same long window with readiness=ready. No actual user route/sortie replay, full application tests/builds/browser/live API/GEE/DB run.",
+      "verification": "Fresh73 targeted/510 full tests and3builds; local and production normal auto55h blocked without truncation, static GEE usable, actual422 root reason visible, mobile390 no overflow; production API3cases and account session regression passed.",
       "stillUnknown": "Actual route estimate, flight duration and sortie count that produced52h; no proof that duration arithmetic itself is incorrect or that timezone caused it.",
       "repairPlan": [
         "Shared duration/date-window checks before request and readiness",
@@ -967,16 +967,20 @@
         "Never clamp the end time without changing the real mission plan",
         "Consider static-context and forecast separation during design"
       ],
-      "scopeBoundary": "Diagnosis only. Does not reopen removed normal-flow aircraft/default/profile or user-start-derived-end rewrite. No source edits or push/deploy in this turn.",
+      "scopeBoundary": "User authorized repair/test/push/deploy on2026-10-28. Published this scoped repair; no normal-profile/user-start-derived-end rewrite, automatic partitioning, DB/Auth changes or account creation.",
       "pendingUserAnswers": [],
       "record": "docs/WEBSITE_DETAILS.md#324-gee-mission-window-rejection-จากเวลาอัตโนมัติเกิน24ชั่วโมง",
       "approvedOn": "2026-10-28",
-      "repairRecord": "docs/WEBSITE_DETAILS.md#326-shared-mission-window-limits-และ-surface-state-repair--28-ตุลาคม-2026"
+      "repairRecord": "docs/WEBSITE_DETAILS.md#326-shared-mission-window-limits-และ-surface-state-repair--28-ตุลาคม-2026",
+      "diagnosisVerification": "Read screenshot/source; computed exact duration and pure fixed-clock validator422; synthetic generated-flight schedule reproduced same long window with readiness=ready. No actual user route/sortie replay, full application tests/builds/browser/live API/GEE/DB run.",
+      "publishedOn": "2026-10-28",
+      "applicationCommit": "d5ec33fbb186145440acffed718972c9b8fc8063",
+      "productionDeploymentId": "dpl_8tjaooDbxEodG8kmHiE5yJfNLwac"
     },
     {
       "id": "surface_missing_report_shows_area_home_mismatch",
       "reportedOn": "2026-10-28",
-      "status": "implemented_local_verified_release_pending",
+      "status": "fixed_production_verified",
       "implementationApprovedForThisIssue": true,
       "relatedIssueId": "gee_automatic_mission_window_over_24_hours",
       "observedMessage": "GEE terrain does not match the current inspection area and Home.",
@@ -989,23 +993,27 @@
         "src/planning-terrain.js:21",
         "src/planning-trial-client.js:155"
       ],
-      "verification": "Fresh pure Node probe: null report and a genuinely different Home both return Unknown and identical screenshot reason. Read-only independent review confirms422→invalidate→null→mismatch-text chain. No browser/live mission replay, full suite/build/service calls.",
+      "verification": "Fresh73 targeted/510 full tests and3builds; local and production normal auto55h blocked without truncation, static GEE usable, actual422 root reason visible, mobile390 no overflow; production API3cases and account session regression passed.",
       "repairPlan": [
         "Separate missing/loading/error/expired report from actual geometry/Home mismatch",
         "Propagate root request failure reason to Surface readiness",
         "Keep Unknown and export locked until current matching usable samples exist",
         "Test422/null-report reason and actual mismatch separately"
       ],
-      "scopeBoundary": "Diagnosis only; no source changes or push/deploy authorized by this symptom question.",
+      "scopeBoundary": "User authorized repair/test/push/deploy on2026-10-28. Published this scoped repair; no normal-profile/user-start-derived-end rewrite, automatic partitioning, DB/Auth changes or account creation.",
       "pendingUserAnswers": [],
       "record": "docs/WEBSITE_DETAILS.md#325-surface-unknown-ไม่มี-report-ถูกแสดงเป็น-areahome-mismatch",
       "approvedOn": "2026-10-28",
-      "repairRecord": "docs/WEBSITE_DETAILS.md#326-shared-mission-window-limits-และ-surface-state-repair--28-ตุลาคม-2026"
+      "repairRecord": "docs/WEBSITE_DETAILS.md#326-shared-mission-window-limits-และ-surface-state-repair--28-ตุลาคม-2026",
+      "diagnosisVerification": "Fresh pure Node probe: null report and a genuinely different Home both return Unknown and identical screenshot reason. Read-only independent review confirms422→invalidate→null→mismatch-text chain. No browser/live mission replay, full suite/build/service calls.",
+      "publishedOn": "2026-10-28",
+      "applicationCommit": "d5ec33fbb186145440acffed718972c9b8fc8063",
+      "productionDeploymentId": "dpl_8tjaooDbxEodG8kmHiE5yJfNLwac"
     }
   ],
   "timeSurfaceRepairExecution": {
     "id": "time-surface-fix-2026-10-28",
-    "status": "implemented_local_verified_release_pending",
+    "status": "production_published_verified",
     "authorizedOn": "2026-10-28",
     "pushDeployAuthorized": true,
     "scope": "Shared24h schedule/GEE/export checks, static GEE fallback and truthful missing/error terrain reasons; preserve actual times and existing3steps4calculators",
@@ -1035,6 +1043,22 @@
         "dialogWidth": 358,
         "pageWidth": 375,
         "horizontalOverflow": false
+      },
+      "productionApiCasesPassed": 3,
+      "productionCurrentWindowForecastReady": true,
+      "productionStaticContextReady": true,
+      "productionAutomaticLongMissionBlocked": true,
+      "productionActual422SurfaceReasonPassed": true,
+      "productionRecoveryAfterAreaLimit": true,
+      "productionHtmlMatchesBuild": true,
+      "accountSessionRegression200": true,
+      "browserErrorsLatest": 0,
+      "runtimeErrorFatalEntriesInScanned15MinuteWindow": 0,
+      "productionMobile390": {
+        "dialogWidth": 358,
+        "pageWidth": 375,
+        "pageScrollWidth": 375,
+        "horizontalOverflow": false
       }
     },
     "testExecutionNote": "Initial unrestricted parallel full suite stalled without reporting failures and was interrupted; all test files passed with --test-concurrency=4. No tests/assertions removed.",
@@ -1053,7 +1077,18 @@
       "No physical flight/SITL/QGC acceptance"
     ],
     "evidenceDirectory": "output/release-check/time-surface-fix-2026-10-28",
-    "productionVerified": false,
-    "commitPushDeploy": false
+    "productionVerified": true,
+    "commitPushDeploy": true,
+    "publishedOn": "2026-10-28",
+    "timezone": "Asia/Bangkok",
+    "applicationCommit": "d5ec33fbb186145440acffed718972c9b8fc8063",
+    "productionDeploymentId": "dpl_8tjaooDbxEodG8kmHiE5yJfNLwac",
+    "ciRunId": 40574633798,
+    "ciConclusion": "success",
+    "target": "production",
+    "state": "READY",
+    "url": "https://xedo-eight.vercel.app",
+    "productionHtmlSha256": "97ba76c8c7c94015c7932badfc8f7af3f9c270279fdebda53467a336114088dd",
+    "documentationFollowup": "Follow-up documentation commit may advance deployment identity without changing application code; final identity recorded in local release-receipt.json"
   }
 }

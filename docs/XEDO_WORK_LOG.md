@@ -5,13 +5,13 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **28 ตุลาคม 2026 — แก้เวลาเกิน24ชม./Surface reasonsในเครื่องแล้ว510testsผ่าน ตรวจbrowserกับGEEจริงทั้งauto55ชม./staticcontext/422reason/mobile390 กำลังpush/deployตามอนุมัติ**
+- อัปเดตล่าสุด: **28 ตุลาคม 2026 — แก้ time-window และ Surface reasons เผยแพร่แล้ว; 510 tests ผ่าน, 3 builds ผ่าน, ตรวจ Production API/GEE/normal flow/mobile และข้อความ 422 จริงแล้ว**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
 - จุดประสงค์รอบนี้: แก้สองruntimeissuesเรื่องเวลาอัตโนมัติเกิน24ชั่วโมงและSurfaceUnknownreason ทดสอบ บันทึกสองMarkdownและpush/deployตามคำสั่งล่าสุด ไม่สร้างบัญชีหรือเปลี่ยนDB
-- สถานะปัจจุบัน: applicationบัญชี+rewritefix `afac1c7f256075eb2202fdcae16102a0e34a43ca` pushmain/branchและVercel `dpl_635dXNArvjRDicq8WgZVmHgZZ9r8` READY aliasเว็บหลักตรงรุ่นนี้ CI `40565947316` success พร้อม501tests/3builds;เอกสารfollow-upอาจทำให้deploymentSHAใหม่โดยapplicationไม่เปลี่ยน exactfinalreceiptอยู่output/release-check/inspector-account-release-2026-10-28/
+- สถานะปัจจุบัน: ชุดแก้เวลา/Surface code `d5ec33fbb186145440acffed718972c9b8fc8063` push main/branch แล้ว Vercel `dpl_8tjaooDbxEodG8kmHiE5yJfNLwac` READY และ alias เว็บหลักตรง code นี้ CI [40574633798](https://github.com/megaaaop/XEDO/actions/runs/40574633798) success; เอกสาร follow-up อาจทำให้ deployment SHA ใหม่โดย application ไม่เปลี่ยน exact final receipt อยู่ `output/release-check/time-surface-fix-2026-10-28/`
 - **ขอบเขตคำสั่งล่าสุด:** ผู้ใช้อนุมัติแก้time-window/Surface-messageทั้งสอง ทดสอบและpush/deployโดยตรงแล้ว คง3ขั้น/4calculators ไม่clampเวลาจริง ไม่เปิดUX/AIeditorหรือnormal-profile/user-start-derived-endrewriteที่อยู่นอกscope ไม่สร้างบัญชีหรือapplyDBซ้ำ
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
@@ -24,7 +24,7 @@
 
 **Inspector เผยแพร่แล้วและตรวจ Login บนเว็บจริงแล้ว:** code`afac1c7`/VercelREADY/CI40565947316success รันใหม่501testsผ่าน ตรวจpublicAPIจริง7กรณีและLogin1280/390pxผ่าน รวมgenericinvalid-login/passwordmask/required/close/Escape ไม่มีแนวนอนล้น แก้Vercelrewritecapture404ที่พบจากproductionก่อนปิดงาน ฐานข้อมูลxedoใช้migration20261027184951และตรวจ15checksในรอบก่อนหน้าแล้ว ยังไม่มีบัญชีผู้ทดลองและยังไม่ทดสอบsuccessfulpasswordlogin/realA-BSavehistory ทีมสร้างAuthusers+rosterภายหลัง ไม่อ้างว่างานบัญชีผ่านreal-accountacceptanceครบแล้ว ไม่มีคำถามผู้ใช้ค้าง
 
-**Known issue ที่วินิจฉัยเพิ่มหลังrelease:** ผู้ใช้ส่งภาพGEEINPUT/TIME_WINDOWและยืนยันว่าเว็บคำนวณเวลาอัตโนมัติ 27ต.ค.20:24:05.270→30ต.ค.01:15:37.015 รวม52ชม.51นาที31.745วินาที เกิน24ชม.ของvalidator จึงถูก422ก่อนเรียกGEE ตัวscheduleยังแสดงreadyได้โดยไม่ตรวจเพดานเดียวกัน เป็นvalidation-consistencygapที่ยืนยันด้วยlocalprobe ไม่ทราบส่วนประกอบflightduration/sortieจริงของภารกิจนี้ ยังไม่แก้sourceหรือdeployรอบวินิจฉัย ไม่รื้อscopeprofile/scheduleใหม่ที่ผู้ใช้ตัดไว้
+**สอง runtime issues หลัง account release แก้และเผยแพร่แล้ว:** shared checks ตรวจเพดาน 24 ชั่วโมงทั้ง schedule/GEE/export; แผนเกินยังเก็บเวลาจริงพร้อม Blocked และให้ลดพื้นที่/แบ่งงาน GEE static terrain/landcover/quality โหลดต่อได้โดยเว้น forecast พร้อมเหตุผล Surface model แยก missing/loading/error/stale ออกจากพื้นที่/Home ไม่ตรงจริง ทดสอบใหม่ 510 ผ่านและตรวจเว็บจริงแล้ว รายละเอียดรอบแก้อยู่ท้ายไฟล์และ WEBSITE_DETAILS §3.26 ไม่ได้เพิ่ม automatic mission partitioning หรืออ้างว่าระยะทางจริงของผู้ใช้ผิด
 
 **กติกางานคู่ขนานล่าสุด:** แชทนี้แก้websiteเพียงแชทเดียว อีกแชทส่งpreparedSARใน`outputs/XEDO_Parallel_Handoff_2026-10-27/support/`แล้ว รายงาน32data checksผ่าน/14candidates;แชทหลักตรวจSHA256ของcore12ไฟล์ตรงแล้ว แต่ยังไม่รันconversionหรือwebsiteintegrationซ้ำ ต่อไปให้supportเตรียมrisk-editfixtures/testaddendumโดยไม่แก้corepackageหรือเว็บ
 
@@ -869,7 +869,7 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 
 **หัวข้อ:** ผู้ใช้อนุมัติแก้ทั้งสองปัญหา ทดสอบ อัปเดตสองMarkdown และpush/deploy
 
-**สรุป:** implementationในเครื่องเสร็จ Shared24hwindowchecksทำให้automatic/manual/restoredlongplanblockedและdirectexportไม่ผ่านเวลารวมจริง แต่คงเวลาเดิมไม่clamp GEEยังโหลดterrain/landcover/qualityได้โดยส่งforecasttimesnullเมื่อไม่รองรับ แสดงforecastomissionพร้อมpartial Surfaceไม่มีreportแสดงmissing/loading/error/staleตามจริง ไม่เหมารวมHome mismatch Fresh73targetedและ510fullsuiteผ่าน syntax/3buildsผ่าน ตรวจlocalbrowser+GEEจริงแล้ว กำลังเผยแพร่และรอตรวจproduction
+**สรุป:** แก้ ทดสอบ push และ production deploy แล้ว code `d5ec33fbb186145440acffed718972c9b8fc8063` / Vercel `dpl_8tjaooDbxEodG8kmHiE5yJfNLwac` READY / CI 40574633798 success Shared 24h checks ทำให้ automatic/manual/restored long plan เป็น Blocked และ direct export ตรวจเวลารวมจริง คง end เดิม GEE static context ใช้ได้แยกจาก forecast Surface แสดงสาเหตุจริง Fresh 73 targeted/510 full suite, syntax/3 builds และ Production browser/API/GEE ผ่าน
 
 **รายละเอียดการแก้:** เพิ่มsrc/planning-time-window.jsร่วมกับschedule/GEEvalidator/export ภารกิจเกิน24hบอกactualdurationและแนะนำลดพื้นที่/แบ่งงาน scheduleเก็บfullend;exportตรวจหลังรวมsorties+declaredendป้องกันย่อช่องendเพื่อผ่าน Genericmanualexportคงfuture-datebehaviorเดิมด้วยcheckForecastDates:false ส่วนGEE/scheduleใช้forecastdates5วันย้อนหลัง/7วันล่วงหน้าเหมือนserverเดิม
 
@@ -881,6 +881,10 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 
 **Review/ข้อจำกัด:** subagentsreadonly2ชุดไม่พบmaterialblocker ไม่พบunit/double-countingbugในflightduration เวลายาวเกิดจากroute/transitได้ ตัวอย่างทดสอบไม่ใช่พื้นที่ของผู้ใช้จริง ไม่มีautomaticpartitionหลายภารกิจเพิ่ม แผนยาวต้องลดพื้นที่หรือแบ่งงานเอง Forecast/staticแยกเฉพาะcontextrequestไม่ปลดenvironment/exportgates ไม่มีhardware/SITL/QGCใหม่ ไม่มีAuthaccounts/DB/configchangesหรือAI/UXfeatureเพิ่ม
 
-**ไฟล์:** src/planning-time-window.js,planning-schedule.js,gee-mission-context.js,trial-export.js,planning-terrain.js,planning-geospatial-ui.js,planning-help-content.js;tests/planning-time-window.test.mjsและ4testfilesเดิม พร้อมcanonicalMarkdown/queue ผลproduction/identityเติมหลังdeploy ไม่ใช้501testsของบัญชีเป็นผลรอบนี้
+**ไฟล์:** src/planning-time-window.js, planning-schedule.js, gee-mission-context.js, trial-export.js, planning-terrain.js, planning-geospatial-ui.js, planning-help-content.js; tests/planning-time-window.test.mjs และ 4 test files เดิม พร้อม canonical Markdown/queue ไม่ใช้ 501 tests ของบัญชีเป็นผลรอบนี้
 
 **รอคำตอบ:** ไม่มี อนุมัติimplementation/push/deployครบแล้ว บัญชีผู้ทดลองยังให้ทีมสร้างภายหลังตามเดิม
+
+**Production verification หลังเผยแพร่:** HTML เว็บหลักตรง built dist แบบ byte-for-byte SHA256 `97ba76c8c7c94015c7932badfc8f7af3f9c270279fdebda53467a336114088dd` API จริงรับช่วงปัจจุบัน 1 ชั่วโมงได้ 200 พร้อม terrain/landcover/forecast ready; raw ช่วง 52h ของผู้ใช้ยังถูก 422 ตาม contract; static-only null times ได้ 200 terrain/landcover ready และ forecast not_requested; session บัญชี regression ได้ 200 user:null ไม่สร้างบัญชี Browser ผ่าน normal 3-step/Sentinel-2 visible acquisition → route 998.11km/auto55h32m3s → Takeoff Blocked/download locked และ Surface Review needed จาก samples จริง ไม่ใช่ missing/mismatch ป้อนพื้นที่เกิน100km²เพื่อทดสอบ 422 จริง Surface Unknown แสดง AREA_LIMIT reason แล้วคืนพื้นที่/โหลดภาพกลับได้ Mobile390 dialog358/page375/scroll375px ไม่มีแนวนอนล้น คืน viewport แล้ว Browser error logs ล่าสุด [] และ Vercel error/fatal scan เฉพาะ deployment นี้ช่วง15นาทีไม่พบรายการ ไม่อ้างว่าครอบคลุมทุกเวลา/ทุกพื้นที่
+
+**หลักฐาน/การเผยแพร่:** ภาพ production-readiness-desktop.png, production-mobile-390.png, production-static-context.png และ production-surface-error-reason.png พร้อม production-api.json อยู่ output/release-check/time-surface-fix-2026-10-28/ ชุดโค้ด push ไป origin/main และ origin/codex/xedo-hardware-profile แล้ว docs follow-up ไม่เปลี่ยน application bundle; final commit/deployment/CI เก็บใน release-receipt.json เพื่อเลี่ยง self-referential docs commits ไม่มี real-account login/hardware acceptance เพิ่ม

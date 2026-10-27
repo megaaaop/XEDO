@@ -9,7 +9,7 @@
 
 ## 2. สรุป
 
-สถานะล่าสุด28ต.ค.เผยแพร่Inspectorบัญชี/Save/historyแล้ว codeafac1c7/VercelREADY/CI40565947316success ตรวจ501tests/3builds/productionAPI7กรณีและLogindesktop/mobileผ่าน DBmigration20261027184951ใช้และตรวจสิทธิ์แล้วในรอบก่อนหน้า ยังไม่มีบัญชีผู้ทดลอง/real-password-success/A-BSavehistoryacceptance ทีมสร้างภายหลัง UXcleanup/preparedAIriskeditorยังอยู่ในคิวแยก คง3steps/4calculatorsและ3D/GEEเดิม ไม่รื้อnormalprofile/scheduleใหม่ Pi/รายงานพัก ดูarchitecture3.19 DB3.21 release3.22 ส่วน3.19–3.20มีสถานะประวัติก่อนใช้DB/เผยแพร่
+สถานะล่าสุด 28 ต.ค. ชุดซ่อมเวลา/Surface เผยแพร่แล้ว code d5ec33f / Vercel READY / CI 40574633798 success ตรวจใหม่510tests/3builds/productionAPI3กรณี+accountsessionregressionและbrowsernormalflow/mobile/actual422reasonผ่าน ดู §3.26 บัญชี Inspector ที่เผยแพร่ก่อนหน้านี้ยังรอทีมสร้าง Authusers+roster และ real-account acceptance UX/preparedAIriskeditorอยู่คิวแยก คง3steps/4calculators ไม่เพิ่ม automatic partitioning หรือรื้อ normal profile/schedule ใหม่ ไม่มี DB/Auth changes รอบนี้
 
 กติกาเพิ่มสำหรับงานคู่ขนาน: แชทหลักนี้แก้เว็บไซต์เพียงแชทเดียว แชทสนับสนุนเตรียมข้อมูลAI/หลักฐานตรวจ/คำแนะนำ/กรณีทดสอบในโฟลเดอร์แยก แล้วส่งให้แชทหลักตรวจรับและเชื่อม รายละเอียดownershipและhandoffอยู่ข้อ3.14 ไม่ให้การทำคู่ขนานกลายเป็นหลายแชทแก้source/configของเว็บพร้อมกัน
 
@@ -377,7 +377,7 @@ Save เป็น draft-only ใช้ session advisory lock→mutation lock→r
 
 **หัวข้อ:** ผู้ใช้อนุมัติimplementation/test/push/deployของสองissuesใน3.24–3.25
 
-**สรุป:** แก้ในเครื่องแล้ว รอproductionverification คงเวลาจริงของแผนที่เกิน24hและblockreadiness/export GEEstaticcontextยังโหลดได้โดยไม่อ้างforecastสำหรับช่วงผิด SurfaceUnknownแสดงactualmissing/loading/error/stale แยกจากgeometry/Homemismatchจริง รักษา3ขั้น/4calculators
+**สรุป:** แก้และเผยแพร่แล้ว code `d5ec33fbb186145440acffed718972c9b8fc8063` / deployment `dpl_8tjaooDbxEodG8kmHiE5yJfNLwac` READY / CI 40574633798 success แผนเกิน24hคงเวลาจริงและ block readiness/export GEE static context ยังโหลดได้โดยเว้น forecast สำหรับช่วงผิด SurfaceUnknownแสดง missing/loading/error/stale ตามจริงแยกจาก geometry/Home mismatch รักษา3ขั้น/4calculators
 
 **Architecture/พฤติกรรม:** planning-time-window.jsรวมduration24hและforecastdates5วันย้อนหลัง/7วันล่วงหน้า scheduleใช้ก่อนreadyพร้อมactualduration/action;GEEserverใช้helperแต่คง422errorcontractเดิม;exportตรวจdurationหลังderiveendจากsortietotal/declaredend กันย่อendช่องกรอก Genericmanualexportไม่บังคับforecastdatesใหม่ scheduleไม่clampendและยังคงautomaticanchorหลังanalysisเดิม
 
@@ -385,6 +385,8 @@ Save เป็น draft-only ใช้ session advisory lock→mutation lock→r
 
 **Surface reasons:** pureassessorแยกไม่มีrequestจากactualmismatchและรับunavailableReasonภายในcontroller helperกลางใช้ทั้งrender/getter สาเหตุerrorผ่านclassifiedallowlistเดิม Readcurrentก่อนเลือกรากเหตุเพื่อให้expiry/missionchangeinvalidateก่อน การไม่มีgeometry/Home/validtoleranceหรือsampleไม่ครบยังมีreasonsเดิม ไม่แทนunknownด้วย0และไม่คงreadyจากงานเก่า
 
-**Verificationใหม่:**73targeted/510fullsuitepassด้วยconcurrency4หลังdefaultparallelrunค้างและถูกinterrupt ไม่มีassertionลด Syntax/3buildsผ่าน LocalbrowserกับGEEจริงตรวจshortAOI52hstaticready/forecastnotrequested/blocked,normal3step+Sentinel2reviewบน18.0945km²ได้route998.11km/auto55h32m3sblockedและSurfaceReviewneededตามsamplesจริง;พื้นที่>100km²ทำ422SurfaceUnknownแสดงAREA_LIMITได้จริง ไม่ใช้ข้อความHomewrong Mobile390dialog358/page375pxไม่overflow หลักฐานoutput/release-check/time-surface-fix-2026-10-28/ รอเติมproductionidentity/resultsหลังdeploy
+**Verificationใหม่:**73targeted/510fullsuitepassด้วยconcurrency4หลังdefaultparallelrunค้างและถูกinterrupt ไม่มีassertionลด Syntax/3buildsผ่าน LocalbrowserกับGEEจริงตรวจshortAOI52hstaticready/forecastnotrequested/blocked,normal3step+Sentinel2reviewบน18.0945km²ได้route998.11km/auto55h32m3sblockedและSurfaceReviewneededตามsamplesจริง;พื้นที่>100km²ทำ422SurfaceUnknownแสดงAREA_LIMITได้จริง ไม่ใช้ข้อความHomewrong Mobile390dialog358/page375pxไม่overflow หลักฐานoutput/release-check/time-surface-fix-2026-10-28/ ผล Production ยืนยันต่อท้ายด้านล่าง
 
 **ขอบเขต:** ไม่มีการแบ่งภารกิจอัตโนมัติหรือบีบเวลาที่คำนวณจริง งานprofile/scheduleใหม่ที่ตัดไม่กลับมา ไม่มีDB/Auth/Pi/AI/UXimplementationอื่น ทีมสร้างtrialaccountsภายหลังเหมือนเดิม
+
+**Production proof:** API raw52h→422 (คง server contract), static-only→200 terrain/landcover ready+forecast not_requested, current1h→200 terrain/landcover/forecast ready; HTML hash ตรง built dist และ account session200 user:null Browser normal flow กับภาพ Sentinel-2 จริงสร้าง auto55h32m3s → Blocked/endไม่ถูกย่อ/SurfaceReviewneededตามrangeจริง intentionalพื้นที่>100km²→422 แล้ว SurfaceUnknownแสดงarea-limitแทนHome-mismatch คืนพื้นที่เดิม/โหลดภาพกลับได้ Mobile390 dialog358/page375/scroll375ไม่มี overflow Browsererrorlogsล่าสุด[]; deployment-scoped error/fatal15นาทีไม่พบรายการ หลักฐาน production-*.png/production-api.json และ final release-receipt.json อยู่ evidence directory เดิม เอกสาร follow-up อาจ advance Git/deployment SHA โดย application bundle เดิม
