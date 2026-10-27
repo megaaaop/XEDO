@@ -11,7 +11,7 @@
 
 ## 2. สรุป
 
-ผู้ใช้อนุมัติชุด SQL นี้โดยตรงเมื่อ 28 ตุลาคม 2026 แล้วใช้กับ xedo ผ่าน connection **megaphijak** สำเร็จ ตรวจตาราง/RLS/สิทธิ์/definition และกรณีปฏิเสธ role/session รวม 15 checks ผ่าน ดู [หลักฐานรอบใช้จริง](INSPECTOR_DATABASE_VERIFICATION_2026-10-28.md) ยังไม่มี Auth user หรือ mission data และยังไม่เผยแพร่ frontend/API ของชุดบัญชี
+ผู้ใช้อนุมัติชุด SQL นี้โดยตรงเมื่อ 28 ตุลาคม 2026 แล้วใช้กับ xedo ผ่าน connection **megaphijak** สำเร็จ ตรวจตาราง/RLS/สิทธิ์/definition และกรณีปฏิเสธ role/session รวม 15 checks ผ่าน ดู [หลักฐานรอบใช้จริง](INSPECTOR_DATABASE_VERIFICATION_2026-10-28.md) ตอนจบรอบmigrationยังไม่มี Auth user/mission data หรือ frontend/API release ต่อมาผู้ใช้อนุมัติเผยแพร่และตรวจLoginแล้วตาม [WEBSITE_DETAILS §3.22](WEBSITE_DETAILS.md#322-inspector-account-release--28-ตุลาคม-2026) ไม่ได้สร้างบัญชีทดลอง
 
 สถานะก่อน migration ที่ตรวจจริง: target ACTIVE_HEALTHY; public/private tables และ migrations ว่าง; Auth users=0 ผล public Auth settings ของรอบเตรียม 27 ต.ค. เป็น email enabled และ `disable_signup=false` ไม่ได้เปลี่ยนหรือตรวจ setting นี้ใหม่ในรอบ apply
 
@@ -79,4 +79,4 @@ Session รุ่นแรกเก็บ access token อย่างเดี�
 5. ใช้บัญชีจริง A/B ตรวจ login-cookie-save-history-logout/foreign ID/expired session และทดสอบ concurrency ผ่านบริการจริง
 6. ปิดงาน UX และเชื่อม prepared AI/risk editor ตามคิวเดิม ตรวจรวม แล้วเผยแพร่เฉพาะภายในขอบเขตคำอนุญาตที่ยืนยันสำหรับรอบนั้น
 
-**รอคำตอบ:** ไม่มีคำถาม migration ค้าง ผู้ใช้อนุมัติและตรวจผลครบแล้ว บัญชีผู้ทดลองให้ทีมสร้างภายหลังตามเดิม Frontend/API deployment และ real-account acceptance ยังไม่เกิดขึ้น การอนุมัติชุดฐานข้อมูลนี้ไม่รวมการสร้างบัญชีหรือเปลี่ยน billing
+**รอคำตอบ:** ไม่มีคำถาม migration ค้าง ผู้ใช้อนุมัติและตรวจผลครบแล้ว บัญชีผู้ทดลองให้ทีมสร้างภายหลังตามเดิม Frontend/APIเผยแพร่ในรอบอนุมัติreleaseถัดมาแล้ว ส่วนreal-account acceptanceยังรอทีมสร้างบัญชี การอนุมัติชุดฐานข้อมูลนี้ไม่รวมการสร้างบัญชีหรือเปลี่ยน billing

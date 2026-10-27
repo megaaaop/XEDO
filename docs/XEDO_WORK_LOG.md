@@ -5,13 +5,13 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **28 ตุลาคม 2026 — ผู้ใช้อนุมัติ push/deploy ระบบบัญชีแล้ว ตรวจใหม่500tests/syntax/3buildsผ่าน กำลังเผยแพร่และตรวจ Login บนเว็บจริง บัญชีผู้ทดลองให้ทีมสร้างภายหลัง**
+- อัปเดตล่าสุด: **28 ตุลาคม 2026 — push/deploy ระบบบัญชีแล้ว ตรวจ Login desktop/mobile และ APIจริง7กรณีผ่าน;501tests/CIผ่าน บัญชีผู้ทดลองให้ทีมสร้างภายหลัง**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
 - จุดประสงค์รอบนี้: push/deploy Inspector foundation และตรวจหน้าLogin/APIจริง โดยไม่สร้างบัญชีผู้ทดลอง ฐานข้อมูลใช้แล้วและไม่applyซ้ำ
-- สถานะปัจจุบัน: application release เดิมคือ `dc4743c` และ docs HEAD `28d7e9d1b852f1d55ecf115681ff24a13f968918`; receipt สุดท้ายจากรอบก่อนคือ Vercel `dpl_CtoT3UAo4iwD4QTvTj27WZdSwHi5` READY และ CI `40488898952` success ผล **482/482** และ 3 builds เป็นหลักฐานรอบเผยแพร่ก่อนหน้า รอบ28ต.ค.มีเฉพาะInspector DB migrationและตรวจฐานข้อมูลจริง ไม่ตรวจหรือเปลี่ยนfrontend deploymentใหม่
+- สถานะปัจจุบัน: applicationบัญชี+rewritefix `afac1c7f256075eb2202fdcae16102a0e34a43ca` pushmain/branchและVercel `dpl_635dXNArvjRDicq8WgZVmHgZZ9r8` READY aliasเว็บหลักตรงรุ่นนี้ CI `40565947316` success พร้อม501tests/3builds;เอกสารfollow-upอาจทำให้deploymentSHAใหม่โดยapplicationไม่เปลี่ยน exactfinalreceiptอยู่output/release-check/inspector-account-release-2026-10-28/
 - **ขอบเขตคำสั่งล่าสุด:** ผู้ใช้อนุมัติpush/deployระบบบัญชีและตรวจหน้าLoginโดยตรงแล้ว ใช้Git→Vercelของprojectเดิม เผยแพร่Inspectorfoundationและเอกสารที่เกี่ยวข้อง ไม่สร้างบัญชี ไม่applyDBซ้ำ ไม่ทำUX/AIeditorหรือprofile/เวลาใหม่ในreleaseนี้
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
@@ -22,7 +22,7 @@
 
 ### สถานะล่าสุดที่มีหลักฐาน
 
-**Inspector ฐานข้อมูลจริงใช้แล้วและตรวจสิทธิ์แล้ว:** ผู้ใช้อนุมัติ SQL โดยตรงเมื่อ28ต.ค. ไฟล์ SHA256ตรงเดิม applyผ่านconnection **megaphijak** ไปยัง `xedo / tstmjnlhwidwtzetqxbu` สำเร็จ migration **20261027184951 / xedo_inspector_foundation** มี5private tables เปิดRLSทุกตาราง ไม่มีanon/authenticated direct table/column grants ตรวจfunction permissions/bodyและnegative role/sessionรวม **15checksผ่าน** ไม่มีบัญชี/ภารกิจจริง Security advisorมีINFO5ตามRPC-only design ไม่มีWARN/ERROR PerformanceมีINFO FKindex2/unusedindex1 เก็บรายละเอียดใน `INSPECTOR_DATABASE_VERIFICATION_2026-10-28.md` ส่วนโค้ดBFF/UIยังlocal ไม่มีcommit/push/deploy ผล500tests/3builds/QAจำลองเป็นหลักฐาน27ต.ค. ไม่รันใหม่รอบนี้ ไม่มีคำถามmigrationค้าง ไม่ให้ผู้ใช้reconnectหรืออนุมัติซ้ำ
+**Inspector เผยแพร่แล้วและตรวจ Login บนเว็บจริงแล้ว:** code`afac1c7`/VercelREADY/CI40565947316success รันใหม่501testsผ่าน ตรวจpublicAPIจริง7กรณีและLogin1280/390pxผ่าน รวมgenericinvalid-login/passwordmask/required/close/Escape ไม่มีแนวนอนล้น แก้Vercelrewritecapture404ที่พบจากproductionก่อนปิดงาน ฐานข้อมูลxedoใช้migration20261027184951และตรวจ15checksในรอบก่อนหน้าแล้ว ยังไม่มีบัญชีผู้ทดลองและยังไม่ทดสอบsuccessfulpasswordlogin/realA-BSavehistory ทีมสร้างAuthusers+rosterภายหลัง ไม่อ้างว่างานบัญชีผ่านreal-accountacceptanceครบแล้ว ไม่มีคำถามผู้ใช้ค้าง
 
 **กติกางานคู่ขนานล่าสุด:** แชทนี้แก้websiteเพียงแชทเดียว อีกแชทส่งpreparedSARใน`outputs/XEDO_Parallel_Handoff_2026-10-27/support/`แล้ว รายงาน32data checksผ่าน/14candidates;แชทหลักตรวจSHA256ของcore12ไฟล์ตรงแล้ว แต่ยังไม่รันconversionหรือwebsiteintegrationซ้ำ ต่อไปให้supportเตรียมrisk-editfixtures/testaddendumโดยไม่แก้corepackageหรือเว็บ
 
@@ -47,7 +47,7 @@
 | เลขล่าสุด | เลขเดิม | งาน | สถานะ/เกณฑ์ที่ต้องทำต่อ |
 | --- | --- | --- | --- |
 | **1** (ก่อนหน้า2) | **4** | UXและข้อความ | **อนุมัติimplementation** เอาป้ายPrototypeออก เก็บflowและmobile คงสามขั้น/สี่ตัวคำนวณ/2D3D |
-| **2** (ก่อนหน้า3) | **5** | บัญชีInspector Save/historyส่วนตัว | **โค้ดตรวจในเครื่องแล้ว+DBจริงตรวจแล้ว** รอทีมสร้างบัญชีจริง/real-account acceptance/frontend release ไม่มีGoogle ownerบังคับที่server |
+| **2** (ก่อนหน้า3) | **5** | บัญชีInspector Save/historyส่วนตัว | **เผยแพร่และตรวจLoginแล้ว** รอทีมสร้างAuthusers+rosterและreal-account acceptance ไม่มีGoogle ownerบังคับที่server |
 | **3** (ก่อนหน้า4) | **6** | preparedAI+Inspectorแก้พื้นที่เสี่ยง+planner | **อนุมัติimplementation** dataพร้อมhashverified;เพิ่มedit/move/add/reject/undo/cancel/reviewrevisionsและprivateSave |
 | **4** (ก่อนหน้า5) | **7** | Pi / ภาพ / telemetry | **พักตามคำสั่งผู้ใช้** |
 | **5** (ก่อนหน้า6) | **8** | ผลทดลองและรายงานก่อน–หลัง | **พักตามคำสั่งผู้ใช้** |
@@ -64,7 +64,7 @@
 | 2 | ทดสอบ GEE และข้อมูลสภาพแวดล้อมจริง | **เสร็จและเผยแพร่แล้ว** | ตรวจซ้ำตามพื้นที่และเวลาของแต่ละภารกิจ ไม่ถือว่ารอบเดียวครอบคลุมทุกพื้นที่ |
 | 3 | ใช้โปรไฟล์โดรนจำลองที่คิดไว้แล้วใน flow หลัก | **ร่างแผนแล้ว ยังไม่ได้ลงมือ** | แยกโปรไฟล์เครื่องจำลองออกจากโหมดข้อมูลตัวอย่าง ให้ flow ปกติคำนวณได้โดยใช้ข้อมูลภารกิจจริง |
 | 4 | ทำ UX ให้เหมือนเว็บไซต์ใช้งานจริง และวางแผนรองรับการใช้งานจริง | **ร่างแผนแล้ว ยังไม่ได้ลงมือ** | เอาป้าย Prototype ออกทั้งหมดตามคำสั่งล่าสุด ลบ note ซ้ำ จัด flow หลัก; บันทึกแผนตรวจรับ/capacity สำหรับอนาคต ยังไม่ทดสอบในรอบวางแผน |
-| 5 | บัญชี Inspector, บันทึกภารกิจ และประวัติ | **โค้ดตรวจในเครื่องแล้ว และ DB จริงใช้/ตรวจแล้ว28ต.ค.** | รอทีมสร้างAuthusers+Inspector roster, real-account acceptanceและfrontend release; ไม่มีGoogle เห็น/แก้เฉพาะภารกิจตนเอง |
+| 5 | บัญชี Inspector, บันทึกภารกิจ และประวัติ | **เผยแพร่แล้ว28ต.ค. ตรวจLogin/APIจริงผ่าน** | ทีมสร้างAuthusers+Inspector rosterแล้วทำreal-account acceptance; ไม่มีGoogle เห็น/แก้เฉพาะภารกิจตนเอง |
 | 6 | เชื่อมผล AI เข้าหน้าเว็บ | **จัดทำแผนละเอียดใน HTML แล้ว ยังไม่ลงมือเชื่อม** | เริ่มจากผล SAR ที่มี georeference เป็น fixture → Inspector ตรวจเลือกพื้นที่เสี่ยง → planner; แยกพื้นที่เสี่ยงจากหลักฐานน้ำมัน/ความหนา |
 | 7 | เชื่อมภาพและ telemetry จาก Raspberry Pi / โดรน | **พักตามคำสั่งผู้ใช้** | ไม่จำเป็นต่อเป้าหมายวิเคราะห์พื้นที่เสี่ยงและสร้างแผน; ตรวจแล้วไม่มี Pi dependency |
 | 8 | ผลทดลองและรายงานภารกิจ | **งานค้าง — ยังไม่ทำตามคำสั่งผู้ใช้** | เก็บไว้สำหรับอนาคต ไม่เป็นเงื่อนไขการสร้างแผนตรวจพื้นที่ |
@@ -802,14 +802,18 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 
 **หัวข้อ:** ผู้ใช้อนุมัติpush/deployระบบบัญชีขึ้นเว็บจริง ตรวจLoginและให้ทีมสร้างบัญชีภายหลัง
 
-**สรุป:** อนุมัติreleaseชัดเจนแล้ว ตรวจcurrentcheckout/originmainตรงHEAD28d7e9dก่อนทำงาน รันใหม่500tests/0failed/0skipped syntaxและ3buildsผ่าน กำลังpush/deployผ่านGitintegrationและรอตรวจproduction ไม่อ้างว่าLoginสำเร็จด้วยบัญชีจริงเพราะยังไม่มีบัญชี
+**สรุป:** pushmain/branchและdeployครบแล้ว applicationสุดท้าย`afac1c7f256075eb2202fdcae16102a0e34a43ca`/Vercel`dpl_635dXNArvjRDicq8WgZVmHgZZ9r8`READY เว็บหลักaliasตรงรุ่น CI40565947316success รัน501tests/0failed/0skippedและsyntaxผ่าน 3buildsผ่านก่อนpushและCIใหม่ตรวจ3buildsของfixด้วย หน้าLogin/APIจริงผ่านในขอบเขตที่ไม่ต้องสร้างบัญชี ทีมสร้างบัญชีภายหลัง
 
 **รายละเอียด/ไฟล์:** เผยแพร่BFFapi/inspector.mjs,InspectorUI/state/validation/projectpublicconfig/CSS,plannerSave/restore/sessionguards,routes/package/lock/contracts/SQLที่ใช้แล้ว/tests/QAhelpersและเอกสารที่ค้างจากรอบเตรียม รวมแผนAIเป็นเอกสารเท่านั้นไม่มีAIeditorimplementation แก้descriptionในsavecontractว่าmigrationใช้แล้ว ไม่เปลี่ยนvalidationrule/SQL ไม่มีadminsecretในชุดบัญชี
 
-**ผลตรวจรอบนี้:** freshnpmtest500ผ่าน;syntaxผ่าน;production/workspace/portablebuildผ่าน;diffcheckผ่าน ใช้Verceldeployments/verificationskills+officialGit/Nodefunctiondocs reviewreadonlyไม่พบmaterialblocker ต้องตรวจproductionroute/schema-packaging/JSONanonymoussession/401private/403origin/invalidlogin+desktop/mobileก่อนนับdeploymentverified
+**ผลตรวจรอบนี้:** initial500tests→หลังroutingfix501testsผ่าน syntaxผ่าน build3รูปแบบผ่านและCIล่าสุดsuccess ใช้Verceldeployments/verificationskills+officialGit/Nodefunctiondocs reviewreadonlyก่อนเผยแพร่ไม่พบsource-levelblockerแต่runtimecheckพบrewrite404และแก้แล้ว PublicAPI7กรณีผ่าน:anonymoussession200user:null/private401/invalidform422/crossorigin403/noorigin403/nonexistentlogin401generic/guestlogout200พร้อมclearcookieHttpOnly+Secure+SameSiteLax+__Host ไม่มีtokenในresponse ทุกresponseเป็นJSON/no-store
 
-**หลักฐาน/ขอบเขต:** output/release-check/inspector-account-release-2026-10-28/ เก็บtests/syntax/buildlogs DB15checksเป็นรอบmigrationก่อนหน้าไม่รันซ้ำ ไม่มีการสร้างAuthusers/rosterหรือแก้Authsettings ยังไม่ทดสอบsuccessfulpasswordlogin/realA-BSavehistory รอทีมสร้างบัญชี ผลเผยแพร่และproductionchecksเติมในentryนี้หลังตรวจจริง
+**หลักฐาน/ขอบเขต:** output/release-check/inspector-account-release-2026-10-28/ เก็บtests/syntax/buildlogs,production-api.json,รูปdesktop/error/mobile390และrelease-receipt.json DB15checksเป็นรอบmigrationก่อนหน้าไม่รันซ้ำ ไม่มีการสร้างAuthusers/rosterหรือแก้Authsettings ยังไม่ทดสอบsuccessfulpasswordlogin/realA-BSavehistory รอทีมสร้างบัญชี ไม่applySQLซ้ำ ไม่เปิดUX/AIeditorที่ยังอยู่ในคิว
 
-**ปัญหาที่พบระหว่างproductioncheckและแก้ก่อนปิดงาน:** code618fe123f3a47f8177b123e743fd2b3c31d7a7a9 pushmain/branchแล้ว Verceldpl_7J7WL7KTkCrnrCJx7TPJ4FB8PmY4READY/CI40565384813success แต่publicInspectorrewriteตอบ404 ขณะที่direct/api/inspector?route=sessionได้200 พิสูจน์function/schemaเริ่มได้ แก้selectorให้รับwildcardcapturepathที่ตรงrouteเท่านั้นและrejectduplicate/conflictingroute/path/offset/revision/unknownkeys เพิ่มregressiontest Fresh501testsผ่านและsyntaxผ่านหลังแก้ เก็บผลแรกproduction-api.initial-404.json ไม่ลบทิ้ง รอdeployfixแล้วตรวจpublicroute/UIซ้ำจึงจะนับผ่าน
+**ปัญหาที่พบระหว่างproductioncheckและแก้ก่อนปิดงาน:** code618fe123f3a47f8177b123e743fd2b3c31d7a7a9/Verceldpl_7J7WL7KTkCrnrCJx7TPJ4FB8PmY4READYแต่publicInspectorrewrite404 ขณะที่direct/api/inspector?route=sessionได้200 แก้selectorรับwildcardcapturepathที่ตรงrouteเท่านั้นและrejectduplicate/conflictingroute/path/offset/revision/unknownkeys เพิ่มregressiontest501ผ่าน เก็บproduction-api.initial-404.json หลังdeployfixafac1c7publicroute/API7กรณีและUIจริงผ่าน ปิดdefectแล้ว ไม่ใช้แค่CIหรือdirectrouteผ่านอ้างว่าเว็บพร้อม
+
+**Browser/observability:** Loginแสดงจากปุ่มInspectoraccount;passwordtype=password/autocompletecurrent-password/requiredtrue;emailrequired/nativevalidation;invalidcredentialsขึ้นgenericmessageและล้างpassword;Escape/Xปิดและคืนfocusปุ่มได้ mobile390dialog362/page375pxไม่overflow desktop1280dialog620/page1265px มี3stepsเดิม Browsererrorlogsล่าสุด[] และVercelerror/fatalscan15นาทีของfixdeploymentไม่พบรายการ เก็บรูปและคืนviewportdefault เปิดแท็บLoginสะอาดไว้ให้ผู้ใช้ ไม่ได้ทดสอบsuccesscookie/realSavehistoryหรือprivacy2บัญชี
+
+**การเผยแพร่เอกสาร:** อัปเดตสองcanonicalMarkdown/queueและcontractdescriptionให้ตรงstatus Pushเอกสารผลตรวจfollow-upในscopeเดียวกันโดยไม่เปลี่ยนapplication;receiptบันทึกidentityสุดท้ายหลังfollow-up ไม่วนสร้างdoccommitเพียงเพื่อบันทึกSHAของตัวเอง
 
 **รอคำตอบ:** ไม่มี ผู้ใช้อนุมัติreleaseแล้ว บัญชีให้ทีมสร้างภายหลังตามเดิม

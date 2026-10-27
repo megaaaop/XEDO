@@ -11,7 +11,7 @@
 
 ## 2. สรุป
 
-**ใช้ migration สำเร็จและตรวจตาราง/สิทธิ์จริงผ่าน 15 checks** โดยไม่สร้างบัญชีหรือภารกิจ โค้ด frontend/API ยังอยู่ในเครื่อง ไม่มี commit/push/deploy การ Login ด้วยบัญชีจริงและการแยกภารกิจของ A/B ยังรอทีมสร้างบัญชี
+**ใช้ migration สำเร็จและตรวจตาราง/สิทธิ์จริงผ่าน 15 checks** โดยไม่สร้างบัญชีหรือภารกิจ ตอนจบรอบmigrationโค้ดfrontend/APIยังอยู่ในเครื่อง ต่อมาผู้ใช้อนุมัติreleaseแยกและเผยแพร่พร้อมตรวจLoginแล้ว ดู [WEBSITE_DETAILS §3.22](WEBSITE_DETAILS.md#322-inspector-account-release--28-ตุลาคม-2026) ผล15checksในเอกสารนี้ยังเป็นของรอบDBเดิม การLoginสำเร็จด้วยบัญชีจริงและการแยกภารกิจA/Bยังรอทีมสร้างบัญชี
 
 ก่อนใช้ target เป็น ACTIVE_HEALTHY, private schema/RPC ยังไม่มี, public/private tables และ migrations ว่าง, Auth users=0 ไฟล์ hash ตรงกับที่อนุมัติทั้งหมด ใช้ผ่าน Supabase `apply_migration` เท่านั้น ไม่มีการแก้ SQL เพิ่ม ไม่มี D1/R2 migration หรือการเปลี่ยน Auth providers/billing/ownership
 

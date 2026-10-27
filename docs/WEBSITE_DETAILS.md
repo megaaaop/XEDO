@@ -9,7 +9,7 @@
 
 ## 2. สรุป
 
-สถานะเผยแพร่เว็บล่าสุดยังเป็น 3D พื้น Diagram/Satellite รวม GEE diagnostics/context1กม./scroll แผนหลักคง UX/บัญชีส่วนตัว/prepared AI พร้อม risk editing และคง3ขั้น/4calculators ผู้ใช้ตัด normal-flow/profile/schedule ใหม่ออก; Pi/รายงาน/AIภาพใหม่พักไว้ ล่าสุด28ต.ค.ผู้ใช้อนุมัติInspectorSQLแล้ว ใช้migration20261027184951กับSupabasexedoผ่านmegaphijakสำเร็จ ตรวจจริงตาราง/RLS/grants/functionbody/negative-role-session15checksผ่าน Authusers/missionrows0 บัญชีให้ทีมสร้างภายหลัง โค้ดAuth/Save/historyยังlocalและยังไม่deploy ผล500tests/3builds/browserจำลองเป็น27ต.ค.ไม่รันซ้ำ ดูสถานะจริงข้อ3.21/INSPECTOR_DATABASE_VERIFICATION_2026-10-28.md ส่วน3.19–3.20เป็นสถานะรอบก่อนอนุมัติ
+สถานะล่าสุด28ต.ค.เผยแพร่Inspectorบัญชี/Save/historyแล้ว codeafac1c7/VercelREADY/CI40565947316success ตรวจ501tests/3builds/productionAPI7กรณีและLogindesktop/mobileผ่าน DBmigration20261027184951ใช้และตรวจสิทธิ์แล้วในรอบก่อนหน้า ยังไม่มีบัญชีผู้ทดลอง/real-password-success/A-BSavehistoryacceptance ทีมสร้างภายหลัง UXcleanup/preparedAIriskeditorยังอยู่ในคิวแยก คง3steps/4calculatorsและ3D/GEEเดิม ไม่รื้อnormalprofile/scheduleใหม่ Pi/รายงานพัก ดูarchitecture3.19 DB3.21 release3.22 ส่วน3.19–3.20มีสถานะประวัติก่อนใช้DB/เผยแพร่
 
 กติกาเพิ่มสำหรับงานคู่ขนาน: แชทหลักนี้แก้เว็บไซต์เพียงแชทเดียว แชทสนับสนุนเตรียมข้อมูลAI/หลักฐานตรวจ/คำแนะนำ/กรณีทดสอบในโฟลเดอร์แยก แล้วส่งให้แชทหลักตรวจรับและเชื่อม รายละเอียดownershipและhandoffอยู่ข้อ3.14 ไม่ให้การทำคู่ขนานกลายเป็นหลายแชทแก้source/configของเว็บพร้อมกัน
 
@@ -331,10 +331,10 @@ Save เป็น draft-only ใช้ session advisory lock→mutation lock→r
 
 **หัวข้อ:** ผู้ใช้อนุมัติpush/deployระบบบัญชีและตรวจLogin โดยให้ทีมสร้างบัญชีภายหลัง
 
-**สรุป:** ผ่านfresh500tests/syntax/3buildsและreadonlyrelease-review กำลังส่งGit→VercelและตรวจactualproductionUI/API ไม่applyDBซ้ำ ไม่เปลี่ยนAuthsettings ยังไม่มีreal-account acceptance
+**สรุป:** pushและproductiondeployแล้ว code`afac1c7f256075eb2202fdcae16102a0e34a43ca`/Vercel`dpl_635dXNArvjRDicq8WgZVmHgZZ9r8`READY CI40565947316success Fresh501tests/syntaxผ่าน 3buildsก่อนpushและCIของfixผ่าน ไม่มีDBreapply/Authsettings/accountcreation ยังไม่มีreal-account acceptance
 
-**รายละเอียด:** ปุ่มInspectoraccount→email/passwordform→sameoriginBFF→SupabaseAuth+liveRPCที่มีอยู่แล้ว Anonymoussessionต้องuser:null/private401และmutationต่างorigin403 ข้อมูลที่ไม่มีบัญชีต้องgeneric401ไม่HTML/500 ตรวจpackagedAJV/schemaบนruntimeจริง ตรวจmask/requiredfields/close/keyboard/mobile390px คง3steps/4calculators SuccessfulLogin/Save/history/cross-accountprivacyต้องรอทีมสร้างAuthusers+roster ไม่อ้างsimulationเป็นproductionacceptance
+**รายละเอียด:** ตรวจปุ่มInspectoraccount→email/passwordform→sameoriginBFF→SupabaseAuthจริงโดยnonexistentcredentialsได้generic401 UIล้างpassword หน้าLoginใช้passwordmask/required fieldsปิดด้วยX/Escapeได้ PublicAPI7กรณีผ่าน user:null200/private401/form422/crossorigin403/noorigin403/invalidlogin401/guestlogout200 ทุกresponseJSON/no-storeและclearcookieflagsถูกต้อง จึงยืนยันfunction/schema/runtime/rewriteจริง desktop1280dialog620/page1265px mobile390dialog362/page375pxไม่overflow Browsererrorlogล่าสุด[]/Vercelerrorfatal15นาทีไม่พบรายการ คง3steps/4calculators SuccessfulLogin/Save/history/cross-accountprivacyยังต้องรอAuthusers+rosterจากทีม
 
-**ไฟล์/หลักฐาน:** savecontractdescriptionอัปเดตว่าmigrationใช้แล้ว validation/SQLไม่เปลี่ยน API/session/restoreดู3.19 DBสิทธิ์จริงดู3.21 หลักฐานreleaseเก็บoutput/release-check/inspector-account-release-2026-10-28/ จะเติมproductionresultsและexactreleaseidentityหลังตรวจจริง UX/AIriskeditorยังอยู่อีกงาน ไม่รวมreleaseนี้
+**ไฟล์/หลักฐาน:** savecontractdescriptionตรงmigrationที่ใช้แล้ว validation/SQLไม่เปลี่ยน เพิ่มselectedRouteและregressiontest หลักฐานoutput/release-check/inspector-account-release-2026-10-28/มีtests/buildlogs/APIJSON/desktop-error-mobilePNG/release-receipt.json เอกสารผลตรวจfollow-upอาจเปลี่ยนdeploymentSHAโดยapplicationเดิม receiptเก็บfinalidentity UX/AIriskeditorยังอยู่อีกงาน ไม่รวมreleaseนี้
 
-**Runtime routing repair:** releaseแรกfunctionตรงตอบ200แต่publicrewrite404 แก้api/inspector.mjs selectedRouteให้รับVercelpathcaptureเป็นสำเนาตรงกันของendpointที่เลือก ไม่ให้overridepathname/route Rejectqueryซ้ำและค่าขัดกัน/unknownkeysทั้งหมด Unitregressionใหม่ทำให้501testsผ่าน ต้องยืนยันpublicrouteบนdeploymentใหม่ ไม่ใช้directrouteผ่านแทนactualUI/API
+**Runtime routing repair:** releaseแรกfunctionตรง200แต่publicrewrite404 แก้api/inspector.mjs selectedRouteรับVercelpathcaptureเป็นสำเนาตรงกันของendpoint ไม่ให้overridepathname/route Rejectqueryซ้ำ/ค่าขัดกัน/unknownkeys Unitregressionใหม่501ผ่านและหลังdeploypublicroute/API7/UIจริงผ่าน ปิดdefectโดยเก็บผลinitial404ไว้ ไม่ใช้directrouteผ่านแทนactualUI/API

@@ -190,7 +190,7 @@
   },
   "currentPlanningScope": {
     "id": "same-day-closeout-2026-10-27",
-    "status": "inspector_account_release_authorized_preflight_passed",
+    "status": "production_published_login_verified_team_accounts_pending",
     "userAvailabilityMinutes": 240,
     "userAvailabilityIsHardWorkLimit": false,
     "confirmedByUser": [
@@ -262,7 +262,7 @@
       "Broad capacity benchmark",
       "New paid service provisioning without user authorization"
     ],
-    "verificationThisTurn": "2026-10-28: user explicitly approved exact Inspector SQL; applied migration20261027184951 to xedo via megaphijak. Live table/RLS/grant/function-body/session-negative verification15checks passed. Five INFO RLS-no-policy notices match RPC-only design; performance INFO2missing-FK-index/1unused-new-index retained. No trial users, source edits, application tests/builds/browser reruns or commit/push/deploy. Prior500tests remain 2026-10-27 local evidence.",
+    "verificationThisTurn": "2026-10-28: explicit account release approval; pushed main and source branch. Initial production rewrite404 repaired with strict matching path capture. Fresh501tests/syntax/3builds and CI success; exact production alias READY, API7cases and Login desktop/mobile390 pass. No real trial users, successful password login, private A/B Save/history acceptance, DB reapply or unrelated UX/AI implementation.",
     "acceptedBaseline": "Existing planner/demo, schedule, export/readiness, three steps and four calculators remain. New user-start/derived-end scheduling and normal-flow full-export work are not release gates."
   },
   "currentImplementationScope": {
@@ -458,8 +458,8 @@
     {
       "number": 5,
       "name": "Accounts, saved missions and history",
-      "status": "account_release_in_progress_real_accounts_pending",
-      "implementationStatus": "bff_ui_local_verified_sql_applied_to_xedo_frontend_not_deployed",
+      "status": "production_published_login_verified_team_accounts_pending",
+      "implementationStatus": "bff_ui_and_database_published_login_verified_real_accounts_pending",
       "confirmed": [
         "One application role: Inspector",
         "All users can use all offered options",
@@ -564,10 +564,12 @@
   "resolvedDecisions": [
     {
       "id": "inspector_account_production_release_approval",
-      "status": "approved",
+      "status": "approved_published_login_verified",
       "answeredOn": "2026-10-28",
       "answer": "User explicitly authorizes push/deploy of Inspector account system to production and Login verification; team creates trial accounts later.",
-      "scope": "Inspector foundation code, routes, tests and continuity documents; no trial accounts or unrelated UX/AI implementation"
+      "scope": "Inspector foundation code, routes, tests and continuity documents; no trial accounts or unrelated UX/AI implementation",
+      "applicationCommit": "afac1c7f256075eb2202fdcae16102a0e34a43ca",
+      "productionDeploymentId": "dpl_635dXNArvjRDicq8WgZVmHgZZ9r8"
     },
     {
       "id": "inspector_production_migration_approval",
@@ -581,7 +583,12 @@
       "source": "Direct user authorization in this chat, followed by successful MCP apply_migration and live verification",
       "reviewPath": "docs/INSPECTOR_MIGRATION_REVIEW.md",
       "verificationPath": "docs/INSPECTOR_DATABASE_VERIFICATION_2026-10-28.md",
-      "excludes": ["Trial account creation", "Frontend push/deploy", "Billing or Auth-provider settings", "Unrelated queued work"]
+      "excludes": [
+        "Trial account creation",
+        "Frontend push/deploy",
+        "Billing or Auth-provider settings",
+        "Unrelated queued work"
+      ]
     },
     {
       "id": "supabase_megaphijak_connection_access_verified",
@@ -697,16 +704,16 @@
     }
   ],
   "latestPublishedRelease": {
-    "commit": "dc4743caf16e270d900fabe906ba6a41c9831e84",
-    "productionDeploymentId": "dpl_HRWQ22Sxg1cM2b8KzrxTHVCWM1vw",
+    "commit": "afac1c7f256075eb2202fdcae16102a0e34a43ca",
+    "productionDeploymentId": "dpl_635dXNArvjRDicq8WgZVmHgZZ9r8",
     "url": "https://xedo-eight.vercel.app",
     "sourceBranch": "main",
-    "ciRunId": 40488389541,
+    "ciRunId": 40565947316,
     "ciConclusion": "success",
-    "publishedOn": "2026-10-27",
+    "publishedOn": "2026-10-28",
     "timezone": "Asia/Bangkok",
-    "scopeId": "3d-satellite-ground-2026-10-27",
-    "verificationRecord": "Application-code release verified before this documentation-only follow-up. Later documentation commits may advance the deployment Git SHA without changing the verified application bundle; the local release receipt records exact final identity."
+    "scopeId": "inspector-account-release-2026-10-28",
+    "verificationRecord": "Follow-up documentation commit may advance deployment identity without changing application code; final identity recorded in local release-receipt.json"
   },
   "removedFromCurrentCloseout": [
     {
@@ -792,7 +799,7 @@
   },
   "phase2Execution": {
     "id": "inspector-foundation-2026-10-27",
-    "status": "account_release_in_progress_live_database_verified",
+    "status": "production_published_login_verified_team_accounts_pending",
     "implemented": [
       "Email-password BFF with HttpOnly access cookie",
       "Inspector private draft Save/list/open/history/copy",
@@ -845,7 +852,7 @@
     ],
     "evidenceDirectory": "output/release-check/inspector-foundation-2026-10-27",
     "externalDatabaseMutations": true,
-    "commitPushDeploy": false,
+    "commitPushDeploy": true,
     "liveVerification": {
       "date": "2026-10-28",
       "projectRef": "tstmjnlhwidwtzetqxbu",
@@ -871,8 +878,63 @@
     "nextActions": [
       "Team creates Auth users and Inspector roster entries later",
       "Real-account login/logout/private Save/history/foreign-ID/expiry/concurrency acceptance after team provisioning",
-      "Frontend/API deployment remains pending a release within authorized scope",
+      "Continue separately approved UX/prepared-AI work only when instructed for the next implementation turn",
       "Retain two foreign-key index maintenance items for data scale review; no unapproved follow-up DDL"
-    ]
+    ],
+    "localFoundationChecksOn": "2026-10-27"
+  },
+  "accountReleaseExecution": {
+    "id": "inspector-account-release-2026-10-28",
+    "status": "production_published_login_verified_team_accounts_pending",
+    "publishedOn": "2026-10-28",
+    "timezone": "Asia/Bangkok",
+    "applicationCommit": "afac1c7f256075eb2202fdcae16102a0e34a43ca",
+    "initialCommit": "618fe123f3a47f8177b123e743fd2b3c31d7a7a9",
+    "productionDeploymentId": "dpl_635dXNArvjRDicq8WgZVmHgZZ9r8",
+    "url": "https://xedo-eight.vercel.app",
+    "ciRunId": 40565947316,
+    "ciConclusion": "success",
+    "target": "production",
+    "state": "READY",
+    "checks": {
+      "localTestsPassed": 501,
+      "failed": 0,
+      "skipped": 0,
+      "syntaxPassed": true,
+      "productionBuildPassed": true,
+      "workspaceBuildPassed": true,
+      "portableBuildPassed": true,
+      "productionApiChecksPassed": 7,
+      "desktop1280": {
+        "dialogWidth": 620,
+        "pageWidth": 1265,
+        "horizontalOverflow": false
+      },
+      "mobile390": {
+        "dialogWidth": 362,
+        "pageWidth": 375,
+        "horizontalOverflow": false
+      },
+      "requiredFieldsVerified": true,
+      "passwordMaskAndClearVerified": true,
+      "closeAndEscapeVerified": true,
+      "nonexistentAccountUiFailureVerified": true,
+      "browserErrorsLatest": 0,
+      "runtimeErrorFatalEntriesInScanned15MinuteWindow": 0
+    },
+    "routingRepair": {
+      "initialPublicApi404": true,
+      "directSession200": true,
+      "fix": "Accept optional matching Vercel wildcard path capture; reject duplicate/conflicting/unknown query parameters",
+      "publicApiVerifiedAfterFix": true,
+      "regressionTestAdded": true
+    },
+    "realAccountsCreated": false,
+    "realPasswordLoginSuccessTested": false,
+    "realAccountSaveHistoryIsolationAcceptanceRun": false,
+    "databaseReapplied": false,
+    "authSettingsChanged": false,
+    "evidenceDirectory": "output/release-check/inspector-account-release-2026-10-28",
+    "documentationFollowup": "Follow-up documentation commit may advance deployment identity without changing application code; final identity recorded in local release-receipt.json"
   }
 }
