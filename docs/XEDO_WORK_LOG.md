@@ -5,13 +5,13 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **27 ตุลาคม 2026 — เริ่มแก้ GEE status/progress ภาพบริบท 1 กม. และ scroll performance ตามคำสั่งเผยแพร่**
+- อัปเดตล่าสุด: **27 ตุลาคม 2026 — แก้และเผยแพร่ GEE status/progress ภาพบริบท 1 กม. และ scroll performance แล้ว**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
 - จุดประสงค์รอบนี้: ลงมือแก้ 4 รายการล่าสุดของผู้ใช้ ได้แก่ GEE status/progress/error, จัดระเบียบโค้ดเฉพาะส่วนที่แก้, ภาพบริบทรอบ AOI ประมาณ 1 กม. และ scroll lag พร้อม push/deploy เว็บหลักเมื่อผ่านการตรวจที่เกี่ยวข้อง
-- สถานะปัจจุบัน: เขียนแผนก่อนแก้ code ใน `docs/WEBSITE_DETAILS.md` แล้ว ชุดแก้ผ่าน syntax/tests **458/458** และ build ทั้ง 3 รูปแบบ รวม API GEE จริงในเครื่องและการโหลดภาพผ่าน browser กำลัง push/deploy; ยังไม่ใช้คำว่าขึ้น Production จนกว่าจะยืนยัน deployment
+- สถานะปัจจุบัน: เขียนแผนก่อนแก้ code ใน `docs/WEBSITE_DETAILS.md` แล้ว ชุดแก้ผ่าน syntax/tests **458/458** และ build ทั้ง 3 รูปแบบ รวม API GEE จริงในเครื่อง เผยแพร่ชุดโค้ด `8452df2` บนเว็บหลักแล้ว ตรวจผ่าน browser จริงและ CI success
 - **คำอนุญาตล่าสุด:** ผู้ใช้สั่ง push/deploy ชุดแก้ 4 รายการนี้โดยไม่เปิดรอบทดลองให้ผู้ใช้ตรวจเพิ่ม ขอบเขตนี้ไม่ครอบคลุมการเริ่มทุก feature ที่ยังอยู่ในคิว
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
@@ -21,6 +21,10 @@
 ## 2. สรุป
 
 ### สถานะล่าสุดที่มีหลักฐาน
+
+**ชุดแก้ล่าสุด 27 ต.ค. 2026 เผยแพร่แล้ว:** GEE status/progress/error, ภาพบริบทรอบ AOI ประมาณ1กม., module/rendering cleanup และ scroll performance ที่ code commit `8452df2939d7a839885077e574ee6901944b6a91` ตรวจ deployment `dpl_FhXkVvUtYWRAA8rkqZkJwFeC5JBe` READY และ alias เว็บหลักตรงรุ่นนี้ CI [40484759102](https://github.com/megaaaop/XEDO/actions/runs/40484759102) success ผลทดสอบใหม่ **458 ผ่าน / 0 ล้มเหลว / 0 ข้าม**; browser ตรวจภาพและ GEE stages33→100/source Ready พร้อม intentional INPUT/HTTP422 แล้วคืนข้อมูลได้ เก็บรายละเอียดในรอบประจำวันท้ายไฟล์
+
+บันทึก deployment ข้างต้นเป็นหลักฐานของ **ชุดโค้ดที่ตรวจแล้ว** ก่อน commit เอกสารผลตรวจนี้ การ push เอกสาร follow-up ในรอบเดียวกันอาจทำให้ Git SHA ของ deployment เปลี่ยนโดย application bundle ไม่เปลี่ยน ให้ดู receipt ใน `output/release-check/gee-status-context-scroll-2026-10-27/` สำหรับ identity สุดท้าย ห้ามนำผล 428 tests ของ release เก่าด้านล่างมาแทนผลรอบนี้
 
 งานข้อเดิม **1–2 แก้ ทดสอบ push และ deploy แล้ว** ที่ commit `8b1a7220010e0f927739b6a8d14ca0f761e85e78` เว็บยังคง flow **3 ขั้นตอน** และตัวคำนวณ **4 ส่วน** ผลทดสอบก่อนเผยแพร่ล่าสุดคือ **428 ผ่าน / 0 ล้มเหลว / 0 ข้าม** รวมทั้งตรวจ API และใช้งานผ่านหน้า Production หลัง deploy แล้ว
 
@@ -34,8 +38,8 @@
 
 | เลขใหม่ | เลขเดิม | งาน | สถานะ/เกณฑ์ที่ต้องทำต่อ |
 | --- | --- | --- | --- |
-| **1** | **3** | เตรียม normal flow ให้สร้างแผนได้ครบ | GEE diagnostics/progress ทำและตรวจในเครื่องแล้ว กำลังเผยแพร่ชุดแก้เฉพาะรอบนี้; profile ปกติและเวลาเริ่มกรอกเอง/เวลาจบอัตโนมัติยังอยู่ในคิว |
-| **2** | **4** | เก็บ UX และวางแผนความพร้อมใช้งาน/เผยแพร่ | ภาพบริบท 1 กม./scroll และ module cleanup ตรวจในเครื่องแล้ว กำลังเผยแพร่; งาน UX ที่เหลือ เช่นเอาป้าย Prototype ออกทั้งหมดและ capacity ยังไม่รวม release นี้ |
+| **1** | **3** | เตรียม normal flow ให้สร้างแผนได้ครบ | GEE diagnostics/progress เผยแพร่แล้ว; profile ปกติและเวลาเริ่มกรอกเอง/เวลาจบอัตโนมัติยังอยู่ในคิว |
+| **2** | **4** | เก็บ UX และวางแผนความพร้อมใช้งาน/เผยแพร่ | ภาพบริบท 1 กม./scroll และ module cleanup เผยแพร่แล้ว; งาน UX ที่เหลือ เช่นเอาป้าย Prototype ออกทั้งหมดและ capacity ยังไม่รวม release นี้ |
 | **3** | **5** | บัญชี Inspector ภารกิจส่วนตัว Save และ history | ข้อกำหนดหลักตอบครบแล้ว: ทีมสร้างบัญชี อีเมล/รหัสผ่าน ไม่มี Google เห็น/แก้เฉพาะภารกิจตนเอง; ยังไม่ implement |
 | **4** | **6** | เชื่อม AI → Inspector review → พื้นที่บินตรวจ → planner | ขยายแผนละเอียดใน `docs/AI_INTEGRATION_PLAN.md` แล้ว: fixture/contract/adapter/review/planner → private history → ภาพใหม่/worker; ยังไม่ implement หรือทดสอบ |
 | **5** | **7** | Pi / ภาพ / telemetry | **พักตามคำสั่งผู้ใช้** ไม่จำเป็นต่อเป้าหมายวิเคราะห์พื้นที่เสี่ยงและสร้างแผนก่อนบิน |
@@ -458,7 +462,10 @@ Release นี้เปลี่ยน source, tests, scripts และเอก
 - **การแก้จริง:** แยก `planning-context-request`, `satellite-context`, `planning-map-overlay`, `planning-view`, `planning-image-readiness`; progress 33/67/100 ตามขั้น request และ indeterminate ตอนรอ; error category/request ID/source failures แบบปลอดภัย; retry ชั่วคราวหนึ่งครั้ง; imagery มี displayGeometry แยก AOI; ลด readiness DOM writes/overlay allocations/hidden-tab ticks และจัด wheel focus/paint containment
 - **การตรวจเพิ่ม:** พบและแก้ abort-ignoring late response ทำให้ progress เดินต่อหลัง timeout และ AOI tile ยังรอใน queue แต่ยังไม่ emit tileloadstart ทำให้ review พร้อมเร็วเกินไป เพิ่ม regression tests แล้ว Full suite ครั้งแรกพบ test extraction anchor เก่าที่อ้าง `function add` ซึ่งถูกย้ายออก ปรับ anchor ให้ตรง module ใหม่โดยไม่ลด assertions แล้ว full suite ผ่าน
 - **ไฟล์หลักฐาน:** `output/release-check/gee-status-context-scroll-2026-10-27/` มี tests/check/build logs และ `local-api.json`; รายละเอียด module และ lifecycle อยู่ใน WEBSITE_DETAILS.md
-- **เผยแพร่:** พร้อมเผยแพร่ตามคำสั่ง กำลัง push ไป main ของ repo เดิม; deployment/CI/production verification จะบันทึกหลังตรวจจริง
+- **เผยแพร่:** Push code commit `8452df2939d7a839885077e574ee6901944b6a91` ไป main สำเร็จ ตรวจ Vercel alias → `dpl_FhXkVvUtYWRAA8rkqZkJwFeC5JBe` READY/commit ตรงกัน; CI `40484759102` success รอบแรก push timeout ตรวจ main แล้วยังไม่เปลี่ยน จึง retry ด้วย HTTP/1.1/postBuffer แบบเฉพาะคำสั่งโดยไม่ force push แล้วสำเร็จ
+- **Production browser:** โหลดภาพและ context ผ่าน, Prepare เปิดใช้; refresh GEE เห็น stage33%ระหว่างรอและ100%เมื่อคำตอบตรวจผ่าน ทุกแหล่ง Ready; ทดสอบ end time ว่างให้เกิด INPUT/HTTP422/สาเหตุเฉพาะและหยุด67% จากนั้นคืนค่าเดิมแล้วกลับ Ready; route preview ยังสร้างได้ ไม่มี console error ที่พบ บันทึก screenshots/JSON และตรวจเลื่อน PageUp ใน dialog ได้ ไม่วัด FPS
+- **ขอบเขตหลักฐาน:** Node CLI smoke ของ full Production HTML/API timeout สองครั้ง จึงไม่ใช้เป็นผลผ่านหรือสรุปว่าเว็บล่ม ตรวจเส้นทางข้อมูลผ่าน browser จริงแทน พร้อม deployment/CI identity ส่วน local live API ผ่านครบ ผลนี้ไม่พิสูจน์สาเหตุของ outage เก่าหรือความเร็วเครือข่ายผู้ใช้
+- **เอกสาร:** อัปเดต work log + WEBSITE_DETAILS และ queue หลังเผยแพร่ เอกสารผลตรวจเป็น follow-up ของ code commit ด้านบน; receipt สุดท้ายเก็บ exact deployment metadata โดยไม่ต้องแก้ source หรือรัน tests ซ้ำสำหรับ Markdown-only changes
 - **รอคำตอบ:** ไม่มีคำถามที่ต้องตอบเพื่อเริ่มชุดแก้นี้ ข้อมูลพื้นที่คร่าว ๆ ได้จากภาพแล้ว
 
 รูปแบบรายการที่จะเพิ่มในรอบต่อไป:

@@ -45,7 +45,10 @@
   },
   "currentImplementationScope": {
     "id": "gee-status-context-scroll-2026-10-27",
-    "status": "verified_ready_to_publish",
+    "status": "published",
+    "applicationCommit": "8452df2939d7a839885077e574ee6901944b6a91",
+    "verifiedDeploymentId": "dpl_FhXkVvUtYWRAA8rkqZkJwFeC5JBe",
+    "ciRunId": 40484759102,
     "items": ["GEE failure reasons and honest request-stage progress", "Focused module/lifecycle cleanup for affected code", "Approximately 1 km selected-acquisition display context around the AOI", "Scroll/rendering performance fixes"],
     "planWrittenBeforeImplementation": "docs/WEBSITE_DETAILS.md",
     "documentationPaths": ["docs/XEDO_WORK_LOG.md", "docs/WEBSITE_DETAILS.md"],
@@ -58,7 +61,7 @@
       "builds": ["build", "build:workspace", "build:file"],
       "localLiveApi": "Selected acquisition context 1000m; original AOI preserved; context-only PNG tile HTTP200; GEE terrain/landcover/quality/forecast ready; invalid time pair returns422",
       "evidenceDirectory": "output/release-check/gee-status-context-scroll-2026-10-27",
-      "production": "pending release"
+      "production": "Verified production deployment identity and browser flow: selected scene/context imagery, Prepare enabled, GEE stages33->100 and all4source statusesReady; intentional incomplete time pair shows INPUT/HTTP422, stops67%, and recovers after restoring end time. CLI full-HTML/API smoke timed out twice; browser evidence is recorded instead. No recreated outage is claimed."
     },
     "preserve": ["three workflow steps", "four calculators", "original inspection/review/calculation geometry", "truthful Unknown and freshness checks"],
     "outsideThisRelease": ["aircraft simulation defaults in the normal flow", "user-start/derived-end schedule change", "account implementation", "AI integration", "Pi and experimental reports"]
@@ -126,7 +129,7 @@
       "number": 3,
       "name": "Use the existing aircraft simulation profile in the main prototype workflow",
       "status": "partially_implemented",
-      "implementationStatus": "GEE diagnostics verified locally; normal-flow profile and user-start/derived-end scheduling remain queued",
+      "implementationStatus": "GEE diagnostics published; normal-flow profile and user-start/derived-end scheduling remain queued",
       "requirement": "Reuse the previously calculated profile; actual hardware field verification is not a prerequisite for completing this prototype website. Keep real mission-data sources independent from aircraft simulation defaults.",
       "userTrialClarification": "The assistant first implements the normal-flow profile integration; the user can then try area/Home selection, route calculation and plan download. This is not only a request for the user to test the currently unfinished normal flow. The reported GEE data error must also be investigated before user acceptance.",
       "issueIds": ["gee_context_generic_error_2026_10_26"],
@@ -155,7 +158,7 @@
       "number": 4,
       "name": "Production-like interface and controlled online release",
       "status": "partially_implemented",
-      "implementationStatus": "Selected imagery context and scroll/rendering fixes verified locally; broader UX and capacity items remain queued",
+      "implementationStatus": "Selected imagery context and scroll/rendering fixes published; broader UX and capacity items remain queued",
       "requirement": "Unify the primary flow and remove every Prototype badge and repeated prototype note. Preserve useful data/readiness states. Document future mobile/desktop, error and capacity verification; do not execute it in the current planning-only turn. Implementation, validation and publication remain separate future actions under the user's instructions."
     },
     {
@@ -219,7 +222,7 @@
       "id": "gee_context_generic_error_2026_10_26",
       "legacyStageNumber": 3,
       "newRemainingWorkNumber": 1,
-      "status": "diagnostics_implemented_awaiting_release",
+      "status": "diagnostics_published_original_failure_unproven",
       "reportedOn": "2026-10-26",
       "environment": "production",
       "userConfirmedUrl": "https://xedo-eight.vercel.app",
@@ -237,7 +240,7 @@
       },
       "rootCause": "Not established for the user's request. Automatic time use is confirmed, but the affected area and exact request/response are still unknown. Do not label the whole GEE service down or blame battery/default inputs or manual time entry.",
       "proposedRepair": "Retain safe error categories/status codes and request correlation, distinguish invalid input/transport/response mismatch from upstream unavailability, use production-appropriate guidance, and preserve Unknown/disabled estimate until data is valid. Add bounded retry only for transient failures after diagnosis.",
-      "implementationStatus": "verified_locally",
+      "implementationStatus": "published",
       "pendingDecisionIds": []
     }
   ],
@@ -300,17 +303,15 @@
     }
   ],
   "latestPublishedRelease": {
-    "commit": "8b1a7220010e0f927739b6a8d14ca0f761e85e78",
-    "productionDeploymentId": "dpl_H1ApPeo75RkdzX18Q9BoK6KzJtLC",
+    "commit": "8452df2939d7a839885077e574ee6901944b6a91",
+    "productionDeploymentId": "dpl_FhXkVvUtYWRAA8rkqZkJwFeC5JBe",
     "url": "https://xedo-eight.vercel.app",
     "sourceBranch": "main",
-    "ciRunId": 40232608329,
+    "ciRunId": 40484759102,
     "ciConclusion": "success",
-    "publishedOn": "2026-10-26",
+    "publishedOn": "2026-10-27",
     "timezone": "Asia/Bangkok",
-    "scopeStages": [
-      1,
-      2
-    ]
+    "scopeId": "gee-status-context-scroll-2026-10-27",
+    "verificationRecord": "Application-code release verified before this documentation-only follow-up. Later documentation commits may advance the deployment Git SHA without changing the verified application bundle; the local release receipt records exact final identity."
   }
 }
