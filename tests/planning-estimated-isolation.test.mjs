@@ -58,6 +58,7 @@ function harness(overrides = {}) {
     satelliteRaster: null, satelliteScenes: [], satelliteSearchGeometry: null,
     lastSurveyArchived: false, lastSatelliteAction: 'search', selectHome: false,
     schedule: scheduleFactory(), routePoints: [], environmentUI: null, geospatialUI: null,
+    groundController: {clear(){events.push(['clear-3d-ground']);}},
     syncScheduleFields(patch) { events.push(['schedule', patch]); return true; },
     $: node,
     setTimeout(fn, ms) { const timer = {fn, ms}; timers.add(timer); return timer; },

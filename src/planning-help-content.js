@@ -135,7 +135,7 @@ export const planningHelpTopics = {
       'The background metadata request retries once for a transient timeout, connection failure or supported temporary server error. Changing the view cancels that retry. Missing configuration, invalid responses and empty imagery remain explicit errors; use Retry background map after a failed load.',
       'Forecast: purple outlines showing the nominal shifted boundary at arrival and survey end. Search envelope: the dashed amber box enclosing the supplied drift scenarios and margin.',
       'Route: pale yellow flight lines. Assessed sorties include outbound travel and return to the configured home; a geometric route can appear before those assessments are complete.',
-      'The 3D view is a flat-surface height diagram. It does not verify terrain, obstacles or clearance. Use 2D to review the source image and boundary.'
+      'In 3D, choose Diagram for the grid or Satellite for a geographically aligned Sentinel-2 mosaic across the same ground. The ground mosaic has its own acquisition dates and a native source resolution of 10 m; it is separate from the image selected for mission review. Orbit and zoom are preserved when switching. The ground remains flat and does not verify terrain, obstacles or clearance.'
     ],
     formulas: []
   },

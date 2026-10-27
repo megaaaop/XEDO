@@ -52,6 +52,14 @@
 .trial-map-head strong { font-size: 14px; font-weight: 600; overflow-wrap: anywhere; }
 .trial-map-hint { margin: 0; padding: 10px 18px; border-block: 1px solid var(--border); background: var(--inset); color: var(--muted); font-size: 13px; line-height: 1.6; }
 #trial-map-views { display: flex; gap: 2px; flex-shrink: 0; }
+.trial-3d-tools { padding: 8px 16px; border-block: 1px solid var(--border); }
+.trial-ground-modes { display: flex; align-items: center; flex-wrap: wrap; gap: 4px; }
+.trial-ground-modes > span { color: var(--muted); font-size: 12px; margin-right: 6px; }
+.coastal-mission .trial-ground-modes .button[aria-pressed=true] { background: var(--accent-soft); color: var(--accent); }
+.trial-ground-status { display: flex; align-items: center; flex-wrap: wrap; gap: 6px 12px; color: var(--muted); font-size: 11px; line-height: 1.6; overflow-wrap: anywhere; }
+#trial-ground-message { min-width: 0; }
+#trial-ground-progress { width: 100px; max-width: 100%; height: 5px; accent-color: var(--accent); }
+.trial-ground-status[data-state=error] { color: var(--warning, #eec879); }
 .coastal-mission .trial-map-head .button[aria-pressed=true] { background: var(--accent-soft); color: var(--accent); }
 #trial-map, #trial-3d-wrap { height: clamp(440px, 53vh, 620px); background: var(--inset); position: relative; }
 #trial-3d-wrap { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: minmax(0, 1fr) auto; }

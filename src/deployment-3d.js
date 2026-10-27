@@ -1,4 +1,5 @@
 import proj4 from 'proj4';
+import {groundGeometry, groundTextureMesh, drawGroundTexture} from './deployment-ground.js';
 
 const TAU = Math.PI * 2;
 const finite = value => typeof value === 'number' && Number.isFinite(value);
@@ -31,6 +32,12 @@ function modelData(plan, context = {}) {
     }
     const longitudeDifference = ((position[0] - originPosition[0] + 540) % 360) - 180;
     return [longitudeDifference * longitudeScale, (position[1] - originPosition[1]) * 111319.490793];
+  };
+  const toGeographic = local => {
+    if (plan?.projection?.definition && pair(plan.projection.origin)) {
+      return proj4(plan.projection.definition, 'EPSG:4326', [local[0] + plan.projection.origin[0], local[1] + plan.projection.origin[1]]);
+    }
+    return [originPosition[0] + local[0] / longitudeScale, originPosition[1] + local[1] / 111319.490793];
   };
   const rings = plan?.localTarget?.type === 'Polygon' ? plan.localTarget.coordinates.map(ring => ring.filter(pair)) : geographicRings.map(ring => ring.filter(pair).map(toLocal));
   const waypoints = (plan?.waypoints || []).map((waypoint, index) => {
@@ -65,7 +72,9 @@ function modelData(plan, context = {}) {
   const displayNote = completeFlightElevations
     ? `${samples.length} GEE elevation samples · Estimated MSL heights · Clearance unverified.`
     : `${terrainAvailable ? `${samples.length} GEE elevation samples` : 'No GEE terrain data'} · Flat AGL illustration · Clearance unverified.`;
-  return { plan, rings, waypoints, samples, minX, maxX, minY, maxY, centreX: (minX + maxX) / 2, centreY: (minY + maxY) / 2, span, maxHeight, verticalExaggeration, terrainAvailable, groundReferenceM, heightReference, description, displayNote };
+  const step = niceStep(span / 5);
+  const floorBounds = [Math.floor(minX / step) * step, Math.floor(minY / step) * step, Math.ceil(maxX / step) * step, Math.ceil(maxY / step) * step];
+  return { plan, rings, waypoints, samples, minX, maxX, minY, maxY, centreX: (minX + maxX) / 2, centreY: (minY + maxY) / 2, span, maxHeight, verticalExaggeration, terrainAvailable, groundReferenceM, heightReference, description, displayNote, toGeographic, originPosition, step, floorBounds };
 }
 
 /** Render-only perspective view. It neither requests data nor sends device commands. */
@@ -87,6 +96,21 @@ export function createDeployment3D(canvas) {
   let pitch = .72;
   let zoom = 1;
   let pointer = null;
+  let groundMode = 'diagram';
+  let groundTexture = null;
+  let textureMesh = null;
+  let meshKey = '';
+  function prepareTextureMesh() {
+    if (!model || !groundTexture) { textureMesh = null; meshKey = ''; return; }
+    const key = JSON.stringify([model.floorBounds, model.plan?.projection, model.originPosition, groundTexture.extent, groundTexture.image.width, groundTexture.image.height]);
+    if (key !== meshKey) {
+      meshKey = key;
+      textureMesh = groundTextureMesh(model.floorBounds, model.toGeographic, groundTexture.extent, groundTexture.image.width, groundTexture.image.height);
+    }
+  }
+  function labelCanvas() {
+    canvas.setAttribute('aria-label', model ? `${model.description} Ground display: ${groundMode === 'satellite' && textureMesh ? 'georeferenced satellite imagery on a flat plane.' : 'diagram grid.'}` : 'Interactive three-dimensional planning preview. Create a route to begin.');
+  }
   canvas.style.touchAction = 'none';
   canvas.style.cursor = 'grab';
   canvas.setAttribute('tabindex', '0');
@@ -142,21 +166,27 @@ export function createDeployment3D(canvas) {
       ctx.beginPath(); ctx.moveTo(a[0], a[1]); ctx.lineTo(b[0], b[1]);
       ctx.strokeStyle = colour; ctx.lineWidth = lineWidth; ctx.setLineDash(dash); ctx.stroke(); ctx.setLineDash([]);
     };
-    const step = niceStep(model.span / 5);
-    const floorMinX = Math.floor(model.minX / step) * step;
-    const floorMaxX = Math.ceil(model.maxX / step) * step;
-    const floorMinY = Math.floor(model.minY / step) * step;
-    const floorMaxY = Math.ceil(model.maxY / step) * step;
+    const step = model.step;
+    const [floorMinX, floorMinY, floorMaxX, floorMaxY] = model.floorBounds;
+    const satelliteGround = groundMode === 'satellite' && Boolean(textureMesh);
     ctx.save();
     ctx.beginPath(); ctx.rect(0, 72, width, Math.max(1, height - 124)); ctx.clip();
-    for (let x = floorMinX; x <= floorMaxX + step / 10; x += step) line(project(x, floorMinY), project(x, floorMaxY), colours.grid);
-    for (let y = floorMinY; y <= floorMaxY + step / 10; y += step) line(project(floorMinX, y), project(floorMaxX, y), colours.grid);
+    if (satelliteGround) {
+      ctx.save(); ctx.beginPath();
+      [[floorMinX, floorMinY], [floorMaxX, floorMinY], [floorMaxX, floorMaxY], [floorMinX, floorMaxY]].forEach((point, index) => {
+        const p = project(...point); if (index) ctx.lineTo(...p.slice(0, 2)); else ctx.moveTo(...p.slice(0, 2));
+      });
+      ctx.closePath(); ctx.clip(); drawGroundTexture(ctx, groundTexture.image, textureMesh, project); ctx.restore();
+    } else {
+      for (let x = floorMinX; x <= floorMaxX + step / 10; x += step) line(project(x, floorMinY), project(x, floorMaxY), colours.grid);
+      for (let y = floorMinY; y <= floorMaxY + step / 10; y += step) line(project(floorMinX, y), project(floorMaxX, y), colours.grid);
+    }
     ctx.beginPath();
     for (const ring of model.rings) {
       ring.forEach((point, index) => { const p = project(...point); index ? ctx.lineTo(p[0], p[1]) : ctx.moveTo(p[0], p[1]); });
       ctx.closePath();
     }
-    ctx.fillStyle = '#245e5b66'; ctx.fill('evenodd'); ctx.strokeStyle = colours.boundary; ctx.lineWidth = 2; ctx.stroke();
+    ctx.fillStyle = satelliteGround ? '#245e5b20' : '#245e5b66'; ctx.fill('evenodd'); ctx.strokeStyle = colours.boundary; ctx.lineWidth = 2; ctx.stroke();
     for (const sample of [...model.samples].sort((a, b) => project(...b.local, b.height)[2] - project(...a.local, a.height)[2])) {
       const p = project(...sample.local, sample.height);
       const floor = project(...sample.local);
@@ -212,7 +242,7 @@ export function createDeployment3D(canvas) {
     }
     const bottom = height - 42;
     ctx.fillStyle = colours.muted; ctx.font = '11px system-ui, sans-serif';
-    ctx.fillText(`Grid ${distanceLabel(step)} · Drag to orbit · Scroll to zoom`, 16, bottom);
+    ctx.fillText(`${satelliteGround ? 'Satellite ground' : `Grid ${distanceLabel(step)}`} · Drag to orbit · Scroll to zoom`, 16, bottom);
     ctx.fillStyle = model.heightReference === 'MSL' ? colours.ground : colours.flight;
     const reference = model.heightReference === 'MSL'
       ? `${width < 430 ? 'Ground' : 'Sampled ground reference:'} ${model.groundReferenceM.toFixed(1)} m MSL · Clearance unverified`
@@ -279,13 +309,25 @@ export function createDeployment3D(canvas) {
     setData({ plan, context } = {}) {
       if (destroyed) return null;
       model = modelData(plan, context);
-      canvas.setAttribute('aria-label', model?.description || 'Interactive three-dimensional planning preview. Create a route to begin.');
+      prepareTextureMesh(); labelCanvas();
       resize();
       return model ? {
         terrainAvailable: model.terrainAvailable, terrainSampleCount: model.samples.length,
         verticalExaggeration: model.verticalExaggeration, groundReferenceM: model.groundReferenceM,
         heightReference: model.heightReference, description: model.description, displayNote: model.displayNote
       } : null;
+    },
+    getGroundGeometry: () => model ? groundGeometry(model.floorBounds, model.toGeographic) : null,
+    setGroundMode(value) {
+      if (destroyed) return;
+      if (!['diagram', 'satellite'].includes(value)) throw new TypeError('Choose diagram or satellite ground.');
+      groundMode = value; labelCanvas(); draw();
+    },
+    setGroundTexture(value) {
+      if (destroyed) return false;
+      if (value !== null && (!value?.image || !Array.isArray(value.extent) || value.extent.length !== 4 || !value.extent.every(finite) || value.extent[0] >= value.extent[2] || value.extent[1] >= value.extent[3] || !finite(value.image.width) || !finite(value.image.height) || value.image.width <= 0 || value.image.height <= 0)) throw new TypeError('A georeferenced satellite ground image is required.');
+      groundTexture = value; meshKey = ''; prepareTextureMesh(); labelCanvas(); draw();
+      return Boolean(textureMesh);
     },
     getDescription: () => model?.description || 'Create a route to preview it in 3D.',
     resize, reset,
@@ -296,7 +338,7 @@ export function createDeployment3D(canvas) {
       globalThis.removeEventListener?.('resize', resize);
       for (const args of listeners) canvas.removeEventListener(...args);
       if (pointer && canvas.hasPointerCapture?.(pointer.id)) canvas.releasePointerCapture(pointer.id);
-      pointer = null; model = null;
+      pointer = null; model = null; groundTexture = null; textureMesh = null; meshKey = '';
       canvas.style.touchAction = previousTouchAction;
       canvas.style.cursor = previousCursor;
       for (const [name, value] of [['tabindex', previousTabIndex], ['role', previousRole], ['aria-label', previousLabel], ['aria-keyshortcuts', previousShortcuts]]) value === null ? canvas.removeAttribute(name) : canvas.setAttribute(name, value);

@@ -5,14 +5,14 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **27 ตุลาคม 2026 — แก้และเผยแพร่ GEE status/progress ภาพบริบท 1 กม. และ scroll performance แล้ว**
+- อัปเดตล่าสุด: **27 ตุลาคม 2026 — เพิ่มโหมดพื้น Diagram / Satellite ใน 3D ผ่านการตรวจในเครื่อง เตรียมเผยแพร่**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
-- จุดประสงค์รอบนี้: ลงมือแก้ 4 รายการล่าสุดของผู้ใช้ ได้แก่ GEE status/progress/error, จัดระเบียบโค้ดเฉพาะส่วนที่แก้, ภาพบริบทรอบ AOI ประมาณ 1 กม. และ scroll lag พร้อม push/deploy เว็บหลักเมื่อผ่านการตรวจที่เกี่ยวข้อง
-- สถานะปัจจุบัน: เขียนแผนก่อนแก้ code ใน `docs/WEBSITE_DETAILS.md` แล้ว ชุดแก้ผ่าน syntax/tests **458/458** และ build ทั้ง 3 รูปแบบ รวม API GEE จริงในเครื่อง เผยแพร่ชุดโค้ด `8452df2` บนเว็บหลักแล้ว ตรวจผ่าน browser จริงและ CI success
-- **คำอนุญาตล่าสุด:** ผู้ใช้สั่ง push/deploy ชุดแก้ 4 รายการนี้โดยไม่เปิดรอบทดลองให้ผู้ใช้ตรวจเพิ่ม ขอบเขตนี้ไม่ครอบคลุมการเริ่มทุก feature ที่ยังอยู่ในคิว
+- จุดประสงค์รอบนี้: เพิ่มพื้น 3D สลับ Diagram เดิม / Satellite จาก GEE จริง คงขนาด preview และพื้นเดิม แล้ว push/deploy เว็บหลัก
+- สถานะปัจจุบัน: เขียนแผนก่อน code ใน Markdown ทั้งสองแล้ว ผ่าน syntax/tests **482/482** และ build ทั้ง 3 รูปแบบ รวม browser ในเครื่องที่โหลด GEE จริง ตรวจ desktop/mobile แล้ว เตรียม push/deploy
+- **คำอนุญาตล่าสุด:** ผู้ใช้อนุญาตแก้ code, push และ deploy โหมดพื้น 3D นี้โดยตรง ขอบเขตนี้ไม่ครอบคลุมการเริ่มทุก feature ที่ยังอยู่ในคิว
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
 
@@ -21,6 +21,8 @@
 ## 2. สรุป
 
 ### สถานะล่าสุดที่มีหลักฐาน
+
+**รอบ 3D satellite ground 27 ต.ค. 2026:** เพิ่มปุ่ม Diagram / Satellite ใช้ภาพ tile GEE Sentinel-2 ตามพิกัดพื้นเดิม ไม่ใช้ thumbnail; source mosaic มีวันที่และความละเอียดแยกจากภาพ review; ผ่าน **482 tests** และ3builds ตรวจ browser โหลดภาพจริง/สลับโหมด/หมุนด้วย keyboard/กรอบ440pxdesktopและ340pxmobile/AOIเดิม/ไม่มีแนวนอนล้น390pxแล้ว สถานะก่อน push: local verified ยังไม่อ้างว่าเผยแพร่จนกว่าจะตรวจ deployment
 
 **ชุดแก้ล่าสุด 27 ต.ค. 2026 เผยแพร่แล้ว:** GEE status/progress/error, ภาพบริบทรอบ AOI ประมาณ1กม., module/rendering cleanup และ scroll performance ที่ code commit `8452df2939d7a839885077e574ee6901944b6a91` ตรวจ deployment `dpl_FhXkVvUtYWRAA8rkqZkJwFeC5JBe` READY และ alias เว็บหลักตรงรุ่นนี้ CI [40484759102](https://github.com/megaaaop/XEDO/actions/runs/40484759102) success ผลทดสอบใหม่ **458 ผ่าน / 0 ล้มเหลว / 0 ข้าม**; browser ตรวจภาพและ GEE stages33→100/source Ready พร้อม intentional INPUT/HTTP422 แล้วคืนข้อมูลได้ เก็บรายละเอียดในรอบประจำวันท้ายไฟล์
 
@@ -479,3 +481,24 @@ Release นี้เปลี่ยน source, tests, scripts และเอก
 การเผยแพร่: local / committed / pushed / deployed พร้อม identifier ถ้ามี
 งานค้างและรอคำตอบ:
 ```
+
+### 3D satellite ground — แผนก่อนลงมือ 27 ต.ค. 2026
+
+ผู้ใช้อนุญาตแก้ code, push และ deploy งานนี้โดยตรง: เพิ่มการสลับพื้น Diagram เดิม / Satellite จริงใน 3D และคงขนาดกรอบ preview/ขอบเขตพื้น/กล้องเดิม ใช้ Canvas perspective renderer เดิม ไม่เพิ่ม engine ใหม่โดยไม่จำเป็น
+
+แผน: (1) แยก loader ภาพพื้นจาก renderer ใช้ GEE Sentinel-2 basemap ของขอบเขตพื้นจริง ไม่ใช้ thumbnail (2) ประกอบ tile เป็น texture ที่มีพิกัด Web Mercator และวาดลงพื้นด้วย mesh projection ให้ตำแหน่ง AOI/route ตรงกัน (3) เพิ่มปุ่ม mode, สถานะ/วันที่/แหล่งภาพ, retry และ cancellation เมื่อแผนเปลี่ยน/ออกจาก 3D โดยไม่เปลี่ยนข้อมูล review หรือ readiness (4) จำกัดขนาด texture/concurrency/cache ให้หมุนและ scroll ไม่สร้าง request ใหม่ (5) ตรวจ georeference, failure/abort/stale response, renderer, full suite/build และ UI ภายในก่อน push/deploy เว็บหลัก ไม่มีรอบรับรอง preview เพิ่ม
+
+ขอบเขต: ภาพ Sentinel-2 มีรายละเอียดต้นทางประมาณ 10 เมตร ไม่สร้างรายละเอียดปลอมหรืออ้างว่าเป็นโมเดลอาคาร/terrain ต่อเนื่อง พื้นภาพเป็นภาพ true-colour ของช่วงวันที่แสดง แยกจาก acquisition ที่ใช้ review ภารกิจ ความสูง/clearance ยังคงใช้หลักฐานและคำอธิบายเดิม คงสามขั้นตอนและสี่ตัวคำนวณ งานบัญชี/AI/profile/schedule อื่นยังอยู่ในคิว
+
+สถานะเมื่อเขียนแผน: ยังไม่แก้ code หรือรัน tests สำหรับงาน 3D นี้; ผล458 tests ก่อนหน้าเป็นของ release เดิมเท่านั้น รอคำตอบ: ไม่มี
+
+### 3D satellite ground — ผล implementation และตรวจในเครื่อง 27 ต.ค. 2026
+
+- หัวข้อ: เพิ่มพื้นดาวเทียมจริงใน preview 3D โดยคง Diagram และขนาดพื้นที่เดิม
+- สรุป: Diagram เป็นค่าเริ่มต้น ปุ่ม Satellite โหลด recent Sentinel-2 mosaic สำหรับ polygon ของพื้นจริงแล้ววาง texture ด้วย inverse mission projection → Web Mercator UV ส่วนกล้อง/ขอบพื้น/AOI/route/height labels เดิมยังคงอยู่
+- รายละเอียดไฟล์: `deployment-3d.js` + `deployment-ground.js` เก็บ renderer/16×16 mesh และพิกัด; `planning-3d-satellite.js` โหลด/ตรวจ/ประกอบ PNG atlas; `planning-3d-ground-controller.js` จัด lifecycle/cache/cancellation/expiry/retry; `planning-trial-client.js`, `public/planning.html`, `planning-trial.css`, `planning-help-content.js` เชื่อมปุ่ม/status/credit/online gate; package เพิ่ม syntax checks; tests ใหม่3ไฟล์และเพิ่ม spy ใน VM harness เดิม
+- Performance: source≈10m เลือก zoom ตามพื้นจริง จำกัด atlas2048×2048/64tiles/4requestsพร้อมกัน; orbitใช้UVcached ไม่มีrequestใหม่; เมื่อกลับ2D/เปลี่ยนsceneหรือAOI/pagehideยกเลิกและไม่แสดงlateผล; ภาพfailed/empty/partialไม่แสดงReady มีDiagramและRetry
+- ผลตรวจใหม่: `npm run check`; `npm test` **482ผ่าน/0ล้มเหลว/0ข้าม**; `npm run build`, `build:workspace`, `build:file`; `git diff --check` ผ่าน Fullsuiteครั้งแรก480/482เพราะVM harnessเดิมไม่รู้จักgroundControllerเพิ่ม spy โดยไม่ลดassertions แล้วรันซ้ำผ่านทั้งหมด
+- Browserภายใน: localhost5187 ใช้polygonอ้างอิงสาธารณะ101.22–101.226,12.65–12.656 โหลดGEEจริง image/dateพร้อม สร้างnormalrouteแล้ว3D SatelliteReady; source29ก.ย.–22ต.ค.2026; ดูภาพเต็มพื้นจริง สลับDiagram↔Satellite/ArrowRight/ArrowLeftได้ไม่มีconsole errorที่พบ ค่าAOIเดิมเท่ากันทุกmode; desktopwrap440/canvas376px mobilewrap340px;390pxscrollWidth375ไม่ล้นแนวนอน คืนviewportแล้ว ไม่วัดFPS
+- หลักฐาน: `output/release-check/3d-satellite-ground-2026-10-27/` มี test/check/build logs, local-browser.json/local-mobile.json และภาพlocal-satellite.jpg/local-mobile.jpg (ไฟล์outputถูกignoreตามเดิม)
+- รอคำตอบ: ไม่มี งานในคิวอื่นไม่ถูกเริ่ม; สถานะก่อนcommitนี้ยังไม่เผยแพร่ รอตรวจmain/CI/VercelและProductionหลังpush

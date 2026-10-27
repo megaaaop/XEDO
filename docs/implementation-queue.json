@@ -36,34 +36,34 @@
       "websiteDetailsPath": "docs/WEBSITE_DETAILS.md",
       "updateBothForWebsiteImplementationAndInvestigation": true
     },
-    "execution": "The latest user request on 2026-10-27 authorizes implementation of four specific fixes: GEE diagnostic status/progress, focused code organization, roughly 1 km satellite display context and scroll performance. Write the repair plan before implementation and maintain the work log plus website-details Markdown. Other queued product requirements remain queued.",
-    "publication": "The user explicitly authorizes push and direct production deployment for the four fixes in the latest 2026-10-27 request, without a separate user trial/preview stage. Verify code/tests/build as appropriate, then publish to the existing production project. This is scoped authorization, not permission to implement/publish every queued feature.",
+    "execution": "The latest user request on 2026-10-27 authorizes adding Diagram/Satellite ground modes to the existing 3D preview, using real satellite imagery across the current floor while preserving preview dimensions and extent. Write the plan before code and maintain both Markdown documents. Other queued product requirements remain queued.",
+    "publication": "The user explicitly authorizes code changes, push and direct production deployment for the 3D satellite ground modes. Verify the affected flow, tests and builds, then publish to the existing production project. This is scoped authorization, not permission to implement/publish every queued feature.",
     "authorizedPublicationStages": [
       1,
       2
     ]
   },
   "currentImplementationScope": {
-    "id": "gee-status-context-scroll-2026-10-27",
-    "status": "published",
-    "applicationCommit": "8452df2939d7a839885077e574ee6901944b6a91",
-    "verifiedDeploymentId": "dpl_FhXkVvUtYWRAA8rkqZkJwFeC5JBe",
-    "ciRunId": 40484759102,
-    "items": ["GEE failure reasons and honest request-stage progress", "Focused module/lifecycle cleanup for affected code", "Approximately 1 km selected-acquisition display context around the AOI", "Scroll/rendering performance fixes"],
+    "id": "3d-satellite-ground-2026-10-27",
+    "status": "local_verified_ready_to_publish",
+    "applicationCommit": null,
+    "verifiedDeploymentId": null,
+    "ciRunId": null,
+    "items": ["Diagram/Satellite 3D ground mode switch", "Real georeferenced GEE Sentinel-2 tile texture across the existing floor", "Preserve preview dimensions, floor extent and camera state", "Bounded display-only imagery lifecycle, progress, attribution, retry and cancellation"],
     "planWrittenBeforeImplementation": "docs/WEBSITE_DETAILS.md",
     "documentationPaths": ["docs/XEDO_WORK_LOG.md", "docs/WEBSITE_DETAILS.md"],
     "pushAuthorized": true,
     "productionDeployAuthorized": true,
     "separateUserTrialRequested": false,
     "verification": {
-      "automatedTests": {"passed": 458, "failed": 0, "skipped": 0},
+      "automatedTests": {"passed": 482, "failed": 0, "skipped": 0},
       "syntax": "passed",
       "builds": ["build", "build:workspace", "build:file"],
-      "localLiveApi": "Selected acquisition context 1000m; original AOI preserved; context-only PNG tile HTTP200; GEE terrain/landcover/quality/forecast ready; invalid time pair returns422",
-      "evidenceDirectory": "output/release-check/gee-status-context-scroll-2026-10-27",
-      "production": "Verified production deployment identity and browser flow: selected scene/context imagery, Prepare enabled, GEE stages33->100 and all4source statusesReady; intentional incomplete time pair shows INPUT/HTTP422, stops67%, and recovers after restoring end time. CLI full-HTML/API smoke timed out twice; browser evidence is recorded instead. No recreated outage is claimed."
+      "localLiveApi": "Browser actual GEE basemap and native-scale tile texture ready; diagram/satellite switching, keyboard orbit, same AOI and canvas dimensions verified; mobile390px no horizontal overflow",
+      "evidenceDirectory": "output/release-check/3d-satellite-ground-2026-10-27",
+      "production": "not deployed for this scope yet"
     },
-    "preserve": ["three workflow steps", "four calculators", "original inspection/review/calculation geometry", "truthful Unknown and freshness checks"],
+    "preserve": ["three workflow steps", "four calculators", "original inspection/review/calculation geometry", "truthful Unknown and freshness checks", "existing 3D preview size, floor extent and camera fit"],
     "outsideThisRelease": ["aircraft simulation defaults in the normal flow", "user-start/derived-end schedule change", "account implementation", "AI integration", "Pi and experimental reports"]
   },
   "confirmedProductRequirements": {

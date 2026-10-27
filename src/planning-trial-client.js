@@ -41,6 +41,7 @@ import {intersects as extentsIntersect} from 'ol/extent.js';
 import {fromLonLat,toLonLat} from 'ol/proj.js';
 import {validateGeometry} from './domain.js';
 import {createGEEBasemap} from './planning-basemap.js';
+import {createGroundController} from './planning-3d-ground-controller.js';
 
 const runtime=planningRuntime(location.protocol,typeof __XEDO_STANDALONE__==='boolean'&&__XEDO_STANDALONE__);
 const fileMode=runtime.standalone;
@@ -83,6 +84,25 @@ let routePoints=[],readinessUI=null;
 let geometry=null,surveyId=null,result=null,working=false,revision=0,abort=null,draw=null,sketch=null,sketchListener=null,vertexCount=0,selectHome=false,mode='2d',renderer=null,rendererTask=null,example=false;
 let currentStep=1,review=null,webMission=null,satelliteRaster=null,satelliteAbort=null,satelliteToken=0,calculationTimer=null,satelliteBusy=false;
 let satelliteScenes=[],satelliteSearchGeometry=null,satelliteExpiryTimer=null,lastSatelliteAction='search';
+let groundMode='diagram';
+const groundController=createGroundController({onTexture:texture=>renderer?.setGroundTexture(texture),onState:renderGroundState});
+function renderGroundState(state){
+  const status=$('#trial-ground-status'),progress=$('#trial-ground-progress');
+  status.dataset.state=state.status;status.setAttribute('aria-busy',String(state.status==='loading'));
+  $('#trial-ground-retry').hidden=state.status!=='error';
+  progress.hidden=state.status!=='loading';
+  if(state.status==='loading'&&Number.isFinite(state.completedTiles)&&state.totalTiles>0)progress.value=Math.round(state.completedTiles/state.totalTiles*100);
+  else progress.removeAttribute('value');
+  let message=state.message;
+  if(state.status==='loading'&&state.stage==='tiles')message=`Loading satellite ground · ${state.completedTiles||0}/${state.totalTiles} tiles`;
+  if(state.status==='ready'){
+    const texture=state.texture,date=value=>new Intl.DateTimeFormat('en-GB',{dateStyle:'medium',timeZone:'UTC'}).format(new Date(value));
+    message=`Ground: Sentinel-2 mosaic · ${date(texture.acquiredFrom)}–${date(texture.acquiredTo)} UTC · 10 m source`;
+    if(texture.pixelSizeM>15)message+=` · ${number(texture.pixelSizeM,0)} m display pixels`;
+    message+=` · Contains modified Copernicus Sentinel data ${new Date(texture.acquiredTo).getUTCFullYear()}`;
+  }
+  setViewProperty($('#trial-ground-message'),'textContent',message||'Preparing satellite ground…');
+}
 const format=new GeoJSON(),mapOverlay=createPlanningMapOverlay({format}),vectors=mapOverlay.source;
 // Let a wheel scroll the page until the map is explicitly focused. Drag, pinch,
 // keyboard and the visible zoom buttons retain their normal map behavior.
@@ -215,8 +235,9 @@ function drawMap(){
 function fit(){if(vectors.getFeatures().length)map.getView().fit(vectors.getExtent(),{padding:[45,45,45,45],maxZoom:17,duration:200});}
 async function update3D(){
   if(mode!=='3d')return;const token=revision,plan=currentStep===3?displayPlan():null,generated=plan?.status==='generated';$('#trial-canvas').hidden=!generated;$('#trial-3d-empty').hidden=generated;$('#trial-3d-reset').hidden=!generated;
-  if(!generated){$('#trial-3d-empty').textContent=result?.flight?.message||'Prepare the mission to create the route preview.';return;}
-  try{if(!renderer){rendererTask??=import('./deployment-3d.js').then(m=>m.createDeployment3D($('#trial-canvas')));renderer=await rendererTask;}if(token!==revision||mode!=='3d')return;const context=geospatialUI?.getContext();renderer.setData({plan,context});renderer.resize();document.querySelector('.trial-3d-label').textContent=context?'GEE surface samples · Flat flight-height illustration':'Flat height preview';}
+  $('#trial-3d-tools').hidden=!generated;
+  if(!generated){groundController.suspend();$('#trial-3d-empty').textContent=result?.flight?.message||'Prepare the mission to create the route preview.';return;}
+  try{if(!renderer){rendererTask??=import('./deployment-3d.js').then(m=>m.createDeployment3D($('#trial-canvas')));renderer=await rendererTask;}if(token!==revision||mode!=='3d')return;const context=geospatialUI?.getContext();renderer.setData({plan,context});renderer.setGroundMode(groundMode);groundController.update({geometry:renderer.getGroundGeometry(),available:!runtime.localFile&&(geeHosted||!fileMode)});renderer.resize();document.querySelector('.trial-3d-label').textContent=context?'GEE surface samples · Flat flight-height illustration':'Flat height preview';}
   catch{if(token!==revision)return;$('#trial-canvas').hidden=true;$('#trial-3d-empty').hidden=false;$('#trial-3d-empty').innerHTML='The 3D tools could not load. <button class="button secondary" type="button" id="trial-reload">Reload page</button><p>Download a snapshot first to retain trial inputs.</p>';$('#trial-reload').onclick=()=>location.reload();}
 }
 function statuses(){const states=result?[['Drift scenarios',result.drift.state],['Camera route',result.flight.plan?.status==='generated'?'assumption_based':result.flight.state],['Flight file checks',result.exportCheck.state],['Oil & material',result.oil.state]]:[['Drift scenarios','waiting'],['Camera route','waiting'],['Flight file checks','waiting'],['Oil & material','waiting']];const labels={assumption_based:'Estimate computed',generated:'Route generated',pass:'Manual checks complete',incomplete:'Inputs needed',blocked:'Blocked',disabled:'Not selected',waiting:'Not calculated'};$('#trial-status').innerHTML=states.map(([name,state])=>'<div data-state="'+esc(state)+'"><small>'+esc(name)+'</small><strong>'+esc(labels[state]||state)+'</strong></div>').join('');renderMissionSummary();}
@@ -362,7 +383,14 @@ function changed(event){
   invalidate();updateHardwareProfileState();environmentUI?.changed();reconcileModelHome();error();
 }
 $('#trial-settings').addEventListener('input',changed);$('#trial-settings').addEventListener('change',changed);$('#trial-settings').onsubmit=e=>e.preventDefault();
-$('#trial-2d').onclick=()=>{mode='2d';$('#trial-map-title').textContent=review?.label||(geeHosted?'Earth Engine satellite map':'Inspection boundary');$('#trial-map').hidden=false;$('#trial-3d-wrap').hidden=true;$('#trial-2d').setAttribute('aria-pressed','true');$('#trial-3d').setAttribute('aria-pressed','false');requestAnimationFrame(()=>map.updateSize());};$('#trial-3d').onclick=()=>{stopDraw();mode='3d';$('#trial-map-title').textContent='Mission route preview';$('#trial-map').hidden=true;$('#trial-3d-wrap').hidden=false;$('#trial-2d').setAttribute('aria-pressed','false');$('#trial-3d').setAttribute('aria-pressed','true');update3D();};$('#trial-3d-reset').onclick=()=>renderer?.reset();$('#trial-fit').onclick=()=>mode==='3d'?renderer?.reset():fit();
+$('#trial-2d').onclick=()=>{mode='2d';groundController.suspend();$('#trial-3d-tools').hidden=true;$('#trial-map-title').textContent=review?.label||(geeHosted?'Earth Engine satellite map':'Inspection boundary');$('#trial-map').hidden=false;$('#trial-3d-wrap').hidden=true;$('#trial-2d').setAttribute('aria-pressed','true');$('#trial-3d').setAttribute('aria-pressed','false');requestAnimationFrame(()=>map.updateSize());};
+$('#trial-3d').onclick=()=>{stopDraw();mode='3d';$('#trial-map-title').textContent='Mission route preview';$('#trial-map').hidden=true;$('#trial-3d-wrap').hidden=false;$('#trial-2d').setAttribute('aria-pressed','false');$('#trial-3d').setAttribute('aria-pressed','true');update3D();};
+for(const value of ['diagram','satellite'])$('#trial-ground-'+value).onclick=()=>{
+  groundMode=value;for(const option of ['diagram','satellite'])$('#trial-ground-'+option).setAttribute('aria-pressed',String(option===value));
+  renderer?.setGroundMode(value);groundController.setMode(value);
+};
+$('#trial-ground-retry').onclick=()=>groundController.retry();
+$('#trial-3d-reset').onclick=()=>renderer?.reset();$('#trial-fit').onclick=()=>mode==='3d'?renderer?.reset():fit();
 function stopDraw(){loadSurvey.requestId=(loadSurvey.requestId||0)+1;if(sketchListener)unByKey(sketchListener);sketchListener=null;sketch=null;vertexCount=0;if(draw){draw.abortDrawing();map.removeInteraction(draw);draw=null;}$('#trial-finish').hidden=true;$('#trial-cancel').hidden=true;$('#trial-draw').textContent='Draw polygon';setWorking(working);}
 $('#trial-draw').onclick=()=>{if(working)return;$('#trial-2d').click();stopDraw();selectHome=false;draw=new Draw({type:'Polygon',stopClick:true,freehandCondition:()=>false,maxPoints:120});draw.on('drawstart',event=>{sketch=event.feature;vertexCount=1;sketchListener=sketch.getGeometry().on('change',()=>{vertexCount=Math.max(1,sketch.getGeometry().getCoordinates()[0].length-2);$('#trial-finish').disabled=vertexCount<3;});});draw.on('drawend',event=>{try{const value=format.writeGeometryObject(event.feature.getGeometry(),{featureProjection:'EPSG:3857',dataProjection:'EPSG:4326'});setGeometry(value);error();announce('Area selected. Review a dated image of this area next.');}catch(e){error(e.message);}queueMicrotask(stopDraw);});map.addInteraction(draw);setWorking(working);$('#trial-draw').textContent='Drawing…';$('#trial-finish').hidden=false;$('#trial-finish').disabled=true;$('#trial-cancel').hidden=false;announce('Select at least three corners, then double click or choose Finish area.');};$('#trial-finish').onclick=()=>{if(draw&&vertexCount>=3)draw.finishDrawing();};$('#trial-cancel').onclick=()=>{stopDraw();announce('Drawing cancelled. The previous area is retained.');};
 function chooseHome(){
@@ -393,7 +421,7 @@ map.on('singleclick',event=>{
 $('#trial-clear').onclick=()=>{if(working)return;stopDraw();selectHome=false;clearGeometry();error();announce('Current trial boundary and results cleared. Saved inspections are retained.');};$('#trial-load').onclick=()=>loadSurvey($('#trial-survey').value).catch(e=>error(e.message));$('#trial-import-geometry').onclick=()=>{try{const data=JSON.parse($('#trial-geometry').value);stopDraw();setGeometry(data.type==='Feature'?data.geometry:data);error();}catch(e){error(e.message);}};
 $('#trial-example').onclick=useDemo;
 $('#trial-demo-exit').onclick=leaveDemo;
-window.addEventListener('pagehide',()=>{geospatialUI?.dispose();environmentUI?.dispose();revision++;abort?.abort();satelliteAbort?.abort();clearTimeout(calculationTimer);clearTimeout(satelliteTimer);clearTimeout(satelliteExpiryTimer);clearInterval(readinessTimer);readinessUI?.dispose();setWorking(false);});window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!e.defaultPrevented&&!document.querySelector('dialog[open]')){stopDraw();selectHome=false;renderReadiness();}});
+window.addEventListener('pagehide',()=>{groundController.dispose();renderer?.destroy();geospatialUI?.dispose();environmentUI?.dispose();revision++;abort?.abort();satelliteAbort?.abort();clearTimeout(calculationTimer);clearTimeout(satelliteTimer);clearTimeout(satelliteExpiryTimer);clearInterval(readinessTimer);readinessUI?.dispose();setWorking(false);});window.addEventListener('keydown',e=>{if(e.key==='Escape'&&!e.defaultPrevented&&!document.querySelector('dialog[open]')){stopDraw();selectHome=false;renderReadiness();}});
 
 function renderMissionSummary(){
   const flight=result?.flight,battery=flight?.battery,oil=result?.oil,route=flight?.plan;
@@ -438,6 +466,7 @@ function setStep(next){
 }
 let satelliteTimer=null,lastSurveyArchived=false;
 function resetSurvey(keepScenes=false){
+  groundController.clear();
   satelliteToken++;satelliteAbort?.abort();satelliteAbort=null;clearTimeout(satelliteTimer);satelliteTimer=null;clearTimeout(satelliteExpiryTimer);satelliteExpiryTimer=null;satelliteBusy=false;selectHome=false;
   if(satelliteRaster)map.removeLayer(satelliteRaster);satelliteRaster=null;review=null;webMission=null;currentStep=1;
   if(!keepScenes){satelliteScenes=[];satelliteSearchGeometry=null;$('#trial-image-scenes').innerHTML='<option value="">Search for images first</option>';}
