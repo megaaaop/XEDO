@@ -5,6 +5,9 @@ import './planning-trial.css';
 import './planning-brand.css';
 import './planning-help.css';
 import './planning-readiness.css';
+import {setViewProperty} from './planning-view.js';
+import {createPlanningMapOverlay} from './planning-map-overlay.js';
+import {createInspectionTileReadiness,expectedInspectionTileKeys} from './planning-image-readiness.js';
 import {initializePlanningReadiness} from './planning-readiness.js';
 import {createPlanningSchedule} from './planning-schedule.js';
 import {planningRouteSamples} from './planning-route-samples.js';
@@ -27,13 +30,14 @@ import proj4 from 'proj4';
 import {register} from 'ol/proj/proj4.js';
 import {QuickMission,selectionMetrics} from './mission-flow.js';
 import {selectArchivedSatellite,selectSceneSatellite,selectSavedSatellite,selectGEESatellite,bindGEESatelliteMap,satelliteTileClip,hasVisibleSatellitePixels} from './planning-satellite.js';
-import VectorLayer from 'ol/layer/Vector.js';
-import VectorSource from 'ol/source/Vector.js';
 import OSM from 'ol/source/OSM.js';
 import GeoJSON from 'ol/format/GeoJSON.js';
 import Draw from 'ol/interaction/Draw.js';
 import {unByKey} from 'ol/Observable.js';
-import {Style,Stroke,Fill,Text,Circle as CircleStyle} from 'ol/style.js';
+import {defaults as defaultInteractions} from 'ol/interaction/defaults.js';
+import MouseWheelZoom from 'ol/interaction/MouseWheelZoom.js';
+import {focusWithTabindex} from 'ol/events/condition.js';
+import {intersects as extentsIntersect} from 'ol/extent.js';
 import {fromLonLat,toLonLat} from 'ol/proj.js';
 import {validateGeometry} from './domain.js';
 import {createGEEBasemap} from './planning-basemap.js';
@@ -79,11 +83,12 @@ let routePoints=[],readinessUI=null;
 let geometry=null,surveyId=null,result=null,working=false,revision=0,abort=null,draw=null,sketch=null,sketchListener=null,vertexCount=0,selectHome=false,mode='2d',renderer=null,rendererTask=null,example=false;
 let currentStep=1,review=null,webMission=null,satelliteRaster=null,satelliteAbort=null,satelliteToken=0,calculationTimer=null,satelliteBusy=false;
 let satelliteScenes=[],satelliteSearchGeometry=null,satelliteExpiryTimer=null,lastSatelliteAction='search';
-const format=new GeoJSON(),vectors=new VectorSource();
-const colors={original:'#4cd0ce',nominal:'#b6a0ff',scenario:'#b6a0ff80',envelope:'#e8ae63',route:'#ffda8c',home:'#ffffff'};
-const overlay=new VectorLayer({source:vectors,style:f=>{const role=f.get('role')||'original',color=colors[role]||colors.original;return new Style({stroke:new Stroke({color,width:role==='route'?2.5:2,lineDash:role==='envelope'?[7,5]:undefined}),fill:new Fill({color:role==='route'?'transparent':color+'12'}),image:new CircleStyle({radius:role==='home'?8:6,fill:new Fill({color}),stroke:new Stroke({color:'#102031',width:2})}),text:role==='home'?new Text({text:'Launch / Return',offsetY:-22,font:'600 13px sans-serif',fill:new Fill({color:'#fff'}),stroke:new Stroke({color:'#102031',width:4})}):undefined});}});
-const map=new Map({target:'trial-map',layers:[...(!geeHosted?[new TileLayer({source:new OSM(),zIndex:0})]:[]),overlay],view:new View({center:fromLonLat([101.23,12.62]),zoom:11})});
-overlay.setZIndex(20);
+const format=new GeoJSON(),mapOverlay=createPlanningMapOverlay({format}),vectors=mapOverlay.source;
+// Let a wheel scroll the page until the map is explicitly focused. Drag, pinch,
+// keyboard and the visible zoom buttons retain their normal map behavior.
+$('#trial-map').setAttribute('tabindex','0');
+const interactions=defaultInteractions({mouseWheelZoom:false}).extend([new MouseWheelZoom({condition:focusWithTabindex})]);
+const map=new Map({target:'trial-map',interactions,layers:[...(!geeHosted?[new TileLayer({source:new OSM(),zIndex:0})]:[]),mapOverlay.layer],view:new View({center:fromLonLat([101.23,12.62]),zoom:11})});
 const basemap=geeHosted?createGEEBasemap({map,onState(state){
   const panel=$('#trial-basemap-status');panel.dataset.state=state.status;
   $('#trial-basemap-source').textContent=state.label;$('#trial-basemap-message').textContent=state.message;$('#trial-basemap-retry').hidden=!state.retry;
@@ -125,7 +130,8 @@ function reconcileModelHome(){
 function readinessState(){
   const f=read('flight'),hasHome=Number.isFinite(f.homeLongitude)&&Number.isFinite(f.homeLatitude),selected=hasHome&&$('#export-home-confirmed').checked&&!selectHome;
   const timing=schedule.getReadiness(),assessment=terrainAssessment(),model=geospatialUI?.getPatch()?.export?.homeElevationEvidence?.mode==='gee_model';
-  const surfaceDetail=geospatialUI?.getState?.().status==='not_configured'?'GEE connection not configured':assessment.state==='unknown'?(assessment.reasons?.[0]||assessment.label):assessment.label;
+  const geospatialStatus=geospatialUI?.getStatus?.()??geospatialUI?.getState?.().status;
+  const surfaceDetail=geospatialStatus==='not_configured'?'GEE connection not configured':assessment.state==='unknown'?(assessment.reasons?.[0]||assessment.label):assessment.label;
   const manual=terrainMode()==='manual',surfaceReady=manual?$('#export-flat-confirmed').checked:assessment.state==='ready'&&model;
   const rows=[
     {id:'home',title:'Launch / Return',state:selected?'ready':hasHome?'review':'waiting',detail:selectHome?'Finish or cancel launch-point selection on the map.':selected?number(f.homeLatitude,5)+', '+number(f.homeLongitude,5):'Choose the drone launch and return point.',actionLabel:selectHome?'Cancel selection':selected?'Move point':'Choose on map'},
@@ -140,25 +146,28 @@ function readinessState(){
     blockers.push(...checks.slice(0,3));
     if(checks.length>3)blockers.push((checks.length-3)+' more checks in Calculation details.');
   }
-  return {rows,canExport:!!result?.exportCheck?.pass&&rows.every(row=>row.state==='ready'),blockingReasons:[...new Set(blockers)],working};
+  return {rows,canExport:!!result?.exportCheck?.pass&&rows.every(row=>row.state==='ready'),blockingReasons:[...new Set(blockers)],working,surfaceModelReady:assessment.state==='ready'};
 }
+const readinessNodes=Object.create(null);
+const readinessNode=id=>readinessNodes[id]??=(document.querySelector('#'+id));
 function renderReadiness(){
   const state=readinessState(),f=read('flight'),hasHome=Number.isFinite(f.homeLongitude)&&Number.isFinite(f.homeLatitude);
-  const text=(id,value)=>{if($(id).textContent!==value)$(id).textContent=value;};
-  $('#trial-home-pick').textContent=selectHome?'Cancel point selection':hasHome?'Move launch point':'Set launch point';
-  $('#trial-home-clear').disabled=working||!hasHome;
-  $('#trial-home-pick').disabled=working;
-  $('#trial-home-cancel').hidden=!selectHome;
-  text('#trial-home-status',selectHome?'Click the launch and return position on the map.':hasHome?number(f.homeLatitude,5)+', '+number(f.homeLongitude,5):'Choose a point on the map.');
+  const set=(id,name,value)=>setViewProperty(readinessNode(id),name,value),text=(id,value)=>set(id,'textContent',value);
+  text('trial-home-pick',selectHome?'Cancel point selection':hasHome?'Move launch point':'Set launch point');
+  set('trial-home-clear','disabled',working||!hasHome);
+  set('trial-home-pick','disabled',working);
+  set('trial-home-cancel','hidden',!selectHome);
+  text('trial-home-status',selectHome?'Click the launch and return position on the map.':hasHome?number(f.homeLatitude,5)+', '+number(f.homeLongitude,5):'Choose a point on the map.');
   const automatic=terrainMode()==='automatic';
-  $('#trial-flat-manual').hidden=automatic;$('#trial-terrain-tolerance-label').hidden=!automatic;
-  $('#trial-terrain-use-model').hidden=!automatic;
-  $('#trial-terrain-use-model').disabled=working||terrainAssessment().state!=='ready';
-  text('#trial-terrain-status',state.rows[2].detail);
-  text('#trial-schedule-summary',schedule.getState().mode==='automatic'&&!schedule.getState().pending?'Takeoff: analysis + 1 hour · '+number(schedule.getState().windowDurationS/60,1)+' min mission window':'');
-  $('#trial-replan').disabled=working||!review?.ready;
-  $('#trial-qgc').disabled=working||!!draw||currentStep!==3||!review?.ready||!state.canExport;
-  readinessUI?.render();
+  set('trial-flat-manual','hidden',automatic);set('trial-terrain-tolerance-label','hidden',!automatic);
+  set('trial-terrain-use-model','hidden',!automatic);
+  set('trial-terrain-use-model','disabled',working||!state.surfaceModelReady);
+  text('trial-terrain-status',state.rows[2].detail);
+  const timing=schedule.getState();
+  text('trial-schedule-summary',timing.mode==='automatic'&&!timing.pending?'Takeoff: analysis + 1 hour · '+number(timing.windowDurationS/60,1)+' min mission window':'');
+  set('trial-replan','disabled',working||!review?.ready);
+  set('trial-qgc','disabled',working||!!draw||currentStep!==3||!review?.ready||!state.canExport);
+  readinessUI?.render(state);
 }
 function updateHardwareProfileState(){
   $('#trial-hardware-name').textContent=XEDO_HARDWARE_PROFILE.name;
@@ -192,20 +201,16 @@ function body(){
   return applyFixedPlanningSettings({...(surveyId?{surveyId}:{geometry}),driftEnabled:$('#drift-enabled').checked,drift,flight,export:exportSettings,oil});
 }
 function api(path,options={}){return requestPlanningTrial(example&&!path.startsWith('/source')?{...runtime,standalone:true}:runtime,path,options);}
-function add(geometry,role){if(!geometry)return;const feature=format.readFeature({type:'Feature',geometry,properties:{role}},{dataProjection:'EPSG:4326',featureProjection:'EPSG:3857'});vectors.addFeature(feature);}
 function displayPlan(){
   const plan=result?.flight?.plan,sorties=result?.flight?.battery?.sorties;
   if(!plan||!sorties?.length)return plan;
   return {...plan,waypoints:sorties.flatMap(s=>s.waypoints),localWaypoints:undefined};
 }
 function drawMap(){
-  vectors.clear();add(geometry,'original');
-  if(currentStep===3&&result?.drift?.geometry){add(result.drift.geometry,'envelope');add(result.drift.nominalArriveGeometry,'nominal');add(result.drift.nominalGeometry,'nominal');}
   const plan=currentStep===3?result?.flight?.plan:null,sorties=currentStep===3?result?.flight?.battery?.sorties:null;
-  if(sorties?.length)for(const sortie of sorties)add({type:'LineString',coordinates:sortie.waypoints.map(w=>w.position)},'route');
-  else if(plan?.status==='generated')for(const s of plan.segments)add({type:'LineString',coordinates:[plan.waypoints[s.from].position,plan.waypoints[s.to].position]},'route');
-  const f=read('flight');if(Number.isFinite(f.homeLongitude)&&Number.isFinite(f.homeLatitude))add({type:'Point',coordinates:[f.homeLongitude,f.homeLatitude]},'home');
-  $('#trial-route-note').textContent=sorties?.length?'Assessed routes · Includes home transit':plan?.status==='generated'?'Survey route only · Flight assessment needed':currentStep===2?'Satellite image · Review selected area':currentStep===3?'Route needs mission settings':geometry?'Inspection area selected':'No area selected';
+  const f=read('flight'),home=Number.isFinite(f.homeLongitude)&&Number.isFinite(f.homeLatitude)?[f.homeLongitude,f.homeLatitude]:null;
+  mapOverlay.update({geometry,drift:currentStep===3?result?.drift:null,plan,sorties,home});
+  setViewProperty($('#trial-route-note'),'textContent',sorties?.length?'Assessed routes · Includes home transit':plan?.status==='generated'?'Survey route only · Flight assessment needed':currentStep===2?'Satellite image · Review selected area':currentStep===3?'Route needs mission settings':geometry?'Inspection area selected':'No area selected');
 }
 function fit(){if(vectors.getFeatures().length)map.getView().fit(vectors.getExtent(),{padding:[45,45,45,45],maxZoom:17,duration:200});}
 async function update3D(){
@@ -469,8 +474,8 @@ async function geeTileHasVisibleData(blob,ring,extent){
 }
 function showSatellite(selection,token,signal){
   return new Promise(async(resolve,reject)=>{
-    let settled=false,renderListener=null,sawTile=false;const pendingTiles=new Set();
-    const finish=(failure)=>{if(settled)return;settled=true;if(renderListener)unByKey(renderListener);clearTimeout(satelliteTimer);signal.removeEventListener('abort',cancel);if(failure)reject(failure);else resolve();};
+    let settled=false,renderListener=null,sawTile=false,contextWarningMessage=null;
+    const finish=(failure)=>{if(settled)return;settled=true;if(renderListener)unByKey(renderListener);clearTimeout(satelliteTimer);signal.removeEventListener('abort',cancel);if(failure)reject(failure);else resolve({contextWarning:contextWarningMessage});};
     const cancel=()=>finish(new DOMException('Satellite survey cancelled.','AbortError'));signal.addEventListener('abort',cancel,{once:true});
     const failed=message=>{if(settled)revokeSatellite(token,signal,message);else finish(Error(message));};
     satelliteTimer=setTimeout(()=>finish(Error('Satellite image is taking too long to load. Retry or change the area.')),30000);
@@ -483,25 +488,47 @@ function showSatellite(selection,token,signal){
         satelliteRaster.getSource().on('imageloadend',()=>finish());satelliteRaster.getSource().on('imageloaderror',()=>failed('The archived satellite image could not load.'));
       }else if(selection.image.kind==='gee'){
         if(!geeHosted||!selection.image.url)throw Error('Earth Engine imagery needs the hosted workspace.');
-        const inspectionRing=selection.geometry.coordinates[0].map(point=>fromLonLat(point)),visibleTiles=new WeakSet();let sawVisibleData=false;
+        const inspectionRing=selection.geometry.coordinates[0].map(point=>fromLonLat(point)),visibleTiles=new WeakSet(),tileReadiness=createInspectionTileReadiness();let contextWarningShown=false;
+        const inspectionExtent=format.readGeometry(selection.geometry,{dataProjection:'EPSG:4326',featureProjection:'EPSG:3857'}).getExtent();
+        const displayExtent=format.readGeometry(selection.image.displayGeometry||selection.geometry,{dataProjection:'EPSG:4326',featureProjection:'EPSG:3857'}).getExtent();
+        const inspectionTile=tile=>extentsIntersect(inspectionExtent,source.getTileGrid().getTileCoordExtent(tile.getTileCoord()));
+        const tileKey=tile=>tile.getTileCoord().join('/');
         const source=new XYZ({url:selection.image.url,maxZoom:18,wrapX:false,transition:0,
           tileLoadFunction:async(tile,url)=>{
             try{
               const response=await fetch(url,{credentials:'same-origin',redirect:'error',cache:'no-store',signal});
               if(!response.ok||!response.headers.get('content-type')?.startsWith('image/png'))throw Error('Image tile unavailable');
               const blob=await response.blob();if(signal.aborted||token!==satelliteToken)return;
-              if(await geeTileHasVisibleData(blob,inspectionRing,source.getTileGrid().getTileCoordExtent(tile.getTileCoord())))visibleTiles.add(tile);
+              // Context-only tiles are displayed without decoding them a second
+              // time for pixel review. Only the original AOI can pass review.
+              if(inspectionTile(tile)&&await geeTileHasVisibleData(blob,inspectionRing,source.getTileGrid().getTileCoordExtent(tile.getTileCoord())))visibleTiles.add(tile);
               if(signal.aborted||token!==satelliteToken)return;
               const objectUrl=URL.createObjectURL(blob),image=tile.getImage();
               const cleanup=()=>{URL.revokeObjectURL(objectUrl);image.removeEventListener('load',cleanup);image.removeEventListener('error',cleanup);};
               image.addEventListener('load',cleanup,{once:true});image.addEventListener('error',cleanup,{once:true});image.src=objectUrl;
             }catch{tile.setState(TileState.ERROR);}
           }});
-        satelliteRaster=new TileLayer({source});
-        source.on('tileloadstart',event=>pendingTiles.add(event.tile));
-        source.on('tileloadend',event=>{pendingTiles.delete(event.tile);sawTile=true;if(visibleTiles.has(event.tile))sawVisibleData=true;});
-        source.on('tileloaderror',event=>{pendingTiles.delete(event.tile);failed('Earth Engine image tiles could not load. Reload the selected image or search again.');});
-        renderListener=map.on('rendercomplete',()=>{if(sawTile&&!pendingTiles.size)finish(sawVisibleData?null:Error('The selected image has no visible satellite pixels inside the inspection area. Choose another acquisition.'));});
+        satelliteRaster=new TileLayer({source,extent:displayExtent});
+        source.on('tileloadstart',event=>tileReadiness.start(tileKey(event.tile),inspectionTile(event.tile)));
+        source.on('tileloadend',event=>tileReadiness.complete(tileKey(event.tile),inspectionTile(event.tile),visibleTiles.has(event.tile)));
+        source.on('tileloaderror',event=>{
+          if(signal.aborted||token!==satelliteToken)return;
+          if(tileReadiness.fail(tileKey(event.tile),inspectionTile(event.tile)))failed('Earth Engine image tiles could not load. Reload the selected image or search again.');
+          else if(!contextWarningShown){contextWarningShown=true;contextWarningMessage='Some surrounding imagery could not load. Reload the image to retry.';$('#trial-image-caption').textContent+=' · '+contextWarningMessage;}
+        });
+        // Prime the full wanted AOI range before checking readiness. A queued
+        // tile that has not emitted tileloadstart still prevents approval.
+        const checkInspection=()=>{
+          if(signal.aborted||token!==satelliteToken||settled)return;
+          const view=map.getView(),size=map.getSize();
+          if(!size||view.getAnimating()||view.getInteracting())return;
+          try{
+            tileReadiness.expect(expectedInspectionTileKeys({tileGrid:source.getTileGrid(),inspectionExtent,viewExtent:view.calculateExtent(size),resolution:view.getResolution(),rotation:view.getRotation(),center:view.getCenter(),size}));
+            const state=tileReadiness.getState();
+            if(state.expected&&!state.pending)finish(state.ready?null:Error('The selected image has no visible satellite pixels inside the inspection area. Choose another acquisition.'));
+          }catch(error){finish(error);}
+        };
+        renderListener=[map.on('postrender',checkInspection),map.on('rendercomplete',checkInspection)];
       }else{
         if(fileMode)throw Error('This prototype contains the stored satellite preview only.');
         const {createCogRaster}=await import('./raster-cog.js');if(token!==satelliteToken||signal.aborted)return cancel();
@@ -539,8 +566,9 @@ async function reviewSatellite(selection,token,signal){
   $('#trial-image-caption').textContent=selection.image.kind==='gee'
     ? 'Google Earth Engine · '+selection.scene.platform+' · '+number(selection.scene.cloudCover,1)+'% scene cloud · '+number(selection.scene.resolution,0)+' m RGB'
     : selection.scene.platform+' · '+(selection.image.kind==='preview'?'Stored image · not live':'Original satellite source');
-  $('#trial-image-status').textContent='Loading the covering image…';await showSatellite(selection,token,signal);
+  $('#trial-image-status').textContent='Loading the covering image…';const loadedImage=await showSatellite(selection,token,signal);
   if(token!==satelliteToken||signal.aborted)return;
+  if(loadedImage?.contextWarning&&!$('#trial-image-caption').textContent.includes(loadedImage.contextWarning))$('#trial-image-caption').textContent+=' · '+loadedImage.contextWarning;
   if(selection.image.kind==='gee'&&Date.parse(selection.image.expiresAt)<=Date.now())throw Error('The Earth Engine image session expired. Reload the selected image.');
   review.ready=true;if(webMission)webMission.imageReady=true;
   if(selection.image.kind==='gee')satelliteExpiryTimer=setTimeout(()=>revokeSatellite(token,signal,'The Earth Engine image session expired. Reload the selected image.'),Math.max(0,Date.parse(selection.image.expiresAt)-Date.now()));
@@ -652,7 +680,10 @@ readinessUI=initializePlanningReadiness({getState:readinessState,onAction:(id,ch
   else if(id==='airspace-toggle'){$('#export-airspace-reviewed').checked=checked;invalidate();}
 }});
 $('#trial-replan').onclick=()=>{if(working||!review?.ready)return;syncScheduleFields(schedule.begin());resetReview();environmentUI?.changed();invalidate();announce('Replanning. Takeoff will be one hour after successful route analysis.');};
-const readinessTimer=setInterval(()=>renderReadiness(),1000);
+const readinessVisibility=()=>{if(!document.hidden)renderReadiness();};
+const readinessTimer=setInterval(readinessVisibility,1000);
+document.addEventListener('visibilitychange',readinessVisibility);
+window.addEventListener('pagehide',()=>document.removeEventListener('visibilitychange',readinessVisibility),{once:true});
 initializePlanningHelp();statuses();notice();refreshFlow();setWorking(false);
 if(fileMode){
   $('#trial-survey').closest('label').hidden=true;$('#trial-load').hidden=true;$('.trial-source-input summary').textContent='Import a boundary (GeoJSON)';

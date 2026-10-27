@@ -53,6 +53,7 @@ export const planningHelpTopics = {
       'The GEE GFS reference describes 10 m wind and available gusts at one forecast time on a roughly 28 km grid. It is not 50 m flight wind or full-mission weather coverage; the existing automatic weather/current API remains the calculation source.',
       'Area, Home, image, time and route-sample changes cancel an older request. Context expires after at most ten minutes. Refresh GEE data retries the current request; failed or expired data cannot stay ready. Missing credentials, masked values, source errors, offline mode and file mode never become zero elevation, calm wind or a completed review.',
       'Some GEE data unavailable means a source or requested terrain sample is missing/unknown, or mapped/image-quality coverage is below 99%. Usable independent data stays visible. A data-ready badge does not approve the surface comparison, launch site or flight export.',
+      'Request progress counts completed loading stages. While Earth Engine is processing, the waiting indicator and elapsed time do not claim a server-compute percentage. Failed requests distinguish offline, connection, timeout, busy, invalid-input and response-validation problems; only temporary failures are retried automatically.',
       'The 3D view can show available surface-model sample points alongside the flat flight-height illustration. Route heights, terrain following, airspace checks and onboard geofences are not generated from these layers.'
     ],
     formulas: ['Estimated sampled elevation range = highest available DSM sample − lowest available DSM sample']
@@ -129,6 +130,8 @@ export const planningHelpTopics = {
     ],
     bullets: [
       'Inspection area: the cyan boundary selected for satellite review. Background imagery is navigation context; Review area image loads a single dated acquisition before mission preparation.',
+      'The selected Earth Engine acquisition includes approximately 1 km of surrounding display context. The cyan inspection boundary, image-coverage check and calculation area stay tied to the selected inspection area.',
+      'Click or focus the map to zoom with the wheel; use the + and − controls anytime. Scrolling over an unfocused map scrolls the page.',
       'The background metadata request retries once for a transient timeout, connection failure or supported temporary server error. Changing the view cancels that retry. Missing configuration, invalid responses and empty imagery remain explicit errors; use Retry background map after a failed load.',
       'Forecast: purple outlines showing the nominal shifted boundary at arrival and survey end. Search envelope: the dashed amber box enclosing the supplied drift scenarios and margin.',
       'Route: pale yellow flight lines. Assessed sorties include outbound travel and return to the configured home; a geometric route can appear before those assessments are complete.',

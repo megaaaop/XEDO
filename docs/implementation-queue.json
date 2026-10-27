@@ -1,0 +1,316 @@
+{
+  "schemaVersion": 1,
+  "updatedOn": "2026-10-27",
+  "timezone": "Asia/Bangkok",
+  "numbering": {
+    "effectiveOn": "2026-10-26",
+    "legacyStageIdField": "stages[].number",
+    "currentUserFacingOrderField": "remainingWorkOrder[].newNumber",
+    "defaultForNewInstructions": "Use the new remaining-work number unless the user explicitly refers to the old numbering or an earlier quoted instruction.",
+    "historicalReferences": "Existing stage IDs, resolved-decision stage references, release scope and prior publication authorization retain their legacy numbers.",
+    "activeRemainingCount": 4,
+    "deferredRemainingCount": 2,
+    "totalRemainingCount": 6,
+    "completedLegacyStageIds": [1, 2]
+  },
+  "remainingWorkOrder": [
+    {"newNumber": 1, "legacyStageNumber": 3, "scope": "active", "name": "Use the existing aircraft simulation profile in the normal planner flow"},
+    {"newNumber": 2, "legacyStageNumber": 4, "scope": "active", "name": "Production-like UX without Prototype badges, with future verification and capacity/release planning"},
+    {"newNumber": 3, "legacyStageNumber": 5, "scope": "active", "name": "Team-created Inspector accounts, private missions, save and history"},
+    {"newNumber": 4, "legacyStageNumber": 6, "scope": "active", "name": "AI candidate analysis, Inspector review and planner handoff"},
+    {"newNumber": 5, "legacyStageNumber": 7, "scope": "deferred", "name": "Raspberry Pi images and telemetry"},
+    {"newNumber": 6, "legacyStageNumber": 8, "scope": "deferred", "name": "Experiment results and before-after reports"}
+  ],
+  "purpose": "Queued XEDO implementation requirements and unresolved user decisions for this conversation.",
+  "conversationPolicy": {
+    "acceptAdvanceRequirements": true,
+    "showUnansweredDecisionsInFollowingReplies": true,
+    "pendingLabel": "รอคำตอบ",
+    "workLog": {
+      "path": "docs/XEDO_WORK_LOG.md",
+      "readBeforeProjectWork": true,
+      "updateEveryProjectTurnBeforeFinalReply": true,
+      "includesPlanningRequirementsAndDocumentationTurns": true,
+      "mainParts": ["หัวข้อ", "สรุป", "รายละเอียด"],
+      "preserveOtherChatsEntries": true,
+      "websiteDetailsPath": "docs/WEBSITE_DETAILS.md",
+      "updateBothForWebsiteImplementationAndInvestigation": true
+    },
+    "execution": "The latest user request on 2026-10-27 authorizes implementation of four specific fixes: GEE diagnostic status/progress, focused code organization, roughly 1 km satellite display context and scroll performance. Write the repair plan before implementation and maintain the work log plus website-details Markdown. Other queued product requirements remain queued.",
+    "publication": "The user explicitly authorizes push and direct production deployment for the four fixes in the latest 2026-10-27 request, without a separate user trial/preview stage. Verify code/tests/build as appropriate, then publish to the existing production project. This is scoped authorization, not permission to implement/publish every queued feature.",
+    "authorizedPublicationStages": [
+      1,
+      2
+    ]
+  },
+  "currentImplementationScope": {
+    "id": "gee-status-context-scroll-2026-10-27",
+    "status": "verified_ready_to_publish",
+    "items": ["GEE failure reasons and honest request-stage progress", "Focused module/lifecycle cleanup for affected code", "Approximately 1 km selected-acquisition display context around the AOI", "Scroll/rendering performance fixes"],
+    "planWrittenBeforeImplementation": "docs/WEBSITE_DETAILS.md",
+    "documentationPaths": ["docs/XEDO_WORK_LOG.md", "docs/WEBSITE_DETAILS.md"],
+    "pushAuthorized": true,
+    "productionDeployAuthorized": true,
+    "separateUserTrialRequested": false,
+    "verification": {
+      "automatedTests": {"passed": 458, "failed": 0, "skipped": 0},
+      "syntax": "passed",
+      "builds": ["build", "build:workspace", "build:file"],
+      "localLiveApi": "Selected acquisition context 1000m; original AOI preserved; context-only PNG tile HTTP200; GEE terrain/landcover/quality/forecast ready; invalid time pair returns422",
+      "evidenceDirectory": "output/release-check/gee-status-context-scroll-2026-10-27",
+      "production": "pending release"
+    },
+    "preserve": ["three workflow steps", "four calculators", "original inspection/review/calculation geometry", "truthful Unknown and freshness checks"],
+    "outsideThisRelease": ["aircraft simulation defaults in the normal flow", "user-start/derived-end schedule change", "account implementation", "AI integration", "Pi and experimental reports"]
+  },
+  "confirmedProductRequirements": {
+    "productMode": "Functional prototype with a production-like user experience.",
+    "prototypeDisclosure": "Latest user correction on 2026-10-26: remove all Prototype badges and repeated prototype marks/notes from the website when UX implementation is authorized. This supersedes the earlier single-badge plan. Keep meaningful source dates, missing-data, review and error states. No website badge has been removed in the planning-only turn.",
+    "workflowStepCount": 3,
+    "missionScheduling": {
+      "confirmedOn": "2026-10-26",
+      "startTime": "The Inspector enters the intended takeoff date/time.",
+      "endTime": "Computed automatically from the assessed mission duration, sortie turnaround and scheduling buffer; not a second required manual entry.",
+      "replanning": "Preserve the chosen start time and recompute the end when route/profile or other duration inputs change. An expired start must be corrected rather than silently moved.",
+      "currentImplementationGap": "The existing implementation uses analysis time plus one hour in automatic mode. Editing either time enters manual mode, and complete() only recalculates automatic schedules; user-selected start with derived end is not yet implemented.",
+      "reportedFailureContext": "The user used automatic time when the GEE screenshot occurred. Exact area and request payload are still unknown."
+    },
+    "calculators": [
+      "drift",
+      "camera-flight-battery",
+      "export-readiness",
+      "oil-capsule"
+    ],
+    "userRoles": [
+      "inspector"
+    ],
+    "defaultUserRole": "inspector",
+    "featureAccess": "Every application user has full access to all options offered by the website.",
+    "missionDataAccess": {
+      "scope": "own_missions_only",
+      "phase": "experimental_trial",
+      "crossInspectorSharing": false,
+      "appliesTo": ["mission list and details", "edits and history", "images and AI artifacts", "snapshots and plan downloads"],
+      "enforcement": "Enforce authenticated ownership on the server and artifact access, not only by hiding other users' missions in the UI."
+    },
+    "signIn": {
+      "method": "email_password",
+      "interface": "XEDO website login",
+      "googleSignIn": false,
+      "accountProvisioning": "team_created_trial_accounts",
+      "publicSelfRegistration": false,
+      "applicationRoleForEveryAccount": "inspector",
+      "authBackendChoice": "To be designed during implementation; the user-facing login choice does not require custom cryptography or authorize provisioning an external service."
+    },
+    "inspectorWorkflow": "The Inspector analyzes candidate oil-risk areas before flight; the website generates an inspection flight plan from reviewed target areas and mission inputs.",
+    "primaryWebsiteGoal": "Pre-flight risk-area analysis and drone inspection planning.",
+    "deviceConnectivityRequiredForPlanning": false,
+    "deferredByUser": ["Raspberry Pi images and telemetry integration", "Experiment results and before-after reports"]
+  },
+  "stages": [
+    {
+      "number": 1,
+      "name": "Planner readiness, launch point, schedule and interface fixes",
+      "status": "published",
+      "lastVerifiedTests": 428,
+      "publishedReleaseCommit": "8b1a7220010e0f927739b6a8d14ca0f761e85e78"
+    },
+    {
+      "number": 2,
+      "name": "Local live GEE and environmental-data verification",
+      "status": "published",
+      "verification": "Live imagery, regional wind/current and GEE terrain/landcover were checked. Partial data remains explicit.",
+      "publishedReleaseCommit": "8b1a7220010e0f927739b6a8d14ca0f761e85e78"
+    },
+    {
+      "number": 3,
+      "name": "Use the existing aircraft simulation profile in the main prototype workflow",
+      "status": "partially_implemented",
+      "implementationStatus": "GEE diagnostics verified locally; normal-flow profile and user-start/derived-end scheduling remain queued",
+      "requirement": "Reuse the previously calculated profile; actual hardware field verification is not a prerequisite for completing this prototype website. Keep real mission-data sources independent from aircraft simulation defaults.",
+      "userTrialClarification": "The assistant first implements the normal-flow profile integration; the user can then try area/Home selection, route calculation and plan download. This is not only a request for the user to test the currently unfinished normal flow. The reported GEE data error must also be investigated before user acceptance.",
+      "issueIds": ["gee_context_generic_error_2026_10_26"],
+      "plannedSubsteps": [
+        "1.1 Diagnose the reported GEE context failure and expose safe actionable error categories; validate recovery once implementation is requested",
+        "1.2 Connect the existing aircraft simulation profile to the normal flow without changing real mission data",
+        "1.3 Let the user enter takeoff time and derive end time from assessed duration without moving the chosen start",
+        "1.4 Prepare the complete flow for the user's acceptance trial"
+      ],
+      "responsibilitiesClarifiedOn": "2026-10-27",
+      "userResponsibilities": {
+        "now": "Provide the affected place or coordinates. A map screenshot showing the boundary and Home, or selected scene details, is helpful if available but not an additional mandatory prerequisite for initial triage.",
+        "afterImplementation": "Try the prepared local flow with the intended area/Home/start time and report whether the behavior and calculated end time match the intended workflow.",
+        "alreadyAnswered": "Production URL and use of automatic time during the failure; desired scheduling is user-entered start with computed end. Do not ask these again."
+      },
+      "assistantResponsibilities": [
+        "Reproduce and inspect the affected context request; distinguish confirmed causes from hypotheses",
+        "Preserve safe actionable errors, use production-appropriate guidance, retry only transient failures within a bound, and keep missing data truthful",
+        "Consider loading static terrain/landcover independently of an incomplete forecast window; do not present this design as the confirmed root cause",
+        "Connect the existing aircraft/battery profile without replacing real mission sources or requiring Pi",
+        "Derive end time from assessed duration and turnaround/buffer, preserve the selected start, and recalculate coverage/readiness when inputs change",
+        "When implementation is requested, verify locally before the user's acceptance trial and record evidence; publish only within explicit release authorization"
+      ]
+    },
+    {
+      "number": 4,
+      "name": "Production-like interface and controlled online release",
+      "status": "partially_implemented",
+      "implementationStatus": "Selected imagery context and scroll/rendering fixes verified locally; broader UX and capacity items remain queued",
+      "requirement": "Unify the primary flow and remove every Prototype badge and repeated prototype note. Preserve useful data/readiness states. Document future mobile/desktop, error and capacity verification; do not execute it in the current planning-only turn. Implementation, validation and publication remain separate future actions under the user's instructions."
+    },
+    {
+      "number": 5,
+      "name": "Accounts, saved missions and history",
+      "status": "core_requirements_confirmed",
+      "implementationStatus": "not_started",
+      "confirmed": [
+        "One application role: Inspector",
+        "All users can use all offered options",
+        "During the trial each Inspector sees and edits only their own missions",
+        "XEDO email/password login, without Google sign-in",
+        "The team creates Inspector accounts for trial participants; no public self-registration"
+      ],
+      "pendingDecisionIds": [],
+      "implementationConsiderations": ["Use a maintained authentication/password/session implementation", "Scope mission and artifact queries to authenticated ownership", "Design account setup, password changes/recovery and session lifecycle when implementation starts", "Team provisioning is an operational process, not an extra application user role"]
+    },
+    {
+      "number": 6,
+      "name": "AI result integration",
+      "status": "detailed_plan_prepared",
+      "implementationStatus": "not_started",
+      "requestedDeliverable": "Detailed implementation plan expanded after the user's four annotations, starting from existing georeferenced SAR results and independent of Pi connectivity; documentation only, no implementation or tests this turn.",
+      "planPath": "C:/mega/codex/iENA/outputs/XEDO_AI_Integration_Plan_2026-10-26/report.html",
+      "detailedMarkdownPlanPath": "docs/AI_INTEGRATION_PLAN.md",
+      "plannedMilestones": [
+        "A: reference manifest, pre-flight contracts, raster-to-map adapter, Inspector review and validated planner handoff",
+        "B: private mission persistence and provenance using the confirmed account requirements from new step 3 / legacy stage 5",
+        "C: compatible fresh Sentinel-1 input preparation and asynchronous inference worker feeding the same result adapter",
+        "D: future acceptance and capacity checks, with no tests executed during planning"
+      ],
+      "proposedFirstMilestone": "Import a historical georeferenced SAR result as an integration fixture; preserve its original timestamps and coverage, let the Inspector review candidate zones, then pass a validated selected inspection polygon to the existing planner.",
+      "guardrails": ["Risk candidates are not field-confirmed oil or thickness", "Current hosted planner has no AI inference integration", "Do not reuse post-flight run/capture contracts by inventing Pi captures", "Do not assume RGB marine model is validated on Sentinel-2 rendered imagery"]
+    },
+    {
+      "number": 7,
+      "name": "Raspberry Pi images and telemetry integration",
+      "status": "deferred_by_user",
+      "requiredForCurrentWebsiteGoal": false,
+      "userInstruction": "Do not integrate now. Check whether the website can generate inspection plans without this stage and outline repairs if needed.",
+      "verification": {
+        "checkedOn": "2026-10-26",
+        "productionCommit": "8b1a7220010e0f927739b6a8d14ca0f761e85e78",
+        "piDependencyFound": false,
+        "normalFlow": "Generated a 1.86 km geometric route; download remained blocked by missing aircraft/battery/export inputs and condition-window checks.",
+        "demoFlow": "Downloaded a QGroundControl Plan v1 with 20 mission items, 1 assessed sortie, readiness 4/4, and no Pi connection.",
+        "evidencePath": "C:/mega/codex/iENA/outputs/XEDO_AI_Integration_Plan_2026-10-26/website-check.json",
+        "repairPlan": "Reuse existing simulation aircraft defaults in the normal flow, complete scenario export policy, synchronize schedule/condition coverage, then verify end-to-end without device dependencies."
+      }
+    },
+    {
+      "number": 8,
+      "name": "Experiment results and reports",
+      "status": "deferred_remaining",
+      "userInstruction": "Do not implement now; keep marked as remaining work.",
+      "requiredForCurrentWebsiteGoal": false
+    }
+  ],
+  "openIssues": [
+    {
+      "id": "gee_context_generic_error_2026_10_26",
+      "legacyStageNumber": 3,
+      "newRemainingWorkNumber": 1,
+      "status": "diagnostics_implemented_awaiting_release",
+      "reportedOn": "2026-10-26",
+      "environment": "production",
+      "userConfirmedUrl": "https://xedo-eight.vercel.app",
+      "reportedSymptom": "GEE planning data unavailable; terrain/Home/landcover/image quality/GFS show Unknown and Use reviewed estimate is disabled.",
+      "userTimingAnswer": "Used automatic time; intended product behavior is user-entered start time with automatically calculated end time.",
+      "confirmedSourceFinding": "planning-geospatial-ui.js:165 discards non-abort errors from HTTP, response parsing and context validation and displays the same local-server message on production. The screenshot matches that branch; it does not identify the underlying failure.",
+      "productionIdentity": {"commit": "8b1a7220010e0f927739b6a8d14ca0f761e85e78", "deploymentId": "dpl_H1ApPeo75RkdzX18Q9BoK6KzJtLC", "readyState": "READY"},
+      "boundedDiagnosis": {
+        "checkedAt": "2026-10-26T07:17:56.848Z",
+        "scope": "Two read-only context lookups using the existing public Rayong reference area, not the user's unknown mission payload",
+        "staticContext": "HTTP 200 complete; terrain and landcover ready; quality and forecast not requested",
+        "sceneAndTimeContext": "HTTP 200 partial; terrain, landcover and image quality ready; GFS reference unavailable for the short future window; request matched",
+        "logs": "2h query exceeded account retention; 30m runtime logs and grouped errors returned no matching events. This does not prove the user's request succeeded.",
+        "evidencePath": "output/gee-error-diagnosis-2026-10-26/reference-context.json"
+      },
+      "rootCause": "Not established for the user's request. Automatic time use is confirmed, but the affected area and exact request/response are still unknown. Do not label the whole GEE service down or blame battery/default inputs or manual time entry.",
+      "proposedRepair": "Retain safe error categories/status codes and request correlation, distinguish invalid input/transport/response mismatch from upstream unavailability, use production-appropriate guidance, and preserve Unknown/disabled estimate until data is valid. Add bounded retry only for transient failures after diagnosis.",
+      "implementationStatus": "verified_locally",
+      "pendingDecisionIds": []
+    }
+  ],
+  "unansweredDecisions": [],
+  "resolvedDecisions": [
+    {
+      "id": "gee_error_mission_context",
+      "stage": 3,
+      "type": "diagnostic_context",
+      "status": "context_provided",
+      "answer": "The new user screenshot shows Home latitude 12.66105, longitude 101.1288, and the original timing answer was automatic. This supplies approximate geographic context; the exact polygon/request of the earlier failure remains unproven. The user now explicitly requests diagnostic status and map/performance repairs, so do not block those repairs on the older question.",
+      "answeredOn": "2026-10-27",
+      "source": "User-provided screenshot and latest implementation request"
+    },
+    {
+      "id": "mission_start_and_end_time_behavior",
+      "stage": 3,
+      "status": "answered",
+      "question": "How should mission start/end times work?",
+      "answer": "The user enters the start time and the website calculates the end automatically. During the reported GEE failure the user was using automatic time.",
+      "answeredOn": "2026-10-26",
+      "source": "Direct user clarification while diagnosing the GEE screenshot"
+    },
+    {
+      "id": "gee_error_environment",
+      "stage": 3,
+      "type": "diagnostic_context",
+      "status": "answered",
+      "question": "Was the screenshot taken on production, localhost, or a standalone HTML file?",
+      "answer": "The online website xedo-eight.vercel.app.",
+      "answeredOn": "2026-10-26",
+      "source": "Direct user reply to the asynchronous diagnostic question"
+    },
+    {
+      "id": "mission_data_visibility",
+      "stage": 5,
+      "status": "answered",
+      "question": "Should Inspectors see and edit only their own missions, or share mission visibility and editing with all Inspectors?",
+      "answer": "Only their own missions during the experimental trial.",
+      "answeredOn": "2026-10-26",
+      "source": "Direct user answer in this chat"
+    },
+    {
+      "id": "sign_in_method",
+      "stage": 5,
+      "status": "answered",
+      "question": "Should sign-in use email and password, Google, or both?",
+      "answer": "Use the website's own email/password login without Google; explain implementation complexity if needed.",
+      "answeredOn": "2026-10-26",
+      "source": "Direct user answer in this chat"
+    },
+    {
+      "id": "trial_account_provisioning",
+      "stage": 5,
+      "status": "answered",
+      "question": "Should the team create trial accounts first, or should users self-register?",
+      "answer": "The team creates accounts for trial participants first.",
+      "answeredOn": "2026-10-26",
+      "source": "User reply to the asynchronous question in this chat"
+    }
+  ],
+  "latestPublishedRelease": {
+    "commit": "8b1a7220010e0f927739b6a8d14ca0f761e85e78",
+    "productionDeploymentId": "dpl_H1ApPeo75RkdzX18Q9BoK6KzJtLC",
+    "url": "https://xedo-eight.vercel.app",
+    "sourceBranch": "main",
+    "ciRunId": 40232608329,
+    "ciConclusion": "success",
+    "publishedOn": "2026-10-26",
+    "timezone": "Asia/Bangkok",
+    "scopeStages": [
+      1,
+      2
+    ]
+  }
+}

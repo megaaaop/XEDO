@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import proof from '../src/fixtures/proof-scene.json' with {type:'json'};
 import {inspectionRectangle} from '../src/mission-flow.js';
 import {selectArchivedSatellite,selectSavedSatellite,selectSceneSatellite,selectGEESatellite,bindGEESatelliteMap,satelliteTileClip,hasVisibleSatellitePixels} from '../src/planning-satellite.js';
+import {satelliteDisplayContext} from '../src/satellite-context.js';
 
 const selected=()=>inspectionRectangle([101.2,12.6,101.202,12.602]);
 const outsideCrop=()=>inspectionRectangle([101.55,12.1,101.552,12.102]);
@@ -120,6 +121,17 @@ test('Saved GEE surveys reopen their frozen source and require a renewed tile se
   assert.equal(selection.label,'Saved Earth Engine image');assert.equal(selection.image.kind,'gee');assert.equal(selection.image.url,undefined);
   assert.equal(selection.scene.id,scene.id);assert.deepEqual(selection.geometry,input.geometry);
   assert.throws(()=>selectSavedSatellite({...input,geometry:outsideCrop()}),/differs from the frozen/);
+});
+
+test('GEE display context is verified separately and never changes the reviewed inspection boundary',()=>{
+  const geometry=selected(),selection=selectGEESatellite(geeScene(),geometry),manifest={...mapSession(geeScene(),geometry),displayGeometry:satelliteDisplayContext(geometry),contextBufferM:1000};
+  const before=structuredClone({selection,manifest}),bound=bindGEESatelliteMap(selection,manifest,{now:0});
+  assert.deepEqual(bound.geometry,geometry);assert.deepEqual(bound.image.displayGeometry,manifest.displayGeometry);assert.equal(bound.image.contextBufferM,1000);assert.deepEqual({selection,manifest},before);
+  bound.image.displayGeometry.coordinates[0][0][0]=0;assert.deepEqual({selection,manifest},before);
+  for(const change of [m=>m.contextBufferM=2000,m=>delete m.contextBufferM,m=>m.displayGeometry=geometry,m=>m.displayGeometry.coordinates[0][1][0]+=.01,m=>delete m.displayGeometry]){
+    const changed=structuredClone(manifest);change(changed);assert.throws(()=>bindGEESatelliteMap(selection,changed,{now:0}),/display context/);
+  }
+  const legacy=bindGEESatelliteMap(selection,mapSession(geeScene(),geometry),{now:0});assert.equal(legacy.image.contextBufferM,0);assert.deepEqual(legacy.image.displayGeometry,geometry);
 });
 
 test('Satellite pixel readiness requires nonzero alpha and accepts opaque black RGB',()=>{

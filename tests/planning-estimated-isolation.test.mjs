@@ -20,7 +20,7 @@ function production(start, end) {
   return source.slice(from, to);
 }
 const methods = [
-  production('function api(', '\nfunction add('),
+  production('function api(', '\nfunction drawMap('),
   production('function resetSurvey(', '\nasync function workspaceAPI('),
   production('async function surveySatellite(', '\nasync function prepareMission('),
   production('async function prepareMission(', '\nfunction openSettings(')

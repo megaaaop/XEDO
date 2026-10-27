@@ -1,6 +1,7 @@
 import {pointWithin} from './domain.js';
 import {assessPlanningTerrain} from './planning-terrain.js';
-const TTL=600000,MAX_RESPONSE_BYTES=524288;
+import {requestPlanningContext,planningContextError,classifyPlanningContextError} from './planning-context-request.js';
+const TTL=600000;
 const DEM='COPERNICUS/DEM/GLO30_2024_1';
 const clone=value=>value==null?value:structuredClone(value);
 const finite=value=>typeof value==='number'&&Number.isFinite(value);
@@ -26,6 +27,13 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
   const heading=create('div',{className:'trial-section-heading'}),title=create('strong',{id:'trial-geospatial-title',textContent:'GEE planning data'}),info=create('button',{type:'button',className:'information-button',textContent:'i'});
   info.setAttribute('data-help','geospatial');info.setAttribute('aria-label','About GEE planning data');heading.append(title,info);
   const status=create('p',{id:'trial-geospatial-status'});status.setAttribute('role','status');
+  const failureDetails=create('p',{id:'trial-geospatial-error',className:'trial-geospatial-error'});failureDetails.hidden=true;
+  const progressPanel=create('div',{id:'trial-geospatial-progress',className:'trial-geospatial-progress'});progressPanel.hidden=true;
+  const progressLabel=create('span',{id:'trial-geospatial-progress-label'}),progressBar=create('progress',{id:'trial-geospatial-progress-bar',max:3}),progressTime=create('span',{id:'trial-geospatial-progress-time',className:'trial-geospatial-progress-time'});
+  progressBar.setAttribute('aria-label','Completed GEE request stages');progressLabel.setAttribute('role','status');
+  const progressNote=create('small',{textContent:'Percent counts completed request stages. GEE processing does not provide a live percentage.'});
+  progressPanel.append(progressLabel,progressBar,progressTime,progressNote);
+  const sourceStatus=create('ul',{id:'trial-geospatial-source-status',className:'trial-geospatial-source-status'});sourceStatus.hidden=true;
   const summary=create('div',{id:'trial-geospatial-summary',className:'trial-result'});
   const reviewLabel=create('label',{className:'trial-check trial-geospatial-home-review'}),review=create('input',{id:'trial-geospatial-home-reviewed',type:'checkbox'}),reviewText=create('span',{textContent:'I checked the launch elevation and its height reference'});reviewLabel.append(review,reviewText);
   const accept=create('button',{id:'trial-geospatial-use-home',type:'button',className:'button secondary',textContent:'Use reviewed estimate'});
@@ -34,10 +42,10 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
   const details=create('details',{id:'trial-geospatial-details'}),detailsTitle=create('summary',{textContent:'Sources & calculations'}),detailsBody=create('div',{id:'trial-geospatial-details-body'});details.append(detailsTitle,detailsBody);
   // The environment section also has nested <details>; insertBefore requires
   // a direct child of the form, rather than its first descendant disclosure.
-  panel.append(heading,status,summary,reviewLabel,hint,actions,details);
+  panel.append(heading,status,failureDetails,progressPanel,sourceStatus,summary,reviewLabel,hint,actions,details);
   settings.insertBefore(panel,[...settings.children].find(child=>child.tagName==='DETAILS')||null);
   const opener=create('button',{id:'trial-geospatial-open',type:'button',className:'button quiet trial-geospatial-badge'}),badge=create('span',{id:'trial-geospatial-badge'});badge.setAttribute('role','status');opener.setAttribute('aria-controls','trial-settings-dialog');opener.append(badge);bar.append(opener);
-  let disposed=false,key=null,response=null,accepted=null,pending=null,revision=0,debounce=null,expiry=null,deadline=null;
+  let disposed=false,key=null,response=null,accepted=null,pending=null,revision=0,debounce=null,expiry=null,deadline=null,progressTimer=null,requestProgress=null,requestStartedAt=null;
   let state={status:'waiting',reason:null,fetchedAt:null,expiresAt:null};
   const cache=new Map();
   const notify=reason=>onChange({reason});
@@ -50,8 +58,8 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     const blocked=localFile?'file':root.hidden?'hidden':globalThis.navigator?.onLine===false?'offline':!payload.geometry?'geometry':null;
     return {source,payload,key:contextKey,blocked};
   }
-  function clearTimer(name){if(name==='debounce'&&debounce!==null){timers.clearTimeout(debounce);debounce=null;}if(name==='expiry'&&expiry!==null){timers.clearTimeout(expiry);expiry=null;}if(name==='deadline'&&deadline!==null){timers.clearTimeout(deadline);deadline=null;}}
-  function cancel(){revision++;clearTimer('debounce');clearTimer('expiry');clearTimer('deadline');pending?.controller.abort();pending=null;}
+  function clearTimer(name){if(name==='debounce'&&debounce!==null){timers.clearTimeout(debounce);debounce=null;}if(name==='expiry'&&expiry!==null){timers.clearTimeout(expiry);expiry=null;}if(name==='deadline'&&deadline!==null){timers.clearTimeout(deadline);deadline=null;}if(name==='progress'&&progressTimer!==null){timers.clearTimeout(progressTimer);progressTimer=null;}}
+  function cancel(){revision++;clearTimer('debounce');clearTimer('expiry');clearTimer('deadline');clearTimer('progress');pending?.controller.abort();pending=null;}
   function reconcileHome(){
     if(!accepted)return;
     const home=mission().payload.home,value=homeField.value;
@@ -67,7 +75,7 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     render();return !!previous;
   }
   function invalidate(next,reason=null){
-    const had=!!response;response=null;review.checked=false;state={status:next,reason,fetchedAt:null,expiresAt:null};if(had)notify('revoked');
+    const had=!!response;response=null;review.checked=false;state={status:next,reason,fetchedAt:null,expiresAt:null};if(next!=='error'){requestProgress=null;requestStartedAt=null;}if(had)notify('revoked');
   }
   function current(){
     if(disposed)return null;
@@ -77,12 +85,12 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     return response;
   }
   function normalize(data,context){
-    if(!data||data.schema_version!=='xedo-gee-mission-context/1'||!['complete','partial','unavailable','not_configured','error'].includes(data.state))throw Error('The GEE planning-data response is invalid.');
-    if(['unavailable','not_configured','error'].includes(data.state)&&['terrain','landcover','quality','forecast'].some(name=>data[name]?.state==='ready'))throw Error('The GEE planning-data availability is inconsistent.');
+    if(!data||data.schema_version!=='xedo-gee-mission-context/1'||!['complete','partial','unavailable','not_configured','error'].includes(data.state))throw planningContextError('RESPONSE_INVALID');
+    if(['unavailable','not_configured','error'].includes(data.state)&&['terrain','landcover','quality','forecast'].some(name=>data[name]?.state==='ready'))throw planningContextError('RESPONSE_INVALID');
     const request=data.request||{},normal={geometry:request.geometry??null,home:request.home??null,sceneId:request.sceneId??null,startAt:instant(request.startAt),endAt:instant(request.endAt),...(request.routePoints===undefined?{}:{routePoints:request.routePoints})};
-    if(!same(normal,context.payload))throw Error('GEE planning data does not match the current area, home, image or time.');
+    if(!same(normal,context.payload))throw planningContextError('RESPONSE_MISMATCH');
     const fetched=Date.parse(data.fetchedAt),expires=Date.parse(data.expiresAt);
-    if(!Number.isFinite(fetched)||fetched>now()+60000||now()-fetched>TTL||!Number.isFinite(expires)||expires<=now())throw Error('GEE planning data is expired or has no verified timestamp.');
+    if(!Number.isFinite(fetched)||fetched>now()+60000||now()-fetched>TTL||!Number.isFinite(expires)||expires<=now())throw planningContextError('RESPONSE_EXPIRED');
     const report=clone(data);report.expiresAt=new Date(Math.min(expires,fetched+TTL,now()+TTL)).toISOString();
     const terrain=report.terrain||{};
     const goodTerrain=terrain.state==='ready'&&terrain.datasetId===DEM&&terrain.verticalDatum==='EGM2008'&&terrain.resolutionM===30&&Array.isArray(terrain.samples)&&terrain.samples.length<=80;
@@ -104,14 +112,35 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     if(forecast.state==='ready'&&(forecast.scope!=='takeoff_reference_only'||forecast.referenceHeightM!==10||!Number.isFinite(run)||run>now()+300000||now()-run>86400000||!Number.isFinite(valid)||!Number.isFinite(from)||!Number.isFinite(to)||valid<from||valid>to||!finite(forecast.windEastMps)||!finite(forecast.windNorthMps)||!finite(forecast.windSpeedMps)||forecast.windSpeedMps<0||Math.abs(forecast.windSpeedMps-Math.hypot(forecast.windEastMps,forecast.windNorthMps))>1e-5||forecast.gustMps!==null&&forecast.gustMps!==undefined&&(!finite(forecast.gustMps)||forecast.gustMps<0)))report.forecast={...forecast,state:'unavailable'};
     return report;
   }
+  function textIfChanged(element,text){if(element.textContent!==text)element.textContent=text;}
+  function htmlIfChanged(element,html){if(element.innerHTML!==html)element.innerHTML=html;}
+  function renderProgress(){
+    progressPanel.hidden=!requestProgress;
+    if(!requestProgress)return;
+    const labels={waiting:'Waiting for GEE response',reading:'Reading and checking response',retrying:'Retrying a temporary connection failure',complete:'Response checked'};
+    const stopped=state.status==='error',waiting=!stopped&&['waiting','retrying'].includes(requestProgress.stage);
+    textIfChanged(progressLabel,'Request stages: '+requestProgress.percent+'% · '+requestProgress.completed+'/'+requestProgress.total+' · '+(stopped?'Request stopped':labels[requestProgress.stage]||'Checking request'));
+    if(waiting)progressBar.removeAttribute?.('value');else progressBar.value=requestProgress.completed;
+    progressBar.setAttribute('aria-valuetext',requestProgress.percent+'% of request stages completed'+(waiting?'; server progress unavailable':''));
+    progressPanel.dataset.state=stopped?'error':requestProgress.stage;
+    const elapsed=Math.max(0,Math.floor((requestProgress.elapsedMs??now()-requestStartedAt)/1000));
+    textIfChanged(progressTime,'Elapsed '+elapsed+' s · Attempt '+requestProgress.attempt+'/'+requestProgress.maxAttempts);
+  }
+  function armProgress(){
+    clearTimer('progress');
+    progressTimer=timers.setTimeout(()=>{progressTimer=null;if(disposed||state.status!=='loading')return;renderProgress();armProgress();},1000);
+  }
   function render(){
     const report=response;
     const labels={waiting:'Choose an inspection area',loading:'Checking GEE planning data…',ready:'GEE planning data ready',partial:'Some GEE data unavailable',unavailable:'GEE planning data unavailable',not_configured:'GEE connection not configured',error:'GEE planning data unavailable',stale:'GEE planning data expired',skipped:'GEE data needs the local API',paused:'GEE checks paused',offline:'Offline · GEE data unknown'};
-    const label=labels[state.status]||'GEE data unknown';badge.textContent=label;badge.dataset.state=state.status;status.textContent=label;
+    const label=labels[state.status]||'GEE data unknown';textIfChanged(badge,label);badge.dataset.state=state.status;textIfChanged(status,label);
+    failureDetails.hidden=!state.reason;textIfChanged(failureDetails,state.reason||'');renderProgress();
     const terrain=report?.terrain,land=report?.landcover,quality=report?.quality,forecast=report?.forecast;
+    sourceStatus.hidden=!report;
+    if(report)htmlIfChanged(sourceStatus,Object.entries({terrain,landcover:land,quality,forecast}).map(([name,part])=>'<li data-state="'+escape(part?.state||'unavailable')+'"><strong>'+escape({terrain:'Terrain / Home',landcover:'Water / mangrove',quality:'Image quality',forecast:'GFS reference'}[name])+'</strong>: '+escape(part?.state==='ready'?'Ready':part?.state==='not_requested'?'Not requested':part?.failure?.message||'Unavailable for this area, image or time')+'</li>').join(''));
     const context=mission(),assessment=assessPlanningTerrain(report,{geometry:context.payload.geometry,home:context.payload.home,toleranceM:context.source.terrainToleranceM??2,now:now()});
     const rows=[['Surface elevation',terrain?.state==='ready'&&elevation(terrain.minElevationM)&&elevation(terrain.maxElevationM)?format(terrain.minElevationM)+' – '+format(terrain.maxElevationM,' m')+' · DSM estimate':'Unknown'],['Home elevation estimate',terrain?.state==='ready'&&elevation(terrain.homeElevationM)?format(terrain.homeElevationM,' m')+' · EGM2008':context.payload.home?'Unknown':'Choose a Home position'],['GEE model assessment',assessment.label+' · '+format(assessment.toleranceM,' m')+' tolerance (unverified)'],['Water / mangrove',land?.state==='ready'?format(land.waterPct,'%')+' / '+format(land.mangrovePct,'%')+' · 2021':'Unknown'],...(!context.source.example?[['Image quality',quality?.state==='ready'?format(quality.clearPct,'% clear')+' · '+format(quality.coveragePct,'% coverage'):context.payload.sceneId?'Unknown':'Choose a GEE image'],['GFS 10 m reference',forecast?.state==='ready'?format(forecast.windSpeedMps,' m/s')+' · Gust '+format(forecast.gustMps,' m/s'):'Unknown']]:[])];
-    summary.innerHTML='<dl>'+rows.map(([name,value])=>'<dt>'+escape(name)+'</dt><dd>'+escape(value)+'</dd>').join('')+'</dl>';
+    htmlIfChanged(summary,'<dl>'+rows.map(([name,value])=>'<dt>'+escape(name)+'</dt><dd>'+escape(value)+'</dd>').join('')+'</dl>');
     const homeReady=terrain?.state==='ready'&&elevation(terrain.homeElevationM)&&same(report.request.home,context.payload.home)&&pair(context.payload.home)&&Date.parse(state.expiresAt)>now();
     review.disabled=!homeReady;accept.disabled=!homeReady||!review.checked;refresh.disabled=state.status==='loading'||!!context.blocked;
     hint.textContent=accepted?.mode==='gee_model'?'GEE model estimate retained for this Home · EGM2008. Actual launch level and flight clearance are not verified.':accepted?'Reviewed estimate retained for this Home position. Other export checks still require review.':'30 m DSM · EGM2008 estimate. Confirm the actual launch level and compatible height reference.';
@@ -123,7 +152,8 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
       if(forecast?.state==='ready')lines.push('GFS model run: '+displayTime(forecast.modelRunAt)+' · Forecast valid: '+displayTime(forecast.validAt),'GFS reference is at 10 m on a '+format(forecast.resolutionM/1000,' km')+' grid for one takeoff reference time. It does not replace 50 m flight wind or whole-flight weather coverage.');
       lines.push(...warningList(report.warnings));for(const [name,part]of Object.entries({terrain,landcover:land,quality,forecast}))lines.push(...warningList(part?.warnings).map(text=>name+': '+text));
     }else if(state.reason)lines.push(state.reason);
-    detailsBody.innerHTML='<ul>'+[...new Set(lines)].map(text=>'<li>'+escape(text)+'</li>').join('')+'</ul><p>Sources: <a href="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_DEM_GLO30_2024_1" target="_blank" rel="noopener noreferrer">Copernicus DEM</a> · <a href="https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200" target="_blank" rel="noopener noreferrer">ESA WorldCover</a> · <a href="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_CLOUD_PROBABILITY" target="_blank" rel="noopener noreferrer">Sentinel-2 quality</a> · <a href="https://developers.google.com/earth-engine/datasets/catalog/NOAA_GFS0P25" target="_blank" rel="noopener noreferrer">NOAA GFS</a></p>';
+    if(state.errorCode)lines.push('Failure category: '+state.errorCode+(state.httpStatus?' · HTTP '+state.httpStatus:'')+(state.requestId?' · Request '+state.requestId:''));
+    htmlIfChanged(detailsBody,'<ul>'+[...new Set(lines)].map(text=>'<li>'+escape(text)+'</li>').join('')+'</ul><p>Sources: <a href="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_DEM_GLO30_2024_1" target="_blank" rel="noopener noreferrer">Copernicus DEM</a> · <a href="https://developers.google.com/earth-engine/datasets/catalog/ESA_WorldCover_v200" target="_blank" rel="noopener noreferrer">ESA WorldCover</a> · <a href="https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S2_CLOUD_PROBABILITY" target="_blank" rel="noopener noreferrer">Sentinel-2 quality</a> · <a href="https://developers.google.com/earth-engine/datasets/catalog/NOAA_GFS0P25" target="_blank" rel="noopener noreferrer">NOAA GFS</a></p>');
   }
   function armExpiry(){clearTimer('expiry');if(response)expiry=timers.setTimeout(()=>{expiry=null;if(disposed)return;invalidate('stale','GEE planning context expired.');render();refreshContext();},Math.max(1,Date.parse(state.expiresAt)-now()));}
   function apply(report,context){
@@ -136,12 +166,13 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     const missingTerrain=terrain?.state==='ready'&&(samples.some(sample=>!elevation(sample.elevationM))||context.payload.home&&!elevation(terrain.homeElevationM)||(context.payload.routePoints||[]).some(point=>!samples.some(sample=>samePoint(point,[sample.longitude,sample.latitude]))));
     const incomplete=report.state==='partial'||missingTerrain||report.landcover?.state==='ready'&&report.landcover.coveragePct<99||report.quality?.state==='ready'&&report.quality.coveragePct<99;
     const next=report.state==='not_configured'?'not_configured':ready.length&&ready.every(Boolean)&&!incomplete?'ready':ready.some(Boolean)?'partial':report.state==='error'?'error':'unavailable';
+    clearTimer('progress');if(requestProgress)requestProgress.elapsedMs=now()-requestStartedAt;
     state={status:next,reason:null,fetchedAt:report.fetchedAt,expiresAt:report.expiresAt};armExpiry();render();notify('context');
   }
   function schedule(delay=600){clearTimer('debounce');if(disposed||mission().blocked)return;debounce=timers.setTimeout(()=>{debounce=null;refreshContext({force:false});},delay);}
   function changed(){
     if(disposed)return;reconcileHome();const context=mission();
-    if(context.blocked){cancel();key=context.key;invalidate(context.blocked==='geometry'?'waiting':context.blocked==='hidden'?'paused':context.blocked==='offline'?'offline':'skipped');render();return;}
+    if(context.blocked){cancel();key=context.key;invalidate(context.blocked==='geometry'?'waiting':context.blocked==='hidden'?'paused':context.blocked==='offline'?'offline':'skipped',context.blocked==='offline'?planningContextError('OFFLINE').message:null);render();return;}
     if(context.key!==key){cancel();key=context.key;invalidate('waiting');render();schedule();return;}
     if(!response&&!pending){render();schedule();}
     else if(response&&Date.parse(state.expiresAt)<=now()){invalidate('stale');render();schedule(0);}
@@ -152,18 +183,18 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     if(context.blocked){changed();return Promise.resolve(null);}
     if(context.key!==key){cancel();key=context.key;invalidate('waiting');}
     if(pending?.key===context.key)return pending.promise;
-    const saved=cache.get(context.key);if(!force&&saved&&Date.parse(saved.expiresAt)>now()){apply(saved,context);return Promise.resolve(clone(saved));}
-    cancel();const version=revision,controller=new AbortController();invalidate('loading');render();
-    deadline=timers.setTimeout(()=>controller.abort(),30000);
+    const saved=cache.get(context.key);if(!force&&saved&&Date.parse(saved.expiresAt)>now()){requestProgress=null;requestStartedAt=null;apply(saved,context);return Promise.resolve(clone(saved));}
+    cancel();const version=revision,controller=new AbortController();let timedOut=false;invalidate('loading');requestStartedAt=now();render();armProgress();
+    deadline=timers.setTimeout(()=>{timedOut=true;controller.abort();},30000);
     const task=(async()=>{
       try{
         const stopped=new Promise((_,reject)=>{if(controller.signal.aborted)reject(aborted());else controller.signal.addEventListener('abort',()=>reject(aborted()),{once:true});});
-        const request=(async()=>{const reply=await fetchImpl('/api/v1/gee/planning-context',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(context.payload),credentials:'same-origin',redirect:'error',cache:'no-store',signal:controller.signal});if(!reply.headers.get('content-type')?.includes('application/json'))throw Error('GEE planning data did not return JSON.');const length=reply.headers.get('content-length');if(length&&Number(length)>MAX_RESPONSE_BYTES)throw Error('GEE planning-data response is too large.');const data=await reply.json();if(!reply.ok)throw Error(data.message||'GEE planning data is unavailable.');return normalize(data,context);})();
+        const request=requestPlanningContext(context.payload,{signal:controller.signal,fetchImpl,timers,validate:data=>normalize(data,context),onProgress:progress=>{if(disposed||version!==revision||controller.signal.aborted||mission().key!==context.key)return;requestProgress=progress;renderProgress();}});
         const report=await Promise.race([request,stopped]);
         if(disposed||version!==revision||controller.signal.aborted||mission().key!==context.key||mission().blocked)return null;
         cache.set(context.key,clone(report));while(cache.size>8)cache.delete(cache.keys().next().value);apply(report,context);return clone(report);
-      }catch(error){if(disposed||version!==revision||mission().key!==context.key)return null;invalidate('error',controller.signal.aborted?'GEE planning data did not respond within 30 seconds.':'GEE planning data is unavailable. Refresh or check the local server connection.');render();expiry=timers.setTimeout(()=>{expiry=null;refreshContext();},TTL);return null;}
-      finally{if(pending?.controller===controller){pending=null;clearTimer('deadline');}}
+      }catch(error){if(disposed||version!==revision||mission().key!==context.key)return null;const failure=classifyPlanningContextError(error,{offline:globalThis.navigator?.onLine===false,timedOut});clearTimer('progress');if(requestProgress)requestProgress.elapsedMs=now()-requestStartedAt;invalidate('error',failure.message);Object.assign(state,{errorCode:failure.code,httpStatus:failure.httpStatus,requestId:failure.requestId,retryable:failure.retryable});render();expiry=timers.setTimeout(()=>{expiry=null;refreshContext();},TTL);return null;}
+      finally{if(pending?.controller===controller){pending=null;clearTimer('deadline');clearTimer('progress');}}
     })();pending={key:context.key,controller,promise:task};return task;
   }
   function getContext(){const data=current();if(data?.terrain?.state!=='ready')return null;return {state:'connected',provider:'Google Earth Engine',samples:clone(data.terrain.samples),datasets:[{id:data.terrain.datasetId,label:'Copernicus surface elevation estimate',resolutionM:data.terrain.resolutionM,verticalDatum:data.terrain.verticalDatum}],sampledAt:data.fetchedAt,expiresAt:data.expiresAt,geometry:clone(data.request.geometry),warnings:warningList(data.terrain.warnings)};}
@@ -189,5 +220,5 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
   opener.onclick=()=>{$('#trial-settings-dialog').showModal();panel.scrollIntoView({block:'start'});};
   const visibility=()=>changed(),connectivity=()=>changed();root.addEventListener('visibilitychange',visibility);globalThis.addEventListener('online',connectivity);globalThis.addEventListener('offline',connectivity);
   changed();
-  return {changed,getContext,getPatch,getTerrainAssessment,useModelHomeEstimate,revokeHomeEstimate,getState(){current();return {...clone(state),response:clone(response)};},refresh:refreshContext,dispose(){if(disposed)return;disposed=true;cancel();response=null;cache.clear();root.removeEventListener('visibilitychange',visibility);globalThis.removeEventListener('online',connectivity);globalThis.removeEventListener('offline',connectivity);}};
+  return {changed,getContext,getPatch,getTerrainAssessment,useModelHomeEstimate,revokeHomeEstimate,getStatus(){current();return state.status;},getState(){current();return {...clone(state),progress:clone(requestProgress),response:clone(response)};},refresh:refreshContext,dispose(){if(disposed)return;disposed=true;cancel();response=null;cache.clear();root.removeEventListener('visibilitychange',visibility);globalThis.removeEventListener('online',connectivity);globalThis.removeEventListener('offline',connectivity);}};
 }

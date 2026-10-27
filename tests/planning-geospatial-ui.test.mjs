@@ -163,3 +163,27 @@ test('Partial coverage and masked requested samples never advertise the whole GE
 test('An unavailable response with contradictory ready data cannot supply context or a Home altitude',async()=>{
  for(const state of ['unavailable','not_configured','error']){const h=harness({transform:data=>({...data,state})});try{await h.ui.refresh();assert.equal(h.ui.getState().status,'error');assert.equal(h.ui.getContext(),null);assert.equal(h.ui.getPatch().flight.geospatialEvidence,null);assert.equal(h.ui.useModelHomeEstimate(),false);assert.equal(h.home.value,'');}finally{h.ui.dispose();}}
 });
+
+test('The GEE progress panel reports completed stages, keeps the server wait indeterminate and stops its elapsed timer',async()=>{
+ const h=harness({held:true});try{
+  const pending=h.ui.refresh();assert.equal(h.node('trial-geospatial-progress').hidden,false);
+  assert.equal(h.ui.getState().progress.percent,33);assert.match(h.node('trial-geospatial-progress-label').textContent,/33%.*Waiting for GEE response/);
+  await h.tick(5000);assert.equal(h.ui.getState().progress.percent,33);assert.match(h.node('trial-geospatial-progress-time').textContent,/Elapsed 5 s/);
+  h.calls[0].resolve();await pending;assert.equal(h.ui.getState().progress.percent,100);assert.equal(h.ui.getStatus(),'ready');
+  const finished=h.node('trial-geospatial-progress-time').textContent;await h.tick(5000);assert.equal(h.node('trial-geospatial-progress-time').textContent,finished);
+ }finally{h.ui.dispose();}
+});
+
+test('Response-format and mission-mismatch failures show their actual safe category in the visible GEE panel',async()=>{
+ for(const [options,code]of [[{replyType:'text/html'},'RESPONSE_TYPE'],[{transform:data=>{data.request.home=[101.3,12.7];return data;}},'RESPONSE_MISMATCH']]){
+  const h=harness(options);try{await h.ui.refresh();assert.equal(h.ui.getState().errorCode,code);assert.equal(h.node('trial-geospatial-error').hidden,false);assert.doesNotMatch(h.node('trial-geospatial-error').textContent,/local server/);assert.match(h.node('trial-geospatial-details-body').innerHTML,new RegExp(code));assert.equal(h.ui.getState().progress.percent,67);assert.equal(h.ui.getContext(),null);}finally{h.ui.dispose();}
+ }
+});
+
+test('A response arriving after the deadline cannot overwrite stopped progress or expose data',async()=>{
+ const h=harness({held:true});try{
+  const pending=h.ui.refresh();await h.tick(30000);await pending;
+  assert.equal(h.ui.getState().errorCode,'TIMEOUT');const stopped=h.node('trial-geospatial-progress-label').textContent;
+  h.calls[0].resolve();await flush();assert.equal(h.ui.getState().progress.percent,33);assert.equal(h.node('trial-geospatial-progress-label').textContent,stopped);assert.equal(h.ui.getContext(),null);
+ }finally{h.ui.dispose();}
+});

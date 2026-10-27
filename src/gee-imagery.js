@@ -1,5 +1,6 @@
 import {accessToken,invalidateGEEToken,publicGEEError} from './gee-connection.js';
 import {validateGeometry,pointWithin} from './domain.js';
+import {satelliteDisplayContext,SATELLITE_CONTEXT_BUFFER_M} from './satellite-context.js';
 
 const COLLECTION='COPERNICUS/S2_SR_HARMONIZED';
 const API='https://earthengine.googleapis.com/v1/';
@@ -232,7 +233,15 @@ async function decodeSession(scope,sessionId,project,now) {
   if(payload.mode==='map')checkedMapName(payload.mapName,project);
   else if(payload.mapName!==undefined)throw failure('GEE_SESSION_INVALID','The satellite image session is invalid. Select the image again.',400);
   if(!Array.isArray(payload.bbox)||payload.bbox.length!==4||!payload.bbox.every(Number.isFinite))throw failure('GEE_SESSION_INVALID','The satellite image session is invalid. Select the image again.',400);
-  checkedGeometry(rectangle(payload.bbox));return payload;
+  // The authenticated scene display box can be slightly larger than a valid
+  // 100 km inspection box. Validate its bounded rectangle independently of the
+  // inspection-area cap; it is never sent to the planner or area calculator.
+  if(payload.purpose==='basemap')checkedGeometry(rectangle(payload.bbox));
+  else{
+    const [west,south,east,north]=payload.bbox,mid=(south+north)/2;
+    if(west< -180||east>180||south< -80||north>80||west>=east||south>=north||east-west>180||(east-west)*111320*Math.cos(mid*Math.PI/180)>104000||(north-south)*111320>104000)throw failure('GEE_SESSION_INVALID','The satellite image display bounds are invalid. Select the image again.',400);
+  }
+  return payload;
 }
 
 /** Revalidates a saved canonical scene after a restart; no browser metadata is trusted. */
@@ -242,10 +251,10 @@ export async function createGEEImageryMap(env,input,options={}) {
   return structuredClone(await once(scope,'session:'+key,8,async()=>{
     let scene=scope.scenes.get(key);scene=scene?.until>opts.now()?scene.scene:null;
     if(!scene){const data=await jsonCall(env,'projects/'+env.GEE_PROJECT_ID+'/value:compute',{expression:{result:'result',values:{result:metadataFeature(f('Image.load',{id:c(canonicalScene(input.sceneId))}),geometry)}},workloadTag:'xedo-sentinel-scene'},opts);scene=sceneFrom(data?.result,geometry);if(!scene||scene.id!==input.sceneId)throw failure('GEE_SCENE_COVERAGE','The selected satellite image does not cover the whole inspection area.');scope.scenes.set(key,{scene,until:opts.now()+SESSION_MS});trim(scope.scenes,128);}
-    const bbox=bounds(geometry),expires=opts.now()+SESSION_MS;let mode='map',mapName;
+    const displayGeometry=satelliteDisplayContext(geometry),bbox=bounds(displayGeometry),expires=opts.now()+SESSION_MS;let mode='map',mapName;
     if(scope.pixelModeUntil>opts.now())mode='pixels';
     else try{mapName=await mapFor(env,scope,scene.id,bbox,opts);}catch(error){if(problems.has(error)&&error.code==='GEE_ACCESS_DENIED'&&error.status===403){mode='pixels';scope.pixelModeUntil=expires;}else throw error;}
-    return {sessionId:await encodeSession(scope,{v:1,mode,...(mapName?{mapName}:{}),sceneId:scene.id,bbox,expires}),expiresAt:new Date(expires).toISOString(),scene,renderMode:mode};
+    return {sessionId:await encodeSession(scope,{v:1,purpose:'scene',mode,...(mapName?{mapName}:{}),sceneId:scene.id,bbox,expires}),expiresAt:new Date(expires).toISOString(),scene,geometry:structuredClone(geometry),displayGeometry,contextBufferM:SATELLITE_CONTEXT_BUFFER_M,renderMode:mode};
   }));
 }
 

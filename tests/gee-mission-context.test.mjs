@@ -273,3 +273,15 @@ test('The emitted SCL fallback mask keeps unclassified class 7 out of clear AOI 
  for(const scl of [0,1,3,7,8,9,10,11])assert.equal(evaluate(clear,scl),0,'SCL '+scl+' must not count as clear');
  for(const scl of [2,4,5,6])assert.equal(evaluate(clear,scl),1,'Known clear SCL '+scl+' remains eligible');
 });
+
+test('Independent source failures expose safe permission, quota and computation categories without provider text',async()=>{
+ const previous=console.warn;console.warn=()=>{};
+ try{
+  for(const [httpStatus,code]of [[403,'GEE_ACCESS_DENIED'],[429,'GEE_QUOTA_LIMIT'],[400,'GEE_COMPUTE_REJECTED'],[503,'GEE_SOURCE_UNAVAILABLE']]){
+   const v=fixture();v.state.mode='http-error';v.state.httpStatus=httpStatus;v.state.errorMessage='PRIVATE provider secret and arbitrary stack';
+   const result=await lookup(v);
+   for(const name of ['terrain','landcover','quality','forecast']){assert.equal(result[name].failure.code,code);assert.equal(result[name].failure.httpStatus,httpStatus);assert.equal(result[name].state,'unavailable');assert.ok(result[name].warnings.includes(result[name].failure.message));}
+   assert.doesNotMatch(JSON.stringify(result),/PRIVATE|provider secret|arbitrary stack|secret-provider-token/);
+  }
+ }finally{console.warn=previous;}
+});

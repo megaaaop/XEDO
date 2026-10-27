@@ -1,6 +1,7 @@
 import proofScene from './fixtures/proof-scene.json' with {type:'json'};
 import {validateGeometry} from './domain.js';
 import {coveringScenes} from './mission-flow.js';
+import {satelliteDisplayContext,SATELLITE_CONTEXT_BUFFER_M} from './satellite-context.js';
 
 const fail=message=>{throw new Error(message);};
 const sameCoordinates=(a,b)=>JSON.stringify(a)===JSON.stringify(b);
@@ -60,10 +61,13 @@ export function bindGEESatelliteMap(selection,manifest,{now=Date.now()}={}){
   const expected=selectGEESatellite(selection?.scene,selection?.geometry);
   const actual=selectGEESatellite(manifest?.scene,expected.geometry);
   if(!sameGeometry(expected.geometry,manifest?.geometry))fail('The Earth Engine map boundary does not match the selected inspection area.');
+  const hasContext=manifest?.displayGeometry!==undefined||manifest?.contextBufferM!==undefined;
+  const displayGeometry=hasContext?satelliteDisplayContext(expected.geometry):expected.geometry;
+  if(hasContext&&(manifest.contextBufferM!==SATELLITE_CONTEXT_BUFFER_M||!sameGeometry(displayGeometry,manifest.displayGeometry)))fail('The Earth Engine display context does not match the selected inspection area. Reload the image.');
   if(['id','provider','assetKind','collection','acquiredAt','cloudCover','platform','resolution'].some(key=>expected.scene[key]!==actual.scene[key])||!sameGeometry(expected.scene.footprint,actual.scene.footprint))fail('The Earth Engine map does not match the selected satellite source. Search again.');
   const session=manifest?.sessionId,expires=Date.parse(manifest?.expiresAt);
   if(typeof session!=='string'||!/^[A-Za-z0-9_-]{16,4096}$/.test(session)||manifest.tileUrl!=='/api/v1/gee/imagery/tiles/'+session+'/{z}/{x}/{y}'||!Number.isFinite(expires)||expires<=now)fail('The Earth Engine tile session is invalid or expired. Reload the selected image.');
-  return {...expected,image:{kind:'gee',sceneId:expected.scene.id,url:manifest.tileUrl,sessionId:session,expiresAt:manifest.expiresAt}};
+  return {...expected,image:{kind:'gee',sceneId:expected.scene.id,url:manifest.tileUrl,sessionId:session,expiresAt:manifest.expiresAt,displayGeometry:structuredClone(displayGeometry),contextBufferM:hasContext?SATELLITE_CONTEXT_BUFFER_M:0}};
 }
 
 /** Pure image selection; the caller must still load and review the image. */

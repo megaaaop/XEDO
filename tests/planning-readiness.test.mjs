@@ -4,13 +4,16 @@ import {initializePlanningReadiness} from '../src/planning-readiness.js';
 
 function harness({missing = []} = {}) {
   const nodes = [], actions = [];
+  let stateReads = 0;
   class Element {
-    constructor(tag) { this.tagName = tag; this.children = []; this.dataset = {}; this.attributes = new Map(); this.listeners = new Map(); this.textContent = ''; this.className = ''; this.hidden = false; this.disabled = false; this.checked = false; nodes.push(this); }
+    constructor(tag) { this.tagName = tag; this.children = []; this.dataset = {}; this.attributes = new Map(); this.listeners = new Map(); this.textWrites = 0; this.attributeWrites = 0; this.textContent = ''; this.className = ''; this.hidden = false; this.disabled = false; this.checked = false; nodes.push(this); }
+    get textContent() { return this._text; }
+    set textContent(value) { this._text = value; this.textWrites++; }
     append(...items) { items.forEach(item => { item.parentElement = this; this.children.push(item); }); }
     replaceChildren(...items) { this.children = []; this.append(...items); }
     remove() { this.parentElement.children = this.parentElement.children.filter(item => item !== this); }
     get lastElementChild() { return this.children.at(-1); }
-    setAttribute(name, value) { this.attributes.set(name, String(value)); }
+    setAttribute(name, value) { this.attributes.set(name, String(value)); this.attributeWrites++; }
     getAttribute(name) { return this.attributes.get(name); }
     addEventListener(type, fn) { const listeners = this.listeners.get(type) || new Set(); listeners.add(fn); this.listeners.set(type, listeners); }
     removeEventListener(type, fn) { this.listeners.get(type)?.delete(fn); }
@@ -30,10 +33,34 @@ function harness({missing = []} = {}) {
     {id:'airspace', title:'Airspace review', state:'review', detail:'Review restrictions'},
   ], canExport:false, blockingReasons:['Check terrain', 'Review airspace', 'Check terrain'], working:false};
   const root = {createElement: tag => new Element(tag), querySelector: selector => node(selector.slice(1))};
-  const ui = initializePlanningReadiness({root, getState:() => state, onAction:(...args) => actions.push(args)});
+  const ui = initializePlanningReadiness({root, getState:() => { stateReads++; return state; }, onAction:(...args) => actions.push(args)});
   const row = (id, container='trial-readiness-inline') => node(container).children.find(item => item.dataset.readinessRow === id);
-  return {ui, root, node, row, actions, get state() { return state; }, set state(value) { state = value; }};
+  return {ui, root, node, row, actions, get stateReads() { return stateReads; }, writes:() => nodes.reduce((sum,node) => sum + node.textWrites + node.attributeWrites,0), get state() { return state; }, set state(value) { state = value; }};
 }
+
+test('Background readiness refreshes leave unchanged content and focused controls intact', () => {
+  const h = harness(), row = h.row('home'), checkbox = h.row('airspace').children[2].children[0];
+  checkbox.focus();
+  const writes = h.writes();
+  for (let count = 0; count < 60; count++) h.ui.render();
+  assert.equal(h.writes(), writes, 'Idle polling must not rewrite text or accessibility attributes');
+  assert.equal(h.row('home'), row);
+  assert.equal(checkbox.focused, true);
+  h.state.rows[0].detail = 'New launch point';
+  h.ui.render();
+  assert.equal(row.children[1].textContent, 'New launch point');
+  assert.ok(h.writes() > writes, 'A real state change still reaches both views');
+  h.ui.dispose();
+});
+
+test('A supplied controller state avoids computing terrain/readiness again for the same render', () => {
+  const h = harness(), reads = h.stateReads;
+  h.ui.render(h.state);
+  assert.equal(h.stateReads, reads);
+  h.ui.render();
+  assert.equal(h.stateReads, reads + 1);
+  h.ui.dispose();
+});
 
 test('Header and four persistent rows show readiness without approving missing data', () => {
   const h = harness();

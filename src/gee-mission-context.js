@@ -229,6 +229,12 @@ async function compute(env,kind,expression,fetchImpl,signal){
  try{return await Promise.race([run(),cancelled]);}finally{signal.removeEventListener('abort',abort);release();}
 }
 function initial(request,now){return {schema_version:'xedo-gee-mission-context/1',state:'unavailable',fetchedAt:new Date(now).toISOString(),expiresAt:new Date(now+TTL).toISOString(),request,terrain:emptyTerrain(),landcover:emptyLand(),quality:emptyQuality(request),forecast:emptyForecast(request),warnings:['GEE context is advisory. No terrain-following route, launch-altitude confirmation, legal no-go area or aircraft specification is generated.'],hardwareControl:false,releaseControl:false};}
+function sourceFailure(error,{detail,phase,cancelled}={}){
+ const publicCode=publicGEEError(error)?.code,status=detail?.httpStatus;
+ const code=cancelled?'GEE_TIMEOUT':publicCode==='GEE_CONFIG_INVALID'?'GEE_CONFIG_INVALID':publicCode==='GEE_AUTH_FAILED'?'GEE_AUTH_FAILED':status===401||status===403?'GEE_ACCESS_DENIED':status===429?'GEE_QUOTA_LIMIT':phase==='parse'||detail?.reason?.startsWith('RESPONSE_')?'GEE_RESULT_INVALID':status===400?'GEE_COMPUTE_REJECTED':error instanceof TypeError?'GEE_NETWORK_ERROR':'GEE_SOURCE_UNAVAILABLE';
+ const messages={GEE_TIMEOUT:'The source lookup reached its time limit. Refresh to try again.',GEE_CONFIG_INVALID:'The server GEE connection configuration is invalid.',GEE_AUTH_FAILED:'The server could not authenticate with GEE.',GEE_ACCESS_DENIED:'GEE denied access to this data source.',GEE_QUOTA_LIMIT:'GEE temporarily rate-limited this data source. Retry shortly.',GEE_RESULT_INVALID:'The source response failed its data checks.',GEE_COMPUTE_REJECTED:'GEE rejected the data-source computation.',GEE_NETWORK_ERROR:'The server could not reach the GEE data source.',GEE_SOURCE_UNAVAILABLE:'The data source could not complete this lookup. Refresh to try again.'};
+ return {code,message:messages[code],...(Number.isInteger(status)?{httpStatus:status}:{})};
+}
 /** Read-only, bounded GEE context. Each independent source can remain Unknown. */
 export async function fetchGEEMissionContext(env,input,{fetchImpl=fetch,signal,now=Date.now(),timeoutMs=25000,useCache=true}={}){
  const nowMs=typeof now==='function'?now():now,request=validateMissionContextRequest(input,{now:nowMs}),base=initial(request,nowMs);
@@ -250,7 +256,7 @@ export async function fetchGEEMissionContext(env,input,{fetchImpl=fetch,signal,n
    try{
     const result=await compute(env,kind,expression,fetchImpl,controller.signal);phase='parse';base[kind]=parsers[kind](result,request,nowMs);
     if(useCache&&staticKey&&base[kind].state==='ready'){cache.set(staticKey,{data:structuredClone(base[kind]),expiresAt:new Date(nowMs+TTL).toISOString()});while(cache.size>16)cache.delete(cache.keys().next().value);}
-   }catch(error){const detail=diagnosticProblems.get(error);console.warn({event:'XEDO_GEE_CONTEXT_FAILURE',kind,httpStatus:detail?.httpStatus??null,reason:detail?.reason??(phase==='parse'?'RESULT_PARSE_FAILED':controller.signal.aborted?'COMPUTE_CANCELLED':'COMPUTE_FAILED')});const publicError=publicGEEError(error);base[kind].warnings.push(publicError?.message||'GEE '+kind+' lookup is unavailable; values remain Unknown.');}
+   }catch(error){const detail=diagnosticProblems.get(error);console.warn({event:'XEDO_GEE_CONTEXT_FAILURE',kind,httpStatus:detail?.httpStatus??null,reason:detail?.reason??(phase==='parse'?'RESULT_PARSE_FAILED':controller.signal.aborted?'COMPUTE_CANCELLED':'COMPUTE_FAILED')});base[kind].failure=sourceFailure(error,{detail,phase,cancelled:controller.signal.aborted});base[kind].warnings.push(base[kind].failure.message);}
   }));
   if(signal?.aborted)throw new DOMException('The context lookup was cancelled.','AbortError');
   if(controller.signal.aborted)base.warnings.push('The GEE context lookup deadline elapsed. Completed parts are retained; incomplete parts remain Unknown.');

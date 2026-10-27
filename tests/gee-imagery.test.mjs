@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {generateKeyPairSync} from 'node:crypto';
 import {inflateSync} from 'node:zlib';
 import {searchGEEImagery,createGEEImageryMap,getGEEImageryTile,createGEEBasemap} from '../src/gee-imagery.js';
+import {satelliteDisplayContext} from '../src/satellite-context.js';
 
 const privateKey=generateKeyPairSync('rsa',{modulusLength:2048,privateKeyEncoding:{type:'pkcs8',format:'pem'},publicKeyEncoding:{type:'spki',format:'pem'}}).privateKey;
 const geometry={type:'Polygon',coordinates:[[[101.19,12.59],[101.2,12.59],[101.2,12.6],[101.19,12.6],[101.19,12.59]]]};
@@ -87,6 +88,43 @@ test('server-created scenes and map responses must cover the whole AOI and remai
   const wrong=fixture();wrong.state.mode='foreign-map';await assert.rejects(()=>createGEEImageryMap(wrong.env,{sceneId:id,geometry},{fetchImpl:wrong.fetchImpl}),e=>e.code==='GEE_RESPONSE_INVALID');
 });
 
+test('Selected scenes render a fixed 1 km display context while scene coverage remains tied to the original AOI',async()=>{
+  const v=fixture(),before=structuredClone(geometry),map=await createGEEImageryMap(v.env,{sceneId:id,geometry},{fetchImpl:v.fetchImpl});
+  assert.deepEqual(geometry,before);assert.deepEqual(map.geometry,geometry);assert.deepEqual(map.displayGeometry,satelliteDisplayContext(geometry));assert.equal(map.contextBufferM,1000);assert.deepEqual(map.scene.footprint,footprint);
+  const body=v.calls.bodies.at(-1),clip=body.expression.values.image.functionInvocationValue.arguments.geometry.functionInvocationValue.arguments.coordinates.constantValue;
+  assert.deepEqual(clip,map.displayGeometry.coordinates);
+  const metadata=JSON.stringify(v.calls.bodies[0]);assert.ok(metadata.includes(JSON.stringify(geometry.coordinates)),'Coverage is still checked against the inspection AOI');
+  await assert.rejects(()=>createGEEImageryMap(v.env,{sceneId:id,geometry,contextBufferM:100000},{fetchImpl:v.fetchImpl}),e=>e.code==='GEE_INPUT_INVALID');
+});
+
+test('A fresh tile session permits context-only tiles but keeps tiles beyond context transparent',async()=>{
+  const v=fixture(),map=await createGEEImageryMap(v.env,{sceneId:id,geometry},{fetchImpl:v.fetchImpl});
+  const fresh=await import('../src/gee-imagery.js?scenecontext='+crypto.randomUUID());
+  const tileAt=lon=>{const z=18,n=2**z;return {z,x:Math.floor((lon+180)/360*n),y:Math.floor((1-Math.asinh(Math.tan(12.595*Math.PI/180))/Math.PI)/2*n)};};
+  const context=await fresh.getGEEImageryTile(v.env,{sessionId:map.sessionId,...tileAt(101.185)},{fetchImpl:v.fetchImpl});
+  assert.equal(context.status,200);assert.deepEqual(Buffer.from(await context.arrayBuffer()),png);assert.equal(v.calls.tile,1);
+  const outside=await fresh.getGEEImageryTile(v.env,{sessionId:map.sessionId,...tileAt(101.16)},{fetchImpl:v.fetchImpl});
+  assert.equal(outside.headers.get('X-XEDO-Cache'),'outside-aoi');assert.equal(v.calls.tile,1);
+});
+
+test('The fixed display padding does not invalidate a valid inspection near the existing 100 km extent limit',async()=>{
+  const v=fixture(),wide={type:'Polygon',coordinates:[[[101,12.59],[101.919,12.59],[101.919,12.6],[101,12.6],[101,12.59]]]};
+  const map=await createGEEImageryMap(v.env,{sceneId:id,geometry:wide},{fetchImpl:v.fetchImpl});
+  assert.deepEqual(map.geometry,wide);
+  const fresh=await import('../src/gee-imagery.js?widecontext='+crypto.randomUUID());
+  const tile=await fresh.getGEEImageryTile(v.env,{sessionId:map.sessionId,...pointTile()},{fetchImpl:v.fetchImpl});
+  assert.equal(tile.status,200);assert.equal(v.calls.tile,1);
+});
+
+test('A near-limit two-dimensional AOI keeps its context session without treating display area as inspection area',async()=>{
+  const v=fixture(),large={type:'Polygon',coordinates:[[[101,12.59],[101.919,12.59],[101.919,13.488],[101,13.488],[101,12.59]]]};
+  const map=await createGEEImageryMap(v.env,{sceneId:id,geometry:large},{fetchImpl:v.fetchImpl});
+  assert.deepEqual(map.geometry,large);assert.deepEqual(map.displayGeometry,satelliteDisplayContext(large));
+  const fresh=await import('../src/gee-imagery.js?largecontext='+crypto.randomUUID());
+  const tile=await fresh.getGEEImageryTile(v.env,{sessionId:map.sessionId,...pointTile()},{fetchImpl:v.fetchImpl});
+  assert.equal(tile.status,200);assert.equal(v.calls.tile,1);
+});
+
 test('PNG tiles load on a fresh module instance, cache privately, and do not expose upstream authorization',async()=>{
   const v=fixture(),map=await createGEEImageryMap(v.env,{sceneId:id,geometry},{fetchImpl:v.fetchImpl});
   const fresh=await import('../src/gee-imagery.js?stateless='+crypto.randomUUID());
@@ -120,7 +158,7 @@ test('session tampering, expiry, different credentials and invalid tile coordina
   await assert.rejects(()=>getGEEImageryTile(v.env,{sessionId:map.sessionId,...pointTile()},{fetchImpl:v.fetchImpl,now:()=>clock}),e=>e.code==='GEE_SESSION_EXPIRED');assert.equal(v.calls.tile,0);
 });
 
-test('tiles outside the approved AOI are transparent and consume no upstream requests',async()=>{
+test('tiles outside the approved display context are transparent and consume no upstream requests',async()=>{
   const v=fixture(),map=await createGEEImageryMap(v.env,{sceneId:id,geometry},{fetchImpl:v.fetchImpl});
   const tile=await getGEEImageryTile(v.env,{sessionId:map.sessionId,z:12,x:0,y:0},{fetchImpl:v.fetchImpl});
   assert.equal(tile.status,200);assert.equal(tile.headers.get('X-XEDO-Cache'),'outside-aoi');assert.equal(v.calls.tile,0);

@@ -7,6 +7,7 @@ import {planningRouteSamples} from '../src/planning-route-samples.js';
 import {createEstimatedDemoInputs} from '../src/planning-estimated-demo.js';
 import {FIXED_PLANNING_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings} from '../src/planning-fixed-settings.js';
 import {fileTrialAPI} from '../src/planning-file-api.js';
+import {setViewProperty} from '../src/planning-view.js';
 
 const client = await readFile(new URL('../src/planning-trial-client.js', import.meta.url), 'utf8');
 const plain = value => JSON.parse(JSON.stringify(value));
@@ -65,7 +66,7 @@ function harness() {
   const input=createEstimatedDemoInputs();
   const context=vm.createContext({
     document, calls, schedule:{...schedule,setManual:fields=>schedule.setManual(plain(fields))}, geospatialUI, AbortController, structuredClone, Date, JSON,
-    FIXED_PLANNING_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,planningRouteSamples,
+    FIXED_PLANNING_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,planningRouteSamples,setViewProperty,
     geometry:input.geometry,surveyId:null,result:null,working:false,revision:0,abort:null,
     draw:null,selectHome:false,routePoints:[],currentStep:3,review:{ready:true},calculationTimer:null,example:false,
     readinessUI:null,mode:'2d',

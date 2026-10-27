@@ -11,4 +11,14 @@
 #trial-geospatial-badge[data-state=ready] { color: var(--accent); }
 #trial-geospatial-badge[data-state=partial] { color: var(--amber); }
 #trial-geospatial-badge[data-state=error], #trial-geospatial-badge[data-state=stale] { color: var(--error); }
+.trial-geospatial-panel > .trial-geospatial-error { color: var(--error); padding: 10px 12px; border-left: 2px solid var(--error); line-height: 1.55; }
+.trial-geospatial-progress { display: grid; gap: 8px; margin: 12px 0 18px; padding: 12px; border: 1px solid var(--border); border-radius: 8px; font-size: 12px; }
+.trial-geospatial-progress[hidden] { display: none; }
+.trial-geospatial-progress progress { width: 100%; height: 8px; accent-color: var(--accent); }
+.trial-geospatial-progress small, .trial-geospatial-progress-time { color: var(--muted); line-height: 1.5; }
+.trial-geospatial-progress[data-state=error] { border-color: var(--error); }
+.trial-geospatial-source-status { list-style: none; margin: 0 0 16px; padding: 0; font-size: 12px; color: var(--muted); }
+.trial-geospatial-source-status li[data-state=ready] { color: var(--accent); }
+.trial-geospatial-source-status li[data-state=unavailable] { color: var(--amber); }
+@media (prefers-reduced-motion: reduce) { .trial-geospatial-progress progress { animation: none; } }
 @media (max-width: 540px) { .trial-geospatial-actions > button { width: 100%; } }

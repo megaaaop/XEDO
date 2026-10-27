@@ -1,3 +1,5 @@
+import {setViewProperty, setViewAttribute} from './planning-view.js';
+
 const ROWS = [
   ['home', 'Launch / return point'],
   ['schedule', 'Takeoff schedule'],
@@ -36,7 +38,7 @@ export function initializePlanningReadiness({root = globalThis.document, getStat
     node.addEventListener(name, handler);
     listeners.push(() => node.removeEventListener(name, handler));
   }
-  function setAttribute(node, name, value) { node?.setAttribute(name, value); }
+  const setAttribute = setViewAttribute;
 
   function makeRow(id, title) {
     const node = element('div', 'trial-readiness-row');
@@ -115,9 +117,9 @@ export function initializePlanningReadiness({root = globalThis.document, getStat
   listen(close, 'click', () => { dialog?.close?.(); finishDialog(); });
   listen(dialog, 'close', finishDialog);
 
-  function render() {
+  function render(suppliedValue) {
     if (disposed) return;
-    const value = getState() || {};
+    const value = suppliedValue || getState() || {};
     const supplied = new Map((Array.isArray(value.rows) ? value.rows : []).map(row => [row.id, row]));
     const rows = ROWS.map(([id, title]) => {
       const row = supplied.get(id) || {};
@@ -128,27 +130,27 @@ export function initializePlanningReadiness({root = globalThis.document, getStat
     const complete = count === ROWS.length && value.canExport === true;
     const state = blocked || (count === ROWS.length && !complete) ? 'blocked' : complete ? 'ready' : 'review';
     if (open) {
-      open.dataset.readiness = state;
-      headerIcon.textContent = state === 'ready' ? '✓' : state === 'blocked' ? '×' : '!';
-      headerCount.textContent = `${count}/${ROWS.length}`;
+      setViewProperty(open.dataset, 'readiness', state);
+      setViewProperty(headerIcon, 'textContent', state === 'ready' ? '✓' : state === 'blocked' ? '×' : '!');
+      setViewProperty(headerCount, 'textContent', `${count}/${ROWS.length}`);
       setAttribute(open, 'aria-label', `Flight readiness: ${count} of ${ROWS.length} ready. ${STATE_LABELS[state]}.`);
     }
     for (const group of views) {
       for (const row of rows) {
         const view = group.get(row.id);
-        view.node.dataset.state = row.state;
-        view.label.textContent = row.title;
-        view.status.textContent = STATE_LABELS[row.state];
-        view.detail.textContent = row.detail;
-        view.detail.hidden = !row.detail;
+        setViewProperty(view.node.dataset, 'state', row.state);
+        setViewProperty(view.label, 'textContent', row.title);
+        setViewProperty(view.status, 'textContent', STATE_LABELS[row.state]);
+        setViewProperty(view.detail, 'textContent', row.detail);
+        setViewProperty(view.detail, 'hidden', !row.detail);
         if (view.checkbox) {
-          view.checkbox.checked = row.state === 'ready';
-          view.checkbox.disabled = Boolean(value.working);
+          setViewProperty(view.checkbox, 'checked', row.state === 'ready');
+          setViewProperty(view.checkbox, 'disabled', Boolean(value.working));
         }
         if (view.action) {
-          view.action.textContent = row.actionLabel;
-          view.action.hidden = !row.actionLabel;
-          view.action.disabled = Boolean(value.working);
+          setViewProperty(view.action, 'textContent', row.actionLabel);
+          setViewProperty(view.action, 'hidden', !row.actionLabel);
+          setViewProperty(view.action, 'disabled', Boolean(value.working));
           setAttribute(view.action, 'aria-label', `${row.actionLabel}: ${row.title}`);
         }
       }
@@ -157,12 +159,12 @@ export function initializePlanningReadiness({root = globalThis.document, getStat
       const items = Array.isArray(value.blockingReasons)
         ? [...new Set(value.blockingReasons.filter(item => typeof item === 'string' && item.trim()).map(item => item.trim()))]
         : [];
-      reasons.hidden = value.canExport === true || items.length === 0;
+      setViewProperty(reasons, 'hidden', value.canExport === true || items.length === 0);
       while (reasonsList.children.length > items.length) reasonsList.lastElementChild.remove();
       items.forEach((text, index) => {
         let item = reasonsList.children[index];
         if (!item) { item = element('li'); reasonsList.append(item); }
-        item.textContent = text;
+        setViewProperty(item, 'textContent', text);
       });
     }
   }
