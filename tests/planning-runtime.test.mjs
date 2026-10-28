@@ -3,14 +3,14 @@ import assert from 'node:assert/strict';
 import {planningRuntime,requestPlanningTrial} from '../src/planning-runtime.js';
 
 test('Standalone HTTPS prototype retains browser calculations instead of calling absent APIs', () => {
-  assert.deepEqual(planningRuntime('https:', true), {standalone:true, localFile:false, label:'Prototype trial'});
+  assert.deepEqual(planningRuntime('https:', true), {standalone:true, localFile:false, label:'Inspection planner'});
   assert.equal(planningRuntime('http:', true).standalone, true);
 });
 
 test('Full workspace HTTPS still uses server APIs and local files remain standalone', () => {
-  assert.deepEqual(planningRuntime('https:', false), {standalone:false, localFile:false, label:'Trial'});
+  assert.deepEqual(planningRuntime('https:', false), {standalone:false, localFile:false, label:'Planning workspace'});
   assert.equal(planningRuntime('https:').standalone, false);
-  assert.deepEqual(planningRuntime('file:', false), {standalone:true, localFile:true, label:'Local trial'});
+  assert.deepEqual(planningRuntime('file:', false), {standalone:true, localFile:true, label:'Local planning'});
   assert.equal(planningRuntime('https:', 'true').standalone, false);
 });
 

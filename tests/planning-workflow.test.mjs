@@ -8,6 +8,7 @@ import {createEstimatedDemoInputs} from '../src/planning-estimated-demo.js';
 import {FIXED_PLANNING_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings} from '../src/planning-fixed-settings.js';
 import {fileTrialAPI} from '../src/planning-file-api.js';
 import {setViewProperty} from '../src/planning-view.js';
+import {createActionFeedback,paintActionButton} from '../src/action-feedback.js';
 
 const client = await readFile(new URL('../src/planning-trial-client.js', import.meta.url), 'utf8');
 const plain = value => JSON.parse(JSON.stringify(value));
@@ -35,6 +36,7 @@ function harness() {
     }
     append(...items) { this.children.push(...items);items.forEach(item=>{item.parentElement=this;}); }
     setAttribute(name,value) { this.attributes[name]=String(value); }
+    getAttribute(name) { return this.attributes[name]??null; }
     close() { this.open=false; }
     focus(options) { this.focused=true;this.focusCalls=(this.focusCalls||0)+1;this.focusOptions=options; }
     scrollIntoView(options) { this.scrollCalls=(this.scrollCalls||0)+1;this.scrollOptions=options; }
@@ -66,7 +68,7 @@ function harness() {
   const input=createEstimatedDemoInputs();
   const context=vm.createContext({
     document, calls, schedule:{...schedule,setManual:fields=>schedule.setManual(plain(fields))}, geospatialUI, AbortController, structuredClone, Date, JSON,
-    FIXED_PLANNING_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,planningRouteSamples,setViewProperty,
+    FIXED_PLANNING_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,planningRouteSamples,setViewProperty,paintActionButton,downloadFeedback:createActionFeedback(),
     geometry:input.geometry,surveyId:null,result:null,working:false,revision:0,abort:null,
     draw:null,selectHome:false,routePoints:[],currentStep:3,review:{ready:true},calculationTimer:null,example:false,
     readinessUI:null,mode:'2d',
@@ -379,4 +381,43 @@ test('A session that expires while the export is being prepared cannot download 
   for(let i=0;i<20&&h.calls.requests.length<2;i++)await Promise.resolve();
   resolve({text:'expired plan',filename:'trial.plan',mime:'application/json'});await pending;
   assert.equal(checks,2);assert.deepEqual(h.calls.downloads,[]);
+});
+
+test('Download feedback covers preflight and ten repeated calls cannot duplicate an export',async()=>{
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+  let checks=0,release;h.context.inspectorUI={contextKey:()=> 'same',changed(){},ensureSession(){checks++;return checks===1?new Promise(resolve=>{release=resolve;}):Promise.resolve(true);}};
+  const pending=h.node('trial-qgc').onclick();assert.match(h.node('trial-download-status').textContent,/Checking account/);assert.equal(h.node('trial-qgc').dataset.actionBusy,'true');
+  for(let i=0;i<10;i++)await h.node('trial-qgc').onclick();assert.equal(checks,1);assert.equal(h.calls.requests.length,1);
+  release(true);await pending;assert.equal(h.calls.downloads.length,1);assert.equal(h.node('trial-qgc').dataset.actionBusy,'false');assert.equal(h.node('trial-download-status').textContent,'Mission file ready. Download started.');
+});
+
+test('A changed conditions preflight ends pending without creating or downloading a file',async()=>{
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;h.context.environmentUI.ensureFresh=async()=>false;
+  await h.node('trial-qgc').onclick();assert.equal(h.calls.requests.length,1);assert.equal(h.calls.downloads.length,0);assert.equal(h.context.working,false);assert.equal(h.node('trial-qgc').dataset.actionBusy,'false');assert.match(h.node('trial-download-status').textContent,/Conditions updated/);
+});
+
+test('A completed demo download retains its demo label and filename',async()=>{
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;h.context.example=true;await h.node('trial-qgc').onclick();assert.equal(h.calls.downloads.length,1);assert.match(h.calls.downloads[0].filename,/^XEDO-estimated-demo-/);assert.equal(h.node('trial-qgc').textContent,'Download demo mission file');assert.equal(h.node('trial-qgc').dataset.actionBusy,'false');
+});
+
+test('Editing the mission clears an earlier completed download message and immediately blocks its old file',async()=>{
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;await h.node('trial-qgc').onclick();assert.equal(h.node('trial-download-status').hidden,false);h.node('export-airspace-reviewed').checked=false;h.context.changed({target:h.node('export-airspace-reviewed')});assert.equal(h.node('trial-download-status').hidden,true);assert.equal(h.node('trial-download-status').textContent,'');assert.equal(h.node('trial-qgc').disabled,true);assert.equal(h.context.result,null);
+});
+
+test('Native checkbox input/change pair performs one invalidation while number input stays immediate',()=>{
+  const h=harness(),control=h.node('export-airspace-reviewed'),semanticChanged=vm.runInContext('semanticChanged',h.context);control.type='checkbox';semanticChanged({type:'input',target:control});assert.equal(h.calls.geo,0);semanticChanged({type:'change',target:control});assert.equal(h.calls.geo,1);semanticChanged({type:'change',target:h.field('flight','speedMps')});assert.equal(h.calls.geo,1);semanticChanged({type:'input',target:h.field('flight','speedMps')});assert.equal(h.calls.geo,2);
+});
+
+test('Readiness checkbox retains its dialog and applies the review while navigation actions still close it',()=>{
+  const h=harness();let onAction;h.context.initializePlanningReadiness=options=>{onAction=options.onAction;return {render(){}};};h.context.node=h.node;
+  vm.runInContext(production('readinessUI=initializePlanningReadiness(',"$('#trial-replan').onclick="),h.context);
+  h.node('trial-readiness-dialog').open=true;onAction('airspace-toggle',true);assert.equal(h.node('trial-readiness-dialog').open,true);assert.equal(h.node('export-airspace-reviewed').checked,true);assert.equal(h.context.result,null);assert.match(h.calls.notices.at(-1),/Airspace review recorded/);
+  onAction('home');assert.equal(h.node('trial-readiness-dialog').open,false);
+});
+
+test('Back-forward cache preserves live controllers and resumes the preview, while a full unload disposes them',()=>{
+  const events=new Map(),calls=[];const service=name=>({dispose:()=>calls.push(name+' dispose'),destroy:()=>calls.push(name+' destroy'),setActive:active=>calls.push(name+' '+active),changed:()=>calls.push(name+' changed')});
+  const context=vm.createContext({window:{addEventListener:(name,fn)=>events.set(name,fn)},renderer:service('renderer'),groundController:service('ground'),geospatialUI:service('geo'),environmentUI:service('environment'),readinessUI:service('readiness'),revision:0,abort:null,satelliteAbort:null,calculationTimer:1,satelliteTimer:2,satelliteExpiryTimer:3,readinessTimer:4,readinessVisibility(){},clearTimeout(){},clearInterval(){calls.push('clear interval');},document:{removeEventListener(){calls.push('remove visibility');}},setWorking(){calls.push('idle');},refreshFlow(){calls.push('refresh');},map:{updateSize(){calls.push('map resize');}},mode:'3d',update3D(){calls.push('3d resume');},renderReadiness(){calls.push('readiness render');}});
+  vm.runInContext(production("window.addEventListener('pagehide',event=>{if(event.persisted){renderer", "window.addEventListener('keydown'"),context);
+  events.get('pagehide')({persisted:true});assert.deepEqual(calls,['renderer false']);events.get('pageshow')({persisted:true});assert(calls.includes('3d resume'));assert(!calls.some(x=>x.includes('dispose')));events.get('pagehide')({persisted:false});assert(calls.includes('renderer destroy'));assert(calls.includes('ground dispose'));assert(calls.includes('clear interval'));assert(calls.includes('remove visibility'));assert.equal(context.revision,1);
 });

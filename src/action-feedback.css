@@ -1,0 +1,4 @@
+[data-action-busy="true"]::before{content:"";display:inline-block;width:.85em;height:.85em;margin-inline-end:.6em;vertical-align:-.1em;border:2px solid currentColor;border-inline-end-color:transparent;border-radius:50%;animation:xedo-action-spin .8s linear infinite;flex-shrink:0}
+[data-action-busy="true"]{cursor:progress}
+@keyframes xedo-action-spin{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){[data-action-busy="true"]::before{animation:none;border-style:dotted}}

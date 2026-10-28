@@ -8,6 +8,7 @@ import {fileTrialAPI} from '../src/planning-file-api.js';
 import {validateGeometry} from '../src/domain.js';
 import {ESTIMATED_DEMO_PROFILE,createEstimatedDemoInputs} from '../src/planning-estimated-demo.js';
 import {createPlanningSchedule} from '../src/planning-schedule.js';
+import {createActionFeedback} from '../src/action-feedback.js';
 
 const client=await readFile(new URL('../src/planning-trial-client.js',import.meta.url),'utf8');
 const polygon=()=>({type:'Polygon',coordinates:[[[101.31,12.71],[101.313,12.71],[101.313,12.712],[101.31,12.712],[101.31,12.71]]]});
@@ -44,7 +45,7 @@ function harness(){
     const helper=createPlanningSchedule(options);
     return {...helper,restore:(metadata,fields)=>helper.restore(metadata==null?metadata:plain(metadata),fields==null?fields:plain(fields)),setManual:fields=>helper.setManual(plain(fields))};
   }
-  const context=vm.createContext({document,calls,structuredClone,Date,JSON,createPlanningSchedule:scheduleFactory,XEDO_HARDWARE_PROFILE,FIXED_PLANNING_SETTINGS,FIXED_SEARCH_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,fixedSettingConflicts,validateGeometry,ESTIMATED_DEMO_PROFILE,createEstimatedDemoInputs});
+  const context=vm.createContext({document,calls,structuredClone,Date,JSON,downloadFeedback:createActionFeedback(),createPlanningSchedule:scheduleFactory,XEDO_HARDWARE_PROFILE,FIXED_PLANNING_SETTINGS,FIXED_SEARCH_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,fixedSettingConflicts,validateGeometry,ESTIMATED_DEMO_PROFILE,createEstimatedDemoInputs});
   vm.runInContext(`
     const $=selector=>document.querySelector(selector);
     let geometry=${JSON.stringify(polygon())},surveyId=null,revision=0,example=false,draw={active:true},selectHome=false,result=null,working=false,currentStep=3,review={ready:true};
@@ -74,7 +75,7 @@ function harness(){
     ${section('function compatibleInputs(','function changed(')}
     ${section("$('#trial-example').onclick=","window.addEventListener('pagehide'")}
   `,context);
-  return {context,document,calls,schedule:vm.runInContext('schedule',context),input:(group,key)=>document.querySelector('#f-'+group+'-'+key),node:id=>document.querySelector('#'+id),body:()=>plain(context.body()),state:()=>plain(context.state()),restore:input=>context.restoreInputs(input),saveSnapshot(result){context.setResult(result);document.querySelector('#trial-snapshot').onclick();return calls.downloads.at(-1);},async snapshot(input){const text=JSON.stringify(input),target={files:[{size:text.length,text:async()=>text}],value:'selected.json'};await document.querySelector('#trial-restore').onchange({target});return target;}};
+  return {context,document,calls,schedule:vm.runInContext('schedule',context),input:(group,key)=>document.querySelector('#f-'+group+'-'+key),node:id=>document.querySelector('#'+id),body:()=>plain(context.body()),state:()=>plain(context.state()),restore:input=>context.restoreInputs(input),saveSnapshot(result){context.setResult(result);document.querySelector('#trial-snapshot').onclick();return calls.downloads.at(-1);},async snapshot(input){const text=JSON.stringify(input),target=Object.assign(new Element('input'),{files:[{size:text.length,text:async()=>text}],value:'selected.json'});await document.querySelector('#trial-restore').onchange({target});return target;}};
 }
 function assertConstants(input){for(const [group,settings]of Object.entries(FIXED_PLANNING_SETTINGS))for(const [key,expected]of Object.entries(settings))assert.equal(input[group][key],expected,group+'.'+key);}
 

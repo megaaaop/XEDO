@@ -12,7 +12,7 @@ function extentFor(geometry) {
   const points = geometry.coordinates[0].map(point => proj4('EPSG:4326','EPSG:3857',point));
   return [Math.min(...points.map(p=>p[0]))-10, Math.min(...points.map(p=>p[1]))-10, Math.max(...points.map(p=>p[0]))+10, Math.max(...points.map(p=>p[1]))+10];
 }
-function harness() {
+function harness(ownerDocument) {
   const calls = [], attributes = new Map(), listeners = new Map();
   const context = new Proxy({}, {
     get(target,key) {
@@ -24,7 +24,7 @@ function harness() {
     set(target,key,value){ target[key]=value; return true; }
   });
   const canvas = {
-    style:{touchAction:'pan-y',cursor:'auto'},width:0,height:0,
+    style:{touchAction:'pan-y',cursor:'auto'},width:0,height:0,ownerDocument,
     getContext:()=>context, getBoundingClientRect:()=>({width:900,height:500}),
     getAttribute:key=>attributes.get(key)??null, setAttribute:(key,value)=>attributes.set(key,String(value)), removeAttribute:key=>attributes.delete(key),
     addEventListener:(key,listener)=>listeners.set(key,listener),removeEventListener:key=>listeners.delete(key),focus(){},
@@ -91,7 +91,7 @@ test('Renderer inverts the original UTM projection, preserves route camera acros
     assert(rounded(local[16][0])>rounded(local[0][0]));assert(rounded(local[32][1])>rounded(local[16][1]));
     const texture={image:{width:1024,height:1024},extent:extentFor(geometry)};
     assert.equal(h.renderer.setGroundTexture(texture),true);
-    h.calls.length=0;h.renderer.setGroundMode('diagram');const diagramRoute=lastRoute(h.calls).slice(-h.plan.waypoints.length-7);
+    h.calls.length=0;h.renderer.setGroundMode('diagram');h.renderer.resize();const diagramRoute=lastRoute(h.calls).slice(-h.plan.waypoints.length-7);
     const originalSize=[h.canvas.width,h.canvas.height];
     h.calls.length=0;h.renderer.setGroundMode('satellite');const satelliteRoute=lastRoute(h.calls).slice(-h.plan.waypoints.length-7);
     assert.deepEqual(satelliteRoute,diagramRoute,'floor mode does not move route or camera');
@@ -124,4 +124,20 @@ test('Renderer fallback projection uses the same longitude scale as the original
     h.renderer.setData({plan});const ring=h.renderer.getGroundGeometry().coordinates[0];
     assert(Math.abs(ring[16][0]-(origin[0]+100/scale))<1e-12);assert(Math.abs(ring[32][1]-(origin[1]+100/111319.490793))<1e-12);
   } finally {h.renderer.destroy();}
+});
+
+test('3D input is frame-coalesced, inactive wheel scrolls the page, and hidden/disposed views stop drawing',()=>{
+  const oldRequest=globalThis.requestAnimationFrame,oldCancel=globalThis.cancelAnimationFrame,frames=new Map(),visibility=new Map();let next=0;
+  globalThis.requestAnimationFrame=fn=>{frames.set(++next,fn);return next;};globalThis.cancelAnimationFrame=id=>frames.delete(id);
+  const doc={hidden:false,activeElement:null,addEventListener:(name,fn)=>visibility.set(name,fn),removeEventListener:name=>visibility.delete(name)};
+  const flush=()=>{for(const [id,fn]of [...frames]){frames.delete(id);fn();}};
+  const h=harness(doc);let cancelled=0;const wheel=()=>h.listeners.get('wheel')({deltaY:1,preventDefault(){cancelled++;}});
+  try{
+    flush();h.calls.length=0;wheel();assert.equal(cancelled,0);assert.equal(frames.size,0);assert.equal(h.canvas.style.touchAction,'pan-y');
+    doc.activeElement=h.canvas;h.listeners.get('focus')();for(let i=0;i<100;i++)wheel();assert.equal(cancelled,100);assert.equal(frames.size,1);assert.equal(h.calls.filter(x=>x[0]==='clearRect').length,0);flush();assert.equal(h.calls.filter(x=>x[0]==='clearRect').length,1);
+    h.listeners.get('keydown')({key:'Escape',preventDefault(){}});wheel();assert.equal(cancelled,100);assert.equal(h.canvas.style.touchAction,'pan-y');
+    h.renderer.reset();h.renderer.setActive(false);assert.equal(frames.size,0);h.renderer.reset();assert.equal(frames.size,0);
+    h.renderer.setActive(true);doc.hidden=true;flush();const draws=h.calls.filter(x=>x[0]==='clearRect').length;doc.hidden=false;visibility.get('visibilitychange')();assert.equal(frames.size,1);flush();assert.equal(h.calls.filter(x=>x[0]==='clearRect').length,draws+1);
+    h.renderer.reset();assert.equal(frames.size,1);h.renderer.destroy();assert.equal(frames.size,0);assert.equal(visibility.size,0);assert.equal(h.listeners.size,0);
+  }finally{h.renderer.destroy();if(oldRequest===undefined)delete globalThis.requestAnimationFrame;else globalThis.requestAnimationFrame=oldRequest;if(oldCancel===undefined)delete globalThis.cancelAnimationFrame;else globalThis.cancelAnimationFrame=oldCancel;}
 });

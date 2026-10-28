@@ -4,6 +4,8 @@ import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {ESTIMATED_DEMO_PROFILE} from '../src/planning-estimated-demo.js';
 import {createPlanningSchedule} from '../src/planning-schedule.js';
+import {paintActionButton} from '../src/action-feedback.js';
+import {FIXED_SEARCH_SETTINGS} from '../src/planning-fixed-settings.js';
 
 const plain=value=>JSON.parse(JSON.stringify(value));
 // VM callers and imported modules have separate Object prototypes. JSON is the
@@ -40,7 +42,7 @@ function harness(overrides = {}) {
   const events = [], nodes = new Map(), timers = new Set();
   function node(selector) {
     if (!nodes.has(selector)) nodes.set(selector, {
-      value: '', textContent: '', innerHTML: '', href: '',
+      value: '', textContent: '', innerHTML: '', href: '',dataset:{},getAttribute(){return null;},setAttribute(){},
       click() { events.push(['click', selector]); }
     });
     return nodes.get(selector);
@@ -50,7 +52,7 @@ function harness(overrides = {}) {
     geometry: {type: 'Polygon', coordinates: [[[101.22, 12.62], [101.222, 12.62], [101.222, 12.621], [101.22, 12.62]]]}
   };
   const context = vm.createContext({
-    AbortController, DOMException, Date, JSON, encodeURIComponent,
+    AbortController, DOMException, Date, JSON, encodeURIComponent,paintActionButton,structuredClone,FIXED_SEARCH_SETTINGS,
     example: true, geeHosted: true, fileMode: false, runtime: {standalone: false, localFile: false, label: 'Trial'},
     geometry: structuredClone(preview.geometry), surveyId: null, review: null, webMission: null,
     draw: null, working: false, satelliteBusy: false, currentStep: 1,
@@ -161,6 +163,21 @@ test('Non-demo mission preparation still freezes the reviewed workspace mission'
   assert.equal(events.filter(event => event[0] === 'calculate').length, 1);
 });
 
+test('Changing area during a slow prepare clears its indicator and a late completion cannot revive the mission',async()=>{
+  const {context,nodes,preview}=harness({example:false});let finish;
+  context.review={...preview,ready:true};context.webMission={prepare:()=>new Promise(resolve=>{finish=resolve;})};
+  const pending=context.prepareMission();assert.equal(nodes.get('#trial-prepare').dataset.actionBusy,'true');assert.equal(context.satelliteBusy,true);
+  context.resetSurvey();assert.equal(nodes.get('#trial-prepare').dataset.actionBusy,'false');assert.equal(context.satelliteBusy,false);
+  finish({surveyId:'LATE',incidentId:'LATE'});await pending;assert.equal(context.currentStep,1);assert.equal(context.surveyId,null);assert.equal(nodes.get('#trial-prepare').textContent,'Prepare drone mission →');
+});
+
+test('Failed image search releases pending and replaces its searching announcement with a terminal action',async()=>{
+  const {context,events,nodes}=harness({example:false,async geeAPI(){throw Error('GEE imagery is temporarily unavailable.');}});
+  vm.runInContext(production('async function searchSatellite(', '\nasync function loadGEEScene('),context);
+  context.$('#trial-image-start').value='2026-09-28';context.$('#trial-image-end').value='2026-10-28';context.$('#trial-image-search').reportValidity=()=>true;
+  await context.searchSatellite();assert.equal(context.satelliteBusy,false);assert.equal(nodes.get('#trial-image-status').textContent,'Image search needs another attempt.');assert.deepEqual(events.filter(x=>x[0]==='announce').at(-1),['announce','Satellite image search stopped. Retry the search.']);
+});
+
 test('Changing area or leaving demo cancels pending imagery and prevents a late review from reviving step two', async () => {
   const {context, timers} = harness();
   let finish, imageSignal;
@@ -188,7 +205,7 @@ test('Changing area or leaving demo cancels pending imagery and prevents a late 
 
 test('Failed real-source snapshot lookup keeps the current demo mode and original mission backup', async () => {
   const backup = {controls: [{id: 'f-flight-powerW', value: '400'}]}, errors = [];
-  const target = {value: 'saved.json', files: [{size: 1000, async text() {
+  const target = {value: 'saved.json',dataset:{},setAttribute(){}, files: [{size: 1000, async text() {
     return JSON.stringify({schema_version: 'xedo-planning-trial/1', inputs: {surveyId: 'SUR_missing'}});
   }}]};
   const restoreControl = {};
@@ -199,7 +216,7 @@ test('Failed real-source snapshot lookup keeps the current demo mode and origina
     compatibleInputs: value => value,
     stopDraw() {},
     async loadSurvey() { throw Error('Saved survey not found'); },
-    error(message) { errors.push(message); },
+    error(message) { errors.push(message); },announce(){},
     // Any following state-changing action is unexpected after the lookup fails.
     captureMission() { throw Error('Unexpected backup replacement'); },
     restoreInputs() { throw Error('Unexpected input replacement'); }

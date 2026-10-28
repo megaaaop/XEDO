@@ -190,7 +190,7 @@
   },
   "currentPlanningScope": {
     "id": "same-day-closeout-2026-10-27",
-    "status": "production_published_login_verified_team_accounts_pending",
+    "status": "ux_closure_plan_prepared_before_implementation",
     "userAvailabilityMinutes": 240,
     "userAvailabilityIsHardWorkLimit": false,
     "confirmedByUser": [
@@ -214,7 +214,7 @@
       5
     ],
     "firstCheckpointMinutes": 20,
-    "criticalDependency": "Verify an accessible hosted authentication and durable database deployment path; current Vercel production has no account/private-mission API and workspace actor metadata is not ownership enforcement.",
+    "criticalDependency": "Requested Auth user and Inspector roster are ready. User retries real login with existing password before real-account Save/history/logout and A-B ownership acceptance.",
     "schedule": [
       {
         "fromMinute": 0,
@@ -262,8 +262,11 @@
       "Broad capacity benchmark",
       "New paid service provisioning without user authorization"
     ],
-    "verificationThisTurn": "2026-10-28: explicit account release approval; pushed main and source branch. Initial production rewrite404 repaired with strict matching path capture. Fresh501tests/syntax/3builds and CI success; exact production alias READY, API7cases and Login desktop/mobile390 pass. No real trial users, successful password login, private A/B Save/history acceptance, DB reapply or unrelated UX/AI implementation.",
-    "acceptedBaseline": "Existing planner/demo, schedule, export/readiness, three steps and four calculators remain. New user-start/derived-end scheduling and normal-flow full-export work are not release gates."
+    "verificationThisTurn": "2026-10-28 UX plan: source/independent readonly review plus bounded production UI guest synthetic invalid-login pending/error, airspace-checkbox closes dialog then reopened checked, mobile390 short modal scroll0→1688/page0. No source changes, standard tests/build, longsoak/performance trace, real-password acceptance, DB/Auth changes or push/deploy.",
+    "acceptedBaseline": "Existing planner/demo, schedule, export/readiness, three steps and four calculators remain. New user-start/derived-end scheduling and normal-flow full-export work are not release gates.",
+    "initialCriticalDependency": "Verify an accessible hosted authentication and durable database deployment path; current Vercel production has no account/private-mission API and workspace actor metadata is not ownership enforcement.",
+    "scheduleContext": "Historical2026-10-27 four-hour plan; not a new clock or promise restarted by the2026-10-28 summary request.",
+    "latestPlanPath": "docs/UX_COMPLETION_PLAN.md"
   },
   "currentImplementationScope": {
     "id": "3d-satellite-ground-2026-10-27",
@@ -450,15 +453,18 @@
       "number": 4,
       "name": "Production-like interface and controlled online release",
       "status": "partially_implemented",
-      "implementationStatus": "approved_not_started_revised_plan",
-      "requirement": "Remove all Prototype badges/repeated notes and clean up UX while preserving source/error/review states, three steps, four calculators and accepted existing prototype behavior. Implementation approved; this turn is revised planning.",
+      "implementationStatus": "local_candidate_browser_verified_with_documented_limits_not_published",
+      "requirement": "UX/loading/scroll implementation and supported local browser scenarios verified. Not published; remaining device/performance qualifications and selective recomputation explicitly documented. Preserve3steps4calculators/readiness.",
       "implementationApproved": true,
-      "approvedOn": "2026-10-27"
+      "approvedOn": "2026-10-28",
+      "planPath": "docs/UX_COMPLETION_PLAN.md",
+      "planUpdatedOn": "2026-10-28",
+      "publishedThisExecution": false
     },
     {
       "number": 5,
       "name": "Accounts, saved missions and history",
-      "status": "production_published_login_verified_team_accounts_pending",
+      "status": "published_requested_account_enabled_real_login_acceptance_pending",
       "implementationStatus": "bff_ui_and_database_published_login_verified_real_accounts_pending",
       "confirmed": [
         "One application role: Inspector",
@@ -476,7 +482,7 @@
       ],
       "implementationApproved": true,
       "approvedOn": "2026-10-27",
-      "teamProvisioning": "User confirms no accounts; team creates Auth users and enables Inspector roster later"
+      "teamProvisioning": "Requested Auth user exists and is now Inspector-enabled after explicit user approval. User retries real login; further trial accounts remain team-provisioned."
     },
     {
       "number": 6,
@@ -701,6 +707,13 @@
       "answer": "The team creates accounts for trial participants first.",
       "answeredOn": "2026-10-26",
       "source": "User reply to the asynchronous question in this chat"
+    },
+    {
+      "id": "enable_requested_inspector_account_2026_10_28",
+      "resolvedOn": "2026-10-28",
+      "answer": "User explicitly approved enabling only the existing Auth account identified in the supplied screenshots as Inspector.",
+      "applied": true,
+      "verified": true
     }
   ],
   "latestPublishedRelease": {
@@ -1090,5 +1103,455 @@
     "url": "https://xedo-eight.vercel.app",
     "productionHtmlSha256": "97ba76c8c7c94015c7932badfc8f7af3f9c270279fdebda53467a336114088dd",
     "documentationFollowup": "Follow-up documentation commit may advance deployment identity without changing application code; final identity recorded in local release-receipt.json"
+  },
+  "closeoutSnapshot": {
+    "recordedOn": "2026-10-28",
+    "kind": "documentation_status_summary",
+    "activeGroups": 3,
+    "sourceFeatureGroupsRemaining": [
+      "UX cleanup",
+      "Prepared AI integration with Inspector risk editing"
+    ],
+    "publishedAccountGroupRemaining": "Requested account enabled and verified in live database. User retries real login; real private Save/history/logout/A-B ownership acceptance remains.",
+    "activeNumberMapping": [
+      {
+        "current": 1,
+        "legacy": 4
+      },
+      {
+        "current": 2,
+        "legacy": 5
+      },
+      {
+        "current": 3,
+        "legacy": 6
+      }
+    ],
+    "deferredNumberMapping": [
+      {
+        "current": 4,
+        "legacy": 7
+      },
+      {
+        "current": 5,
+        "legacy": 8
+      }
+    ],
+    "pendingUserDecisions": [],
+    "teamProvisioningPending": false,
+    "releasedRuntimeIssuesNotCountedAsPending": [
+      "gee_automatic_mission_window_over_24_hours",
+      "surface_missing_report_shows_area_home_mismatch"
+    ],
+    "integrationVerificationIsAcceptanceNotExtraFeatureStage": true,
+    "applicationChangedThisTurn": false,
+    "testsOrServicesRunThisTurn": false,
+    "publicationThisTurn": false,
+    "record": "docs/WEBSITE_DETAILS.md#327-แผนคงเหลือหลัง-timesurface-release--28-ตุลาคม-2026",
+    "teamProvisioningPendingScope": "Requested account now enabled; additional accounts remain team-created as needed."
+  },
+  "inspectorEnablementExecution": {
+    "id": "inspector-enablement-2026-10-28",
+    "status": "specific_account_enabled_database_verified_user_login_retry_pending",
+    "projectRef": "tstmjnlhwidwtzetqxbu",
+    "connection": "megaphijak",
+    "specificAccountInUserScreenshots": true,
+    "authUserExists": true,
+    "emailConfirmed": true,
+    "authBanned": false,
+    "authDeleted": false,
+    "rosterExists": true,
+    "enabled": true,
+    "repairPrepared": true,
+    "writeAttemptResult": "Approved follow-up one-row enablement executed successfully",
+    "writeApplied": true,
+    "postReadStillMissing": false,
+    "passwordRequestedOrUsed": false,
+    "passwordChanged": false,
+    "authSessionCreatedByAgent": false,
+    "sourceChanged": false,
+    "realBrowserLoginVerified": false,
+    "pushDeploy": false,
+    "pendingDecisionIds": [],
+    "evidenceDirectory": "output/release-check/inspector-enablement-2026-10-28",
+    "record": "docs/WEBSITE_DETAILS.md#328-auth-user-มีแล้วแต่ไม่มี-inspector-roster--28-ตุลาคม-2026",
+    "explicitApprovalReceived": true,
+    "approvedOn": "2026-10-28",
+    "rowsReturned": 1,
+    "appliedAt": "2026-10-28T07:40:36.417907Z",
+    "postReadRosterRows": 1,
+    "rlsEnabled": true,
+    "anonCanProvision": false,
+    "authenticatedCanProvision": false,
+    "successfulBrowserLoginAcceptancePending": true,
+    "repairRecord": "docs/WEBSITE_DETAILS.md#329-เปิด-inspector-roster-หลังผู้ใช้อนุมัติ--28-ตุลาคม-2026"
+  },
+  "uxCompletionPlanning": {
+    "id": "ux-loading-scroll-plan-2026-10-28",
+    "status": "local_candidate_browser_verified_with_documented_limits_not_published",
+    "currentStageNumber": 1,
+    "legacyStageNumber": 4,
+    "sourceHead": "45e928ef50ace69ae83393bc192acdc6b537fae7",
+    "planPath": "docs/UX_COMPLETION_PLAN.md",
+    "phases": [
+      "1A baseline and inventory",
+      "1B action feedback and checkbox continuity",
+      "1C scroll/render/lifecycle from evidence",
+      "1D copy and UI cleanup",
+      "1E integrated acceptance and documentation"
+    ],
+    "confirmedBrowserFindings": [
+      "Sign in pending aria-busy=true/submit disabled but unchanged label and empty status",
+      "Airspace checkbox applied but dialog closed immediately; reopen shows checked/Ready",
+      "Mobile390 modal brief wheel scroll succeeded0→1688 with page0"
+    ],
+    "sourceSuspectsNotProvenFreezeRootCause": [
+      "3D wheel/touch capture and synchronous draw",
+      "input/change duplicate invalidation",
+      "1s readiness getter work/reentrant callbacks",
+      "resource lifecycle and bfcache"
+    ],
+    "longFreezeReproduced": false,
+    "performanceTraceRun": true,
+    "standardApplicationTestsOrBuildRun": true,
+    "realAccountPasswordLoginRun": false,
+    "applicationChanged": true,
+    "databaseOrAuthSettingsChanged": false,
+    "published": false,
+    "supportPrompt": "C:/mega/codex/iENA/outputs/XEDO_UX_Plan_2026-10-28/PARALLEL_CHAT_PROMPT.md",
+    "supportOutputDirectory": "C:/mega/codex/iENA/outputs/XEDO_UX_Parallel_2026-10-28/support",
+    "mainOnlyWebsiteImplementation": true,
+    "userOwnedSupportChatMessaged": true,
+    "evidenceDirectory": "C:/mega/codex/iENA/github-publish/XEDO-hardware-release/output/release-check/ux-2026-10-28",
+    "pendingUserDecisions": [],
+    "acceptanceTargetsAreProposedNotMeasured": true,
+    "userOwnedSupportChatTitle": "02-chat ขนาน project หลัก",
+    "userOwnedSupportChatId": "01a17cf8-a060-7fd0-bed4-d7920a297d20",
+    "supportHandoffReceived": true,
+    "testsPassed": 531,
+    "testsFailed": 0,
+    "testsSkipped": 0,
+    "buildsPassed": 3,
+    "pendingUserAction": null,
+    "acceptanceNote": "Supported desktop/browser scenarios passed with bounded11.15min run. Full qualification incomplete: physicaltouch/trackpad/reducedmotionOS/fullappP95/heap and dependency-selective recomputation not measured or not implemented.",
+    "performanceMeasurement": {
+      "fixture": "production renderer; synthetic512x512texture;850x440CSScanvas;focused100wheel-event bursts;5samples per candidate",
+      "before": {
+        "canvasCount": 1,
+        "draws": 505,
+        "heapBytes": 8482104,
+        "longTasks": [
+          53,
+          304,
+          269,
+          204,
+          203,
+          193
+        ],
+        "samples": [
+          {
+            "draws": 100,
+            "eventMs": 303.9,
+            "paintMs": 307.2
+          },
+          {
+            "draws": 100,
+            "eventMs": 268.8,
+            "paintMs": 271.7
+          },
+          {
+            "draws": 100,
+            "eventMs": 203.9,
+            "paintMs": 206.8
+          },
+          {
+            "draws": 100,
+            "eventMs": 203.3,
+            "paintMs": 206.6
+          },
+          {
+            "draws": 100,
+            "eventMs": 193.3,
+            "paintMs": 196.2
+          }
+        ]
+      },
+      "after": {
+        "draws": 7,
+        "longTasks": [
+          81
+        ],
+        "samples": [
+          {
+            "eventMs": 1.3,
+            "paintMs": 10,
+            "draws": 1
+          },
+          {
+            "eventMs": 0.7,
+            "paintMs": 17.4,
+            "draws": 1
+          },
+          {
+            "eventMs": 0.9,
+            "paintMs": 7.8,
+            "draws": 1
+          },
+          {
+            "eventMs": 0.6,
+            "paintMs": 8.6,
+            "draws": 1
+          },
+          {
+            "eventMs": 0.9,
+            "paintMs": 9.1,
+            "draws": 1
+          }
+        ],
+        "canvasCount": 1,
+        "heapBytes": 13733266
+      },
+      "notFieldINP": true,
+      "notMemoryLeakProof": true
+    },
+    "finalBrowserChecksPending": false,
+    "record": "docs/WEBSITE_DETAILS.md#331-ux-action-feedback-scroll-ownership-และ-renderer-lifecycle--28-ตุลาคม-2026",
+    "browserResume": {
+      "id": "ux-browser-resume-2026-10-28",
+      "status": "local_candidate_browser_verified_with_documented_limits_not_published",
+      "testsPassed": 531,
+      "testsFailed": 0,
+      "testsSkipped": 0,
+      "buildsPassed": 3,
+      "syntaxAndDiffPassed": true,
+      "realGEEUniqueAreas": 10,
+      "dialogCycles": 30,
+      "modeCycles": 20,
+      "boundedRunMinutes": 11.150133333333333,
+      "responsive": [
+        {
+          "canvas": {
+            "bottom": 1045.578125,
+            "height": 366,
+            "left": 24.0390625,
+            "right": 728.9609375,
+            "top": 679.578125,
+            "width": 704.921875,
+            "x": 24.0390625,
+            "y": 679.578125
+          },
+          "pageWidth": 753,
+          "scrollWidth": 753,
+          "requested": {
+            "width": 768,
+            "height": 1024
+          },
+          "settings": {
+            "clientWidth": 706,
+            "scrollWidth": 706
+          },
+          "readiness": {
+            "clientWidth": 618,
+            "scrollWidth": 618
+          }
+        },
+        {
+          "canvas": {
+            "bottom": 1052.7890625,
+            "height": 413,
+            "left": 39.3984375,
+            "right": 814.8671875,
+            "top": 639.7890625,
+            "width": 775.46875,
+            "x": 39.3984375,
+            "y": 639.7890625
+          },
+          "pageWidth": 1265,
+          "scrollWidth": 1265,
+          "requested": {
+            "width": 1280,
+            "height": 900
+          },
+          "settings": {
+            "clientWidth": 803,
+            "scrollWidth": 803
+          },
+          "readiness": {
+            "clientWidth": 618,
+            "scrollWidth": 618
+          }
+        },
+        {
+          "canvas": {
+            "bottom": 1195.1953125,
+            "height": 262.4140625,
+            "left": 17,
+            "right": 358,
+            "top": 932.78125,
+            "width": 341,
+            "x": 17,
+            "y": 932.78125
+          },
+          "pageWidth": 375,
+          "scrollWidth": 375,
+          "requested": {
+            "width": 390,
+            "height": 844
+          },
+          "settings": {
+            "clientWidth": 328,
+            "scrollWidth": 328
+          },
+          "readiness": {
+            "clientWidth": 356,
+            "scrollWidth": 356
+          }
+        }
+      ],
+      "simulatedAccountBrowserPassed": true,
+      "productionRealAccountAcceptance": false,
+      "downloadPlanItems": 18,
+      "manual52hBlocked": true,
+      "physicalTouchTested": false,
+      "fullAppP95Measured": false,
+      "heapLeakProof": false,
+      "selectiveRecomputationImplemented": false,
+      "pendingUserAnswers": [],
+      "published": false,
+      "commitPushDeploy": false,
+      "realDBAuthMutation": false,
+      "record": "docs/WEBSITE_DETAILS.md#332-ux-browser-acceptance-หลังเปิดการเชื่อมต่อกลับ--28-ตุลาคม-2026"
+    },
+    "remainingQualifications": {
+      "heapAndListenerCounters": "not measured",
+      "fieldINP": "not measured",
+      "physicalTouch": "not available in this desktop tool",
+      "nativeTrackpad": "not run separately",
+      "selectiveRecomputation": "not implemented; semantic dedup only"
+    }
+  },
+  "uxBrowserAcceptanceExecution": {
+    "id": "ux-browser-resume-2026-10-28",
+    "status": "local_candidate_browser_verified_with_documented_limits_not_published",
+    "testsPassed": 531,
+    "testsFailed": 0,
+    "testsSkipped": 0,
+    "buildsPassed": 3,
+    "syntaxAndDiffPassed": true,
+    "realGEEUniqueAreas": 10,
+    "dialogCycles": 30,
+    "modeCycles": 20,
+    "boundedRunMinutes": 11.150133333333333,
+    "responsive": [
+      {
+        "canvas": {
+          "bottom": 1045.578125,
+          "height": 366,
+          "left": 24.0390625,
+          "right": 728.9609375,
+          "top": 679.578125,
+          "width": 704.921875,
+          "x": 24.0390625,
+          "y": 679.578125
+        },
+        "pageWidth": 753,
+        "scrollWidth": 753,
+        "requested": {
+          "width": 768,
+          "height": 1024
+        },
+        "settings": {
+          "clientWidth": 706,
+          "scrollWidth": 706
+        },
+        "readiness": {
+          "clientWidth": 618,
+          "scrollWidth": 618
+        }
+      },
+      {
+        "canvas": {
+          "bottom": 1052.7890625,
+          "height": 413,
+          "left": 39.3984375,
+          "right": 814.8671875,
+          "top": 639.7890625,
+          "width": 775.46875,
+          "x": 39.3984375,
+          "y": 639.7890625
+        },
+        "pageWidth": 1265,
+        "scrollWidth": 1265,
+        "requested": {
+          "width": 1280,
+          "height": 900
+        },
+        "settings": {
+          "clientWidth": 803,
+          "scrollWidth": 803
+        },
+        "readiness": {
+          "clientWidth": 618,
+          "scrollWidth": 618
+        }
+      },
+      {
+        "canvas": {
+          "bottom": 1195.1953125,
+          "height": 262.4140625,
+          "left": 17,
+          "right": 358,
+          "top": 932.78125,
+          "width": 341,
+          "x": 17,
+          "y": 932.78125
+        },
+        "pageWidth": 375,
+        "scrollWidth": 375,
+        "requested": {
+          "width": 390,
+          "height": 844
+        },
+        "settings": {
+          "clientWidth": 328,
+          "scrollWidth": 328
+        },
+        "readiness": {
+          "clientWidth": 356,
+          "scrollWidth": 356
+        }
+      }
+    ],
+    "simulatedAccountBrowserPassed": true,
+    "productionRealAccountAcceptance": false,
+    "downloadPlanItems": 18,
+    "manual52hBlocked": true,
+    "physicalTouchTested": false,
+    "fullAppP95Measured": false,
+    "heapLeakProof": false,
+    "selectiveRecomputationImplemented": false,
+    "pendingUserAnswers": [],
+    "published": false,
+    "commitPushDeploy": false,
+    "realDBAuthMutation": false,
+    "record": "docs/WEBSITE_DETAILS.md#332-ux-browser-acceptance-หลังเปิดการเชื่อมต่อกลับ--28-ตุลาคม-2026"
+  },
+  "uxReleaseExecution": {
+    "id": "ux-release-2026-10-28",
+    "status": "approved_preparing_commit",
+    "authorizedOn": "2026-10-28",
+    "pushDeployAuthorized": true,
+    "scope": "Publish verified UX action feedback, confirmation, copy, checkbox continuity and scroll/RAF lifecycle candidate",
+    "projectId": "prj_x35WcipWxA767cYwv3f0CXcdyea3",
+    "teamId": "team_CV1O0uIz6BcarAQAOb8soV0I",
+    "productionDomain": "xedo-eight.vercel.app",
+    "sourceBase": "45e928ef50ace69ae83393bc192acdc6b537fae7",
+    "verifiedLocalTests": 531,
+    "verifiedLocalBuilds": 3,
+    "sourceAndBuildHashesMatchPriorReceipt": true,
+    "localTestsRerunThisPublicationTurn": false,
+    "productionVerified": false,
+    "pendingUserAnswers": [],
+    "dbAuthChanges": false
   }
 }

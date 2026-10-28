@@ -154,6 +154,7 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     htmlIfChanged(summary,'<dl>'+rows.map(([name,value])=>'<dt>'+escape(name)+'</dt><dd>'+escape(value)+'</dd>').join('')+'</dl>');
     const homeReady=terrain?.state==='ready'&&elevation(terrain.homeElevationM)&&same(report.request.home,context.payload.home)&&pair(context.payload.home)&&Date.parse(state.expiresAt)>now();
     review.disabled=!homeReady;accept.disabled=!homeReady||!review.checked;refresh.disabled=state.status==='loading'||!!context.blocked;
+    refresh.textContent=state.status==='loading'?'Loading GEE data…':'Refresh GEE data';refresh.dataset.actionBusy=String(state.status==='loading');
     hint.textContent=accepted?.mode==='gee_model'?'GEE model estimate retained for this Home · EGM2008. Actual launch level and flight clearance are not verified.':accepted?'Reviewed estimate retained for this Home position. Other export checks still require review.':'30 m DSM · EGM2008 estimate. Confirm the actual launch level and compatible height reference.';
     const lines=[];
     if(report){lines.push('Checked: '+displayTime(report.fetchedAt),'Context expires: '+displayTime(report.expiresAt),'GEE model sample completeness: '+assessment.coverage.known+'/'+assessment.coverage.total+'; this is not continuous area coverage.',...assessment.reasons);

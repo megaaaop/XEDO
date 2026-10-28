@@ -48,6 +48,8 @@ export function initializePlanningEnvironmentUI({root=document,localFile=false,g
     else if(sourceMode()==='manual')label='Manual conditions';
     $('#trial-environment-badge').textContent=label;$('#trial-environment-badge').dataset.state=state.status;
     $('#trial-environment-status').textContent=label;$('#trial-environment-refresh').disabled=state.status==='loading'||localFile||sourceMode()==='manual'||getMission().example;
+    $('#trial-environment-refresh').textContent=state.status==='loading'?'Checking conditions…':'Refresh conditions';
+    $('#trial-environment-refresh').dataset.actionBusy=String(state.status==='loading');
     const report=state.response||response;
     const wind10=derived?.series?.wind10m?.mean,flow=derived?.series?.currentSurface?.mean;
     const rows=[['10 m wind',wind10?format(wind10.speedMps)+' m/s':'Unknown'],['Flight wind',derived?.patch.flight?format(Math.hypot(derived.patch.flight.windEastMps,derived.patch.flight.windNorthMps))+' m/s · Model estimate':'Unknown'],['Surface current',flow&&$('#trial-environment-site').value!=='channel'?format(flow.speedMps)+' m/s · Regional estimate':'Unknown']];

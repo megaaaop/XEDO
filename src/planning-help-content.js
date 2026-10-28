@@ -21,7 +21,7 @@ export const planningHelpTopics = {
   terrain: {
     title: 'GEE surface comparison',
     paragraphs: ['Automatic GEE mode compares Home, inspection-area and sparse route samples from the 30 m Copernicus DSM in EGM2008. Missing samples remain unknown.'],
-    bullets: ['The default two-metre tolerance is a configurable model comparison assumption, not a certified aircraft safety limit.', 'A ready comparison can supply the model Home height and the flat-reference assumption for this trial. The source remains labelled GEE model.', 'Large height differences or missing samples need review. Manual mode allows an independently reviewed reference instead.', 'The DSM can include vegetation and buildings. Sparse historical samples do not establish continuous terrain coverage or present obstacle clearance. The route remains constant height above Home.'],
+    bullets: ['The default two-metre tolerance is a configurable model comparison assumption, not a certified aircraft safety limit.', 'A ready comparison can supply the model Home height and the flat-reference assumption for this planner. The source remains labelled GEE model.', 'Large height differences or missing samples need review. Manual mode allows an independently reviewed reference instead.', 'The DSM can include vegetation and buildings. Sparse historical samples do not establish continuous terrain coverage or present obstacle clearance. The route remains constant height above Home.'],
     formulas: []
   },
   estimatedDemo: {
@@ -47,7 +47,7 @@ export const planningHelpTopics = {
     ],
     bullets: [
       'Copernicus DEM GLO30_2024_1 is a roughly 30 m digital surface model in the EGM2008 height reference. Buildings and vegetation can be part of its surface. Model heights do not prove current terrain or obstacle clearance.',
-      'Automatic surface mode uses a fresh, complete model comparison and a separately labelled GEE model Home height. Manual mode retains an independently reviewed height/reference option. The trial does not convert a GNSS ellipsoid height or certify AMSL. Changing Home revokes an unchanged owned estimate; a manually edited value remains your responsibility.',
+      'Automatic surface mode uses a fresh, complete model comparison and a separately labelled GEE model Home height. Manual mode retains an independently reviewed height/reference option. The planner does not convert a GNSS ellipsoid height or certify AMSL. Changing Home revokes an unchanged owned estimate; a manually edited value remains your responsibility.',
       'WorldCover v200 describes 2021 land cover at 10 m, including permanent water and mangroves. Fractions are historical area estimates; they do not establish a current shoreline, channel current, protected-area boundary or official no-fly zone.',
       'Selected-image quality is calculated for the inspection area. Cloud probability or the documented SCL fallback is a classification estimate. Missing pixels remain Unknown, and neither image quality nor a dark water patch confirms oil.',
       'The GEE GFS reference describes 10 m wind and available gusts at one forecast time on a roughly 28 km grid. It is not 50 m flight wind or full-mission weather coverage; the existing automatic weather/current API remains the calculation source.',
@@ -62,7 +62,7 @@ export const planningHelpTopics = {
     title: 'Automatic mission conditions',
     paragraphs: [
       'Select an inspection polygon and a planned takeoff/end time. The local or hosted API retrieves up to five in-area forecast samples and hourly values across that window. The interface keeps the same three mission steps.',
-      'The trial receives NOAA GFS wind and Copernicus SMOC surface-current estimates through Open-Meteo. It checks the provider model run, availability, time coverage, units and grid location. A recent web request does not make an old model fresh.'
+      'The planner receives NOAA GFS wind and Copernicus SMOC surface-current estimates through Open-Meteo. It checks the provider model run, availability, time coverage, units and grid location. A recent web request does not make an old model fresh.'
     ],
     bullets: [
       'Automatic checks run when the area or relevant times change, every ten minutes while the page is active, and again when needed before export. Failed, expired, masked or incomplete inputs remain Unknown. Offline and local-file mode cannot query the backend.',
@@ -79,7 +79,7 @@ export const planningHelpTopics = {
     title: 'XEDO equipment profile',
     paragraphs: [
       'The equipment list is fixed in the ' + XEDO_HARDWARE_PROFILE.name + ' profile. Only Raspberry Pi 5 was confirmed by the project owner; other model identifications came from an AI interpretation of a photograph.',
-      XEDO_HARDWARE_PROFILE.cameraLabel + ' stock optics at full sensor size: ' + fixed.flight.sensorWidthMm + ' × ' + fixed.flight.sensorHeightMm + ' mm, ' + fixed.flight.focalLengthMm + ' mm focal length, ' + fixed.flight.imageWidthPx + ' × ' + fixed.flight.imageHeightPx + ' pixels. Fixed trial settings are ' + fixed.flight.altitudeM + ' m AGL, ' + fixed.flight.speedMps + ' m/s, ' + fixed.flight.sideOverlap * 100 + '% side overlap, ' + fixed.flight.frontOverlap * 100 + '% front overlap and a ' + fixed.flight.minTriggerIntervalS + ' s minimum capture interval. These are project assumptions, not verified flight performance.',
+      XEDO_HARDWARE_PROFILE.cameraLabel + ' stock optics at full sensor size: ' + fixed.flight.sensorWidthMm + ' × ' + fixed.flight.sensorHeightMm + ' mm, ' + fixed.flight.focalLengthMm + ' mm focal length, ' + fixed.flight.imageWidthPx + ' × ' + fixed.flight.imageHeightPx + ' pixels. Fixed inspection settings are ' + fixed.flight.altitudeM + ' m AGL, ' + fixed.flight.speedMps + ' m/s, ' + fixed.flight.sideOverlap * 100 + '% side overlap, ' + fixed.flight.frontOverlap * 100 + '% front overlap and a ' + fixed.flight.minTriggerIntervalS + ' s minimum capture interval. These are project assumptions, not verified flight performance.',
       'Project constants are held in one configuration and hidden from mission entry. Changing them requires updating the project profile. A snapshot with explicitly different constants is rejected before the current mission changes. Battery, wind, real home, firmware and oil evidence remain unknown until supplied.',
       'Fixed drift settings: windage ' + fixed.drift.alpha + ' (' + fixed.drift.alphaMin + '–' + fixed.drift.alphaMax + ') and additional margin ' + fixed.drift.marginM + ' m. Fixed material settings: density ' + fixed.oil.densityGml + ' g/mL, sorption capacity ' + fixed.oil.capacityGg + ' g/g, allowance ' + fixed.oil.allowance + ' and target fraction ' + fixed.oil.targetFraction + '.',
       'The export target is QGroundControl ' + fixed.export.qgcVersion + ', with a ' + fixed.export.relativeHeightM + ' m home-relative route. The surface and home reference still require review. Image search starts with the past ' + FIXED_SEARCH_SETTINGS.lookbackDays + ' days and uses a fixed scene-cloud threshold of ' + FIXED_SEARCH_SETTINGS.maxCloud + '%. You can change the acquisition dates.'
@@ -102,8 +102,8 @@ export const planningHelpTopics = {
     ],
     bullets: [
       'Choose Draw polygon, select at least three corners, then double-click or choose Finish area. One polygon with 3–120 corners and no holes is supported.',
-      'Cancel drawing keeps the previous area. Escape also cancels drawing. Clear area removes the selected trial boundary and its current results.',
-      'Use Fit to bring the selected area back into view. You can also import a Polygon GeoJSON or a trial snapshot.',
+      'Cancel drawing keeps the previous area. Escape also cancels drawing. Clear area removes the selected inspection boundary and its current results.',
+      'Use Fit to bring the selected area back into view. You can also import a Polygon GeoJSON or a mission snapshot.',
       'Changing the boundary clears the current image review. Survey the new area before preparing a flight plan.'
     ],
     formulas: []
@@ -115,11 +115,11 @@ export const planningHelpTopics = {
       'The acquisition date is when the satellite captured the image. It is not the time you opened this page. An archived image is not a live GEE observation.'
     ],
     bullets: [
-      'The standalone prototype contains a stored Sentinel-2 image captured on 29 September 2026. Areas outside its prepared crop cannot use that image.',
+      'The standalone planner contains a stored Sentinel-2 image captured on 29 September 2026. Areas outside its prepared crop cannot use that image.',
       'Hosted mode searches real GEE Sentinel-2 acquisitions by area and date, then waits for the selected image pixels to load. The background mosaic and the reviewed single acquisition have separate readiness checks; a failed request never silently selects the stored image.',
       'The full workspace, when configured, uses its image catalogue and saved image sources. A saved survey reopens its original frozen boundary and image.',
       'A stored preview and an original image asset are different display sources. Source identity, coverage and acquisition time must match the selected inspection.',
-      'Viewing an image does not confirm oil. This trial does not automatically detect or confirm a spill with AI.'
+      'Viewing an image does not confirm oil. The planner does not automatically detect or confirm a spill with AI.'
     ],
     formulas: []
   },
@@ -132,6 +132,7 @@ export const planningHelpTopics = {
       'Inspection area: the cyan boundary selected for satellite review. Background imagery is navigation context; Review area image loads a single dated acquisition before mission preparation.',
       'The selected Earth Engine acquisition includes approximately 1 km of surrounding display context. The cyan inspection boundary, image-coverage check and calculation area stay tied to the selected inspection area.',
       'Click or focus the map to zoom with the wheel; use the + and − controls anytime. Scrolling over an unfocused map scrolls the page.',
+      'In 3D, click or focus the canvas to orbit and zoom. On touch screens, choose Interact with 3D first. Choose Exit 3D controls, press Escape, or focus another control to return to page scrolling.',
       'The background metadata request retries once for a transient timeout, connection failure or supported temporary server error. Changing the view cancels that retry. Missing configuration, invalid responses and empty imagery remain explicit errors; use Retry background map after a failed load.',
       'Forecast: purple outlines showing the nominal shifted boundary at arrival and survey end. Search envelope: the dashed amber box enclosing the supplied drift scenarios and margin.',
       'Route: pale yellow flight lines. Assessed sorties include outbound travel and return to the configured home; a geometric route can appear before those assessments are complete.',
@@ -140,16 +141,16 @@ export const planningHelpTopics = {
     formulas: []
   },
   trial: {
-    title: 'About this trial',
+    title: 'About the planner',
     paragraphs: [
       'Use three steps: select an area, review satellite imagery, then prepare a drone mission. Drift, flight, export and oil/material calculations run behind that flow. Mission settings holds the inputs; Calculation details explains the results.',
       'A fixed XEDO profile supplies candidate camera geometry, route assumptions and project model constants. View them through the profile Information button in Mission settings. Other unknown physical inputs stay blank. Estimated demo uses the same fixed profile with assumed aircraft, weather and material inputs; it does not turn the archived satellite image into a current oil observation.'
     ],
     bullets: [
-      'In the standalone prototype, including static hosting, the calculators, stored image and downloads work without an API server. Basemap tiles need internet. Saved survey lookup by ID needs the separate full workspace service.',
-      'Automatic mission conditions use a separate weather/current API. GEE imagery and historical terrain remain separate. Official airspace restrictions and AI oil detection are not fetched by this trial.',
+      'In the standalone planner, including static hosting, the calculators, stored image and downloads work without an API server. Basemap tiles need internet. Saved survey lookup by ID needs the separate full workspace service.',
+      'Automatic mission conditions use a separate weather/current API. GEE imagery and historical terrain remain separate. Official airspace restrictions and AI oil detection are not fetched by this planner.',
       'Results update after satellite review and relevant setting changes. Automatic conditions refresh independently; missing inputs and failed checks remain visible beside the affected result.',
-      'Downloading a file does not upload or start a mission. Aircraft control, arming, camera triggers and capsule release are not connected in this trial.'
+      'Downloading a file does not upload or start a mission. Aircraft control, arming, camera triggers and capsule release are not connected in this planner.'
     ],
     formulas: []
   },
@@ -172,7 +173,7 @@ export const planningHelpTopics = {
   flight: {
     title: 'Flight model',
     paragraphs: [
-      'Camera geometry sets line and photo spacing. Wind and battery inputs then assess the route and split it into sorties. This XEDO trial locks candidate NoIR v2 optics and route assumptions in the project profile. Verify the installed module, lens, active image crop and actual aircraft before updating that profile for field use.'
+      'Camera geometry sets line and photo spacing. Wind and battery inputs then assess the route and split it into sorties. The XEDO inspection profile locks candidate NoIR v2 optics and route assumptions in the project profile. Verify the installed module, lens, active image crop and actual aircraft before updating that profile for field use.'
     ],
     bullets: [
       'Geometry assumes a nadir camera over a flat surface, with image width across track. Height is in m AGL; sensor dimensions and focal length are in mm. The fixed overlap settings are ' + fixed.flight.sideOverlap * 100 + '% across track and ' + fixed.flight.frontOverlap * 100 + '% along track; formulas use the equivalent fractions.',
@@ -191,7 +192,7 @@ export const planningHelpTopics = {
   export: {
     title: 'Flight file & constraint checks',
     paragraphs: [
-      'This trial exports one QGroundControl .plan file per selected sortie for the explicitly chosen PX4 or ArduPilot multicopter profile. The fixed target version is ' + fixed.export.qgcVersion + '. Firmware remains unknown until checked against the controller. DJI KMZ export is not implemented.'
+      'The planner exports one QGroundControl .plan file per selected sortie for the explicitly chosen PX4 or ArduPilot multicopter profile. The fixed target version is ' + fixed.export.qgcVersion + '. Firmware remains unknown until checked against the controller. DJI KMZ export is not implemented.'
     ],
     bullets: [
       'Camera, wind and battery checks must pass. Review the real launch point. Automatic surface mode requires fresh matching GEE samples and labelled model Home-height provenance; manual surface mode requires an independently reviewed Home AMSL and flat reference. Exported heights are relative to home; this is not terrain following.',
@@ -222,11 +223,11 @@ export const planningHelpTopics = {
   snapshots: {
     title: 'Boundaries & snapshots',
     paragraphs: [
-      'A trial snapshot stores inputs, source information, results and an input hash in a local JSON file. Restoring it restores compatible mission inputs and requires fresh calculations and export review. Missing profile constants are filled from this version; explicitly different constants are rejected without changing your current mission.'
+      'A mission snapshot stores inputs, source information, results and an input hash in a local JSON file. Restoring it restores compatible mission inputs and requires fresh calculations and export review. Missing profile constants are filled from this version; explicitly different constants are rejected without changing your current mission.'
     ],
     bullets: [
       'A saved Quick mission survey uses its original frozen boundary and image source. Trial calculations and exports do not modify that saved inspection.',
-      'Local-file mode cannot verify a survey ID against the database. An imported snapshot boundary becomes a local trial boundary with unverified database linkage.',
+      'Local-file mode cannot verify a survey ID against the database. An imported snapshot boundary becomes a local inspection boundary with unverified database linkage.',
       'The input hash identifies a calculation input set. It is not a digital signature, approval or proof that the source is current.',
       'Restoring clears manual export confirmations. Boundary, home and constraint changes also clear the relevant review state; check dates and validity again before download.'
     ],

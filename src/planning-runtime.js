@@ -5,7 +5,7 @@ export function planningRuntime(protocol, standaloneBuild = false) {
   return {
     standalone,
     localFile,
-    label: localFile ? 'Local trial' : standalone ? 'Prototype trial' : 'Trial'
+    label: localFile ? 'Local planning' : standalone ? 'Inspection planner' : 'Planning workspace'
   };
 }
 

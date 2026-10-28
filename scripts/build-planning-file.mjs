@@ -29,7 +29,7 @@ for(const token of ['href="/favicon-xedo-planning.svg"','src="/assets/xedo-brand
   if(!html.includes(token))throw new Error('Portable markup hook is missing: '+token);
 }
 for(const [,key] of html.matchAll(/data-help="([^"]+)"/g))if(!Object.hasOwn(planningHelpTopics,key))throw new Error('Unknown information topic: '+key);
-html=html.replace(/<title>[^<]*<\/title>/,'<title>XEDO · Local mission trial</title>')
+html=html.replace(/<title>[^<]*<\/title>/,'<title>XEDO · Local planning</title>')
   .replace('<link rel="stylesheet" href="/trial.css">','')
   .replace('<script type="module" src="/trial.js"></script>','')
   .replace('href="/favicon-xedo-planning.svg"','href="'+favicon+'"')
@@ -40,7 +40,7 @@ html=html.replace(/<title>[^<]*<\/title>/,'<title>XEDO · Local mission trial</t
   .replace('</head>',()=>'<style>'+css.replace(/<\/style/gi,'<\\/style')+'</style></head>');
 const fileNote=process.argv.includes('--gee-hosted')
   ? 'The background map loads real Google Earth Engine Sentinel-2 imagery on opening, before an inspection area is drawn. It is a mosaic of up to 31 intersecting acquisitions from the recent 30-day UTC window, with newer images on top; its actual acquisition range is shown. Pan or zoom to update the bounded background. Draw an area over that imagery, then choose Review area image to load one dated, fully covering acquisition for review. The background alone does not mark a mission ready. Cloud cover describes the whole scene; imagery is not a continuous live feed or oil detection. Archived imagery is available only by explicit selection. Calculations and downloads run in the browser; saved survey IDs need the separate workspace database. Missing credentials and imagery failures remain visible.'
-  : 'Standalone prototype: all four calculators, 2D/3D diagrams and downloads run in this file. No local server or port is used. The stored Sentinel-2 image and calculations work offline; the basemap needs internet. Follow Select an area, Satellite survey, then Drone deployment. The four calculations run in the background; Mission settings and Calculation details open on demand. Saved survey IDs cannot load from a database. Import a snapshot or GeoJSON instead. Imported database linkage is unverified; new results use the imported geometry as a local trial boundary. Manual export confirmations require fresh review.';
+  : 'Standalone planner: all four calculators, 2D/3D diagrams and downloads run in this file. No local server or port is used. The stored Sentinel-2 image and calculations work offline; the basemap needs internet. Follow Select an area, Satellite survey, then Drone deployment. The four calculations run in the background; Mission settings and Calculation details open on demand. Saved survey IDs cannot load from a database. Import a snapshot or GeoJSON instead. Imported database linkage is unverified; new results use the imported geometry as a local inspection boundary. Manual export confirmations require fresh review.';
 html=html.replace('</body>',()=>'<script>'+script.replace(/<\/script/gi,'<\\/script')+'</script></body>');
 const inlineScripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];
 if(inlineScripts.length!==1)throw new Error('The portable script boundaries are invalid.');

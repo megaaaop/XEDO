@@ -12,7 +12,7 @@ function deepFreeze(value) {
 
 export const XEDO_HARDWARE_PROFILE = deepFreeze({
   id: 'xedo-prototype-01',
-  name: 'XEDO Prototype 01',
+  name: 'XEDO inspection profile',
   status: 'candidate',
   cameraPreset: 'v2',
   cameraLabel: 'Candidate NoIR v2',

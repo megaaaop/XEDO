@@ -5,6 +5,7 @@ import vm from 'node:vm';
 import {validateGeometry} from '../src/domain.js';
 import {createPlanningSchedule} from '../src/planning-schedule.js';
 import {createEstimatedDemoInputs,ESTIMATED_DEMO_PROFILE} from '../src/planning-estimated-demo.js';
+import {paintActionButton} from '../src/action-feedback.js';
 
 const client=await readFile(new URL('../src/planning-trial-client.js',import.meta.url),'utf8');
 const plain=value=>JSON.parse(JSON.stringify(value));
@@ -20,11 +21,11 @@ function production(from,to){
 function harness(){
   const nodes=new Map(),requests=[],timers=new Map(),calls={stop:0,reset:0,invalidate:0,notices:[],errors:[]};
   let nextTimer=0;
-  const node=id=>{if(!nodes.has(id))nodes.set(id,{value:'',textContent:'',href:''});return nodes.get(id);};
+  const node=id=>{if(!nodes.has(id))nodes.set(id,{value:'',textContent:'',href:'',dataset:{},getAttribute(){return null;},setAttribute(){}});return nodes.get(id);};
   const schedule=createPlanningSchedule({now:()=>Date.parse('2026-10-26T00:00:00Z')});
   schedule.begin();schedule.complete({plan:{status:'generated',estimates:{durationS:400}},battery:{totalDurationS:400,sorties:[{}]}});
   const context=vm.createContext({
-    AbortController,structuredClone,JSON,validateGeometry,createPlanningSchedule,ESTIMATED_DEMO_PROFILE,
+    AbortController,structuredClone,JSON,validateGeometry,createPlanningSchedule,ESTIMATED_DEMO_PROFILE,paintActionButton,
     geometry:boundary(),surveyId:'SURV_OLD',review:{ready:true,scene:{id:'SCENE_OLD'}},
     result:{inputHash:'previous-result',exportCheck:{pass:true}},currentStep:3,revision:4,
     draw:{id:'unfinished-polygon'},routePoints:[[101.22,12.62]],schedule,
@@ -71,7 +72,7 @@ function harness(){
       vm.runInContext(production('function stopDraw()',"$('#trial-draw').onclick="),context);
     },
     async restore(snapshot){
-      const target={value:'snapshot.json',files:[{size:1000,text:async()=>JSON.stringify(snapshot)}]};
+      const target={value:'snapshot.json',dataset:{},setAttribute(){},files:[{size:1000,text:async()=>JSON.stringify(snapshot)}]};
       await node('trial-restore').onchange({target});return target;
     },
   };
@@ -125,13 +126,15 @@ test('Starting a new drawing supersedes a pending source lookup before any geome
   // creates a new OpenLayers sketch. No polygon has completed yet, so revision
   // is still unchanged and the newer intent must be guarded independently.
   h.context.stopDraw();
+  assert.equal(h.node('trial-load').dataset.actionBusy,'false');assert.equal(h.node('trial-load').textContent,'Load saved boundary');
   h.context.draw={id:'new-incomplete-sketch',abortDrawing(){throw Error('A late lookup must not cancel the newer sketch.');}};
   h.context.sketch={id:'three-corners-not-finished'};h.context.vertexCount=3;
   assert.equal(h.context.revision,revision);const newer=h.state();
   h.requests[0].resolve(h.response());assert.equal(await pending,false);
   assert.deepEqual(h.state(),newer);assert.equal(h.context.sketch.id,'three-corners-not-finished');
+  assert.equal(h.node('trial-load').dataset.actionBusy,'false');
   assert.equal(h.context.vertexCount,3);assert.equal(h.calls.reset,0);assert.equal(h.calls.invalidate,0);
-  assert.deepEqual(h.calls.notices,[]);
+  assert.deepEqual(h.calls.notices,['Loading saved boundary…']);
 });
 
 test('A second lookup supersedes the first even before either has changed the mission revision',async()=>{
@@ -147,7 +150,7 @@ test('An obsolete lookup failure cannot report failure over a successful newer l
   const h=harness(),first=h.load('SURV_FIRST'),second=h.load('SURV_SECOND');
   h.requests[1].resolve(h.response('SURV_SECOND'));assert.equal(await second,true);const current=h.state();
   h.requests[0].reject(new Error('Old request failed.'));assert.equal(await first,false);
-  assert.deepEqual(h.state(),current);assert.equal(h.calls.notices.length,1);
+  assert.deepEqual(h.state(),current);assert.equal(h.calls.notices.length,3);assert.match(h.calls.notices.at(-1),/Original saved boundary loaded/);
 });
 
 test('Lookup timeout aborts its request and retains the current mission',async()=>{

@@ -78,7 +78,7 @@ function modelData(plan, context = {}) {
 }
 
 /** Render-only perspective view. It neither requests data nor sends device commands. */
-export function createDeployment3D(canvas) {
+export function createDeployment3D(canvas, {onInteractionChange = () => {}} = {}) {
   if (!canvas?.getContext) throw new TypeError('A canvas element is required for the 3D planning preview.');
   const ctx = canvas.getContext('2d');
   if (!ctx) throw new Error('This browser does not support the 3D planning canvas.');
@@ -88,6 +88,7 @@ export function createDeployment3D(canvas) {
   const previousRole = canvas.getAttribute('role');
   const previousLabel = canvas.getAttribute('aria-label');
   const previousShortcuts = canvas.getAttribute('aria-keyshortcuts');
+  const previousInteractive = canvas.getAttribute('data-interactive');
   let model = null;
   let width = 0;
   let height = 0;
@@ -100,6 +101,20 @@ export function createDeployment3D(canvas) {
   let groundTexture = null;
   let textureMesh = null;
   let meshKey = '';
+  let active = true, interactive = false, pendingFrame = null;
+  const requestFrame = globalThis.requestAnimationFrame?.bind(globalThis);
+  const cancelFrame = globalThis.cancelAnimationFrame?.bind(globalThis);
+  function requestDraw() {
+    if (destroyed || !active || pendingFrame !== null) return;
+    if (!requestFrame) { draw(); return; }
+    pendingFrame = requestFrame(() => { pendingFrame = null; draw(); });
+  }
+  function setInteractive(value) {
+    interactive = Boolean(value && active && !destroyed);
+    canvas.style.touchAction = interactive ? 'none' : 'pan-y';
+    canvas.setAttribute('data-interactive', String(interactive));
+    onInteractionChange(interactive);
+  }
   function prepareTextureMesh() {
     if (!model || !groundTexture) { textureMesh = null; meshKey = ''; return; }
     const key = JSON.stringify([model.floorBounds, model.plan?.projection, model.originPosition, groundTexture.extent, groundTexture.image.width, groundTexture.image.height]);
@@ -111,11 +126,11 @@ export function createDeployment3D(canvas) {
   function labelCanvas() {
     canvas.setAttribute('aria-label', model ? `${model.description} Ground display: ${groundMode === 'satellite' && textureMesh ? 'georeferenced satellite imagery on a flat plane.' : 'diagram grid.'}` : 'Interactive three-dimensional planning preview. Create a route to begin.');
   }
-  canvas.style.touchAction = 'none';
+  canvas.style.touchAction = 'pan-y';
   canvas.style.cursor = 'grab';
   canvas.setAttribute('tabindex', '0');
   canvas.setAttribute('role', 'img');
-  canvas.setAttribute('aria-keyshortcuts', 'ArrowLeft ArrowRight ArrowUp ArrowDown + - Home R');
+  canvas.setAttribute('aria-keyshortcuts', 'ArrowLeft ArrowRight ArrowUp ArrowDown + - Home R Escape');
 
   function projectRaw(x, y, z = 0) {
     const horizontalScale = 2 / model.span;
@@ -130,7 +145,7 @@ export function createDeployment3D(canvas) {
   }
 
   function draw() {
-    if (destroyed || !width || !height) return;
+    if (destroyed || !active || canvas.hidden || globalThis.document?.hidden || !width || !height) return;
     ctx.clearRect(0, 0, width, height);
     const background = ctx.createLinearGradient(0, 0, 0, height);
     background.addColorStop(0, '#112b38');
@@ -261,12 +276,13 @@ export function createDeployment3D(canvas) {
     const pixelHeight = Math.round(height * ratio);
     if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) { canvas.width = pixelWidth; canvas.height = pixelHeight; }
     ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
-    draw();
+    requestDraw();
   }
 
-  function reset() { if (!destroyed) { yaw = -.62; pitch = .72; zoom = 1; draw(); } }
+  function reset() { if (!destroyed) { yaw = -.62; pitch = .72; zoom = 1; requestDraw(); } }
   const down = event => {
-    if (pointer || (event.button !== 0 && event.pointerType !== 'touch')) return;
+    if (!active || pointer || (event.button !== 0 && event.pointerType !== 'touch') || (event.pointerType === 'touch' && !interactive)) return;
+    setInteractive(true);
     pointer = { id: event.pointerId, x: event.clientX, y: event.clientY };
     canvas.setPointerCapture?.(event.pointerId);
     canvas.style.cursor = 'grabbing';
@@ -277,7 +293,7 @@ export function createDeployment3D(canvas) {
     yaw += (event.clientX - pointer.x) * .008;
     pitch = clamp(pitch + (event.clientY - pointer.y) * .006, .14, 1.43);
     pointer.x = event.clientX; pointer.y = event.clientY;
-    draw();
+    requestDraw();
   };
   const up = event => {
     if (!pointer || event.pointerId !== pointer.id) return;
@@ -285,8 +301,10 @@ export function createDeployment3D(canvas) {
     if (canvas.hasPointerCapture?.(id)) canvas.releasePointerCapture(id);
     canvas.style.cursor = 'grab';
   };
-  const wheel = event => { if (model) { event.preventDefault(); zoom = clamp(zoom * Math.exp(-clamp(event.deltaY, -200, 200) * .002), .45, 3.5); draw(); } };
+  const wheel = event => { if (active && interactive && model && (!canvas.ownerDocument || canvas.ownerDocument.activeElement === canvas)) { event.preventDefault(); zoom = clamp(zoom * Math.exp(-clamp(event.deltaY, -200, 200) * .002), .45, 3.5); requestDraw(); } };
   const key = event => {
+    if (event.key === 'Escape') { event.preventDefault(); setInteractive(false); canvas.blur?.(); return; }
+    if (!active) return;
     if (event.key === 'ArrowLeft') yaw -= .12;
     else if (event.key === 'ArrowRight') yaw += .12;
     else if (event.key === 'ArrowUp') pitch = clamp(pitch - .1, .14, 1.43);
@@ -295,13 +313,16 @@ export function createDeployment3D(canvas) {
     else if (event.key === '-') zoom = clamp(zoom / 1.12, .45, 3.5);
     else if (event.key === 'Home' || event.key.toLowerCase() === 'r') { event.preventDefault(); reset(); return; }
     else return;
-    event.preventDefault(); draw();
+    event.preventDefault(); requestDraw();
   };
-  const listeners = [['pointerdown', down], ['pointermove', move], ['pointerup', up], ['pointercancel', up], ['lostpointercapture', up], ['wheel', wheel, { passive: false }], ['keydown', key]];
+  const release = () => { if (pointer) up({pointerId:pointer.id}); setInteractive(false); };
+  const listeners = [['pointerdown', down], ['pointermove', move], ['pointerup', up], ['pointercancel', up], ['lostpointercapture', up], ['wheel', wheel, { passive: false }], ['keydown', key], ['focus', () => setInteractive(true)], ['blur', release]];
   for (const args of listeners) canvas.addEventListener(...args);
   const observer = typeof ResizeObserver === 'function' ? new ResizeObserver(resize) : null;
   observer?.observe(canvas);
   globalThis.addEventListener?.('resize', resize);
+  const visibility = () => { if (!canvas.ownerDocument?.hidden) requestDraw(); else release(); };
+  canvas.ownerDocument?.addEventListener('visibilitychange', visibility);
   canvas.setAttribute('aria-label', 'Interactive three-dimensional planning preview. Create a route to begin.');
   resize();
 
@@ -321,26 +342,35 @@ export function createDeployment3D(canvas) {
     setGroundMode(value) {
       if (destroyed) return;
       if (!['diagram', 'satellite'].includes(value)) throw new TypeError('Choose diagram or satellite ground.');
-      groundMode = value; labelCanvas(); draw();
+      if (groundMode === value) return;
+      groundMode = value; labelCanvas(); requestDraw();
     },
     setGroundTexture(value) {
       if (destroyed) return false;
       if (value !== null && (!value?.image || !Array.isArray(value.extent) || value.extent.length !== 4 || !value.extent.every(finite) || value.extent[0] >= value.extent[2] || value.extent[1] >= value.extent[3] || !finite(value.image.width) || !finite(value.image.height) || value.image.width <= 0 || value.image.height <= 0)) throw new TypeError('A georeferenced satellite ground image is required.');
-      groundTexture = value; meshKey = ''; prepareTextureMesh(); labelCanvas(); draw();
+      groundTexture = value; meshKey = ''; prepareTextureMesh(); labelCanvas(); requestDraw();
       return Boolean(textureMesh);
     },
     getDescription: () => model?.description || 'Create a route to preview it in 3D.',
-    resize, reset,
+    resize, reset, setInteractive,
+    setActive(value) {
+      active = Boolean(value && !destroyed);
+      if (!active) { if (pendingFrame !== null) cancelFrame?.(pendingFrame); pendingFrame = null; release(); }
+      else resize();
+    },
     destroy() {
       if (destroyed) return;
       destroyed = true;
+      if (pendingFrame !== null) cancelFrame?.(pendingFrame); pendingFrame = null;
       observer?.disconnect();
       globalThis.removeEventListener?.('resize', resize);
+      canvas.ownerDocument?.removeEventListener('visibilitychange', visibility);
       for (const args of listeners) canvas.removeEventListener(...args);
       if (pointer && canvas.hasPointerCapture?.(pointer.id)) canvas.releasePointerCapture(pointer.id);
       pointer = null; model = null; groundTexture = null; textureMesh = null; meshKey = '';
       canvas.style.touchAction = previousTouchAction;
       canvas.style.cursor = previousCursor;
+      previousInteractive === null ? canvas.removeAttribute('data-interactive') : canvas.setAttribute('data-interactive', previousInteractive);
       for (const [name, value] of [['tabindex', previousTabIndex], ['role', previousRole], ['aria-label', previousLabel], ['aria-keyshortcuts', previousShortcuts]]) value === null ? canvas.removeAttribute(name) : canvas.setAttribute(name, value);
       ctx.clearRect(0, 0, width, height);
     }

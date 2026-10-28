@@ -5,14 +5,14 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **28 ตุลาคม 2026 — แก้ time-window และ Surface reasons เผยแพร่แล้ว; 510 tests ผ่าน, 3 builds ผ่าน, ตรวจ Production API/GEE/normal flow/mobile และข้อความ 422 จริงแล้ว**
+- อัปเดตล่าสุด: **28 ตุลาคม 2026 — ผู้ใช้อนุมัติ push/deploy ชุดUXแล้ว;ตรวจhashตรง531tests/3buildsและremote main45e928e กำลังเผยแพร่ ยังไม่อ้างproductionสำเร็จจนตรวจdeployment/browser/API**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
-- จุดประสงค์รอบนี้: แก้สองruntimeissuesเรื่องเวลาอัตโนมัติเกิน24ชั่วโมงและSurfaceUnknownreason ทดสอบ บันทึกสองMarkdownและpush/deployตามคำสั่งล่าสุด ไม่สร้างบัญชีหรือเปลี่ยนDB
-- สถานะปัจจุบัน: ชุดแก้เวลา/Surface code `d5ec33fbb186145440acffed718972c9b8fc8063` push main/branch แล้ว Vercel `dpl_8tjaooDbxEodG8kmHiE5yJfNLwac` READY และ alias เว็บหลักตรง code นี้ CI [40574633798](https://github.com/megaaaop/XEDO/actions/runs/40574633798) success; เอกสาร follow-up อาจทำให้ deployment SHA ใหม่โดย application ไม่เปลี่ยน exact final receipt อยู่ `output/release-check/time-surface-fix-2026-10-28/`
-- **ขอบเขตคำสั่งล่าสุด:** ผู้ใช้อนุมัติแก้time-window/Surface-messageทั้งสอง ทดสอบและpush/deployโดยตรงแล้ว คง3ขั้น/4calculators ไม่clampเวลาจริง ไม่เปิดUX/AIeditorหรือnormal-profile/user-start-derived-endrewriteที่อยู่นอกscope ไม่สร้างบัญชีหรือapplyDBซ้ำ
+- จุดประสงค์รอบนี้: pushและdeployชุดUXที่ตรวจในเครื่องแล้วตามคำสั่งล่าสุดของผู้ใช้ ตรวจcommit/CI/Vercel/เว็บจริงและบันทึกผล ไม่เพิ่มงานAIหรือเปลี่ยนDB/Auth
+- สถานะเผยแพร่จากหลักฐานรอบก่อน (ไม่ได้ตรวจ live ใหม่ในรอบ UX นี้): ชุดแก้เวลา/Surface code `d5ec33fbb186145440acffed718972c9b8fc8063` push main/branch แล้ว Vercel `dpl_8tjaooDbxEodG8kmHiE5yJfNLwac` READY และ alias เว็บหลักตรง code นี้ CI [40574633798](https://github.com/megaaaop/XEDO/actions/runs/40574633798) success; เอกสาร follow-up อาจทำให้ deployment SHA ใหม่โดย application ไม่เปลี่ยน exact final receipt อยู่ `output/release-check/time-surface-fix-2026-10-28/`
+- **ขอบเขตคำสั่งล่าสุด:** Implement/test/document งานล่าสุด1 UX/ข้อความ/loading/scroll ตาม UX_COMPLETION_PLAN.md ส่ง prompt ไปแชทสนับสนุนที่มีอยู่ ไม่รวม AI/normal-profile/schedule rewrite/DB/Auth changes และไม่ใช้คำอนุญาตเผยแพร่งานเก่าแทนการเผยแพร่ชุดนี้
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
 
@@ -22,7 +22,7 @@
 
 ### สถานะล่าสุดที่มีหลักฐาน
 
-**Inspector เผยแพร่แล้วและตรวจ Login บนเว็บจริงแล้ว:** code`afac1c7`/VercelREADY/CI40565947316success รันใหม่501testsผ่าน ตรวจpublicAPIจริง7กรณีและLogin1280/390pxผ่าน รวมgenericinvalid-login/passwordmask/required/close/Escape ไม่มีแนวนอนล้น แก้Vercelrewritecapture404ที่พบจากproductionก่อนปิดงาน ฐานข้อมูลxedoใช้migration20261027184951และตรวจ15checksในรอบก่อนหน้าแล้ว ยังไม่มีบัญชีผู้ทดลองและยังไม่ทดสอบsuccessfulpasswordlogin/realA-BSavehistory ทีมสร้างAuthusers+rosterภายหลัง ไม่อ้างว่างานบัญชีผ่านreal-accountacceptanceครบแล้ว ไม่มีคำถามผู้ใช้ค้าง
+**Inspector เผยแพร่แล้ว; สถานะบัญชีล่าสุด 28 ต.ค.:** ทีมสร้าง Auth user และผู้ใช้อนุมัติการเปิดสิทธิ์ Inspector เฉพาะบัญชีในภาพแล้ว guarded one-row INSERT/UPSERT บน xedo สำเร็จ เวลา14:40น.Asia/Bangkok Post-readพบหนึ่ง roster row/enabled=true/emailconfirmed=true RLSเปิดและanon/authenticatedยัง provisionโดยตรงไม่ได้ ไม่มีการขอ/ใช้/เปลี่ยน password หรือ mint token/session ให้ผู้ใช้กด Sign in ใหม่ด้วย password เดิมเพื่อยืนยัน real browser login; privateSave/history/A-B acceptance ยังไม่ครบ ไม่มีคำถามอนุมัติค้าง
 
 **สอง runtime issues หลัง account release แก้และเผยแพร่แล้ว:** shared checks ตรวจเพดาน 24 ชั่วโมงทั้ง schedule/GEE/export; แผนเกินยังเก็บเวลาจริงพร้อม Blocked และให้ลดพื้นที่/แบ่งงาน GEE static terrain/landcover/quality โหลดต่อได้โดยเว้น forecast พร้อมเหตุผล Surface model แยก missing/loading/error/stale ออกจากพื้นที่/Home ไม่ตรงจริง ทดสอบใหม่ 510 ผ่านและตรวจเว็บจริงแล้ว รายละเอียดรอบแก้อยู่ท้ายไฟล์และ WEBSITE_DETAILS §3.26 ไม่ได้เพิ่ม automatic mission partitioning หรืออ้างว่าระยะทางจริงของผู้ใช้ผิด
 
@@ -888,3 +888,141 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 **Production verification หลังเผยแพร่:** HTML เว็บหลักตรง built dist แบบ byte-for-byte SHA256 `97ba76c8c7c94015c7932badfc8f7af3f9c270279fdebda53467a336114088dd` API จริงรับช่วงปัจจุบัน 1 ชั่วโมงได้ 200 พร้อม terrain/landcover/forecast ready; raw ช่วง 52h ของผู้ใช้ยังถูก 422 ตาม contract; static-only null times ได้ 200 terrain/landcover ready และ forecast not_requested; session บัญชี regression ได้ 200 user:null ไม่สร้างบัญชี Browser ผ่าน normal 3-step/Sentinel-2 visible acquisition → route 998.11km/auto55h32m3s → Takeoff Blocked/download locked และ Surface Review needed จาก samples จริง ไม่ใช่ missing/mismatch ป้อนพื้นที่เกิน100km²เพื่อทดสอบ 422 จริง Surface Unknown แสดง AREA_LIMIT reason แล้วคืนพื้นที่/โหลดภาพกลับได้ Mobile390 dialog358/page375/scroll375px ไม่มีแนวนอนล้น คืน viewport แล้ว Browser error logs ล่าสุด [] และ Vercel error/fatal scan เฉพาะ deployment นี้ช่วง15นาทีไม่พบรายการ ไม่อ้างว่าครอบคลุมทุกเวลา/ทุกพื้นที่
 
 **หลักฐาน/การเผยแพร่:** ภาพ production-readiness-desktop.png, production-mobile-390.png, production-static-context.png และ production-surface-error-reason.png พร้อม production-api.json อยู่ output/release-check/time-surface-fix-2026-10-28/ ชุดโค้ด push ไป origin/main และ origin/codex/xedo-hardware-profile แล้ว docs follow-up ไม่เปลี่ยน application bundle; final commit/deployment/CI เก็บใน release-receipt.json เพื่อเลี่ยง self-referential docs commits ไม่มี real-account login/hardware acceptance เพิ่ม
+
+<!-- remaining-plan-summary-2026-10-28 -->
+### 28 ตุลาคม 2026 — สรุปแผนคงเหลือหลังแก้เวลาและ Surface
+
+**หัวข้อ:** ผู้ใช้ถามว่าเหลือ plan อะไรบ้าง ให้รายงานสถานะและลำดับเดิมโดยไม่เริ่มแก้เว็บไซต์เพิ่ม
+
+**สรุป:** เหลือ 3 กลุ่มในเกณฑ์ปิดงาน: ล่าสุด1/เดิม4 UX cleanup ที่ยังค้าง; ล่าสุด2/เดิม5 บัญชีเผยแพร่แล้ว เหลือทีมสร้างบัญชีและ real-account acceptance; ล่าสุด3/เดิม6 prepared AI + Inspector risk editor + planner/private review history ที่ยังไม่เชื่อมเว็บ งานพัฒนาฟังก์ชันหลักที่เหลือคือ UX และ AI ส่วนบัญชีเป็น provisioning/acceptance ไม่ใช่สร้างระบบใหม่ พักล่าสุด4/เดิม7 Pi และล่าสุด5/เดิม8 ผลทดลอง/รายงาน รวมคิว5กลุ่มตามเลขที่ใช้ก่อนหน้า
+
+**รายละเอียดที่ต้องทำต่อ:** UXเอาป้าย Prototype/ข้อความซ้ำที่ยังค้างออก จัดปุ่ม/help/empty/error states ให้ตรงพฤติกรรมและตรวจมือถือหลังรวมงาน คง3ขั้น/4calculators/2D3D บัญชีให้ทีมสร้าง Authusers พร้อม Inspector roster แล้วตรวจ login/logout/Save/open/history และ A อ่าน/แก้ภารกิจ B ไม่ได้ รวม session expiry/conflict AIนำ prepared SAR ที่ส่งแล้วมาแสดงตามพิกัด ให้เลือก/ยอมรับ/ย้าย/แก้จุด/วาดเพิ่ม/ปฏิเสธ พร้อม Undo/Cancel/confirm แยก raw AI จาก Inspector edits เลือก planning Polygon ที่ผ่านเงื่อนไขไปยัง planner เก็บที่มาและ revision ในภารกิจส่วนตัวแล้วเปิดคืนได้ ต้องแก้ readiness/export ให้แผนเก่าใช้ไม่ได้หลังพื้นที่/review/session เปลี่ยน
+
+**ลำดับแนะนำ/คู่ขนาน:** mainเก็บUXแล้วเชื่อมAI ขณะทีมสร้างบัญชี; supportใช้ prepared handoff และ risk-edit fixtures ที่ส่งแล้วตรวจกรณีขอบ/หลักฐานแบบ readonly ไม่แก้เว็บ ไม่ตั้งการเตรียมข้อมูลที่ส่งเสร็จเป็นงานรอใหม่ ปิดด้วยตรวจเส้นทางบัญชีส่วนตัว→AI→แก้พื้นที่→planner→Save/reopen/history/mobile และ regression เป็นเกณฑ์จบของ3กลุ่ม ไม่เพิ่มเป็นขั้น4ซ้ำ ห้ามนับผลออกแบบ test เป็นผล application test ผ่าน
+
+**สิ่งที่ไม่ค้างในรอบนี้:** เวลาเกิน24h/Surface reason แก้และเผยแพร่รอบก่อนแล้ว GEE status/context/scroll และ3D Diagram/Satellite เผยแพร่ก่อนหน้า งาน normal aircraft defaults/user-start-derived-end ถูกผู้ใช้ตัด ไม่กลับเป็น release gate ไม่มี automatic mission partitioning เพิ่มในscope ภารกิจยาวยังลดพื้นที่/แบ่งงานเอง
+
+**รอคำตอบ:** ไม่มีคำถามตัดสินใจที่ยังไม่ได้ตอบ; รอการดำเนินการของทีมเรื่องสร้างบัญชีตามคำตอบเดิม เป็น dependency ของ acceptance ไม่ใช่ขอคำตอบซ้ำ
+
+**หลักฐาน/ไฟล์/การเผยแพร่รอบนี้:** อ่าน Git status และ canonical docs/queue ปัจจุบัน ตรวจสถานะจากบันทึกที่มีอยู่ อัปเดต XEDO_WORK_LOG.md, WEBSITE_DETAILS.md และ implementation-queue.json เท่านั้น ไม่มี source/config/SQL/Auth/account changes ไม่มี tests/build/browser/API/GEE หรือ live deployment checks ใหม่ ผล510tests/READYเป็นของรอบ release ก่อนหน้า ไม่มี commit/push/deploy รอบสรุปนี้ กรอบ4ชั่วโมงเดิมเป็นแผนประวัติ ไม่ได้เริ่มนับเวลาใหม่จากคำถามนี้
+
+<!-- inspector-roster-missing-2026-10-28 -->
+### 28 ตุลาคม 2026 — Sign in ไม่ผ่านเพราะยังไม่มี Inspector roster
+
+**หัวข้อ:** ผู้ใช้สร้างบัญชีใน Supabase Authentication แล้ว แต่ XEDO แจ้งว่า Inspector account ยังไม่ enabled จึงขอให้ตรวจและแก้
+
+**สรุป:** Live join ใน xedo/ref tstmjnlhwidwtzetqxbu ผ่าน megaphijak ตรวจ exact UID+email จากภาพ พบ Auth user จริง/email_confirmed=true/last_sign_in_at มีค่า/banned_until และ deleted_at null แต่ inspector_roster_exists=false คำสั่ง DML เปิดสิทธิ์เพียงบัญชีนี้เตรียมแล้วและลองส่งตามคำขอแก้ แต่เครื่องมือคืน aborted before dispatch ไม่คืนรายละเอียดเหตุผล Post-read ยืนยัน roster ยัง false จึงไม่อ้างว่าแก้สำเร็จ และไม่ลองช่องทางอ้อมแทนคำสั่งที่ถูกหยุด
+
+**รายละเอียดสาเหตุ:** Supabase Authentication account กับ team-approved Inspector roster เป็นคนละรายการ require_inspector ตรวจ active Auth session ก่อนแล้วตรวจ enabled roster ถ้าไม่มีจะ PT403/INSPECTOR_NOT_PROVISIONED BFF login ยืนยัน passwordก่อนเรียก RPC session; ถ้า RPC ปฏิเสธจะ logout session ที่เพิ่งได้และไม่ตั้ง browser cookie จึงต้องกด Sign in ใหม่หลังเปิดสิทธิ์ การ refresh อย่างเดียวไม่สร้าง session ไม่แก้ด้วยการปิดRLS/เพิ่มgrants/auto-enableAuthusersทั้งหมด
+
+**Concrete repair ที่พร้อมตรวจ:** output/release-check/inspector-enablement-2026-10-28/enable-requested-account.sql เป็น INSERT SELECT จาก auth.users ที่ตรงทั้ง UID และ email ยืนยันอีเมลแล้ว/ไม่ถูกลบ/ไม่ถูกแบน → inspector_accounts enabled=true ON CONFLICT อัปเดต enabled เท่านั้นและคง created_at ตรวจ RETURNING และ SELECT กลับหลัง execute ให้แน่ใจว่ามีหนึ่ง enabled row ไม่สร้าง Auth account ใหม่ ไม่แก้ schema/functions/grants/password/settings/session/mission data ข้อมูลระบุตัวบัญชีเก็บเฉพาะ ignored local artifact ไม่เพิ่มอีเมล/UIDจริงใน tracked docs
+
+**ผลตรวจรอบนี้:** live Auth/roster read ก่อนและหลังคำสั่งที่ไม่ dispatch; อ่าน schema และ BFF source และ independent readonly review ตรงกัน Auth/postgrest logs อ่านแบบ counts ไม่มี tokens/password Security advisor INFO5 no-policy ตรง RPC-only design มี WARN leaked-password-protection-disabled ไม่ใช่สาเหตุ roster missing และไม่เปลี่ยน Auth settings นอก scope; remediation https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection Performance INFO2 unindexedFK/INFO1unusedindexเดิม ไม่มี DDL ใหม่ Changelog/docs official อ่านแล้ว ไม่มี library/API feature implementation ใหม่
+
+**รอคำตอบ:** อนุมัติให้เพิ่มบัญชีในภาพใน xedo_private.inspector_accounts และ enabled=true เฉพาะบัญชีนี้ หรือให้ทีมรันไฟล์ SQL ที่เตรียมเอง คำถามส่งแล้ว เมื่อได้อนุมัติให้ execute exact prepared change แล้ว post-read ผู้ใช้ลอง Sign in ด้วย password เดิมเอง ไม่ขอส่งรหัสผ่านในแชท ไม่ mint JWT/สร้าง session/impersonate เพื่ออ้าง successful login ส่วน A/B Save/history acceptance ยังไม่ผ่าน
+
+**ไฟล์/verification/publication:** อัปเดต canonical work log/WEBSITE_DETAILS/queue และ ignored concrete SQL/receipt ไม่มี source/test/config/SQL-schema edits ไม่มี DB DML ที่ dispatch สำเร็จ ไม่มี Auth credentials/session changes ไม่มี application tests/build/browser-password-login หรือ deployment ใหม่ ผล510tests/READYเป็นของ release ก่อนหน้า ไม่ commit/push/deploy รอบนี้ รักษา docs ที่ dirty จากรอบสรุปแผนก่อนหน้า
+
+<!-- inspector-roster-enabled-2026-10-28 -->
+### 28 ตุลาคม 2026 — เปิดสิทธิ์ Inspector ตามคำอนุญาตใน annotation สำเร็จ
+
+**หัวข้อ:** ผู้ใช้ตอบอนุญาตให้เปิดสิทธิ์บัญชีเฉพาะที่ระบุในรอบวินิจฉัยก่อนหน้า
+
+**สรุป:** ใช้ prepared guarded SQL บน Supabase xedo/ref tstmjnlhwidwtzetqxbu ผ่าน connection megaphijak สำเร็จ RETURNING หนึ่งแถว enabled=true/created_at2026-10-28T07:40:36.417907Z (=14:40:36Asia/Bangkok) Post-readแยกอีกคำขอพบ roster_rows=1/inspector_enabled=true/email_confirmed=true ไม่มีคำถามอนุมัติค้าง การหยุดก่อนdispatchรอบก่อนหน้าได้รับคำอนุญาตเพิ่มเติมและแก้สำเร็จแล้ว
+
+**รายละเอียด:** Pre-readใหม่ยืนยัน exact Auth UID+emailในภาพตรง/confirmed/notdeleted/notbanned/rosterยังไม่มี แล้ว INSERT SELECTที่guardทั้งUIDและemail ON CONFLICTแก้ enabledอย่างเดียว ไม่ทับcreated_at ไม่เพิ่มสิทธิ์ทุกAuthusers ไม่เปลี่ยนpassword/Authsettings/session/schema/functions/RLS/grantsหรือmissions ข้อมูลระบุบัญชีคงอยู่เฉพาะignoredlocalSQLไม่เพิ่มลงtrackedMarkdown/queue
+
+**Verificationใหม่:** write RETURNINGหนึ่งแถวตรงUIDที่อนุมัติ; separatepost-readพบหนึ่งenabledrosterrow RLS=true,anon_can_provision=false,authenticated_can_provision=false Independentreadonlyreviewยืนยันexactguard/atmostonerow/idempotence ไม่สร้างหรือ mint login session ไม่มี browserpasswordlogin/applicationtests/build/deploymentใหม่ ไม่ใช้510testsเก่าเป็นผลรอบนี้
+
+**ขั้นต่อไป/รอคำตอบ:** ไม่มีคำถามตัดสินใจค้าง ให้ผู้ใช้กด Sign in ใหม่ด้วยpasswordเดิมที่เว็บหลัก เพราะความพยายามที่ถูก403ก่อนหน้านี้ไม่ได้ตั้งcookieที่ใช้ได้ การpost-readยืนยัน provisioningไม่ใช่successfulbrowserlogin ส่วน real Save/reopen/history/logout/A-Bprivacy acceptanceยังอยู่ในคิว ไม่ขอให้ผู้ใช้ส่งpasswordในchat
+
+**ไฟล์/การเผยแพร่:** อัปเดตXEDO_WORK_LOG.md,WEBSITE_DETAILS.md,implementation-queue.jsonและignoredverificationreceipt โดยรักษาเอกสารdirtyเดิม ไม่มีsource/config/DDLหรือapplicationrelease ไม่commit/push/deployเพราะเป็นdata-onlyenablementและใช้ได้กับเว็บที่เผยแพร่อยู่ทันที
+
+<!-- ux-loading-scroll-plan-2026-10-28 -->
+### 28 ตุลาคม 2026 — แผนปิดงาน1 UX,loadingและscroll พร้อมงานสนับสนุน
+
+**หัวข้อ:** ผู้ใช้ต้องการแผนก่อนimplementationสำหรับข้อความ/UIและอาการกดปุ่ม/checkbox/Sign inไม่มีสัญลักษณ์รอ รวมscrollค้างหลังใช้ไปสักพัก พร้อมแบ่งงานอีกchat
+
+**สรุป:** จัดทำ docs/UX_COMPLETION_PLAN.md ครบ1Abaseline→1Bfeedback→1Cscroll/render/lifecycle→1Dcopy/UI→1Eacceptance พร้อมเกณฑ์ปิดและscopefiles ไม่เพิ่มเป็นงานหลักใหม่ คงล่าสุด1/เดิม4 ส่วนบัญชี2/AI3ยังสถานะเดิม แชทหลักเป็นผู้แก้websiteเท่านั้น supportช่วยcopyinventory/actionmatrix/sourceperfdiagnosis/testdesignและreadonlyreview Promptพร้อมใช้ outputs/XEDO_UX_Plan_2026-10-28/PARALLEL_CHAT_PROMPT.md ไม่ได้ส่งข้อความไปuser-ownedchatอื่น
+
+**สิ่งที่ยืนยันรอบนี้:** Productionguestloginด้วยsyntheticnonexistentaccount1ครั้ง พบaria-busytrue/Signindisabledแต่labelยังSign in/statusว่างระหว่างรอ;จบgenericcredentialerror/passwordว่าง/ปุ่มคืนใช้ได้ ไม่ใช้passwordจริง ไม่ทดสอบsuccessfuluserlogin AirspacecheckboxรับcheckedและReadyแต่ปิดreadinessdialogทันที เปิดคืนจึงเห็นผล คืนuncheckedก่อนปิดaudit Mobile390settingswidth345/clientHeight741/scrollHeight2456 wheel2pagesเลื่อนdialog0→1688/page0/pagewidth375scrollwidth375ได้ จึงไม่อ้างว่าค้างทุกครั้งหรือlongfreezeถูกreproduce
+
+**Source findings/ขอบเขตหลักฐาน:** Inspector taskมีbusycounter/disabled/aria-busyแต่ไม่แสดงstartcopy/spinner;downloadpreflightawaitก่อนsetWorking;prepare/restore/first3Dมีfeedbackgap3DwheelpreventDefaultเมื่อmodelและdrawsyncทุกevent;input+changeเข้าinvalidationเดียว;readinesstimer1sอ่านmission/terrainซ้ำ มีDOMdiff/cache/cleanupเดิมที่ต้องรักษา ไม่พบproofว่าmemoryleakหรือtimerคือrootcause ต้องprofileก่อนoptimiseเฉพาะจุด Independentreadonlyreviews2ชุดตรงกัน ไม่ให้supportแก้source
+
+**แนวทางที่บันทึก:** actionlocalspinner+ข้อความก่อนawaitแรก/dedup/operationIDguard/finiteerrorcancelcleanup;checkboxsyncไม่fakeโหลด คงdialogและแสดงfollow-onchecksเฉพาะงานจริง;wheel/touchมีinteractionownerชัดเจน/RAF≤1drawframe/รวมsemanticinput/cacheตามrevision+expiry/lifecycle auditตามtrace;ลบป้ายPrototypeและnoteซ้ำแต่คงsource/date/Unknown/assumed-demo/เงื่อนไขexportและtechnicalIDs
+
+**เกณฑ์รับที่ยังไม่รัน:** feedbackpaintเป้า≤100ms,p95localresponse≤200msบนเครื่องอ้างอิง ไม่อ้างfieldINP;กดซ้ำ/late/error/timeout/cancelไม่spinnerค้าง;scrollmousewheel/trackpad/thumb/touch/modal/2D3D;10–15min repeated-useพร้อม30dialogcycles/20modecycles/10area-imagecycles วัดresourceไม่โตค้างหลังwarmcache;390/768/1280/keyboard/reducedmotion;regression3steps4calculators/24hgate/Surface/session-owner-revision/visiblepixels ต้องมีผลจริงก่อนmarkfixed
+
+**ไฟล์/หลักฐาน:** ใหม่docs/UX_COMPLETION_PLAN.md;outputs/XEDO_UX_Plan_2026-10-28/UI_OBSERVATIONS.mdพร้อมภาพ02/03/04/06/07/08,PARALLEL_CHAT_PROMPT.md และอัปเดตcanonical2Markdown/queue ภาพmainที่cropหรือมีbackgroundpendingไม่ใช้พิสูจน์ครบ/เร็ว คงภาพ/DOMobservationsเป็นขอบเขตaudit SourceHEAD45e928ef50ace69ae83393bc192acdc6b537fae7ก่อนเอกสารdirtyรอบนี้ คืนviewport/ปิดaudit-tabแล้ว
+
+**การตรวจ/เผยแพร่/รอคำตอบ:** รอบนี้sourceinspection/boundedproductionUIobservation/officialMDN-W3C-web.devdocsเท่านั้น ไม่มีapplicationedit/standardtests/build/longsoak/perftrace/realpasswordlogin/DBmutation/newinference/commit/push/deploy ผล510tests/READYเป็นreleaseก่อนหน้า ไม่มีคำถามผู้ใช้ค้าง การขอวางแผนก่อนยังไม่ใช่เริ่มimplementationหรือpublishเพิ่มเติม ประมาณ2.5–4hในแผนเป็นประมาณการหลังเริ่มลงมือและขึ้นกับreprotrace ไม่เริ่มกรอบเวลาผู้ใช้ใหม่อัตโนมัติ
+
+
+<!-- support-ux-loading-scroll-2026-10-28-01a17cf8 -->
+### 28 ตุลาคม 2026 15:34 น. — Support UX/loading/scroll handoff
+
+- **หัวข้อ/สรุป:** supportส่ง [HANDOFF.md](C:/mega/codex/iENA/outputs/XEDO_UX_Parallel_2026-10-28/support/HANDOFF.md) พร้อมACTION_FEEDBACK_MATRIX34actions/COPY_INVENTORY136rows/SCROLL_DIAGNOSIS8groups/TEST_MATRIX64casesและblankmeasurementtemplateในoutputแยก mainแก้webเพียงผู้เดียว
+- **ตรวจจริง:** readonlyAGENTS/log/queue/UXplan/UI_OBSERVATIONS/source/GitSHA45e928ef50ace69ae83393bc192acdc6b537fae7/filehashes/diffและsupportdocumentstructure 19checks ไม่รันapplication/browser/Auth/network/build/perftrace/benchmark ไม่ใช้510testsเก่าเป็นผลใหม่ Providedmainbrowserproofเป็นnegativeguestlogin/checkbox/shortmobilescrollเท่านั้น
+- **ข้อค้นพบ/งานต่อ:** baselinependingcopy/preflight/checkboxcontinuity,3Dwheel-touchownership/drawซ้ำ,input-changeinvalidate/readinessgetter/reentrant/lifecycleต้องวัดแยกจากlongfreeze Existingcaches/DOMdiff/cleanupหลายส่วนถูกต้องแล้ว ให้คงไว้ Mainเริ่มpatchInspectorfeedback/3DRAF-focusระหว่างอ่าน จึงแยกIN_FLIGHT_REVIEWและsource_snapshot.handoffไม่อ้างbaselineเป็นสถานะหลังซ่อม
+- **สถานะ/ขอบเขต:** รายงานพร้อม ไม่มีblockerต่อsupport;64webcasesdesigned_not_run/latency-resourceactualsnull/longfreezeและsuccessfulaccountflowยังไม่ยืนยัน เขียนเฉพาะoutputและappendสองMarkdownตามAGENTS ไม่แก้overview/queue/source/tests/config/packages/DB/Auth/build ไม่มีinstall/Gitmutation/fetch/push/deploy ไม่ควบคุมbrowserร่วมmainหรือใช้credentials ไม่มีคำถามผู้ใช้ค้าง
+
+
+<!-- ux-feedback-implementation-2026-10-28 -->
+### 28 ตุลาคม 2026 — ลงมือแผน UX/loading/scroll และรับงานจากแชทคู่ขนาน
+
+**หัวข้อ:** งานล่าสุด1/ก่อนหน้า2/เดิม4 ผู้ใช้สั่ง “เริ่ม prompt อีก chat และทำตาม plan” จึงส่ง full prompt ไปแชทที่มีอยู่ชื่อ **02-chat ขนาน project หลัก** และลงมือแก้เว็บไซต์ในแชทหลักเพียงผู้เดียว
+
+**สรุป:** Candidate ในเครื่องมี action-local loading, phase text, duplicate guards และ stale feedback ownership; checkboxคงdialog; 3Dใช้RAFรวมinputและรับwheelเฉพาะเมื่อโต้ตอบกับcanvas พร้อมExit/Escape; lifecycleรักษาback-forward cache; เก็บvisiblePrototype/trialcopyโดยคงmachineIDs/assumeddemo/source/readinessข้อมูลจริง ผลใหม่524testsผ่าน/0fail/0skip และ3buildsผ่าน ยังไม่ปิดขั้น1ทั้งหมดเพราะBrowserเดิมหลุดระหว่างตรวจ จึงยังไม่มีfinalmobile/responsive/fullflow/longsoak acceptance ของcandidateนี้ ไม่มีcommit/push/deployหรือDB/Auth mutationรอบนี้
+
+**รายละเอียดการแก้:**
+
+- เพิ่ม src/action-feedback.js และ .css เป็นpresentation token + CSSspinner/reducedmotion ไม่มีtimerใหม่ต่อspinner ไม่แทนnetwork/session/revision controllers
+- Inspector: pendingก่อนawaitแรกในstartup/login/save/copy/list/history/open/logout, กันsubmitซ้ำระดับhandler; logoutล้างprivateUIทันทีและคงserializedserverrevocation; stalecatch/finallyไม่ทับfeedbackใหม่; pendingSavebody/mutationIDเดิม; Savedแต่listrefreshล้มเหลวแจ้งแยก; timeoutไม่อ้างว่าเป็นinvalidpassword; closepanelไม่แกล้งรายงานcancel
+- Planner: downloadpendingเริ่มก่อนensureSession/conditionspreflight กันกดซ้ำและตรวจcontext/readinessก่อน–หลังawait; loadingระหว่างprepare/source/snapshot/calculation/GEE/conditions; reset/cancelล้างspinnerที่ตัวเองเลิกเป็นเจ้าของ ทั้งprepareและsavedboundary พร้อมlate-response tests
+- Checkbox: nativecheckbox/selectใช้change,number/textใช้inputหนึ่งsemanticchange; airspacecheckboxรับchecked/dialogคงเปิดและinvalidateผลเก่าทันที
+- 3D: requestAnimationFrameหนึ่งpendingdraw,ไม่มีdrawloopตอนidle/hidden/inactive; 2D/ไม่มีplanหยุดrenderer; wheelต้องactive+focused, touchเริ่มpan-y,ปุ่มInteract/ExitและEscapeคืนscroll; visibilityresumeวาดใหม่; disposeยกเลิกRAF/listeners; persistedpagehideไม่ทำลายcontrollersและpageshowเรียกrefresh/freshnessใหม่ คงขนาดcanvas/floor/texturemeshเดิม
+- Copy: Abouttheplanner/XEDOinspectionprofile/Fixedinspectionsettings/Missionsnapshot; normalmodeซ่อนrepeatedtrialbadge/backlinkของstandalone ไม่เพิ่มป้ายPrototype; Estimated demoและสมมติฐาน/Unknown/partial/24h/Surface/แหล่งข้อมูลยังแสดงตามจริง
+
+**ผลตรวจใหม่:** npm test -- --test-concurrency=1 --test-timeout=30000 ผ่าน524/0/0 (เพิ่ม14behavior/race/lifecyclecasesจากbaseline510), npmruncheck+newmodule syntax และgitdiff--checkผ่าน; npmrunbuild/build:workspace/build:fileผ่านทั้งหมด บางรอบfullrunnerก่อนหน้าเงียบค้าง/ถูกหยุด จึงไม่ใช้รอบเหล่านั้นเป็นผลผ่าน ไม่ตัดassertions/testsแก้ปัญหา; finalreportอยู่final-tests.txt
+
+**Browser/performanceหลักฐานจริง:** LocalQAใช้realBFF+in-memorySQLกับsimulatedAuthและdelay500ms/stage ไม่มีpasswordผู้ใช้จริง Loginเห็นSigning in…/disabledและต่อเป็นSigned in.Loadingyourmissions… พร้อมspinner ภาพlogin-pending.pngเป็นช่วงหลังauthackที่กำลังโหลดlist วัดproduction3Drendererกับsynthetictexture512px/canvas850×440CSSpxแบบfocusedwheel100events×5: ก่อน100draws/burst,synchronousevent193.3–303.9ms; หลัง1draw/burst,event0.6–1.3ms,สองRAFpaint7.8–17.4ms ไม่มีadditionalburstlongtasksหลังแก้ (ยังมีstartup81ms) ค่าทดลองนี้ไม่ใช่fieldINP/รับประกัน60fps/หลักฐานno-memory-leak/การทำซ้ำfreezeเดิม
+
+**คู่ขนาน:** Supportส่ง34actions/136copyrows/8diagnosisgroups/64designed_not_run casesและhandoffแล้ว ใช้ในการแก้Saveack/cancel/scrollownership รักษาappendreferenceของsupportในสองMarkdown ไม่อ้างsupportdesignedcasesเป็นexecutedtests Rootreadonlyreviewพบprepare/sourcependingcleanupสองจุดและแก้พร้อมtestsแล้ว
+
+**ยังเหลือและรอคำตอบ:** Browserที่ใช้ID2ไม่availableและinventoryไม่มีsurfaceเดิม จึงส่งคำถามให้ผู้ใช้เปิดBrowserในแชทหลักและแจ้ง “เปิดแล้ว” **รอคำตอบ** นี้เพื่อทดสอบfinal390/768/1280,mouse/keyboard/touch/page/modal/3Dscroll,30dialogcycles/20modecycles/10area-imagecycles/10–15minsoak และlocalintegratedSave/open/history/end-to-endหลังรวมpatch ไม่มีproductdecisionหรือรหัสผ่านที่ต้องส่งเพิ่ม ไม่ถือว่าlongfreeze/memoryleakได้รับการพิสูจน์หรือแก้ครบจากbenchmarkสั้น
+
+**ไฟล์/สถานะ:** Sourceหลักfeedback,Inspector,planningclient,3D,conditions/GEEUI,HTML/CSS/help/runtime/profile/buildcopy; tests/inspector-client.test.mjsเพิ่มใหม่และขยายworkflow/ground/estimated/source/fixed/runtimeharness เอกสารสองไฟล์นี้/UX_COMPLETION_PLAN.md/queueอัปเดต ผล+ภาพ+frozenbaseline+localQAserverอยู่ C:/mega/codex/iENA/github-publish/XEDO-hardware-release/output/release-check/ux-2026-10-28/ และsupportที่ outputs/XEDO_UX_Parallel_2026-10-28/support/ HEADยัง45e928e applicationcandidateยังlocal/uncommitted ไม่มีเผยแพร่บนxedo-eight.vercel.appรอบนี้
+
+<!-- ux-browser-resume-2026-10-28 -->
+### 28 ตุลาคม 2026 — Browser กลับมา: ตรวจ UX ต่อและเก็บข้อผิดพลาดท้ายรอบ
+
+**หัวข้อ:** ผู้ใช้ตอบ “เปิดแล้ว” ต่อคำถามBrowserเดิม จึงตรวจต่อโดยใช้IABที่เปิดกลับมาในแชทเดิม; คำถามเปิดBrowserตอบแล้ว ไม่มีรอคำตอบนี้อีก
+
+**สรุป:** Localcandidateผ่าน531tests/0fail/0skip,syntax/diffและ3buildsใหม่ ตรวจliveGEE10พื้นที่ต่างกัน/30dialogcycles/20modecyclesต่อเนื่อง11.15นาที,มือถือและdesktopตามviewport390/768/1280,บัญชีจำลองSavev1→v2→History→เปิดv1และบัญชีBไม่เห็นรายการA,SignoutขณะSaveและconfirmationCancel/Escape,ดาวน์โหลดเดโมจริงผ่านUI และ52hยังBlocked เวลาจริงไม่ถูกtruncate รักษา3steps/4calculators ไม่push/deploy/commitหรือแก้DB/Authproductionรอบนี้
+
+**แก้เพิ่มเติมจากBrowser:** เปลี่ยนnativewindow.confirmสามจุดของInspectorเป็นHTMLconfirmationdialog:focusที่Keepcurrentdraft,Cancel/Escapeรักษางาน,ป้องกันเปิดซ้ำ/queuedcloseเก่าไม่ปิดpromptใหม่;ยืนยันSignoutแล้วค่อยclearprivateUIและqueuedrevocationเดิม เพิ่มterminalannounceเมื่อค้นหา/โหลด/เตรียมภาพล้มเหลวไม่ค้างคำSearching/Preparing แก้ปุ่มDownloadหลังเดโมยังบอกdemo และล้างsuccessของไฟล์เก่าเมื่อmissionเปลี่ยน แต่คงactive-downloadoperationguards เพิ่ม7testsจากcandidate524รวม531 Sourceเพิ่มรอบนี้src/inspector-client.js,inspector.css,planning-trial-client.js และtests/inspector-client,planning-estimated-isolation,planning-workflow
+
+**ผลBrowserใหม่ที่รันจริง:**
+
+- บัญชีใช้simulatedAuth+realBFF/in-memorySQLที่5191,delay500ms/stage;ไม่มีpasswordจริงหรือAuthsessionproduction เปิดv1/v2/historyและCancel/acceptedLogoutผ่าน ขณะSavependingยืนยันLogoutแล้วmissionsHidden=trueทันที/statusSigningoutและสุดท้ายSignedout ผลกลับช้าไม่คืนprivateUI บัญชีBobตอนเริ่มไม่มีรายการAlice Confirmationมือถือclient360/scroll360/page375/scroll375,CancelautofocusและEscapeรักษาบัญชีพร้อมfocusคืนSignout
+- LiveGEEที่5182: importPolygon10พื้นที่ต่างกันwest101.2200→101.2227ทีละ.0003°,ละติจูด12.620–12.621 เลือกภาพcoveringจริง27Oct2026และPrepareทุกบริบทได้ (ไม่ใช่10clickบนพื้นที่เดิม) มีsearchtemporarilyunavailableสองครั้งและgroundinitialerrorหนึ่งครั้ง ใช้Retryแล้วกลับมาได้ ไม่สรุปว่าเป็นinternet/rootcauseใดเพราะไม่วัดnetworkต้นทาง
+- Warmboundedrun09:31:29.952–09:42:38.960UTC (11.15min):30settingsopen/close,20complete2D↔3D,10area-imagecontexts ไม่มีobservedfreeze Browserconsoleerrors[];canvas2/dialog6คงที่ DOMnodes809เริ่ม→835ช่วงmid→835ท้าย การเพิ่มต้นรอบสัมพันธ์กับโหลดข้อมูล/ตัวเลือกภาพ ไม่อ้างheap/listener/observer/textureleak-freeจากDOMcounts
+- Scroll: Exitbuttonpointerclickคืนpressedfalse/touchActionpan-y;wheelผ่านunfocused3Dเลื่อนpage225→945;modalมือถือscroll0→1688ขณะpage0;PageDownเลื่อนpage1194.5;drag/ArrowRight/Escapeใช้ได้;scrollbarcoordinate-dragพบoffset642→406 แต่ไม่ได้วัดทิศ/ระยะของthumbอย่างละเอียด จึงไม่ใช้เป็นprooftrackpad/physicaltouch
+- Responsivefinalbuild: viewport390/page375/scroll375/settings328/scroll328/readiness356/scroll356;768/page753/scroll753/settings706/readiness618;1280/page1265/scroll1265/settings803/readiness618 ทุกdialogscrollWidthเท่ากับclientWidth ภาพresponsive-*และfinalmobileconfirmation/desktop-uxเก็บแล้ว คืนviewportและปิดแท็บQAส่วนเกิน
+- Download:ทำconfirmationครบผ่านbrowserและดาวน์โหลดQGroundControlPlan18missionitemsจริงด้วยEstimateddemo หลังแก้ท้ายรอบปุ่มยังDownloaddemomissionfile;กดSpaceในreadinessถอนairspaceแล้วdialogคงเปิด/downloadDisabled=true/oldsuccesshidden=true Manual52hinputยังแสดงstart28Oct/end30Octตามจริงพร้อมBlocked24h ไม่มีclamp ส่วน24hautomaticalgorithm/staticSurface/rootreasonมีunit/integrationregressionใน531ชุด
+- หลังboundedrunเก็บterminalcopy/confirmation-closeguard/demo-label/stalesuccessเพิ่ม แล้วrebuild+targeted/full531และsmokeUIบนbuildใหม่อีกครั้ง ไม่อ้างว่า11.15minทั้งหมดเกิดหลังทุกcopyfixท้ายรอบ
+
+**หลักฐานและข้อจำกัด:** output/release-check/ux-2026-10-28/browser-acceptance-resume.json,RESULT.json,final-tests.txt,build*.txt,final-desktop-ux.png,final-mobile-satellite-3d.png,final-mobile-confirmation.png,final-search-error.png,over24h-blocked.png,browser-demo.plan Physicaltouch/native-trackpad/reduced-motionOSsetting/heap&listenercounts/fullappfeedbackp95/fieldINPไม่ได้วัด ไม่รับรอง60fpsหรือไม่มีleakทุกกรณี Settingsลดsemanticduplicatesแล้วแต่reviewflagsยังrecalculateทั้งชุดเดิม ไม่อ้างdependencyselectivecacheสำเร็จ;เป็นงานoptimizationตามtraceต่อได้ ไม่มีfreezeที่วัดพบให้รื้อcache/readinessเพิ่มในรอบนี้
+
+**สถานะงานและเผยแพร่:** งาน1มีimplementation+localbrowserverificationพร้อมข้อจำกัดที่บันทึก;ไม่ประกาศว่าทุกqualificationของแผน3.8วัดผ่านแล้วหรือproductionเปลี่ยนแล้ว stageยังไม่markcompleteทั้งหมด Queueคงงานบัญชีreal-useracceptance/AIเดิมและpublicationแยก MockAuthQAserver5191หยุดแล้ว(testdataเป็นin-memoryfixture);GEEpreview5182คงไว้สำหรับแท็บส่งมอบ ไม่สร้างภารกิจ/บัญชีproduction ไม่เปลี่ยนสิทธิ์ ไม่ส่งข้อความเพิ่มไปแชทอื่น ไม่มีคำถามผู้ใช้ค้าง
+
+<!-- ux-release-approved-2026-10-28 -->
+### 28 ตุลาคม 2026 — อนุมัติเผยแพร่ UX/loading/scroll
+
+**หัวข้อ:** ผู้ใช้สั่ง “push และ deploy เลย” อนุมัติเผยแพร่candidateUXปัจจุบันบนเว็บหลัก
+
+**สรุป:** ตรวจGitHEAD/remoteทั้งmainและcodex/xedo-hardware-profileตรง45e928ef50ace69ae83393bc192acdc6b537fae7;hashของsource/build5รายการตรงRESULT.jsonที่ผ่าน531tests/0fail/0skipและ3buildsก่อนหน้า จึงไม่รันทดสอบlocalชุดเดิมซ้ำโดยไม่มีsourceเปลี่ยน รอบเผยแพร่นี้จะผูกCI/deployment/productionbytes/browser/APIเข้ากับcommitที่pushจริง ไม่มีDB/Auth/settings/dependency/API/schemachanges
+
+**รายละเอียด/เป้าหมาย:** Vercelprojectxedo/prj_x35WcipWxA767cYwv3f0CXcdyea3/team_CV1O0uIz6BcarAQAOb8soV0I/domainxedo-eight.vercel.appยืนยันจากconnector Domainverified=true productionก่อนหน้าdpl_FD5evseV7RtRqE1nsWMgkz5oCL3f/45e928eREADY Independentreadonlyauditไม่พบcriticalblockerและไม่พบsecretpatternที่สแกน ผล531/local11.15minเป็นหลักฐานรอบก่อนที่ตรวจhashตรง ไม่อ้างเป็นproductiontestใหม่ คงremainingqualificationเรื่องphysicaltouch/trackpad/fullappP95/heap/selectivecalculation ไม่เริ่มAIหรือnormalprofile/schedule rewrite
+
+**ไฟล์/สถานะรอบเตรียม:** canonical2Markdownและqueueเพิ่มapprovalrecordแล้ว รวมsource/tests/planที่ค้างในworkingtreeตามscopeUX พร้อมnewaction-feedback.js/.css/inspector-client.test.mjs/UX_COMPLETION_PLAN.md ไม่รวมignoredQAserver/downloads/env/credentials Outputrelease-receipt.jsonจะเก็บexactcommit/deployment/CI/productionchecksหลังเผยแพร่ ยังไม่มีผลpush/deployสำเร็จในจังหวะบันทึกนี้ ไม่มีคำถามผู้ใช้ค้าง

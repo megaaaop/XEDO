@@ -12,8 +12,7 @@ await mkdir(output, {recursive: true});
 const page = resolve(output, 'index.html');
 execFileSync(process.execPath, [resolve(root, 'scripts/build-planning-file.mjs'), page,'--gee-hosted'], {cwd: root, stdio: 'inherit'});
 let html = await readFile(page, 'utf8');
-html = html.replace('<title>XEDO · Local mission trial</title>', '<title>XEDO · Innovation draft</title>')
-  .replace('>Local file mode</a>', '>Prototype mode</a>');
+html = html.replace('<title>XEDO · Local planning</title>', '<title>XEDO · Coastal inspection</title>');
 await writeFile(page, html);
 await unlink(resolve(output, 'README.txt'));
 console.log('Built GEE-ready browser application: dist/index.html. Imagery API source: api/gee.mjs; credentials stay in server runtime configuration.');
