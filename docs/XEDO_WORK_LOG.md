@@ -5,13 +5,13 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **28 ตุลาคม 2026 — ผู้ใช้อนุมัติ push/deploy ชุดUXแล้ว;ตรวจhashตรง531tests/3buildsและremote main45e928e กำลังเผยแพร่ ยังไม่อ้างproductionสำเร็จจนตรวจdeployment/browser/API**
+- อัปเดตล่าสุด: **28 ตุลาคม 2026 — UX push/deployแล้ว:32aa243/ProductionREADY/CI40669324786success;HTMLตรงbuild ตรวจLoginpending→errorcleanup/normalGEE/3D/mobile/demo18itemsผ่าน ไม่มีDBAuthchanges;remainingqualificationsเดิมคงไว้**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
 - จุดประสงค์รอบนี้: pushและdeployชุดUXที่ตรวจในเครื่องแล้วตามคำสั่งล่าสุดของผู้ใช้ ตรวจcommit/CI/Vercel/เว็บจริงและบันทึกผล ไม่เพิ่มงานAIหรือเปลี่ยนDB/Auth
-- สถานะเผยแพร่จากหลักฐานรอบก่อน (ไม่ได้ตรวจ live ใหม่ในรอบ UX นี้): ชุดแก้เวลา/Surface code `d5ec33fbb186145440acffed718972c9b8fc8063` push main/branch แล้ว Vercel `dpl_8tjaooDbxEodG8kmHiE5yJfNLwac` READY และ alias เว็บหลักตรง code นี้ CI [40574633798](https://github.com/megaaaop/XEDO/actions/runs/40574633798) success; เอกสาร follow-up อาจทำให้ deployment SHA ใหม่โดย application ไม่เปลี่ยน exact final receipt อยู่ `output/release-check/time-surface-fix-2026-10-28/`
+- สถานะProductionที่ตรวจรอบนี้: applicationcommit32aa243bf3d6802947287093dc66dc775c36489a / Verceldpl_FmmesNCHsaCnY8MiXZrMeWoUaFTp READY / mainCI40669324786success / domainxedo-eight.vercel.app HTMLตรงbuildsha0aa8224ec1e9d6d2dba6a764b289101336374118b47e2bc73a0c18cdae1810e4 เอกสารfollow-upอาจเลื่อนdeploymentSHAโดยapplicationไม่เปลี่ยน ดูrelease-receipt.jsonสำหรับidentityสุดท้าย
 - **ขอบเขตคำสั่งล่าสุด:** Implement/test/document งานล่าสุด1 UX/ข้อความ/loading/scroll ตาม UX_COMPLETION_PLAN.md ส่ง prompt ไปแชทสนับสนุนที่มีอยู่ ไม่รวม AI/normal-profile/schedule rewrite/DB/Auth changes และไม่ใช้คำอนุญาตเผยแพร่งานเก่าแทนการเผยแพร่ชุดนี้
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
@@ -1026,3 +1026,18 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 **รายละเอียด/เป้าหมาย:** Vercelprojectxedo/prj_x35WcipWxA767cYwv3f0CXcdyea3/team_CV1O0uIz6BcarAQAOb8soV0I/domainxedo-eight.vercel.appยืนยันจากconnector Domainverified=true productionก่อนหน้าdpl_FD5evseV7RtRqE1nsWMgkz5oCL3f/45e928eREADY Independentreadonlyauditไม่พบcriticalblockerและไม่พบsecretpatternที่สแกน ผล531/local11.15minเป็นหลักฐานรอบก่อนที่ตรวจhashตรง ไม่อ้างเป็นproductiontestใหม่ คงremainingqualificationเรื่องphysicaltouch/trackpad/fullappP95/heap/selectivecalculation ไม่เริ่มAIหรือnormalprofile/schedule rewrite
 
 **ไฟล์/สถานะรอบเตรียม:** canonical2Markdownและqueueเพิ่มapprovalrecordแล้ว รวมsource/tests/planที่ค้างในworkingtreeตามscopeUX พร้อมnewaction-feedback.js/.css/inspector-client.test.mjs/UX_COMPLETION_PLAN.md ไม่รวมignoredQAserver/downloads/env/credentials Outputrelease-receipt.jsonจะเก็บexactcommit/deployment/CI/productionchecksหลังเผยแพร่ ยังไม่มีผลpush/deployสำเร็จในจังหวะบันทึกนี้ ไม่มีคำถามผู้ใช้ค้าง
+
+<!-- ux-production-release-2026-10-28 -->
+### 28 ตุลาคม 2026 — เผยแพร่ UX และตรวจเว็บจริงสำเร็จ
+
+**หัวข้อ:** ดำเนินการpush/deployตามคำสั่งล่าสุด ผู้ใช้อนุมัติแล้วในturnนี้ ไม่ขออนุมัติซ้ำ
+
+**สรุป:** commit32aa243bf3d6802947287093dc66dc775c36489a pushแบบatomicไปorigin/mainและorigin/codex/xedo-hardware-profileสำเร็จ VercelProductiondpl_FmmesNCHsaCnY8MiXZrMeWoUaFTpREADYและaliasxedo-eight.vercel.appชี้รุ่นนี้ mainCI40669324786/branchCI40669324620success HTMLเว็บหลักตรงverifieddistแบบbyte-for-byte SHA2560aa8224ec1e9d6d2dba6a764b289101336374118b47e2bc73a0c18cdae1810e4 ไม่เปลี่ยนDB/Auth/role/schema/dependency/settings ไม่เริ่มAIหรือprofile/scheduleงานใหม่
+
+**ผลตรวจหลังdeployใหม่:** guestaccountsession200/usernull;GEEcurrentwindow200/partial/terrain+landcoverready/GFSreferenceunavailableตามข้อมูลจริง;staticcontext200/terrainready/forecastnot_requested;52hrawrequest422GEE_CONTEXT_INPUT_INVALID;environment200complete;imagesearch200/12scenes ไม่อ้างGFSreferenceพร้อมทั้งหมด ลมตลอดภารกิจใช้environmentแยกเดิม sourcehashตรง531tests/3buildsจากรอบlocal และCIรันใหม่ผ่าน ไม่รันlocaltestsซ้ำในpublicationturnนี้
+
+**BrowserProductionใหม่:** Loginด้วยข้อมูลสังเคราะห์ที่ไม่มีบัญชีจริง1ครั้งเห็นSigning in…/aria-busytrue/disabled แล้วจบgenericinvalidcredentials/aria-busyfalse/buttonคืน/passwordempty;ไม่ใช้passwordจริงและไม่อ้างsuccessfulrealaccountacceptance Reloadคืนgueststateก่อนตรวจnormalPolygon→liveGEEimage→Prepareถึงstep3/route1.86km;missingflight/Homeยังblockdownloadตามจริง Demo→3DgeoreferencedSatellitegroundready67samples;pointerInteract→Exitคืนpressedfalse/pan-y;mobile390page375/scroll375/readinessdialog356/scroll356 checkboxรับchecked/dialogคงเปิด;downloadQGCPlan18itemsจากเว็บจริงและbuttonยังlabeldemo Browserconsoleerrors[] คืนviewportและmarkproductiontabไว้
+
+**หลักฐาน:** output/release-check/ux-2026-10-28/production-api.json,production-browser.json,production-login.png,production-login-terminal.png,production-mobile-readiness.png,production-desktop-ux.png,production-demo.plan และrelease-receipt.json Queryruntimeerror/fatalเฉพาะdeploymentนี้ใน15mคืน0groups ไม่ใช่รับประกันทุกช่วงเวลา/ทั้งระบบ ผลlocal11.15min/531testsยังแยกจากproductionchecks ไม่ทำlongsoak531testsผ่านbrowserproductionซ้ำ
+
+**บันทึก/ข้อจำกัด/สถานะต่อ:** canonical2Markdown/queue/planอัปเดตแล้ว จะcommit/pushเอกสารผลตรวจต่อเป็นdocumentation-onlycommit ซึ่งอาจสร้างdeploymentSHAใหม่โดยapplicationbundleเดิม exactfinalidentity/CI/HTTPเก็บignoredreceiptเพื่อไม่ทำcommitอ้างตัวเองวน Stage1coreเผยแพร่แล้วแต่ยังคงqualificationphysicaltouch/native-trackpad/OSreducedmotion/heap-listeners/fullappP95/fieldINP/selectivecalculation ไม่markทุกqualificationcomplete บัญชีrealuseracceptanceและAIคิวเดิมไม่ถูกนับผ่านจากguest/fixture ไม่มีคำถามผู้ใช้ค้าง

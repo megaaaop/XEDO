@@ -9,7 +9,7 @@
 
 ## 2. สรุป
 
-สถานะล่าสุด 28 ต.ค. UXcandidateแก้และตรวจBrowserต่อแล้ว ผ่าน531tests/3builds,11.15min boundedrun/10liveGEEareas/dialog30/2D3D20/responsive3907681280/localfixtureaccountflow+Plan download ดู §3.32 มีข้อจำกัดphysicaltouch/heap/fullappINP/selectivecalculation ไม่ใช่ผลproductionrelease ไม่มีpush/deploy/DBAuthchangesรอบนี้ คง3steps/4calculatorsและreadinessเดิม
+สถานะล่าสุด 28 ต.ค. CoreUXเผยแพร่และตรวจProductionแล้ว code32aa243/VercelREADY/mainCI40669324786success/HTMLตรงverifiedbuild ดู§3.34 พร้อมLoginpending-errorcleanup/normalGEE/3DSatellite/mobilecheckbox/demoPlan18items ไม่มีDBAuthchanges Qualificationphysicaltouch/trackpad/heap/fullappINP/selectivecalcยังคงแยกตาม§3.32
 
 กติกาเพิ่มสำหรับงานคู่ขนาน: แชทหลักนี้แก้เว็บไซต์เพียงแชทเดียว แชทสนับสนุนเตรียมข้อมูลAI/หลักฐานตรวจ/คำแนะนำ/กรณีทดสอบในโฟลเดอร์แยก แล้วส่งให้แชทหลักตรวจรับและเชื่อม รายละเอียดownershipและhandoffอยู่ข้อ3.14 ไม่ให้การทำคู่ขนานกลายเป็นหลายแชทแก้source/configของเว็บพร้อมกัน
 
@@ -499,3 +499,14 @@ Responsiverequested390/768/1280มีeffectiveclient375/753/1265ตามscrollb
 ผู้ใช้อนุมัติpush/deployเฉพาะcandidateUXตาม§3.31–3.32 ไปprojectxedo/domainxedo-eight.vercel.app Productionbranchmain/branchcodex/xedo-hardware-profileเริ่มตรง45e928e Hashsourceหลักและdistตรงlocalreceipt531tests/3builds ไม่รวมignoredQAserver/simulatedcredentials/fixtures/env ไม่มีAPI/DB/Auth/schema/package/workflowsettingschanges
 
 Releasechecksต้องยืนยันexactGitcommit/VercelREADY+alias/CIและHTMLbytesตรงdist;ตรวจหน้าLoginpendingด้วยguestcaseที่เหมาะสมและnormal+demo/readiness/3D/mobileบนproduction พร้อมread-onlysession/GEEAPIและboundedruntimeerrorcounts ห้ามใช้simulatedaccountacceptanceเป็นreal-accountproductionlogin ผลและexactidentityจะเติมหลังเผยแพร่ ไม่รับรองphysicaltouch/no-leak/fullappINP/selectivecalcจากreleaseนี้
+
+<!-- ux-production-release-2026-10-28 -->
+### 3.34 UX Production release ที่ตรวจแล้ว — 28 ตุลาคม 2026
+
+**Version/target:**32aa243bf3d6802947287093dc66dc775c36489a,projectxedo/prj_x35WcipWxA767cYwv3f0CXcdyea3/team_CV1O0uIz6BcarAQAOb8soV0I,Productiondpl_FmmesNCHsaCnY8MiXZrMeWoUaFTpREADY,aliasxedo-eight.vercel.app,mainCI40669324786success HTMLSHA0aa8224ec1e9d6d2dba6a764b289101336374118b47e2bc73a0c18cdae1810e4ตรงdistตามreceipt531tests/3builds Applicationchangesอยู่scopeUXเดิม ไม่มีAPI/schema/DB/Auth/providerconfigurationใหม่
+
+**Boundariesที่verifyจริง:** BrowserLogin→BFF→Supabaseinvalidcredentialresponse→UIpendingcleanup ผ่านด้วยsyntheticnonexistentaccount ไม่มีrealpassword/sessioncreation;anonymoussession200null GEEpublicPolygonsearch12scenes→visibleimage→Prepare/route1.86kmผ่าน normalflightinputs/Homeที่ไม่ครบยังlock Download Demo→localcalculators→GEEterrain67samples→3DSatellite→airspacecheckboxmobile→QGCPlan18itemsผ่าน Sourceข้อมูลdemo/assumedยังlabelชัด NodeproductionAPIcurrentGEEpartialเพราะreferenceGFSunavailableแต่terrain/landcoverready;staticforecastnot_requested;52h422;environmentcomplete ไม่เปลี่ยนUnknownเป็นReadyเพื่อผ่านrelease
+
+**Browser/observability:**390requestedมีpage375scroll375/dialog356scroll356ไม่ล้นและcheckboxไม่ปิดdialog InteractExitคืนpan-y/pressedfalse Consoleerrors[] Runtimeerror/fatalfilterdeployment15mคืน0groups เป็นboundedscan การเปิดpanelปิดpanelและดาวน์โหลดไม่สร้างmissionproduction ไม่ทำSITL/hardwareหรือreal-accountSaveacceptance ตัวเลข11.15min/30dialogs/20modes/10areasเป็นlocalrunเดิม ไม่เอามาอ้างproductionsoak
+
+**Maintenance:**documentation-onlyfollow-upอาจเปลี่ยนGit/deploymentidentityแต่dist/APIcodeคงเดิม ให้ดูoutput/release-check/ux-2026-10-28/release-receipt.jsonสำหรับfinalidentityและHTTPchecksหลังเอกสารpush ไม่วนเขียนexactselfSHAกลับtrackedMD Qualification/device/perfและdependencyselectivecalcเดิมยังค้าง คงstagepartialqualificationแม้coreproductionเผยแพร่แล้ว ไม่มีpendinguseranswer

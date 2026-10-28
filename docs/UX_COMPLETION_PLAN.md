@@ -7,7 +7,7 @@
 - เว็บไซต์ที่ตรวจ: https://xedo-eight.vercel.app/
 - Checkout: `C:/mega/codex/iENA/github-publish/XEDO-hardware-release`
 - เป้าหมาย: ผู้ใช้เห็นทันทีว่าคำสั่งรับแล้ว กำลังทำอะไร สำเร็จหรือขัดข้องอย่างไร และเลื่อนหน้าใช้งานต่อเนื่องได้
-- สถานะ: **localimplementation+supportedbrowserchecksพร้อม;531tests/3buildsผ่าน;ยังไม่publish** ดู §3.12 สำหรับผลจริงและqualificationที่ยังไม่ได้วัด ไม่ถือว่าเป้าหมายทุกข้อใน3.8ผ่านทั้งหมด
+- สถานะ: **CoreUXเผยแพร่Productionและตรวจแล้ว** code32aa243/READY/mainCIsuccess ดู§3.13;531tests/3buildsและlocal11.15minเป็นหลักฐานก่อนrelease Qualificationที่ยังไม่วัด/ไม่ทำยังคงระบุ ไม่ถือว่าทุกข้อ3.8complete
 - แชทหลักเป็นผู้แก้เว็บไซต์และรวมงานเพียงแชทเดียว อีกแชทช่วยตรวจ source/ข้อความ/ออกแบบทดสอบและหลักฐานในโฟลเดอร์ support
 - หลักฐานภาพรอบนี้: `C:/mega/codex/iENA/outputs/XEDO_UX_Plan_2026-10-28/`
 
@@ -219,3 +219,8 @@ Current bounded observation: 390px settings dialog345px/clientHeight741/scrollHe
 ผู้ใช้เปิดBrowserแล้ว คำถามเดิมresolved ตรวจnormalGEE10uniquePolygon/imagecontexts,30dialogs/20modecyclesใน11.15min,390/768/1280ไม่มีhorizontaloverflow,localfixtureSave/history/open/logout/confirmationCancel-Escape,unfocusedwheel/modal/PageDown/3DpointerExit/keyboard,liveSatelliteground/Retry,18-itemdemoPlanและ52hBlocked ผ่านในชุดที่ตรวจ เก็บfinalcopy/confirmation/downloadcleanupเพิ่มแล้วตรวจ531tests/3builds+smokeบนbuildใหม่ ไม่มีpush/deploy
 
 ข้อ3.8ที่ยังไม่วัดครบ:physicaltouch/native-trackpad/OSreducedmotion/fullappp95/fieldINP/heap-listeners และdependencyselectivecalculation (ยังใช้one-semantic-event→fullcalcเดิม) จึงให้สถานะlocalcandidateverifiedwithlimits ไม่ทำเครื่องหมายทุกqualificationcompleteหรืออ้างno-leak/60fps บันทึกสองcanonicalMD§3.32/RESULT.jsonและbrowser-acceptance-resume.jsonแล้ว ไม่มีรอคำตอบBrowserอีก
+
+<!-- ux-production-release-2026-10-28 -->
+### 3.13 Production publication
+
+ผู้ใช้อนุมัติpush/deployแล้ว application32aa243เผยแพร่READYบนxedo-eight.vercel.app/mainCI40669324786success HTMLตรงbuildและBrowser/APIหลังdeployผ่านตามWEBSITE_DETAILS§3.34 มีLoginnegativependingcleanup/normalimagePrepare/3DSatellite/mobilecheckbox/demoPlan18items ยังไม่ใช่successfulrealaccountacceptance/physicaltouch/heap/fullappP95/selectivecalc qualification ดูignoredrelease-receipt.jsonสำหรับfinaldocumentationdeploymentidentity

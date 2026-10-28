@@ -453,13 +453,16 @@
       "number": 4,
       "name": "Production-like interface and controlled online release",
       "status": "partially_implemented",
-      "implementationStatus": "local_candidate_browser_verified_with_documented_limits_not_published",
-      "requirement": "UX/loading/scroll implementation and supported local browser scenarios verified. Not published; remaining device/performance qualifications and selective recomputation explicitly documented. Preserve3steps4calculators/readiness.",
+      "implementationStatus": "production_core_ux_published_remaining_qualifications_documented",
+      "requirement": "Core UX/loading/copy/checkbox/scroll-render lifecycle published and production verified. Physical touch/trackpad/heap/fullappP95 and dependency-selective recomputation remain qualifications; preserve documented limits.",
       "implementationApproved": true,
       "approvedOn": "2026-10-28",
       "planPath": "docs/UX_COMPLETION_PLAN.md",
       "planUpdatedOn": "2026-10-28",
-      "publishedThisExecution": false
+      "publishedThisExecution": false,
+      "publishedOn": "2026-10-28",
+      "productionCommit": "32aa243bf3d6802947287093dc66dc775c36489a",
+      "productionDeploymentId": "dpl_FmmesNCHsaCnY8MiXZrMeWoUaFTp"
     },
     {
       "number": 5,
@@ -1109,7 +1112,7 @@
     "kind": "documentation_status_summary",
     "activeGroups": 3,
     "sourceFeatureGroupsRemaining": [
-      "UX cleanup",
+      "UX performance/device qualifications (core UX published)",
       "Prepared AI integration with Inspector risk editing"
     ],
     "publishedAccountGroupRemaining": "Requested account enabled and verified in live database. User retries real login; real private Save/history/logout/A-B ownership acceptance remains.",
@@ -1146,7 +1149,7 @@
     "integrationVerificationIsAcceptanceNotExtraFeatureStage": true,
     "applicationChangedThisTurn": false,
     "testsOrServicesRunThisTurn": false,
-    "publicationThisTurn": false,
+    "publicationThisTurn": true,
     "record": "docs/WEBSITE_DETAILS.md#327-แผนคงเหลือหลัง-timesurface-release--28-ตุลาคม-2026",
     "teamProvisioningPendingScope": "Requested account now enabled; additional accounts remain team-created as needed."
   },
@@ -1188,7 +1191,7 @@
   },
   "uxCompletionPlanning": {
     "id": "ux-loading-scroll-plan-2026-10-28",
-    "status": "local_candidate_browser_verified_with_documented_limits_not_published",
+    "status": "production_core_ux_published_qualifications_documented",
     "currentStageNumber": 1,
     "legacyStageNumber": 4,
     "sourceHead": "45e928ef50ace69ae83393bc192acdc6b537fae7",
@@ -1217,7 +1220,7 @@
     "realAccountPasswordLoginRun": false,
     "applicationChanged": true,
     "databaseOrAuthSettingsChanged": false,
-    "published": false,
+    "published": true,
     "supportPrompt": "C:/mega/codex/iENA/outputs/XEDO_UX_Plan_2026-10-28/PARALLEL_CHAT_PROMPT.md",
     "supportOutputDirectory": "C:/mega/codex/iENA/outputs/XEDO_UX_Parallel_2026-10-28/support",
     "mainOnlyWebsiteImplementation": true,
@@ -1428,7 +1431,10 @@
       "physicalTouch": "not available in this desktop tool",
       "nativeTrackpad": "not run separately",
       "selectiveRecomputation": "not implemented; semantic dedup only"
-    }
+    },
+    "productionVerified": true,
+    "productionCommit": "32aa243bf3d6802947287093dc66dc775c36489a",
+    "productionDeploymentId": "dpl_FmmesNCHsaCnY8MiXZrMeWoUaFTp"
   },
   "uxBrowserAcceptanceExecution": {
     "id": "ux-browser-resume-2026-10-28",
@@ -1531,14 +1537,16 @@
     "heapLeakProof": false,
     "selectiveRecomputationImplemented": false,
     "pendingUserAnswers": [],
-    "published": false,
+    "published": true,
     "commitPushDeploy": false,
     "realDBAuthMutation": false,
-    "record": "docs/WEBSITE_DETAILS.md#332-ux-browser-acceptance-หลังเปิดการเชื่อมต่อกลับ--28-ตุลาคม-2026"
+    "record": "docs/WEBSITE_DETAILS.md#332-ux-browser-acceptance-หลังเปิดการเชื่อมต่อกลับ--28-ตุลาคม-2026",
+    "productionDeploymentId": "dpl_FmmesNCHsaCnY8MiXZrMeWoUaFTp",
+    "publicationRecord": "docs/WEBSITE_DETAILS.md#334-ux-production-release-ที่ตรวจแล้ว--28-ตุลาคม-2026"
   },
   "uxReleaseExecution": {
     "id": "ux-release-2026-10-28",
-    "status": "approved_preparing_commit",
+    "status": "production_published_verified",
     "authorizedOn": "2026-10-28",
     "pushDeployAuthorized": true,
     "scope": "Publish verified UX action feedback, confirmation, copy, checkbox continuity and scroll/RAF lifecycle candidate",
@@ -1550,8 +1558,128 @@
     "verifiedLocalBuilds": 3,
     "sourceAndBuildHashesMatchPriorReceipt": true,
     "localTestsRerunThisPublicationTurn": false,
-    "productionVerified": false,
+    "productionVerified": true,
     "pendingUserAnswers": [],
-    "dbAuthChanges": false
+    "dbAuthChanges": false,
+    "applicationCommit": "32aa243bf3d6802947287093dc66dc775c36489a",
+    "productionDeploymentId": "dpl_FmmesNCHsaCnY8MiXZrMeWoUaFTp",
+    "target": "production",
+    "state": "READY",
+    "url": "https://xedo-eight.vercel.app",
+    "pushedMainAndWorkingBranch": true,
+    "ciMain": {
+      "id": 40669324786,
+      "status": "completed",
+      "conclusion": "success",
+      "url": "https://github.com/megaaaop/XEDO/actions/runs/40669324786"
+    },
+    "ciWorkingBranch": {
+      "id": 40669324620,
+      "status": "completed",
+      "conclusion": "success"
+    },
+    "productionHtmlSha256": "0aa8224ec1e9d6d2dba6a764b289101336374118b47e2bc73a0c18cdae1810e4",
+    "htmlMatchesVerifiedBuild": true,
+    "publishedOn": "2026-10-28",
+    "checks": {
+      "html": {
+        "status": 200,
+        "sha256": "0aa8224ec1e9d6d2dba6a764b289101336374118b47e2bc73a0c18cdae1810e4",
+        "expectedSha256": "0aa8224ec1e9d6d2dba6a764b289101336374118b47e2bc73a0c18cdae1810e4",
+        "matchesBuild": true
+      },
+      "accountGuest": {
+        "status": 200,
+        "userIsNull": true
+      },
+      "currentGEE": {
+        "status": 200,
+        "state": "partial",
+        "terrain": "ready",
+        "landcover": "ready",
+        "forecast": "unavailable",
+        "code": null
+      },
+      "staticGEE": {
+        "status": 200,
+        "terrain": "ready",
+        "landcover": "ready",
+        "forecast": "not_requested"
+      },
+      "over24h": {
+        "status": 422,
+        "code": "GEE_CONTEXT_INPUT_INVALID",
+        "message": "Use an ordered mission window of at most 24 hours, within five days back and seven days ahead.",
+        "startAt": "2026-10-28T11:07:59.840Z",
+        "endAt": "2026-10-30T15:07:59.840Z"
+      },
+      "environment": {
+        "status": 200,
+        "state": "complete",
+        "code": null
+      },
+      "imagery": {
+        "status": 200,
+        "scenes": 12,
+        "code": null
+      }
+    },
+    "browser": {
+      "checkedAt": "2026-10-28T10:09:06.391Z",
+      "url": "https://xedo-eight.vercel.app/",
+      "commit": "32aa243bf3d6802947287093dc66dc775c36489a",
+      "loginPending": {
+        "busy": "true",
+        "button": "Signing in…",
+        "disabled": true,
+        "status": "Signing in…"
+      },
+      "loginTerminal": {
+        "busy": "false",
+        "button": "Sign in",
+        "disabled": false,
+        "passwordEmpty": true,
+        "status": "The email or password could not be verified."
+      },
+      "normalFlow": {
+        "downloadDisabled": true,
+        "route": "1.86 km",
+        "step3Visible": true,
+        "surface": "Select an inspection area and Home position."
+      },
+      "ground": "Ground: Sentinel-2 mosaic · 29 Sept 2026–27 Oct 2026 UTC · 10 m source · Contains modified Copernicus Sentinel data 2026",
+      "exit3D": {
+        "pressed": "false",
+        "touchAction": "pan-y"
+      },
+      "mobileReadiness": {
+        "checked": true,
+        "dialogOpen": true,
+        "dialogScrollWidth": 356,
+        "dialogWidth": 356,
+        "pageScrollWidth": 375,
+        "pageWidth": 375
+      },
+      "download": {
+        "fileType": "Plan",
+        "items": 18,
+        "label": "Download demo mission file"
+      },
+      "browserErrors": [],
+      "viewportReset": true
+    },
+    "realAccountSuccessfulLoginTested": false,
+    "runtimeScan": {
+      "deploymentId": "dpl_FmmesNCHsaCnY8MiXZrMeWoUaFTp",
+      "window": "15m",
+      "levels": [
+        "error",
+        "fatal"
+      ],
+      "groupBy": "level",
+      "returnedGroups": 0,
+      "notSystemWideGuarantee": true
+    },
+    "documentationFollowup": "Documentation-only follow-up may advance Git/deployment identity; final identity recorded in ignored release-receipt.json"
   }
 }
