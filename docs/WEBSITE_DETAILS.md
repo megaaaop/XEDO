@@ -11,9 +11,9 @@
 
 สถานะล่าสุด 28 ต.ค. CoreUXเผยแพร่และตรวจProductionแล้ว code32aa243/VercelREADY/mainCI40669324786success/HTMLตรงverifiedbuild ดู§3.34 พร้อมLoginpending-errorcleanup/normalGEE/3DSatellite/mobilecheckbox/demoPlan18items ไม่มีDBAuthchanges Qualificationphysicaltouch/trackpad/heap/fullappINP/selectivecalcยังคงแยกตาม§3.32
 
-สถานะ29ต.ค.: ผู้ใช้ยืนยันว่าบัญชีตรวจได้แล้ว รับเป็นuser-confirmedและเดินแผนAIต่อโดยไม่ให้บัญชีเป็นตัวขวาง คงprivateSave/history/A–B/sessionเป็นAIintegrationregression ไม่อ้างว่าagentตรวจใหม่ แผนpreparedAI/editor/serverconfirm/plannerอยู่AI_INTEGRATION_PLAN§3.16และ§3.36ด้านล่าง รอบนี้ตรวจsource/corehashes12ไฟล์และเขียนแผน ไม่เปลี่ยนapplicationหรือบริการสดและไม่เผยแพร่ใหม่ UXcoreเผยแพร่แล้ว เหลือqualificationที่บันทึกไว้
+สถานะช่วงวางแผน29ต.ค. (ประวัติ): ผู้ใช้ยืนยันว่าบัญชีตรวจได้แล้ว รับเป็นuser-confirmedและเดินแผนAIต่อโดยไม่ให้บัญชีเป็นตัวขวาง คงprivateSave/history/A–B/sessionเป็นAIintegrationregression ไม่อ้างว่าagentตรวจใหม่ แผนpreparedAI/editor/serverconfirm/plannerอยู่AI_INTEGRATION_PLAN§3.16และ§3.36ด้านล่าง รอบนี้ตรวจsource/corehashes12ไฟล์และเขียนแผน ไม่เปลี่ยนapplicationหรือบริการสดและไม่เผยแพร่ใหม่ UXcoreเผยแพร่แล้ว เหลือqualificationที่บันทึกไว้
 
-Checkpointimplementationถัดมา29ต.ค.: ผู้ใช้สั่งลงมือและอนุมัติpush/deployแล้ว SourceAI/editor/BFF/SQLถูกapplyในcheckoutและlocalflowผ่านช่วงแรก MigrationAI+catalogใช้ในxedoแล้วโดยไม่เพิ่มAuthusers รายละเอียด§3.37 กำลังตรวจfinalcandidateก่อนเผยแพร่frontend ไม่ให้อ่านสถานะplanning-onlyย่อหน้าก่อนเป็นสถานะล่าสุด
+สถานะล่าสุด29ต.ค.: preparedSAR14candidate/Inspectorriskeditor/privateconfirmation/planner/Savehistoryเผยแพร่แล้ว codeb719d8e,ProductionREADY,CI2branchesผ่าน,HTMLตรงverifiedbuild,564tests/3builds ผ่าน ใช้liveSQLที่ตรวจสิทธิ์แล้ว รายละเอียด§3.37/§3.37.2;agentไม่ใช้passwordจริงทดสอบAIบนProduction
 
 กติกาเพิ่มสำหรับงานคู่ขนาน: แชทหลักนี้แก้เว็บไซต์เพียงแชทเดียว แชทสนับสนุนเตรียมข้อมูลAI/หลักฐานตรวจ/คำแนะนำ/กรณีทดสอบในโฟลเดอร์แยก แล้วส่งให้แชทหลักตรวจรับและเชื่อม รายละเอียดownershipและhandoffอยู่ข้อ3.14 ไม่ให้การทำคู่ขนานกลายเป็นหลายแชทแก้source/configของเว็บพร้อมกัน
 
@@ -572,3 +572,9 @@ inspector-clientdedupdocumentเทียบcaptureก่อนmarkdirty แต�
 ผลสด:564automatedpass/0fail/0skip,syntaxและ3buildsผ่าน BrowserAuthจำลอง+realBFF/PGlite+liveGEEได้confirm→112mroute,edit/preserveimage-time/staleexportblock/UndoRedoCancel/nativeTranslateCancel/nativeDrawUndo/Savev1-v4/history/2accountisolation;mobile390ไม่แนวนอนล้น page375/panel341 คืนviewport ตรวจsavedstateหลังSavev4และreloadฉากเดิม ไม่อ้างsuccessfulrealpasswordAIflowจากlocalfixtures หลักฐานoutput/release-check/ai-2026-10-29/local-browser.json,local-mobile.png,live-migration.json และoutput/ai-tests-final.txt Publishidentity/CI/API/productionUIเติมหลังdeploy
 
 ยังคง3steps/4calculators/2D3D/readiness/24hpolicyเดิม งานใหม่ไม่เติมaircraftprofile/schedule rewrite/Pi/training/report Fieldtestโดรน/QGC/SITL,physicaltouch/native-trackpad/heap/longsoakยังไม่อ้างผ่าน
+
+#### 3.37.2 Published AI/editor release evidence
+
+เผยแพร่codeb719d8edc15a926401e8c5ccbf3368a114e10553 Productiondpl_87f1XznCMD1MU4gAzVPqyyzydyAZREADY/mainaliasxedo-eight.vercel.app;CI40793396659/40793396559success ProductionHTML6197220bytes/SHA256da57bb8c6e12d66c801722065d559bec5c62f9b3d8162ea4ab9942b124bb5292ตรงbuild Guestsession200/usernull;analyseslist/detail401SESSION_REQUIRED;OpenpreparedAIareaนำguestไปLogin;browsererrors[] Demo→planner1.86km/1sortie→3DDiagram67samples→georeferencedSatellitegroundGEEreadyผ่าน ReadinessรักษาHome/airspace review ตามจริง
+
+ผลAIauthentication/confirmationจากrealpasswordยังไม่รันในProduction;ใช้localAuthfixture+realBFF/PGlite+liveGEEทดสอบAIroute/edit/save/history/isolationและSQLnegativecasesแล้ว คงuseracceptanceAIหนึ่งภารกิจเป็นการตรวจรับ ไม่เพิ่มเป็นfeatureimplementationที่ยังไม่เริ่ม ไม่มีAuthuser/passwordchanges ไม่มีpendingproductquestion Qualificationphysicaltouch/native-trackpad/heap-longsoakยังคงแยก เอกสารfollowupเท่านั้นหลังcodecommitนี้ finaldeploymentidentityเก็บoutput/release-check/ai-2026-10-29/release-receipt.json

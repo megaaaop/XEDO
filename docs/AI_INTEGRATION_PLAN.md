@@ -355,3 +355,5 @@ Checkpointแรกคือ contract+spatialtrustboundaryและตัวอ�
 ### 3.17 Implementation result — 29 ตุลาคม 2026
 
 ผู้ใช้อนุมัติลงมือและpush/deployในข้อความหลังแผน3.16แล้ว MilestonesA–DลงมือครบตามWEBSITE_DETAILS3.37 ใช้boundedPostgreSQLที่ตรวจliveว่าไม่มีPostGIS ไม่เพิ่มextensionหรือBFF-onlytrust Migration+seedappliedบนxedoและตรวจสิทธิ์แล้ว Eautomated564pass/3builds/browserlocalrealGEEผ่าน กำลังตรวจproductionreleaseหลังpush ผล32checks/298assertions/531testsเดิมไม่ใช้แทนrunนี้ Realaccountผู้ใช้ยืนยันแล้วแต่agentไม่ใช้passwordจริงทดสอบAI;productionAIreviewเป็นขอบเขตหลักฐานที่ต้องระบุให้ชัด ไม่สร้างบัญชีใหม่ ไม่มีคำถามผู้ใช้ค้าง
+
+**ผลเผยแพร่3.17:** codeb719d8e/Productiondpl_87f1XznCMD1MU4gAzVPqyyzydyAZREADY+mainalias/CI2branchesผ่าน/HTMLhashตรงverifiedbuildแล้ว A–Dimplemented/Eautomated+localbrowser+productionguestAPIและ3Dregressionผ่านตามWEBSITE_DETAILS3.37.2 เกณฑ์realpasswordAIuseracceptance/physicaldevicequalificationยังระบุแยก ไม่อ้างผ่านจากfixtures

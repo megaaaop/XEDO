@@ -8,13 +8,14 @@
     "currentUserFacingOrderField": "remainingWorkOrder[].newNumber",
     "defaultForNewInstructions": "Use the 2026-10-27 revised numbering. Match quotations/annotations to their source numbering: previous1/legacy3 removed; revised1=previous2/legacy4, revised2=previous3/legacy5, revised3=previous4/legacy6.",
     "historicalReferences": "Existing stage IDs, resolved-decision stage references, release scope and prior publication authorization retain their legacy numbers.",
-    "activeRemainingCount": 2,
+    "activeRemainingCount": 1,
     "deferredRemainingCount": 2,
-    "totalRemainingCount": 4,
+    "totalRemainingCount": 3,
     "completedLegacyStageIds": [
       1,
       2,
-      5
+      5,
+      6
     ],
     "excludedFromCurrentCloseoutLegacyStageIds": [
       3
@@ -71,7 +72,7 @@
       "newNumber": 3,
       "previousNumber": 4,
       "legacyStageNumber": 6,
-      "scope": "active",
+      "scope": "published",
       "name": "Approved prepared AI integration with Inspector risk-area editing and reviewed planner handoff"
     },
     {
@@ -498,8 +499,8 @@
     {
       "number": 6,
       "name": "AI result integration",
-      "status": "implemented_verified_release_pending",
-      "implementationStatus": "live_migration_applied_564_tests_local_browser_passed",
+      "status": "published_prepared_ai_editable_risk",
+      "implementationStatus": "published_verified_564_tests_live_database_production_guest_checks",
       "planUpdatedOn": "2026-10-29",
       "currentPlanSection": "docs/AI_INTEGRATION_PLAN.md#316-แผนลงมือ-prepared-ai-และ-inspector-risk-editor--29-ตุลาคม-2026",
       "requestedDeliverable": "Prepared SAR display plus Inspector-editable risk areas and private review/history, with only the main chat implementing the website.",
@@ -520,7 +521,7 @@
       ],
       "implementationApproved": true,
       "approvedOn": "2026-10-27",
-      "preparedPackageStatus": "delivered_local_support32checks_primary12hashes_verified"
+      "preparedPackageStatus": "integrated_14_candidates_original_hashes_retained"
     },
     {
       "number": 7,
@@ -1119,22 +1120,16 @@
   },
   "closeoutSnapshot": {
     "recordedOn": "2026-10-29",
-    "kind": "account_user_confirmed_ai_execution_plan_prepared",
-    "activeGroups": 2,
-    "substantiveCloseoutGroupsRemaining": 1,
-    "sourceFeatureGroupsRemaining": [
-      "Prepared AI integration with Inspector risk editing"
-    ],
+    "kind": "prepared_ai_published_qualifications_and_user_acceptance_remaining",
+    "activeGroups": 1,
+    "substantiveCloseoutGroupsRemaining": 0,
+    "sourceFeatureGroupsRemaining": [],
     "qualificationTail": "Core UX is published; physical touch/trackpad, performance/heap/listener measurements and dependency-selective recomputation remain documented follow-ups. Integrated regression is an acceptance gate, not a new feature stage.",
     "publishedAccountGroupRemaining": "Account check accepted from direct user confirmation2026-10-29. Not a blocker for AI. Retain privacy/session/Save-history cases as integration regression without claiming a fresh agent run.",
     "activeNumberMapping": [
       {
         "current": 1,
         "legacy": 4
-      },
-      {
-        "current": 3,
-        "legacy": 6
       }
     ],
     "deferredNumberMapping": [
@@ -1154,29 +1149,28 @@
       "surface_missing_report_shows_area_home_mismatch"
     ],
     "integrationVerificationIsAcceptanceNotExtraFeatureStage": true,
-    "applicationChangedThisTurn": false,
-    "testsOrServicesRunThisTurn": false,
-    "publicationThisTurn": false,
-    "record": "docs/WEBSITE_DETAILS.md#336-แผน-prepared-aieditor-หลังผู้ใช้ยืนยันบัญชี--29-ตุลาคม-2026",
+    "applicationChangedThisTurn": true,
+    "testsOrServicesRunThisTurn": true,
+    "publicationThisTurn": true,
+    "record": "docs/WEBSITE_DETAILS.md#3372-published-aieditor-release-evidence",
     "teamProvisioningPendingScope": "No requested first-account provisioning remains. Additional trial accounts stay team-created as needed for integration regression.",
     "recommendedExecutionOrder": [
       {
         "order": 1,
         "currentStage": 3,
         "legacyStage": 6,
-        "kind": "approved_feature_implementation",
-        "remaining": "Prepared SAR overlay, Inspector accept/edit/move/add/reject/undo/cancel, confirmed valid planner target, immutable provenance/revisions, private Save/reopen and stale-plan/export invalidation."
+        "kind": "user_acceptance_not_unimplemented_feature",
+        "remaining": "User may inspect one prepared AI mission with their existing real Inspector account; agent did not use a real password."
       },
       {
         "order": 2,
         "currentStage": 1,
         "legacyStage": 4,
-        "kind": "integrated_acceptance_and_ux_qualification",
-        "countsAsAdditionalFeatureStage": false,
-        "remaining": "Verify real account -> prepared AI -> edited confirmed target -> planner -> Save/reopen/history -> private access, with mobile/2D/3D/readiness/export regression and documented device/performance follow-ups."
+        "kind": "device_and_performance_qualification",
+        "remaining": "Physical touch/native trackpad and heap/listener/long-soak qualification; do not claim these from automated browser checks."
       }
     ],
-    "verificationScope": "2026-10-29 planning: source/schema/RPC/handoff inspection and fresh core12filehash comparison all matched. No application tests/build/browser/API/liveDB/conversion/inference or source/SQL/Auth/account changes, commit/push/deploy."
+    "verificationScope": "564 automated pass; 3 builds; simulated Auth + real BFF/PGlite/live GEE editable AI/save/history/isolation; live Supabase migration/catalog/RLS; production guest APIs/browser/3D; 2 CI success; exact HTML match. Real-password AI production review not executed."
   },
   "inspectorEnablementExecution": {
     "id": "inspector-enablement-2026-10-28",
@@ -1712,7 +1706,7 @@
   "aiIntegrationExecution": {
     "updatedOn": "2026-10-29",
     "authorizedScope": "prepared SAR + editable Inspector risk areas + private confirmation/save/history/planner; push and deploy",
-    "status": "release_pending",
+    "status": "published_verified",
     "tests": {
       "passed": 564,
       "failed": 0,
@@ -1744,7 +1738,27 @@
       "mobileOverflow": false
     },
     "realPasswordAITestExecuted": false,
-    "publication": "authorized_pending_verification",
+    "publication": {
+      "commit": "b719d8edc15a926401e8c5ccbf3368a114e10553",
+      "deploymentId": "dpl_87f1XznCMD1MU4gAzVPqyyzydyAZ",
+      "readyState": "READY",
+      "domain": "xedo-eight.vercel.app",
+      "ci": [
+        {
+          "id": 40793396659,
+          "branch": "main",
+          "conclusion": "success",
+          "url": "https://github.com/megaaaop/XEDO/actions/runs/40793396659"
+        },
+        {
+          "id": 40793396559,
+          "branch": "codex/xedo-hardware-profile",
+          "conclusion": "success"
+        }
+      ],
+      "htmlSha256": "da57bb8c6e12d66c801722065d559bec5c62f9b3d8162ea4ab9942b124bb5292",
+      "documentationOnlyFollowup": true
+    },
     "evidenceDirectory": "output/release-check/ai-2026-10-29",
     "pendingUserAnswers": []
   }

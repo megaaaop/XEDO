@@ -5,13 +5,13 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **29 ตุลาคม 2026 — ลงมือ prepared AI/editorตามคำสั่งล่าสุด; core/UI/BFF/SQLเชื่อมแล้ว localflowยืนยันtarget→planner112mผ่าน; additiveAI migration+seedใช้บนxedoแล้วและตรวจสิทธิ์ผ่าน อยู่ระหว่างfinalregression/browser/buildก่อนpush/deploy**
+- อัปเดตล่าสุด: **29 ตุลาคม 2026 — prepared SAR AI และ Inspector risk editor เชื่อมเว็บ ทดสอบ564ผ่าน ใช้SQLจริง push/deployProductionREADYแล้ว ตรวจเว็บจริง/CIผ่าน**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
 - จุดประสงค์รอบนี้: ลงมือเชื่อม prepared SAR AI ให้ Inspector แก้พื้นที่เสี่ยง ยืนยันและส่ง target เข้า planner พร้อม Save/history ส่วนตัว ทดสอบและเผยแพร่ตามคำสั่งล่าสุด
-- สถานะProductionที่ตรวจรอบนี้: applicationcommit32aa243bf3d6802947287093dc66dc775c36489a / Verceldpl_FmmesNCHsaCnY8MiXZrMeWoUaFTp READY / mainCI40669324786success / domainxedo-eight.vercel.app HTMLตรงbuildsha0aa8224ec1e9d6d2dba6a764b289101336374118b47e2bc73a0c18cdae1810e4 เอกสารfollow-upอาจเลื่อนdeploymentSHAโดยapplicationไม่เปลี่ยน ดูrelease-receipt.jsonสำหรับidentityสุดท้าย
+- สถานะProductionที่ตรวจรอบนี้: codecommit b719d8edc15a926401e8c5ccbf3368a114e10553; Vercel dpl_87f1XznCMD1MU4gAzVPqyyzydyAZ READY, alias xedo-eight.vercel.app; mainCI40793396659/branchCI40793396559success; HTML SHA256 da57bb8c6e12d66c801722065d559bec5c62f9b3d8162ea4ab9942b124bb5292 ตรงbuild6197220bytes เอกสารfollow-upอาจเลื่อนdeploymentSHAโดยbundleเดิม ดูrelease-receipt.json
 - **ขอบเขตคำสั่งล่าสุด:** ผู้ใช้สั่งเริ่มทำAI/editorตามแผน ทดสอบ อัปเดตสองMarkdown แล้วpush/deployได้ อนุมัติimplementation/publicationของชุดนี้แล้ว คง3steps/4calculators ไม่เพิ่มinference/Pi/normalprofile/schedulerewriteหรือสร้างบัญชีจริง
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
@@ -22,13 +22,15 @@
 
 ### สถานะล่าสุดที่มีหลักฐาน
 
+**AI/editor เผยแพร่แล้ว29ต.ค.:** preparedSAR14candidate พร้อมแยกraw/draft/confirmedtarget; Inspectorรับ/แก้/ย้าย/วาดเพิ่ม/ปฏิเสธ/Undo/Redo/Cancelได้ ยืนยันแล้วคำนวณtargetผ่านplannerและบันทึกprivatehistory ตรวจserverRPCสิทธิ์/geometry/hash/revisionและliveSQLแล้ว 564testsผ่าน/3builds/CI2branches/ProductionREADY+HTMLhashตรง ดูรายละเอียดท้ายไฟล์และWEBSITE_DETAILS§3.37.2 ผู้ใช้ตรวจAIด้วยบัญชีจริงได้ต่อ; agentไม่ใช้passwordจริงในรอบนี้
+
 **Inspector เผยแพร่แล้ว; ผู้ใช้ยืนยัน29ต.ค.ว่าบัญชีตรวจได้แล้ว:** รับเป็นuser-confirmedaccountacceptance ไม่รอให้สร้าง/เปิดสิทธิ์บัญชีแรกหรือขอให้ทดสอบLoginซ้ำก่อนเริ่มAI หลักฐานagentก่อนหน้าคือAuthuser/rosterenabled/emailconfirmedและRLSตามบันทึก28ต.ค. คำยืนยันผู้ใช้ไม่ได้แจกแจงผลA–B/session/conflict จึงคงกรณีเหล่านี้เป็นregressionเมื่อรวมAI ไม่อ้างว่าagentเพิ่งรันผ่านครบ ไม่ขอ/ใช้/เปลี่ยนpassword ไม่มีคำถามอนุมัติค้าง
 
 **สอง runtime issues หลัง account release แก้และเผยแพร่แล้ว:** shared checks ตรวจเพดาน 24 ชั่วโมงทั้ง schedule/GEE/export; แผนเกินยังเก็บเวลาจริงพร้อม Blocked และให้ลดพื้นที่/แบ่งงาน GEE static terrain/landcover/quality โหลดต่อได้โดยเว้น forecast พร้อมเหตุผล Surface model แยก missing/loading/error/stale ออกจากพื้นที่/Home ไม่ตรงจริง ทดสอบใหม่ 510 ผ่านและตรวจเว็บจริงแล้ว รายละเอียดรอบแก้อยู่ท้ายไฟล์และ WEBSITE_DETAILS §3.26 ไม่ได้เพิ่ม automatic mission partitioning หรืออ้างว่าระยะทางจริงของผู้ใช้ผิด
 
 **กติกางานคู่ขนานล่าสุด:** แชทนี้แก้websiteเพียงแชทเดียว อีกแชทส่งpreparedSARใน`outputs/XEDO_Parallel_Handoff_2026-10-27/support/`แล้ว รายงาน32data checksผ่าน/14candidates;แชทหลักตรวจSHA256ของcore12ไฟล์ตรงแล้ว แต่ยังไม่รันconversionหรือwebsiteintegrationซ้ำ ต่อไปให้supportเตรียมrisk-editfixtures/testaddendumโดยไม่แก้corepackageหรือเว็บ
 
-**แผนปิดงานล่าสุด29ต.ค.:** คงเลขอ้างอิงล่าสุด1UX/2บัญชี/3AI ตรงเดิม4/5/6 โดยUX coreเผยแพร่แล้วและบัญชีผู้ใช้ยืนยันว่าตรวจได้แล้ว เหลือฟังก์ชันหลักpreparedAIพร้อมInspectorแก้/เพิ่ม/ปฏิเสธพื้นที่และส่งplanner งานตรวจรวมprivateSave/history/สิทธิ์เมื่อรวมAIและqualificationUXยังเป็นเกณฑ์ปิด ไม่เพิ่มเป็นฟีเจอร์หลักใหม่ แผนลงมืออยู่AI_INTEGRATION_PLAN§3.16 พักPi/telemetryและผลทดลอง/รายงาน ไม่รื้อprofile/scheduleที่ตัดออก ไม่เริ่มกรอบ4ชั่วโมงใหม่
+**แผนก่อนลงมือ29ต.ค. (เก็บเป็นประวัติ; ดูสถานะเผยแพร่ท้ายไฟล์):** คงเลขอ้างอิงล่าสุด1UX/2บัญชี/3AI ตรงเดิม4/5/6 โดยUX coreเผยแพร่แล้วและบัญชีผู้ใช้ยืนยันว่าตรวจได้แล้ว เหลือฟังก์ชันหลักpreparedAIพร้อมInspectorแก้/เพิ่ม/ปฏิเสธพื้นที่และส่งplanner งานตรวจรวมprivateSave/history/สิทธิ์เมื่อรวมAIและqualificationUXยังเป็นเกณฑ์ปิด ไม่เพิ่มเป็นฟีเจอร์หลักใหม่ แผนลงมืออยู่AI_INTEGRATION_PLAN§3.16 พักPi/telemetryและผลทดลอง/รายงาน ไม่รื้อprofile/scheduleที่ตัดออก ไม่เริ่มกรอบ4ชั่วโมงใหม่
 
 **รอบ 3D satellite ground 27 ต.ค. 2026 เผยแพร่แล้ว:** เพิ่มปุ่ม Diagram / Satellite ใช้ภาพ tile GEE Sentinel-2 ตามพิกัดพื้นเดิม ไม่ใช้ thumbnail; source mosaic มีวันที่และความละเอียดแยกจากภาพ review; ผ่าน **482 tests** และ3builds ตรวจ browser โหลดภาพจริง/สลับโหมด/หมุนด้วย keyboard/กรอบ440pxdesktopและ340pxmobile/AOIเดิม/ไม่มีแนวนอนล้น390px รวมตรวจเว็บหลัก code `dc4743c` + deploymentREADY + CIsuccessแล้ว เอกสารfollow-upนี้ไม่เปลี่ยนapplication bundle; exactidentityสุดท้ายเก็บในreceiptของรอบนี้
 
@@ -44,13 +46,13 @@
 
 **ประเด็นเดิมในข้อก่อนหน้า1/เดิม3:** GEEdiagnosticsเผยแพร่แล้ว ส่วนprofileปกติและการกรอกstart/derivedendยังไม่implementและถูกผู้ใช้ตัดจากเกณฑ์ปิดงานล่าสุด เก็บรายละเอียดเดิมข้อ3.5ไว้เป็นประวัติ ไม่ให้งานที่ตัดกลับมาขวางUX/บัญชี/AI
 
-**คงเลขอ้างอิงสามกลุ่มเดิม แต่บัญชีได้รับคำยืนยันจากผู้ใช้แล้ว เหลือpreparedAIเป็นงานฟังก์ชันหลัก พร้อมตรวจรวม/UXqualification และพักไว้อีก2รายการ** ไม่ลบประวัติการตรวจบัญชีเดิมหรืออ้างผลagentใหม่ ข้อก่อนหน้า1/เดิม3ยังถูกตัดออกจากรอบนี้ ข้อเดิม1–2เผยแพร่แล้ว
+**คงเลขอ้างอิงเดิม: ฟังก์ชันหลักUX/บัญชี/preparedAIเผยแพร่แล้ว เหลือqualificationอุปกรณ์/ประสิทธิภาพและการตรวจรับAIด้วยบัญชีจริงของผู้ใช้ ส่วนPi/รายงานพักไว้2รายการ** ไม่ลบประวัติการตรวจบัญชีเดิมหรืออ้างผลagentใหม่ ข้อก่อนหน้า1/เดิม3ยังถูกตัดออกจากรอบนี้ ข้อเดิม1–2เผยแพร่แล้ว
 
 | เลขล่าสุด | เลขเดิม | งาน | สถานะ/เกณฑ์ที่ต้องทำต่อ |
 | --- | --- | --- | --- |
 | **1** (ก่อนหน้า2) | **4** | UXและข้อความ | **Core เผยแพร่และตรวจเว็บจริงแล้ว** เหลือผลอุปกรณ์สัมผัส/trackpadจริง และ performance/heap/listener qualification; selective recomputation เป็น optimization ที่ยังไม่ทำ |
 | **2** (ก่อนหน้า3) | **5** | บัญชีInspector Save/historyส่วนตัว | **เผยแพร่แล้วและผู้ใช้ยืนยัน29ต.ค.ว่าตรวจได้แล้ว** ไม่เป็นตัวขวางAI;ตรวจprivateSave/history/A–B/session/conflictซ้ำในAIregression ไม่อ้างรันใหม่ |
-| **3** (ก่อนหน้า4) | **6** | preparedAI+Inspectorแก้พื้นที่เสี่ยง+planner | **จัดแผนลงมือ29ต.ค.แล้ว ยังไม่เชื่อมเว็บ** ชุดAcontract→Beditor→Cserverconfirm→Dplanner/save→EacceptanceตามAI_INTEGRATION_PLAN§3.16 |
+| **3** (ก่อนหน้า4) | **6** | preparedAI+Inspectorแก้พื้นที่เสี่ยง+planner | **เชื่อม ทดสอบ และเผยแพร่29ต.ค.แล้ว** เปิดpreparedSAR14พื้นที่ แก้/เพิ่ม/ปฏิเสธ ยืนยันtarget ส่งplannerและprivateSave/history; agentตรวจlocalfixtureAuth+liveGEE,productionguest/API/liveDB ไม่ใช้passwordจริง |
 | **4** (ก่อนหน้า5) | **7** | Pi / ภาพ / telemetry | **พักตามคำสั่งผู้ใช้** |
 | **5** (ก่อนหน้า6) | **8** | ผลทดลองและรายงานก่อน–หลัง | **พักตามคำสั่งผู้ใช้** |
 
@@ -67,7 +69,7 @@
 | 3 | ใช้โปรไฟล์โดรนจำลองที่คิดไว้แล้วใน flow หลัก | **ร่างแผนแล้ว ยังไม่ได้ลงมือ** | แยกโปรไฟล์เครื่องจำลองออกจากโหมดข้อมูลตัวอย่าง ให้ flow ปกติคำนวณได้โดยใช้ข้อมูลภารกิจจริง |
 | 4 | ทำ UX ให้เหมือนเว็บไซต์ใช้งานจริง และวางแผนรองรับการใช้งานจริง | **Core เผยแพร่และตรวจเว็บจริงแล้ว28ต.ค.** | เก็บ physical touch/trackpad, performance/heap/listener qualification และพิจารณา selective recomputation ตามอาการจริง |
 | 5 | บัญชี Inspector, บันทึกภารกิจ และประวัติ | **เผยแพร่แล้วและผู้ใช้ยืนยัน29ต.ค.ว่าตรวจบัญชีได้แล้ว** | คงA–B/session/conflict/Save-historyในAIintegrationregression;ไม่มีGoogle เห็น/แก้เฉพาะภารกิจตนเอง |
-| 6 | เชื่อมผล AI เข้าหน้าเว็บ | **Implementation และ live SQL เสร็จ ทดสอบผ่าน รอตรวจ release** | prepared SAR14พื้นที่ → Inspector แก้/เพิ่ม/ปฏิเสธ → serverconfirm → planner/privateSave/history; คงหลักฐานน้ำมัน/ความหนาแยก |
+| 6 | เชื่อมผล AI เข้าหน้าเว็บ | **เชื่อม ทดสอบ และเผยแพร่แล้ว29ต.ค.** | prepared SAR14พื้นที่ → Inspector แก้/เพิ่ม/ปฏิเสธ → serverconfirm → planner/privateSave/history; คงหลักฐานน้ำมัน/ความหนาแยก |
 | 7 | เชื่อมภาพและ telemetry จาก Raspberry Pi / โดรน | **พักตามคำสั่งผู้ใช้** | ไม่จำเป็นต่อเป้าหมายวิเคราะห์พื้นที่เสี่ยงและสร้างแผน; ตรวจแล้วไม่มี Pi dependency |
 | 8 | ผลทดลองและรายงานภารกิจ | **งานค้าง — ยังไม่ทำตามคำสั่งผู้ใช้** | เก็บไว้สำหรับอนาคต ไม่เป็นเงื่อนไขการสร้างแผนตรวจพื้นที่ |
 
@@ -1086,3 +1088,16 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 **เก็บกรณีผิดพลาดเพิ่ม:** savedimageidentityรักษาไว้ขณะภาพreloadล้มเหลวและเปิดฉากเดิมจากsavedref ไม่สลับฉากใหม่เงียบๆ; dirtydedupไม่นับreadinessnotificationที่documentไม่เปลี่ยน;แยกinteractionepochกันlateOpenทับgesture;receiptเก่ารักษาใหม่และbaseReviewRevision;เลือกMove/Editfitพื้นที่และเลื่อนแผนที่เข้ามาให้แก้ทันที;checkboxแสดงข้อความครบ ไม่บีบแคบ
 
 **ไฟล์และขอบเขต:** src/planning-risk-{geometry,state,editor}.js+CSS,planning-trial-client,inspector-client/validation,api/inspector,2contracts,db/inspector-ai.sql+seed+prepared-sar.json,seedscript,geometry/API/SQL/client/workflowtests และสองMD/AIplan/queue Mainapplywebsiteเพียงคนเดียว Helpersทำdraft/read-onlyreview ไม่แก้corehandoff QAserver/evidenceอยู่outputที่ignoredไม่เผยแพร่ ไม่มีรอคำตอบ การpush/deployขั้นถัดไปได้รับอนุมัติแล้ว ผลproduction/CIจะเติมหลังตรวจจริง
+
+<!-- ai-editor-production-release-2026-10-29 -->
+### 29 ตุลาคม 2026 — AI/editor ขึ้น Production และตรวจผลแล้ว
+
+**หัวข้อ:** ปิดimplementationและเผยแพร่preparedAI/Inspectoreditableareasตามคำสั่งล่าสุด
+
+**สรุป:** codecommit`b719d8edc15a926401e8c5ccbf3368a114e10553` pushatomicไปmainและcodex/xedo-hardware-profileสำเร็จ Production`dpl_87f1XznCMD1MU4gAzVPqyyzydyAZ`READY/aliasxedo-eight.vercel.appตรงรุ่น MainCI40793396659และbranchCI40793396559success HTMLเว็บจริง6197220bytes/SHA256`da57bb8c6e12d66c801722065d559bec5c62f9b3d8162ea4ab9942b124bb5292`ตรงverifiedbuildแบบbyte-for-byte
+
+**รายละเอียดตรวจหลังdeploy:** guestsession200/usernull;cataloglist/detail401SESSION_REQUIRED;หน้าAIเปิดLoginสำหรับguest ไม่โหลดผลข้ามสิทธิ์ BrowserProductionไม่มีconsoleerrors ตรวจdemo3steps→planner1.86km/1sortie→3DDiagram67terrainsamples→SatellitegroundภาพGEEจริงready คงreadinessblockเมื่อยังไม่reviewHome/airspace ไม่อ้างบินจริงหรือปลดgateเพื่อให้ดาวน์โหลด
+
+**แยกหลักฐานให้ชัด:** liveDBmigration+14catalog/RLSตรวจจริง;AIedit/confirm/Savehistory/2accountprivacyตรวจlocalAuthจำลอง+realBFF/SQL+liveGEEและautomatedtests ไม่มีการสร้างAuthusers/เปลี่ยนpassword และไม่ได้sign-in/confirmAIบนProductionด้วยpasswordจริงของผู้ใช้ บัญชีผู้ใช้ยืนยันใช้งานได้ก่อนหน้า;การตรวจรับAIหนึ่งภารกิจด้วยบัญชีจริงยังเป็นuseracceptanceต่อ ไม่เรียกข้อจำกัดนี้ว่าทดสอบผ่านแล้ว Physicaltouch/native-trackpad/heap-longsoakและfieldQGC/SITLยังไม่ทำ Pi/telemetry/reportsยังพัก และprofile/scheduleที่ผู้ใช้ตัดไม่กลับเข้าขอบเขต
+
+**เอกสาร/หลักฐาน:** อัปเดตcanonicalworklogนี้และWEBSITE_DETAILS§3.37,AIplan3.17/queue เก็บlocal-browser.json/production-browser.json/production-api.json/live-migration.json/ภาพและrelease-receipt.jsonในoutput/release-check/ai-2026-10-29 สองMarkdown/queueผลreleaseจะpushเป็นdocumentation-onlyfollowup;identityสุดท้ายเก็บreceiptไม่commitอ้างตัวเองวน ไม่มีคำถามผู้ใช้รอคำตอบ
