@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "XEDO client-editable private mission document v1",
-  "description": "Phase1 contract artifact; API/DB implementation is not present yet. Noowner/reviewer/server timestamps or readiness seals are accepted from this document. Runtime bytebudget1MiB; calculator inputs≤64KiB. RawAIcatalog remainsimmutable.",
+  "description": "Private Inspector mission draft. Owner/reviewer/server timestamps and confirmation seals are server-owned response fields, never editable document fields. Runtime budget1MiB; calculator inputs≤64KiB. Immutable AI catalog references and editable sketches are separate from confirmed targets.",
   "type": "object",
   "additionalProperties": false,
   "required": [

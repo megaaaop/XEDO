@@ -76,7 +76,7 @@ function harness() {
     number:(value,places=2)=>Number.isFinite(value)?value.toFixed(places):'Unknown',
     map:{on:(name,handler)=>events.set(name,handler)},toLonLat:value=>value,
     environmentUI:{changed(){calls.environment++;},getPatch(){return null;},async ensureFresh(){return true;}},
-    inspectorUI:null,
+    inspectorUI:null,riskUI:null,applyingRiskReceipt:false,
     setTimeout:()=>1,clearTimeout(){},
     queueCalculations(){calls.queued++;},
     drawMap(){},update3D(){},statuses(){},fit(){},refreshFlow(){},updateHardwareProfileState(){},
@@ -415,6 +415,11 @@ test('Readiness checkbox retains its dialog and applies the review while navigat
   onAction('home');assert.equal(h.node('trial-readiness-dialog').open,false);
 });
 
+test('Risk edits block old exports and current target pixels are checked before any export request',async()=>{
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;assert.equal(h.readiness().canExport,true);const target=plain(h.context.geometry);
+  h.context.riskUI={blocked:()=>true,hasAnalysis:()=>true,target:()=>target};assert.equal(h.readiness().canExport,false);await h.node('trial-qgc').onclick();assert.equal(h.calls.downloads.length,0);
+  h.context.riskUI.blocked=()=>false;h.context.verifyRiskTargetPixels=async()=>{throw Error('The current image has no target pixels.');};const requests=h.calls.requests.length;await h.node('trial-qgc').onclick();assert.equal(h.calls.requests.length,requests);assert.equal(h.calls.downloads.length,0);assert.match(h.calls.error,/target pixels/);
+});
 test('Back-forward cache preserves live controllers and resumes the preview, while a full unload disposes them',()=>{
   const events=new Map(),calls=[];const service=name=>({dispose:()=>calls.push(name+' dispose'),destroy:()=>calls.push(name+' destroy'),setActive:active=>calls.push(name+' '+active),changed:()=>calls.push(name+' changed')});
   const context=vm.createContext({window:{addEventListener:(name,fn)=>events.set(name,fn)},renderer:service('renderer'),groundController:service('ground'),geospatialUI:service('geo'),environmentUI:service('environment'),readinessUI:service('readiness'),revision:0,abort:null,satelliteAbort:null,calculationTimer:1,satelliteTimer:2,satelliteExpiryTimer:3,readinessTimer:4,readinessVisibility(){},clearTimeout(){},clearInterval(){calls.push('clear interval');},document:{removeEventListener(){calls.push('remove visibility');}},setWorking(){calls.push('idle');},refreshFlow(){calls.push('refresh');},map:{updateSize(){calls.push('map resize');}},mode:'3d',update3D(){calls.push('3d resume');},renderReadiness(){calls.push('readiness render');}});

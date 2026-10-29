@@ -3,9 +3,9 @@ import './action-feedback.css';
 import {createInspectorState} from './inspector-state.js';
 import {createActionFeedback,paintActionButton} from './action-feedback.js';
 
-export function initializeInspector({localFile,captureDocument,restoreDocument,clearMission,invalidateContext}){
+export function initializeInspector({localFile,captureDocument,restoreDocument,clearMission,invalidateContext,onSaved}){
   if(localFile)return null;
-  const state=createInspectorState(),feedback=createActionFeedback();let loading=false,busy=0,chain=Promise.resolve(),pendingSave=null,sessionExpired=false;
+  const state=createInspectorState(),feedback=createActionFeedback();let loading=false,busy=0,chain=Promise.resolve(),pendingSave=null,sessionExpired=false,lastDocumentKey=null,interactionEpoch=0;
   const button=document.createElement('button');button.type='button';button.className='button secondary';button.id='inspector-open';button.textContent='Inspector account';
   document.querySelector('.mission-header-actions').prepend(button);
   const dialog=document.createElement('dialog');dialog.id='inspector-dialog';dialog.setAttribute('aria-labelledby','inspector-title');
@@ -82,22 +82,25 @@ export function initializeInspector({localFile,captureDocument,restoreDocument,c
   async function open(id,version){
     if(pendingSave)throw Error('Retry the pending save before opening another mission.');
     if(state.dirty&&!await confirmChange('Open this saved version and replace the current unsaved draft?','Open saved version')){status('Opening cancelled. Your current draft is kept.');return;}
-    const token=state.capture(),data=await request('missions/'+id+(version?'?revision='+version:''));
-    if(!state.matches(token,true)){if(state.matches(token))status('The draft changed while opening. Your current work is kept.');return;}
-    loading=true;try{restoreDocument(data.document);$('inspector-mission-title').value=data.document.title;invalidateContext();}finally{loading=false;}
-    if(!state.opened(data,token))return;
+    const token=state.capture(),interactionToken=interactionEpoch,data=await request('missions/'+id+(version?'?revision='+version:''));
+    if(data.document?.analysisRef)data.analysis=await request('analyses/'+encodeURIComponent(data.document.analysisRef.resultId));
+    if(!state.matches(token,true)||interactionToken!==interactionEpoch){if(state.matches(token))status('The draft changed while opening. Your current work is kept.');return;}
+    loading=true;try{restoreDocument(data.document,data);$('inspector-mission-title').value=data.document.title;invalidateContext();}finally{loading=false;}
+    if(!state.opened(data,token))return;lastDocumentKey=JSON.stringify(captureDocument(title()));
     status('Opened version '+data.revision+'. Reload satellite imagery and review flight readiness.'+(data.revision!==data.currentRevision?' This is an older version; save a new copy to keep it separately.':''));render();
   }
-  async function save(copy=false,phase=()=>{}){
+  async function save(copy=false,phase=()=>{},confirmation=null){
     if(!state.user)throw Error('Sign in before saving a mission.');
     if(copy&&pendingSave)throw Error('Retry the pending save before saving another copy.');
-    if(!pendingSave){const token=state.capture();pendingSave={token,body:JSON.stringify({schemaVersion:'xedo-inspector-save/1',missionId:copy?null:state.missionId,expectedRevision:copy?0:state.revision,mutationId:crypto.randomUUID(),intent:'save_draft',document:captureDocument(title())})};}
+    if(confirmation&&pendingSave&&JSON.parse(pendingSave.body).intent!=='confirm_risk')throw Error('Retry the pending save before confirming a risk area.');
+    if(!pendingSave){const token=state.capture(),document=captureDocument(title());if(confirmation)document.planningInputs.geometry=structuredClone(confirmation.target.geometry);pendingSave={token,body:JSON.stringify({schemaVersion:'xedo-inspector-save/1',missionId:copy?null:state.missionId,expectedRevision:copy?0:state.revision,mutationId:crypto.randomUUID(),intent:confirmation?'confirm_risk':'save_draft',document,...(confirmation?{confirmation}:{})})};}
     const pending=pendingSave;
     let data;try{data=await request('missions',{method:'POST',body:pending.body});}catch(e){if(e.status<500)pendingSave=null;throw e;}
-    if(!state.saved(data,pending.token))return;pendingSave=null;
+    if(!state.saved(data,pending.token))return;pendingSave=null;onSaved?.(data,{current:!state.dirty});if(!state.dirty)lastDocumentKey=JSON.stringify(captureDocument(title()));
     const message=state.dirty?'Saved the earlier draft. Your newer edits are kept; choose Save mission again.':'Mission saved privately as version '+data.revision+'.';render();phase('Saved. Refreshing your missions…');
     const savedToken=state.capture();
-    try{if(await listMissions())status(message);}catch(e){if(state.matches(savedToken))throw Object.assign(Error(message+' The mission list could not refresh. Choose Refresh my missions.'),{status:e.status,code:e.code});}
+    try{if(await listMissions())status(message);}catch(e){if(state.matches(savedToken)){if(confirmation)status(message+' The mission list could not refresh. Choose Refresh my missions.',true);else throw Object.assign(Error(message+' The mission list could not refresh. Choose Refresh my missions.'),{status:e.status,code:e.code});}}
+    return data;
   }
   button.onclick=()=>{dialog.showModal();if(state.user)task('list','Loading your missions…',()=>listMissions(),{target:'inspector-refresh'});};$('inspector-close').onclick=()=>dialog.close();
   $('inspector-mission-title').oninput=()=>{state.changed();render();};
@@ -107,7 +110,7 @@ export function initializeInspector({localFile,captureDocument,restoreDocument,c
   $('inspector-new').onclick=startNew;
   $('inspector-save').onclick=()=>task('save','Saving mission…',phase=>save(false,phase),{target:'inspector-save'});$('inspector-copy').onclick=()=>task('save','Saving a new copy…',phase=>save(true,phase),{target:'inspector-copy'});$('inspector-refresh').onclick=()=>task('list','Loading your missions…',()=>listMissions(),{target:'inspector-refresh'});
   task('session','Checking account…',async()=>{const token=state.capture(),data=await request('session');if(state.matches(token)){state.reauthenticate(data.user);status(data.user?'Account ready.':'');}render();});
-  return {startNew,changed(){if(!loading){state.changed();render();}},contextKey:()=>state.key(),async ensureSession(){
+  return {startNew,confirmChange,interactionStarted(){interactionEpoch++;},isSignedIn:()=>!!state.user&&!sessionExpired,async analysisRequest(path){if(!state.user||sessionExpired){dialog.showModal();throw Error('Sign in with your Inspector account to open AI results.');}const token=state.capture(),data=await request(path);if(!state.matches(token))throw Error('The account or mission changed. Open the AI result again.');return data;},async confirmRisk(confirmation){if(busy)throw Error('An account request is still running. Try again when it finishes.');if(!state.user||sessionExpired){dialog.showModal();throw Error('Sign in before confirming a risk area.');}let receipt;await task('confirm','Confirming risk area…',async phase=>{receipt=await save(false,phase,confirmation);});if(!receipt)throw Error($('inspector-status').textContent||'Risk confirmation did not complete. Your draft is kept.');return receipt;},changed(){if(!loading){const next=JSON.stringify(captureDocument(title()));if(next!==lastDocumentKey){lastDocumentKey=next;state.changed();}render();}},contextKey:()=>state.key(),async ensureSession(){
     if(sessionExpired){dialog.showModal();return false;}
     if(!state.user){if(state.missionId){status('Sign in again before exporting this private mission.',true);dialog.showModal();return false;}return true;}
     const token=state.capture();try{const data=await request('session');if(!state.matches(token)||data.user?.id!==state.user?.id)throw Error('The account session changed.');return true;}catch(e){if(state.matches(token)){sessionExpired=true;invalidateContext();status(e.message,true);render();dialog.showModal();}return false;}

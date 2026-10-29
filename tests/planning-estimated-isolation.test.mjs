@@ -29,7 +29,7 @@ const methods = [
 ].join('\n');
 
 test('Demo rejects direct live image search/load actions, including stale retry handlers', async () => {
-  const context=vm.createContext({geeHosted:true,example:true});
+  const context=vm.createContext({geeHosted:true,example:true,riskUI:null});
   vm.runInContext(production('async function searchSatellite(', '\nasync function loadGEEScene(')+production('async function loadGEEScene(', '\nasync function surveySatellite('),context);
   // No UI, transport or workspace adapter is available to these demo actions.
   await context.searchSatellite({autoLoad:true});
@@ -52,7 +52,7 @@ function harness(overrides = {}) {
     geometry: {type: 'Polygon', coordinates: [[[101.22, 12.62], [101.222, 12.62], [101.222, 12.621], [101.22, 12.62]]]}
   };
   const context = vm.createContext({
-    AbortController, DOMException, Date, JSON, encodeURIComponent,paintActionButton,structuredClone,FIXED_SEARCH_SETTINGS,
+    AbortController, DOMException, Date, JSON, encodeURIComponent,paintActionButton,structuredClone,FIXED_SEARCH_SETTINGS,riskUI:null,savedImageSelection:null,
     example: true, geeHosted: true, fileMode: false, runtime: {standalone: false, localFile: false, label: 'Trial'},
     geometry: structuredClone(preview.geometry), surveyId: null, review: null, webMission: null,
     draw: null, working: false, satelliteBusy: false, currentStep: 1,
@@ -149,6 +149,26 @@ test('Non-demo hosted satellite survey still delegates to the existing GEE searc
   assert.equal(context.currentStep, 1);
 });
 
+test('Reopening a saved acquisition never silently replaces it with a newer search result',async()=>{
+  const {context,nodes}=harness({example:false});const loaded=[];
+  context.$('#trial-image-search').reportValidity=()=>true;context.$('#trial-image-start').value='2026-10-01';context.$('#trial-image-end').value='2026-10-29';
+  context.savedImageSelection={provider:'gee',sceneId:'saved',acquiredAt:'2026-10-22T00:00:00Z',selectionGeometry:structuredClone(context.geometry)};
+  context.selectGEESatellite=scene=>({scene});context.acquisitionLabel=scene=>scene.id;context.number=String;context.esc=String;
+  context.geeAPI=async()=>({scenes:[{id:'newer',acquiredAt:'2026-10-27T00:00:00Z',cloudCover:0,platform:'S2'},{id:'saved',acquiredAt:'2026-10-22T00:00:00Z',cloudCover:0,platform:'S2'}]});
+  vm.runInContext(production('async function searchSatellite(', '\nasync function loadGEEScene('),context);context.loadGEEScene=async()=>loaded.push(nodes.get('#trial-image-scenes').value);
+  await context.searchSatellite({autoLoad:true});assert.deepEqual(loaded,['saved']);assert.equal(context.savedImageSelection.sceneId,'saved');
+  context.geeAPI=async()=>({scenes:[{id:'newer',acquiredAt:'2026-10-27T00:00:00Z',cloudCover:0,platform:'S2'}]});await context.searchSatellite({autoLoad:true});assert.deepEqual(loaded,['saved']);assert.match(nodes.get('#trial-image-status').textContent,/saved acquisition.*outside/i);
+});
+test('A failed image reload preserves the saved image identity for later saves',async()=>{
+  const {context,nodes}=harness({example:false,fileMode:true});
+  vm.runInContext(production('async function loadGEEScene(', '\nasync function surveySatellite('),context);
+  const saved={provider:'gee',sceneId:'saved',acquiredAt:'2026-10-22T00:00:00Z',selectionGeometry:structuredClone(context.geometry)};
+  context.savedImageSelection=structuredClone(saved);context.satelliteSearchGeometry=structuredClone(context.geometry);context.satelliteScenes=[{id:'saved'}];
+  context.$('#trial-image-scenes').value='saved';context.selectGEESatellite=scene=>scene;
+  context.renewGEEMap=async()=>{throw Error('Connection interrupted');};
+  await context.loadGEEScene();assert.deepEqual(plain(context.savedImageSelection),saved);assert.equal(context.review,null);assert.equal(context.satelliteBusy,false);
+});
+
 test('Non-demo mission preparation still freezes the reviewed workspace mission', async () => {
   let persisted = 0;
   const {context, events, nodes, preview} = harness({example: false});
@@ -163,6 +183,13 @@ test('Non-demo mission preparation still freezes the reviewed workspace mission'
   assert.equal(events.filter(event => event[0] === 'calculate').length, 1);
 });
 
+test('AI preparation rechecks target pixels and avoids freezing the raw workspace boundary',async()=>{
+  const {context,events,preview}=harness({example:false});let persisted=0,checked=0;
+  context.review={...preview,ready:true};context.webMission={async prepare(){persisted++;}};
+  context.riskUI={blocked:()=>false,hasAnalysis:()=>true,target:()=>preview.geometry};context.verifyRiskTargetPixels=async()=>{checked++;throw Error('No visible pixels inside the confirmed target.');};
+  await context.prepareMission();assert.equal(checked,1);assert.equal(persisted,0);assert.notEqual(context.currentStep,3);assert(events.some(e=>e[0]==='error'&&String(e[1]).includes('No visible pixels')));
+  context.verifyRiskTargetPixels=async()=>{checked++;};await context.prepareMission();assert.equal(checked,2);assert.equal(persisted,0);assert.equal(context.currentStep,3);
+});
 test('Changing area during a slow prepare clears its indicator and a late completion cannot revive the mission',async()=>{
   const {context,nodes,preview}=harness({example:false});let finish;
   context.review={...preview,ready:true};context.webMission={prepare:()=>new Promise(resolve=>{finish=resolve;})};

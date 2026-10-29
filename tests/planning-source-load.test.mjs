@@ -25,7 +25,7 @@ function harness(){
   const schedule=createPlanningSchedule({now:()=>Date.parse('2026-10-26T00:00:00Z')});
   schedule.begin();schedule.complete({plan:{status:'generated',estimates:{durationS:400}},battery:{totalDurationS:400,sorties:[{}]}});
   const context=vm.createContext({
-    AbortController,structuredClone,JSON,validateGeometry,createPlanningSchedule,ESTIMATED_DEMO_PROFILE,paintActionButton,
+    AbortController,structuredClone,JSON,validateGeometry,createPlanningSchedule,ESTIMATED_DEMO_PROFILE,paintActionButton,riskUI:null,savedImageSelection:null,
     geometry:boundary(),surveyId:'SURV_OLD',review:{ready:true,scene:{id:'SCENE_OLD'}},
     result:{inputHash:'previous-result',exportCheck:{pass:true}},currentStep:3,revision:4,
     draw:{id:'unfinished-polygon'},routePoints:[[101.22,12.62]],schedule,

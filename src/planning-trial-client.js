@@ -45,6 +45,8 @@ import {validateGeometry} from './domain.js';
 import {createGEEBasemap} from './planning-basemap.js';
 import {createGroundController} from './planning-3d-ground-controller.js';
 import {initializeInspector} from './inspector-client.js';
+import {initializeRiskEditor} from './planning-risk-editor.js';
+import {coversGeometry} from './planning-risk-geometry.js';
 
 const runtime=planningRuntime(location.protocol,typeof __XEDO_STANDALONE__==='boolean'&&__XEDO_STANDALONE__);
 const fileMode=runtime.standalone;
@@ -81,13 +83,13 @@ for(const [group,items] of Object.entries(fields)){
     wrapper.append(input);container.append(wrapper);
   }
 }
-let environmentUI=null;let geospatialUI=null;let inspectorUI=null;
+let environmentUI=null;let geospatialUI=null;let inspectorUI=null;let riskUI=null;let applyingRiskReceipt=false;let riskPixelKey=null;
 let estimatedDemo=false,missionBackup=null;
 const schedule=createPlanningSchedule();
 let routePoints=[],readinessUI=null;
 let geometry=null,surveyId=null,result=null,working=false,revision=0,abort=null,draw=null,sketch=null,sketchListener=null,vertexCount=0,selectHome=false,mode='2d',renderer=null,rendererTask=null,example=false;
 let currentStep=1,review=null,webMission=null,satelliteRaster=null,satelliteAbort=null,satelliteToken=0,calculationTimer=null,satelliteBusy=false;
-let satelliteScenes=[],satelliteSearchGeometry=null,satelliteExpiryTimer=null,lastSatelliteAction='search';
+let satelliteScenes=[],satelliteSearchGeometry=null,satelliteExpiryTimer=null,lastSatelliteAction='search',savedImageSelection=null;
 let groundMode='diagram';
 const groundController=createGroundController({onTexture:texture=>renderer?.setGroundTexture(texture),onState:renderGroundState});
 function renderGroundState(state){
@@ -129,13 +131,13 @@ function setWorking(value,label='Calculating…'){
   $('#trial-settings').setAttribute('aria-busy',String(value));refreshFlow();
 }
 function queueCalculations(){
-  clearTimeout(calculationTimer);if(currentStep!==3||!review?.ready)return;
+  clearTimeout(calculationTimer);if(currentStep!==3||!review?.ready||riskUI?.blocked())return;
   $('#trial-engine-status').textContent='Updating mission calculations…';
   calculationTimer=setTimeout(()=>{if(currentStep===3&&review?.ready&&!draw&&!working)$('#trial-run').click();},250);
 }
 function invalidate(){
   if(!downloadFeedback.current){$('#trial-download-status').hidden=true;$('#trial-download-status').textContent='';}
-  revision++;inspectorUI?.changed();abort?.abort();abort=null;result=null;clearTimeout(calculationTimer);$('#trial-qgc').disabled=true;$('#trial-snapshot').disabled=true;for(const id of ['drift','flight','export','oil'])$('#'+id+'-result').textContent='Results update automatically when the mission is prepared.';$('#trial-sortie').innerHTML='<option value="0">No assessed sorties</option>';drawMap();update3D();statuses();if(working)setWorking(false);refreshFlow();geospatialUI?.changed();queueCalculations();
+  revision++;if(!applyingRiskReceipt)inspectorUI?.changed();abort?.abort();abort=null;result=null;clearTimeout(calculationTimer);$('#trial-qgc').disabled=true;$('#trial-snapshot').disabled=true;for(const id of ['drift','flight','export','oil'])$('#'+id+'-result').textContent='Results update automatically when the mission is prepared.';$('#trial-sortie').innerHTML='<option value="0">No assessed sorties</option>';drawMap();update3D();statuses();if(working)setWorking(false);refreshFlow();geospatialUI?.changed();queueCalculations();
 }
 function field(group,key){return $('#f-'+group+'-'+key);}
 function syncScheduleFields(patch){
@@ -173,7 +175,8 @@ function readinessState(){
     blockers.push(...checks.slice(0,3));
     if(checks.length>3)blockers.push((checks.length-3)+' more checks in Calculation details.');
   }
-  return {rows,canExport:!!result?.exportCheck?.pass&&rows.every(row=>row.state==='ready'),blockingReasons:[...new Set(blockers)],working,surfaceModelReady:assessment.state==='ready'};
+  if(riskUI?.blocked())blockers.push('Confirm the current Inspector risk area before planning or downloading.');
+  return {rows,canExport:!riskUI?.blocked()&&!!result?.exportCheck?.pass&&rows.every(row=>row.state==='ready'),blockingReasons:[...new Set(blockers)],working,surfaceModelReady:assessment.state==='ready'};
 }
 const readinessNodes=Object.create(null);
 const readinessNode=id=>readinessNodes[id]??=(document.querySelector('#'+id));
@@ -213,7 +216,7 @@ function notice(){
   updateHardwareProfileState();environmentUI?.changed();
 }
 function resetReview(home=false){$('#export-airspace-reviewed').checked=false;$('#export-flat-confirmed').checked=false;if(home)$('#export-home-confirmed').checked=false;}
-function clearGeometry(){resetSurvey();resetReview();schedule.reset();routePoints=[];geometry=null;surveyId=null;environmentUI?.changed();$('#trial-survey').value='';$('#trial-geometry').value='';$('#trial-source').textContent='No boundary selected.';notice();invalidate();}
+function clearGeometry(){riskUI?.reset();resetSurvey();resetReview();schedule.reset();routePoints=[];geometry=null;surveyId=null;environmentUI?.changed();$('#trial-survey').value='';$('#trial-geometry').value='';$('#trial-source').textContent='No boundary selected.';notice();invalidate();}
 function read(group){const data={};for(const item of document.querySelectorAll('[name^="'+group+'."]')){const key=item.name.slice(group.length+1),value=item.value.trim();if(item.type==='datetime-local'){const instant=new Date(value+'Z');data[key]=/^\d{4}-\d\d-\d\dT/.test(value)&&Number.isFinite(instant.getTime())?instant.toISOString():null;}else data[key]=value===''?null:item.type==='number'?Number(value):value;}return data;}
 function body(){
   const flight=read('flight'),lon=flight.homeLongitude,lat=flight.homeLatitude;delete flight.homeLongitude;delete flight.homeLatitude;
@@ -226,7 +229,7 @@ function body(){
   const geospatial=geospatialUI?.getPatch();if(geospatial){Object.assign(flight,geospatial.flight);if(terrainMode()==='automatic'||geospatial.export?.homeElevationEvidence?.mode==='gee_estimate')Object.assign(exportSettings,geospatial.export);}
   exportSettings.terrainMode=terrainMode();exportSettings.terrainToleranceM=Number($('#trial-terrain-tolerance').value);
   if(terrainMode()==='automatic'){exportSettings.terrainAssessment=terrainAssessment();exportSettings.flatSurfaceConfirmed=exportSettings.terrainAssessment.state==='ready';}
-  return applyFixedPlanningSettings({...(surveyId?{surveyId}:{geometry}),driftEnabled:$('#drift-enabled').checked,drift,flight,export:exportSettings,oil});
+  return applyFixedPlanningSettings({...(riskUI?.hasAnalysis()?{geometry:riskUI.target()||geometry}:surveyId?{surveyId}:{geometry}),driftEnabled:$('#drift-enabled').checked,drift,flight,export:exportSettings,oil});
 }
 function api(path,options={}){return requestPlanningTrial(example&&!path.startsWith('/source')?{...runtime,standalone:true}:runtime,path,options);}
 function displayPlan(){
@@ -259,7 +262,7 @@ function render(){
   $('#trial-sortie').innerHTML=battery.sorties?.length?battery.sorties.map((s,i)=>'<option value="'+i+'">Sortie '+(i+1)+' · '+number(s.distanceM)+' m</option>').join(''):'<option value="0">No assessed sorties</option>';
   statuses();drawMap();update3D();setWorking(false);
 }
-function setGeometry(value,sourceId=null){if(value?.type!=='Polygon'||value.coordinates?.length!==1||value.coordinates[0]?.length>121)throw Error('Choose a polygon with 3–120 vertices and no holes.');validateGeometry(value);resetSurvey();resetReview();schedule.reset();routePoints=[];geometry=structuredClone(value);surveyId=sourceId;environmentUI?.changed();$('#trial-geometry').value=JSON.stringify(geometry);$('#trial-source').textContent=sourceId?'Frozen inspection: '+sourceId:'Unsaved inspection boundary.';$('#trial-survey').value=sourceId||'';notice();invalidate();refreshFlow();fit();}
+function setGeometry(value,sourceId=null){if(value?.type!=='Polygon'||value.coordinates?.length!==1||value.coordinates[0]?.length>121)throw Error('Choose a polygon with 3–120 vertices and no holes.');validateGeometry(value);riskUI?.reset();resetSurvey();resetReview();schedule.reset();routePoints=[];geometry=structuredClone(value);surveyId=sourceId;environmentUI?.changed();$('#trial-geometry').value=JSON.stringify(geometry);$('#trial-source').textContent=sourceId?'Frozen inspection: '+sourceId:'Unsaved inspection boundary.';$('#trial-survey').value=sourceId||'';notice();invalidate();refreshFlow();fit();}
 async function loadSurvey(id){
   const requested=typeof id==='string'?id.trim():'';
   if(!requested)throw Error('Enter a saved survey ID.');
@@ -277,7 +280,7 @@ async function loadSurvey(id){
   setGeometry(data.geometry,data.surveyId);stopDraw();$('#trial-back').href='/mission.html?incident='+encodeURIComponent(data.incidentId)+'&survey='+encodeURIComponent(data.surveyId);announce('Original saved boundary loaded. Review the four planning calculators.');return true;
 }
 $('#trial-run').onclick=async()=>{
-  if(working||draw||currentStep!==3||!review?.ready)return;
+  if(working||draw||currentStep!==3||!review?.ready||riskUI?.blocked())return;
   reconcileModelHome();error();const token=revision;
   try{
     const inputs=body();abort=new AbortController();const controller=abort;setWorking(true);
@@ -297,7 +300,7 @@ $('#trial-run').onclick=async()=>{
 };
 function download(text,filename,mime='application/json'){const url=URL.createObjectURL(new Blob([text],{type:mime})),a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 $('#trial-qgc').onclick=async()=>{
-  if(downloadFeedback.current||working||draw||currentStep!==3||!review?.ready||!readinessState().canExport){renderReadiness();return;}
+  if(downloadFeedback.current||working||draw||currentStep!==3||!review?.ready||riskUI?.blocked()||!readinessState().canExport){renderReadiness();return;}
   const context=inspectorUI?.contextKey(),token=revision,operation=downloadFeedback.begin('download','Checking account…');
   const output=$('#trial-download-status');let timer,completed=false;
   const phase=label=>{if(!downloadFeedback.update(operation,label))return;paintActionButton($('#trial-qgc'),true,label,'Download mission file');output.hidden=false;output.textContent=label;output.dataset.actionBusy='true';};
@@ -306,6 +309,7 @@ $('#trial-qgc').onclick=async()=>{
   try{
     if(inspectorUI&&!await inspectorUI.ensureSession())return;
     if(!unchanged())return;
+    if(riskUI?.hasAnalysis()){await verifyRiskTargetPixels(riskUI.target());if(!unchanged()||riskUI.blocked())return;}
     phase('Checking current conditions…');
     if(environmentUI&&!await environmentUI.ensureFresh()){output.textContent='Conditions updated. Review the calculations and confirmations before downloading.';error(output.textContent);return;}
     if(!unchanged()||!readinessState().canExport)return;
@@ -349,7 +353,7 @@ function restoreInputs(inputs){
 }
 // Keep raw values: even a partially entered mission must survive a demo visit.
 function captureMission(){
-  return {geometry:structuredClone(geometry),surveyId,schedule:schedule.getPatch(),source:$('#trial-source').textContent,back:$('#trial-back').getAttribute('href'),
+  return {geometry:structuredClone(geometry),surveyId,schedule:schedule.getPatch(),source:$('#trial-source').textContent,back:$('#trial-back').getAttribute('href'),riskBackup:riskUI?.backup(),savedImageSelection:structuredClone(savedImageSelection),
     controls:[...document.querySelectorAll('#trial-settings input[id],#trial-settings select[id],#trial-settings textarea[id]')].filter(input=>input.type!=='file').map(input=>({id:input.id,value:input.value,checked:input.checked}))};
 }
 function useDemo(){
@@ -367,7 +371,7 @@ function leaveDemo(){
   if(previous?.geometry)setGeometry(previous.geometry,previous.surveyId);else clearGeometry();
   if(previous){
     for(const saved of previous.controls){const input=document.getElementById(saved.id);if(input){input.value=saved.value;if(typeof saved.checked==='boolean')input.checked=saved.checked;}}
-    $('#trial-source').textContent=previous.source;$('#trial-back').setAttribute('href',previous.back);schedule.restore(previous.schedule?.schedule,previous.schedule||{});
+    $('#trial-source').textContent=previous.source;$('#trial-back').setAttribute('href',previous.back);schedule.restore(previous.schedule?.schedule,previous.schedule||{});savedImageSelection=structuredClone(previous.savedImageSelection||null);riskUI?.restoreBackup(previous.riskBackup);
   }else restoreInputs(applyFixedPlanningSettings({}));
   resetReview(true);notice();geospatialUI?.changed();invalidate();drawMap();error();
   announce('Mission inputs restored. Review the image and export confirmations again.');
@@ -426,6 +430,7 @@ function stopDraw(){loadSurvey.requestId=(loadSurvey.requestId||0)+1;paintAction
 $('#trial-draw').onclick=()=>{if(working)return;$('#trial-2d').click();stopDraw();selectHome=false;draw=new Draw({type:'Polygon',stopClick:true,freehandCondition:()=>false,maxPoints:120});draw.on('drawstart',event=>{sketch=event.feature;vertexCount=1;sketchListener=sketch.getGeometry().on('change',()=>{vertexCount=Math.max(1,sketch.getGeometry().getCoordinates()[0].length-2);$('#trial-finish').disabled=vertexCount<3;});});draw.on('drawend',event=>{try{const value=format.writeGeometryObject(event.feature.getGeometry(),{featureProjection:'EPSG:3857',dataProjection:'EPSG:4326'});setGeometry(value);error();announce('Area selected. Review a dated image of this area next.');}catch(e){error(e.message);}queueMicrotask(stopDraw);});map.addInteraction(draw);setWorking(working);$('#trial-draw').textContent='Drawing…';$('#trial-finish').hidden=false;$('#trial-finish').disabled=true;$('#trial-cancel').hidden=false;announce('Select at least three corners, then double click or choose Finish area.');};$('#trial-finish').onclick=()=>{if(draw&&vertexCount>=3)draw.finishDrawing();};$('#trial-cancel').onclick=()=>{stopDraw();announce('Drawing cancelled. The previous area is retained.');};
 function chooseHome(){
   if(working)return;$('#trial-settings-dialog').close();$('#trial-readiness-dialog').close();
+  riskUI?.cancelEdit();
   stopDraw();$('#trial-2d').click();selectHome=!selectHome;
   announce(selectHome?'Click the launch and return point on the map.':'Point selection cancelled.');renderReadiness();
   if(selectHome){$('#trial-map').scrollIntoView?.({block:'center'});$('#trial-map').focus?.({preventScroll:true});}
@@ -471,15 +476,15 @@ function renderMissionSummary(){
   $('#trial-sortie-wrap').hidden=!(battery?.sorties?.length>1);
   if(working)$('#trial-engine-status').textContent='Calculating…';
   else if(result)$('#trial-engine-status').textContent=result.exportCheck.pass?(example?'Demo file ready · Assumed inputs':'Mission file ready · Review before field use'):flight?.state==='blocked'?'Flight blocked · Open Calculation details':route?.status==='generated'&&battery?.state!=='pass'?'Route preview ready · Complete wind, battery and home settings':'Mission settings or export review needed';
-  else if(currentStep===3)$('#trial-engine-status').textContent='Calculating…';
+  else if(currentStep===3)$('#trial-engine-status').textContent=riskUI?.blocked()?'Confirm the current inspection area to update the route.':'Calculating…';
 }
 function refreshFlow(){
   basemap?.setActive(currentStep===1&&!example);
   ['area','survey','deploy'].forEach((name,i)=>$('#trial-'+name+'-step').hidden=currentStep!==i+1);
   [...$('#trial-progress').children].forEach((item,i)=>{item.classList.toggle('active',i+1===currentStep);item.classList.toggle('done',i+1<currentStep);if(i+1===currentStep)item.setAttribute('aria-current','step');else item.removeAttribute('aria-current');});
-  $('#trial-step-2').disabled=!geometry||satelliteBusy||!!draw;$('#trial-step-3').disabled=!review?.ready||satelliteBusy||!!draw;
+  $('#trial-step-2').disabled=!geometry||satelliteBusy||!!draw;$('#trial-step-3').disabled=!review?.ready||satelliteBusy||!!draw||!!riskUI?.blocked();
   $('#trial-survey-action').disabled=!geometry||!!draw||satelliteBusy||working;
-  $('#trial-prepare').disabled=!review?.ready||satelliteBusy;$('#trial-survey-retry').hidden=!!review?.ready||satelliteBusy;$('#trial-survey-retry').disabled=satelliteBusy;$('#trial-archive').hidden=!geeHosted||!!surveyId||!!review?.ready;$('#trial-archive').disabled=satelliteBusy;
+  $('#trial-prepare').disabled=!review?.ready||satelliteBusy||!!riskUI?.blocked();$('#trial-survey-retry').hidden=!!review?.ready||satelliteBusy;$('#trial-survey-retry').disabled=satelliteBusy;$('#trial-archive').hidden=!geeHosted||!!surveyId||!!review?.ready;$('#trial-archive').disabled=satelliteBusy;
   $('#trial-gee-controls').hidden=!geeHosted||!!surveyId||example;
   for(const input of document.querySelectorAll('#trial-image-search input'))input.disabled=satelliteBusy;
   $('#trial-image-search-submit').disabled=satelliteBusy||!geometry;$('#trial-image-scenes').disabled=satelliteBusy||!satelliteScenes.length;
@@ -502,7 +507,7 @@ function resetSurvey(keepScenes=false){
   paintActionButton($('#trial-prepare'),false,null,'Prepare drone mission →');
   groundController.clear();
   satelliteToken++;satelliteAbort?.abort();satelliteAbort=null;clearTimeout(satelliteTimer);satelliteTimer=null;clearTimeout(satelliteExpiryTimer);satelliteExpiryTimer=null;satelliteBusy=false;selectHome=false;
-  if(satelliteRaster)map.removeLayer(satelliteRaster);satelliteRaster=null;review=null;webMission=null;currentStep=1;
+  if(satelliteRaster)map.removeLayer(satelliteRaster);satelliteRaster=null;review=null;webMission=null;savedImageSelection=null;currentStep=1;
   if(!keepScenes){satelliteScenes=[];satelliteSearchGeometry=null;$('#trial-image-scenes').innerHTML='<option value="">Search for images first</option>';}
   $('#trial-2d').click();$('#trial-image-status').textContent='Choose a covering satellite image.';$('#trial-image-date').textContent='No image loaded';$('#trial-image-caption').textContent='';$('#trial-map-title').textContent=geeHosted?'Earth Engine satellite map':'Inspection boundary';
 }
@@ -634,6 +639,7 @@ async function reviewSatellite(selection,token,signal){
   if(loadedImage?.contextWarning&&!$('#trial-image-caption').textContent.includes(loadedImage.contextWarning))$('#trial-image-caption').textContent+=' · '+loadedImage.contextWarning;
   if(selection.image.kind==='gee'&&Date.parse(selection.image.expiresAt)<=Date.now())throw Error('The Earth Engine image session expired. Reload the selected image.');
   review.ready=true;if(webMission)webMission.imageReady=true;
+  if(['gee','archived'].includes(selection.scene?.provider))savedImageSelection={provider:selection.scene.provider,sceneId:selection.scene.id,acquiredAt:selection.scene.acquiredAt,selectionGeometry:structuredClone(selection.geometry)};
   if(selection.image.kind==='gee')satelliteExpiryTimer=setTimeout(()=>revokeSatellite(token,signal,'The Earth Engine image session expired. Reload the selected image.'),Math.max(0,Date.parse(selection.image.expiresAt)-Date.now()));
   syncImageObservationTime(selection.scene.acquiredAt);
   environmentUI?.changed();geospatialUI?.changed();$('#trial-image-status').textContent='Image ready for review';announce('Satellite image ready for review.');
@@ -643,7 +649,8 @@ async function searchSatellite({autoLoad=false}={}){
   const start=$('#trial-image-start').value,end=$('#trial-image-end').value,maxCloud=FIXED_SEARCH_SETTINGS.maxCloud;
   $('#trial-image-cloud').value=maxCloud;
   if(!$('#trial-image-search').reportValidity()||!start||!end||start>end){error('Choose a valid acquisition date range.');return;}
-  stopDraw();resetSurvey();currentStep=2;satelliteBusy=true;lastSatelliteAction='search';lastSurveyArchived=false;
+  const preferred=savedImageSelection?.provider==='gee'?structuredClone(savedImageSelection):null;
+  stopDraw();resetSurvey();if(preferred)savedImageSelection=preferred;currentStep=2;satelliteBusy=true;lastSatelliteAction='search';lastSurveyArchived=false;
   const token=satelliteToken,controller=new AbortController();satelliteAbort=controller;satelliteTimer=setTimeout(()=>controller.abort(),30000);
   let automaticSceneId=null;
   error();invalidate();refreshFlow();$('#trial-image-status').textContent='Searching Earth Engine for covering images…';announce('Searching satellite acquisitions.');
@@ -657,21 +664,24 @@ async function searchSatellite({autoLoad=false}={}){
     $('#trial-image-scenes').innerHTML='<option value="">'+(satelliteScenes.length?'Choose an acquisition':'No matching covering images')+'</option>'+satelliteScenes.map(scene=>'<option value="'+esc(scene.id)+'">'+esc(acquisitionLabel(scene)+' · '+number(scene.cloudCover,1)+'% cloud · '+scene.platform)+'</option>').join('');
     $('#trial-image-status').textContent=satelliteScenes.length?satelliteScenes.length+' covering image'+(satelliteScenes.length===1?'':'s')+' found. Choose one and load it for review.':'No image covers the whole area within these dates and the fixed cloud limit. Widen the dates or change the area.';
     announce(satelliteScenes.length?'Choose a satellite acquisition to review.':'No matching covering satellite image found.');
-    if(autoLoad&&satelliteScenes.length){automaticSceneId=satelliteScenes[0].id;$('#trial-image-scenes').value=automaticSceneId;}
+    const wanted=preferred?satelliteScenes.find(scene=>scene.id===preferred.sceneId):satelliteScenes[0];
+    if(preferred&&!wanted){$('#trial-image-status').textContent='The saved acquisition is outside these search results. Adjust the dates or explicitly choose another image.';}
+    if(wanted){$('#trial-image-scenes').value=wanted.id;if(autoLoad)automaticSceneId=wanted.id;}
   }catch(e){
     if(token!==satelliteToken)return;satelliteScenes=[];satelliteSearchGeometry=null;
     $('#trial-image-status').textContent='Image search needs another attempt.';error(e.name==='AbortError'?'Earth Engine image search timed out. Retry or narrow the date range.':e.message);
     announce('Satellite image search stopped. Retry the search.');
   }finally{if(token===satelliteToken){clearTimeout(satelliteTimer);satelliteTimer=null;satelliteBusy=false;refreshFlow();}}
   if(automaticSceneId&&token===satelliteToken&&!controller.signal.aborted&&currentStep===2&&$('#trial-image-scenes').value===automaticSceneId&&JSON.stringify(satelliteSearchGeometry)===JSON.stringify(geometry)){
-    announce('Loading the newest covering satellite acquisition.');await loadGEEScene();
+    announce('Loading the selected covering satellite acquisition.');await loadGEEScene();
   }
 }
 async function loadGEEScene(){
   if(!geeHosted||example||satelliteBusy||working||!geometry)return;
   const id=$('#trial-image-scenes').value,scene=satelliteScenes.find(item=>item.id===id);
   if(!scene||JSON.stringify(satelliteSearchGeometry)!==JSON.stringify(geometry)){error('Search for images covering the current inspection area first.');return;}
-  stopDraw();resetSurvey(true);currentStep=2;satelliteBusy=true;lastSatelliteAction='load';
+  const durableSelection=savedImageSelection?structuredClone(savedImageSelection):null;
+  stopDraw();resetSurvey(true);savedImageSelection=durableSelection;currentStep=2;satelliteBusy=true;lastSatelliteAction='load';
   const token=satelliteToken,controller=new AbortController();satelliteAbort=controller;satelliteTimer=setTimeout(()=>controller.abort(),30000);
   error();invalidate();refreshFlow();$('#trial-image-status').textContent='Preparing the selected Earth Engine image…';
   try{
@@ -708,10 +718,11 @@ async function surveySatellite(archived=false){
   finally{if(token===satelliteToken){clearTimeout(satelliteTimer);satelliteTimer=null;satelliteBusy=false;refreshFlow();}}
 }
 async function prepareMission(){
-  if(!review?.ready||satelliteBusy)return;error();satelliteBusy=true;refreshFlow();paintActionButton($('#trial-prepare'),true,'Preparing mission…','Prepare drone mission →');$('#trial-image-status').textContent='Preparing mission…';announce('Preparing mission…');const token=satelliteToken;
+  if(!review?.ready||satelliteBusy||riskUI?.blocked())return;error();satelliteBusy=true;refreshFlow();paintActionButton($('#trial-prepare'),true,'Preparing mission…','Prepare drone mission →');$('#trial-image-status').textContent='Preparing mission…';announce('Preparing mission…');const token=satelliteToken;
   try{
     if(review.image.kind==='gee'&&(JSON.stringify(review.geometry)!==JSON.stringify(geometry)||Date.parse(review.image.expiresAt)<=Date.now()))throw Error('The reviewed Earth Engine image no longer matches a valid session. Reload it before preparing the mission.');
-    if(!example&&webMission&&!surveyId){const saved=await webMission.prepare();if(token!==satelliteToken)return;surveyId=saved.surveyId;$('#trial-survey').value=surveyId;$('#trial-source').textContent='Frozen inspection: '+surveyId;$('#trial-back').href='/mission.html?incident='+encodeURIComponent(saved.incidentId)+'&survey='+encodeURIComponent(saved.surveyId);}
+    if(riskUI?.hasAnalysis()){await verifyRiskTargetPixels(riskUI.target());if(token!==satelliteToken||riskUI.blocked())return;}
+    if(!example&&webMission&&!surveyId&&!riskUI?.hasAnalysis()){const saved=await webMission.prepare();if(token!==satelliteToken)return;surveyId=saved.surveyId;$('#trial-survey').value=surveyId;$('#trial-source').textContent='Frozen inspection: '+surveyId;$('#trial-back').href='/mission.html?incident='+encodeURIComponent(saved.incidentId)+'&survey='+encodeURIComponent(saved.surveyId);}
     if(token!==satelliteToken)return;if(schedule.getState().mode==='idle')syncScheduleFields(schedule.begin());currentStep=3;environmentUI?.changed();geospatialUI?.changed();refreshFlow();setWorking(false);queueCalculations();announce('Mission prepared. Calculations are running in the background.');
   }catch(e){if(token===satelliteToken){error(e.message);$('#trial-image-status').textContent='Mission preparation needs another attempt.';announce('Mission preparation stopped. Try again.');}}finally{if(token===satelliteToken){satelliteBusy=false;paintActionButton($('#trial-prepare'),false,'','Prepare drone mission →');refreshFlow();}}
 }
@@ -733,7 +744,7 @@ $('#trial-camera-preset').disabled=true;$('#trial-camera-preset').closest('detai
 environmentUI=initializePlanningEnvironmentUI({localFile:runtime.localFile,getMission:()=>({geometry,example,altitudeM:FIXED_PLANNING_SETTINGS.flight.altitudeM,driftEnabled:$('#drift-enabled').checked,drift:read('drift'),export:read('export')}),onChange:()=>{resetReview();invalidate();}});
 geospatialUI=initializePlanningGeospatialUI({
  localFile:runtime.localFile,
- getMission:()=>{const f=read('flight'),e=read('export');return {geometry:geometry?structuredClone(geometry):null,home:Number.isFinite(f.homeLongitude)&&Number.isFinite(f.homeLatitude)?[f.homeLongitude,f.homeLatitude]:null,sceneId:review?.ready&&review.scene?.provider==='gee'?review.scene.id:null,acquiredAt:review?.ready?review.scene?.acquiredAt:null,startAt:e.plannedTakeoffAt,endAt:e.plannedEndAt,routePoints:structuredClone(routePoints),terrainToleranceM:Number($('#trial-terrain-tolerance').value),example};},
+ getMission:()=>{const f=read('flight'),e=read('export'),target=riskUI?.hasAnalysis()?riskUI.target():geometry;return {geometry:target?structuredClone(target):null,home:Number.isFinite(f.homeLongitude)&&Number.isFinite(f.homeLatitude)?[f.homeLongitude,f.homeLatitude]:null,sceneId:review?.ready&&review.scene?.provider==='gee'?review.scene.id:null,acquiredAt:review?.ready?review.scene?.acquiredAt:null,startAt:e.plannedTakeoffAt,endAt:e.plannedEndAt,routePoints:structuredClone(routePoints),terrainToleranceM:Number($('#trial-terrain-tolerance').value),example};},
  onChange:({reason}={})=>{if(reason==='home-accepted'||reason==='home-revoked'||reason==='home-model'){resetReview();invalidate();}else{reconcileModelHome();update3D();if(result&&currentStep===3){resetReview();invalidate();}}renderReadiness();}
 });
 if(runtime.localFile)$('#trial-terrain-mode').value='manual';
@@ -760,22 +771,43 @@ const initial=new URLSearchParams(location.search).get('survey');if(initial&&!fi
 const inspectorDefaults=structuredClone(body());
 inspectorUI=initializeInspector({localFile:runtime.localFile,
   captureDocument:title=>{
-    const inputs=body();delete inputs.surveyId;inputs.geometry=structuredClone(geometry);
+    const inputs=body();delete inputs.surveyId;inputs.geometry=structuredClone(riskUI?.target()||geometry);
     for(const key of ['terrainAssessment','homeElevationEvidence'])delete inputs.export[key];
     inputs.export.homeConfirmed=false;inputs.export.flatSurfaceConfirmed=false;inputs.export.airspaceReviewed=false;
-    const scene=review?.scene,image=geometry&&['gee','archived'].includes(scene?.provider)&&scene?.id&&scene?.acquiredAt?{provider:scene.provider,sceneId:scene.id,acquiredAt:scene.acquiredAt,selectionGeometry:structuredClone(geometry)}:null;
-    return {schemaVersion:'xedo-inspector-mission/1',title,inputMode:estimatedDemo?'estimated_demo':'mission',searchGeometry:structuredClone(geometry),imageSelection:image,analysisRef:null,riskDraft:null,planningInputs:inputs};
+    const scene=review?.scene,image=geometry&&['gee','archived'].includes(scene?.provider)&&scene?.id&&scene?.acquiredAt?{provider:scene.provider,sceneId:scene.id,acquiredAt:scene.acquiredAt,selectionGeometry:structuredClone(geometry)}:structuredClone(savedImageSelection);
+    return {schemaVersion:'xedo-inspector-mission/1',title,inputMode:estimatedDemo?'estimated_demo':'mission',searchGeometry:structuredClone(geometry),imageSelection:image,...(riskUI?.capture()||{analysisRef:null,riskDraft:null}),planningInputs:inputs};
   },
-  restoreDocument:doc=>{
+  restoreDocument:(doc,data)=>{
     if(doc?.schemaVersion!=='xedo-inspector-mission/1'||!doc.planningInputs)throw Error('This mission cannot be opened. Your current draft is kept.');
     const area=doc.searchGeometry;
     if(area){if(area.type!=='Polygon'||area.coordinates?.length!==1||area.coordinates[0]?.length>121)throw Error('The saved boundary exceeds the planner limits. Your draft is kept.');validateGeometry(area);}
     const inputs=compatibleInputs({...doc.planningInputs,export:{...doc.planningInputs.export},oil:{...doc.planningInputs.oil}});
+    riskUI?.validateRestore(doc,data);
     stopDraw();estimatedDemo=doc.inputMode==='estimated_demo';example=estimatedDemo;missionBackup=null;
     if(area)setGeometry(area);else clearGeometry();
-    restoreInputs(inputs);resetReview(true);environmentUI?.changed();geospatialUI?.changed();notice();invalidate();refreshFlow();
+    restoreInputs(inputs);savedImageSelection=structuredClone(doc.imageSelection);riskUI?.restore(doc,data);resetReview(true);environmentUI?.changed();geospatialUI?.changed();notice();invalidate();refreshFlow();
     announce(doc.imageSelection?'Saved image: '+doc.imageSelection.acquiredAt+'. Search and reload this acquisition before preparing the mission.':'Saved mission reopened. Reload satellite imagery and review readiness before preparing the mission.');
   },
   clearMission:()=>{stopDraw();estimatedDemo=false;example=false;missionBackup=null;clearGeometry();restoreInputs(structuredClone(inspectorDefaults));resetReview(true);notice();invalidate();refreshFlow();},
-  invalidateContext:()=>{resetReview();invalidate();}
+  invalidateContext:()=>{resetReview();invalidate();},
+  onSaved:(data,options)=>riskUI?.saved(data,options)
 });
+if(!runtime.localFile)riskUI=initializeRiskEditor({map,inspector:()=>inspectorUI,getContext:()=>({geometry:geometry?structuredClone(geometry):null,imageReady:!!review?.ready,imageGeometry:review?.geometry,imageKey:satelliteToken,working,step:currentStep}),useArea:area=>setGeometry(area),onDraft:()=>invalidate(),onTarget:()=>{applyingRiskReceipt=true;try{routePoints=[];resetReview();invalidate();}finally{applyingRiskReceipt=false;}},prepareEdit:()=>{inspectorUI?.interactionStarted();stopDraw();selectHome=false;renderReadiness();},verifyTargetPixels:verifyRiskTargetPixels});
+
+async function verifyRiskTargetPixels(target){
+  if(!review?.ready||review.image.kind!=='gee'||Date.parse(review.image.expiresAt)<=Date.now()||!coversGeometry(review.geometry,target))throw Error('Reload a covering Earth Engine image before confirming this inspection area.');
+  const key=JSON.stringify([satelliteToken,review.image.url,review.image.expiresAt,target]);if(key===riskPixelKey)return;
+  const token=revision,imageToken=satelliteToken,url=review.image.url,grid=satelliteRaster?.getSource()?.getTileGrid?.();if(!grid||!url)throw Error('The reviewed image is unavailable. Reload it.');
+  const ring=target.coordinates[0].map(point=>fromLonLat(point)),extent=format.readGeometry(target,{dataProjection:'EPSG:4326',featureProjection:'EPSG:3857'}).getExtent();
+  let z=Math.min(17,Math.max(12,grid.getZForResolution(map.getView().getResolution()))),range=grid.getTileRangeForExtentAndZ(extent,z);
+  while((range.maxX-range.minX+1)*(range.maxY-range.minY+1)>64&&z>0){z--;range=grid.getTileRangeForExtentAndZ(extent,z);}
+  const signal=AbortSignal.timeout(18000);let visible=false;
+  for(let x=range.minX;x<=range.maxX;x++)for(let y=range.minY;y<=range.maxY;y++){
+    const response=await fetch(url.replace('{z}',z).replace('{x}',x).replace('{y}',y),{credentials:'same-origin',redirect:'error',signal});
+    if(!response.ok||!response.headers.get('content-type')?.startsWith('image/png'))throw Error('Inspection image pixels could not be checked. Retry loading the image.');
+    const seen=await geeTileHasVisibleData(await response.blob(),ring,grid.getTileCoordExtent([z,x,y]));visible=visible||seen;
+    if(token!==revision||imageToken!==satelliteToken)throw Error('The mission changed during image checking. Confirm the current draft again.');
+  }
+  if(!visible)throw Error('The selected inspection area has no visible pixels in this image. Load another acquisition or adjust the boundary.');
+  riskPixelKey=key;
+}

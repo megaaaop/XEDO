@@ -14,7 +14,7 @@ function selectedRoute(url){
   const route=url.pathname==='/api/inspector'?routes[0]||'session':publicRoute;
   // Vercel carries the :path* rewrite capture into the function query. It is
   // accepted only when it identifies the same endpoint as the request path.
-  if(!route||!/^\w+(?:\/[A-Za-z0-9-]+)*$/.test(route)||(publicRoute!==null&&routes.length&&routes[0]!==publicRoute)||(captures.length&&captures[0]!==route))return null;
+  if(!route||!/^\w+(?:\/[A-Za-z0-9_-]+)*$/.test(route)||(publicRoute!==null&&routes.length&&routes[0]!==publicRoute)||(captures.length&&captures[0]!==route))return null;
   return route;
 }
 
@@ -94,6 +94,9 @@ export async function inspectorFetch(request,{env=process.env,fetchImpl=fetch}={
     if(!user?.id)throw fail(401,'SESSION_REQUIRED',messages[401]);
     if(route==='session'&&request.method==='GET'){if(request.headers.has('x-xedo-inspector'))sameActor(user);await rpc('session');return json({user:{id:user.id,email:user.email,role:'Inspector'}});}
     sameActor(user);
+    if(route==='analyses'&&request.method==='GET')return json({analyses:await rpc('analyses')});
+    const analysis=/^analyses\/([A-Za-z0-9_-]{1,160})$/.exec(route);
+    if(analysis&&request.method==='GET')return json(await rpc('analysis',{resultId:analysis[1]}));
     if(route==='missions'&&request.method==='POST')return json(await rpc('save',validateInspectorSave(await readJSON(request,1100000))));
     const offsetText=url.searchParams.get('offset')||'0';
     if(!/^\d{1,6}$/.test(offsetText)||Number(offsetText)>100000)throw fail(422,'OFFSET_INVALID','Invalid page.');

@@ -82,3 +82,16 @@ test('Repeated Sign out while confirmation is open still queues only one revocat
 test('A queued close event from an earlier confirmation cannot dismiss a newly opened confirmation',async()=>{
   const h=harness();await h.guest();await h.login();const first=h.ui.startNew(),oldClose=h.node('inspector-confirm').onclose;await h.confirm(false);await first;const second=h.ui.startNew();oldClose();assert.equal(h.node('inspector-confirm').open,true);await h.confirm(false);await second;assert.equal(h.cleared,0);
 });
+
+test('Unchanged readiness notifications do not turn a saved document into unsaved edits',async()=>{
+  const h=harness();await h.guest();await h.login();h.setCaptured({title:'Stable draft'});h.node('inspector-save').onclick();await settle();h.requests.shift().reply({missionId:'m1',revision:1});await settle();h.requests.shift().reply({missions:[]});await settle();
+  assert.equal(h.node('inspector-version').textContent,'Version 1 · Saved');const key=h.ui.contextKey();for(let i=0;i<20;i++)h.ui.changed();assert.equal(h.ui.contextKey(),key);assert.equal(h.node('inspector-version').textContent,'Version 1 · Saved');h.setCaptured({inputMode:'estimated_demo'});assert.match(h.node('inspector-version').textContent,/Unsaved/);
+});
+
+test('Starting a map edit prevents a late mission Open from replacing the active gesture',async()=>{
+  const h=harness();await h.guest();await h.login();h.node('inspector-open').onclick();await settle();
+  h.requests.shift().reply({missions:[{title:'Saved',missionId:'m1',revision:1}]});await settle();
+  h.node('inspector-list').children[0].children[0].onclick();await settle();if(h.node('inspector-confirm').open)await h.confirm();const opening=h.requests.shift();
+  h.node('inspector-close').onclick();h.ui.interactionStarted();opening.reply({missionId:'m1',revision:1,document:{title:'Saved'}});await settle();
+  assert.equal(h.restored.length,0);assert.match(h.status(),/draft changed while opening/);
+});

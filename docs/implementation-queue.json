@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedOn": "2026-10-28",
+  "updatedOn": "2026-10-29",
   "timezone": "Asia/Bangkok",
   "numbering": {
     "effectiveOn": "2026-10-27",
@@ -8,12 +8,13 @@
     "currentUserFacingOrderField": "remainingWorkOrder[].newNumber",
     "defaultForNewInstructions": "Use the 2026-10-27 revised numbering. Match quotations/annotations to their source numbering: previous1/legacy3 removed; revised1=previous2/legacy4, revised2=previous3/legacy5, revised3=previous4/legacy6.",
     "historicalReferences": "Existing stage IDs, resolved-decision stage references, release scope and prior publication authorization retain their legacy numbers.",
-    "activeRemainingCount": 3,
+    "activeRemainingCount": 2,
     "deferredRemainingCount": 2,
-    "totalRemainingCount": 5,
+    "totalRemainingCount": 4,
     "completedLegacyStageIds": [
       1,
-      2
+      2,
+      5
     ],
     "excludedFromCurrentCloseoutLegacyStageIds": [
       3
@@ -63,7 +64,7 @@
       "newNumber": 2,
       "previousNumber": 3,
       "legacyStageNumber": 5,
-      "scope": "active",
+      "scope": "accepted_by_user",
       "name": "Approved private Inspector accounts, saved missions and history"
     },
     {
@@ -107,8 +108,8 @@
       "websiteDetailsPath": "docs/WEBSITE_DETAILS.md",
       "updateBothForWebsiteImplementationAndInvestigation": true
     },
-    "execution": "User annotations approve UX, private Inspector accounts and prepared-AI integration, now including Inspector editing/adding/rejecting risk areas. Prior normal-flow/profile/schedule work is removed from this closeout. This turn revises the plan and two-chat handoff; implementation approval is recorded and application changes have not started.",
-    "publication": "Previous publishing approval covered completed releases. Latest annotations approve implementation of legacy4/5/6 and request a revised plan; do not treat those annotations as authorization to create external service accounts, disclose credentials or publish unrelated work. No push/deploy in this planning turn.",
+    "execution": "Latest2026-10-29 user explicitly requests implementation/testing/documentation of prepared AI/editor and authorizes push/deploy. Main applies website changes; helpers draft/review outside checkout. Account check is user-confirmed. Prior normal-flow/profile/schedule rewrite remains excluded.",
+    "publication": "AI/editor publication authorized by latest2026-10-29 user request. Apply reviewed/tested additive AI migration, finish local acceptance, then push/deploy and verify production. No real account provisioning, password/Auth setting changes or inference training authorized by this scope.",
     "authorizedPublicationStages": [
       1,
       2
@@ -190,7 +191,7 @@
   },
   "currentPlanningScope": {
     "id": "same-day-closeout-2026-10-27",
-    "status": "ux_closure_plan_prepared_before_implementation",
+    "status": "ai_editor_execution_plan_prepared_after_user_account_confirmation",
     "userAvailabilityMinutes": 240,
     "userAvailabilityIsHardWorkLimit": false,
     "confirmedByUser": [
@@ -201,7 +202,6 @@
     ],
     "currentRemainingStageNumbers": [
       1,
-      2,
       3
     ],
     "legacyStageNumbers": [
@@ -214,7 +214,7 @@
       5
     ],
     "firstCheckpointMinutes": 20,
-    "criticalDependency": "Requested Auth user and Inspector roster are ready. User retries real login with existing password before real-account Save/history/logout and A-B ownership acceptance.",
+    "criticalDependency": "User confirmed account check passed on2026-10-29. AI planning can proceed; next engineering checkpoint is separating search/image context from editable targets and authoritative RPC geometry/catalog confirmation.",
     "schedule": [
       {
         "fromMinute": 0,
@@ -262,11 +262,11 @@
       "Broad capacity benchmark",
       "New paid service provisioning without user authorization"
     ],
-    "verificationThisTurn": "2026-10-28 UX plan: source/independent readonly review plus bounded production UI guest synthetic invalid-login pending/error, airspace-checkbox closes dialog then reopened checked, mobile390 short modal scroll0→1688/page0. No source changes, standard tests/build, longsoak/performance trace, real-password acceptance, DB/Auth changes or push/deploy.",
+    "verificationThisTurn": "2026-10-29 AI plan: source/schema/RPC/handoff read-only reviews and fresh SHA256 comparison of12corefiles all matched. No application tests/build/browser/API/liveDB/conversion/inference or application/account changes/publishing. Account acceptance is direct user confirmation.",
     "acceptedBaseline": "Existing planner/demo, schedule, export/readiness, three steps and four calculators remain. New user-start/derived-end scheduling and normal-flow full-export work are not release gates.",
     "initialCriticalDependency": "Verify an accessible hosted authentication and durable database deployment path; current Vercel production has no account/private-mission API and workspace actor metadata is not ownership enforcement.",
     "scheduleContext": "Historical2026-10-27 four-hour plan; not a new clock or promise restarted by the2026-10-28 summary request.",
-    "latestPlanPath": "docs/UX_COMPLETION_PLAN.md"
+    "latestPlanPath": "docs/AI_INTEGRATION_PLAN.md"
   },
   "currentImplementationScope": {
     "id": "3d-satellite-ground-2026-10-27",
@@ -467,8 +467,16 @@
     {
       "number": 5,
       "name": "Accounts, saved missions and history",
-      "status": "published_requested_account_enabled_real_login_acceptance_pending",
-      "implementationStatus": "bff_ui_and_database_published_login_verified_real_accounts_pending",
+      "status": "published_user_confirmed_account_check_passed",
+      "implementationStatus": "bff_ui_database_published_user_acceptance_reported",
+      "userAcceptance": {
+        "confirmedOn": "2026-10-29",
+        "source": "direct_user_message",
+        "statement": "ในส่วนของบัญชีตรวจได้แล้ว",
+        "agentFreshAcceptanceRun": false,
+        "detailedCasesNotEnumerated": true,
+        "remainingIntegrationRegression": "Private Save/reopen/history, A-B/session/revision conflict remain regression cases when AI is integrated; no need to repeat account setup or wait before planning AI."
+      },
       "confirmed": [
         "One application role: Inspector",
         "All users can use all offered options",
@@ -485,13 +493,15 @@
       ],
       "implementationApproved": true,
       "approvedOn": "2026-10-27",
-      "teamProvisioning": "Requested Auth user exists and is now Inspector-enabled after explicit user approval. User retries real login; further trial accounts remain team-provisioned."
+      "teamProvisioning": "Requested account is enabled and user confirmed account check passed. Further trial accounts remain team-provisioned; do not recreate the first account."
     },
     {
       "number": 6,
       "name": "AI result integration",
-      "status": "detailed_plan_prepared",
-      "implementationStatus": "approved_not_started_revised_plan",
+      "status": "implemented_verified_release_pending",
+      "implementationStatus": "live_migration_applied_564_tests_local_browser_passed",
+      "planUpdatedOn": "2026-10-29",
+      "currentPlanSection": "docs/AI_INTEGRATION_PLAN.md#316-แผนลงมือ-prepared-ai-และ-inspector-risk-editor--29-ตุลาคม-2026",
       "requestedDeliverable": "Prepared SAR display plus Inspector-editable risk areas and private review/history, with only the main chat implementing the website.",
       "planPath": "C:/mega/codex/iENA/outputs/XEDO_AI_Integration_Plan_2026-10-26/report.html",
       "detailedMarkdownPlanPath": "docs/AI_INTEGRATION_PLAN.md",
@@ -504,7 +514,7 @@
       "proposedFirstMilestone": "Import a historical georeferenced SAR result as an integration fixture; preserve its original timestamps and coverage, let the Inspector review candidate zones, then pass a validated selected inspection polygon to the existing planner.",
       "guardrails": [
         "Risk candidates are not field-confirmed oil or thickness",
-        "Current hosted planner has no AI inference integration",
+        "Prepared SAR result integration implemented; fresh online inference remains outside this scope",
         "Do not reuse post-flight run/capture contracts by inventing Pi captures",
         "Do not assume RGB marine model is validated on Sentinel-2 rendered imagery"
       ],
@@ -1108,22 +1118,19 @@
     "documentationFollowup": "Follow-up documentation commit may advance deployment identity without changing application code; final identity recorded in local release-receipt.json"
   },
   "closeoutSnapshot": {
-    "recordedOn": "2026-10-28",
-    "kind": "documentation_status_summary",
-    "activeGroups": 3,
+    "recordedOn": "2026-10-29",
+    "kind": "account_user_confirmed_ai_execution_plan_prepared",
+    "activeGroups": 2,
+    "substantiveCloseoutGroupsRemaining": 1,
     "sourceFeatureGroupsRemaining": [
-      "UX performance/device qualifications (core UX published)",
       "Prepared AI integration with Inspector risk editing"
     ],
-    "publishedAccountGroupRemaining": "Requested account enabled and verified in live database. User retries real login; real private Save/history/logout/A-B ownership acceptance remains.",
+    "qualificationTail": "Core UX is published; physical touch/trackpad, performance/heap/listener measurements and dependency-selective recomputation remain documented follow-ups. Integrated regression is an acceptance gate, not a new feature stage.",
+    "publishedAccountGroupRemaining": "Account check accepted from direct user confirmation2026-10-29. Not a blocker for AI. Retain privacy/session/Save-history cases as integration regression without claiming a fresh agent run.",
     "activeNumberMapping": [
       {
         "current": 1,
         "legacy": 4
-      },
-      {
-        "current": 2,
-        "legacy": 5
       },
       {
         "current": 3,
@@ -1149,13 +1156,33 @@
     "integrationVerificationIsAcceptanceNotExtraFeatureStage": true,
     "applicationChangedThisTurn": false,
     "testsOrServicesRunThisTurn": false,
-    "publicationThisTurn": true,
-    "record": "docs/WEBSITE_DETAILS.md#327-แผนคงเหลือหลัง-timesurface-release--28-ตุลาคม-2026",
-    "teamProvisioningPendingScope": "Requested account now enabled; additional accounts remain team-created as needed."
+    "publicationThisTurn": false,
+    "record": "docs/WEBSITE_DETAILS.md#336-แผน-prepared-aieditor-หลังผู้ใช้ยืนยันบัญชี--29-ตุลาคม-2026",
+    "teamProvisioningPendingScope": "No requested first-account provisioning remains. Additional trial accounts stay team-created as needed for integration regression.",
+    "recommendedExecutionOrder": [
+      {
+        "order": 1,
+        "currentStage": 3,
+        "legacyStage": 6,
+        "kind": "approved_feature_implementation",
+        "remaining": "Prepared SAR overlay, Inspector accept/edit/move/add/reject/undo/cancel, confirmed valid planner target, immutable provenance/revisions, private Save/reopen and stale-plan/export invalidation."
+      },
+      {
+        "order": 2,
+        "currentStage": 1,
+        "legacyStage": 4,
+        "kind": "integrated_acceptance_and_ux_qualification",
+        "countsAsAdditionalFeatureStage": false,
+        "remaining": "Verify real account -> prepared AI -> edited confirmed target -> planner -> Save/reopen/history -> private access, with mobile/2D/3D/readiness/export regression and documented device/performance follow-ups."
+      }
+    ],
+    "verificationScope": "2026-10-29 planning: source/schema/RPC/handoff inspection and fresh core12filehash comparison all matched. No application tests/build/browser/API/liveDB/conversion/inference or source/SQL/Auth/account changes, commit/push/deploy."
   },
   "inspectorEnablementExecution": {
     "id": "inspector-enablement-2026-10-28",
-    "status": "specific_account_enabled_database_verified_user_login_retry_pending",
+    "status": "specific_account_enabled_database_verified_user_confirmed_check_passed",
+    "latestUserConfirmationOn": "2026-10-29",
+    "latestUserConfirmationSource": "direct_user_message_account_check_passed_details_not_enumerated",
     "projectRef": "tstmjnlhwidwtzetqxbu",
     "connection": "megaphijak",
     "specificAccountInUserScreenshots": true,
@@ -1681,5 +1708,44 @@
       "notSystemWideGuarantee": true
     },
     "documentationFollowup": "Documentation-only follow-up may advance Git/deployment identity; final identity recorded in ignored release-receipt.json"
+  },
+  "aiIntegrationExecution": {
+    "updatedOn": "2026-10-29",
+    "authorizedScope": "prepared SAR + editable Inspector risk areas + private confirmation/save/history/planner; push and deploy",
+    "status": "release_pending",
+    "tests": {
+      "passed": 564,
+      "failed": 0,
+      "skipped": 0,
+      "command": "node --test --test-concurrency=4 tests/*.test.mjs"
+    },
+    "builds": [
+      "web",
+      "workspace",
+      "standalone"
+    ],
+    "liveDatabase": {
+      "projectRef": "tstmjnlhwidwtzetqxbu",
+      "migrationApplied": true,
+      "candidates": 14,
+      "catalogRls": true,
+      "directCatalogGrants": false,
+      "postgisInstalled": false
+    },
+    "browser": {
+      "localAuth": "simulated only",
+      "geospatial": "live GEE",
+      "routeM": 112,
+      "editUndoRedoCancel": true,
+      "nativeTranslateCancel": true,
+      "nativeDrawUndo": true,
+      "historyRestored": true,
+      "twoAccountIsolation": true,
+      "mobileOverflow": false
+    },
+    "realPasswordAITestExecuted": false,
+    "publication": "authorized_pending_verification",
+    "evidenceDirectory": "output/release-check/ai-2026-10-29",
+    "pendingUserAnswers": []
   }
 }

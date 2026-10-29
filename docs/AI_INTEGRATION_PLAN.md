@@ -4,8 +4,8 @@
 
 **ลำดับล่าสุด3 / ก่อนหน้า4 / เดิม6 — prepared AI → Inspectorแก้พื้นที่เสี่ยง → ยืนยันพื้นที่บินตรวจ → planner → ภารกิจส่วนตัว**
 
-- วันที่เริ่ม26ตุลาคม2026; ปรับล่าสุด27ตุลาคม2026 ตามเวลา Asia/Bangkok
-- สถานะ: **ผู้ใช้อนุมัติimplementationแล้ว รอบนี้ปรับแผนและeditorrequirements; applicationยังไม่implement ชุดpreparedSARส่งมอบแล้ว supportรายงาน32data checks/mainตรวจ12filehashes ไม่ใช่website testผลใหม่**
+- วันที่เริ่ม26ตุลาคม2026; ปรับล่าสุด29ตุลาคม2026 ตามเวลา Asia/Bangkok
+- สถานะ: **ผู้ใช้ยืนยันว่าบัญชีตรวจใช้งานได้แล้ว และสั่งเริ่มวางแผน AI/editor; แผนลงมือฉบับปัจจุบันอยู่§3.16 มีผลแทนข้อความสถานะเก่าที่ขัดกัน Application AI ยังไม่implement รอบนี้ตรวจ12corefilehashesใหม่ตรงทั้งหมด ไม่รันwebsite tests/inferenceหรือเผยแพร่**
 - เอกสารสถานะกลาง: [XEDO_WORK_LOG.md](XEDO_WORK_LOG.md) และ [implementation-queue.json](implementation-queue.json)
 - เอกสารนี้ลงรายละเอียดการออกแบบ ไม่ใช่บันทึกสถานะอีกชุด หากมีความคืบหน้าให้อัปเดต work log และ queue กลางด้วย
 - รอบนี้ไม่เปลี่ยน source ของเว็บไซต์ ไม่เรียก inference ไม่สร้างบัญชีจริง และไม่ commit/push/deploy
@@ -13,6 +13,8 @@
 ## 2. สรุป
 
 ให้ Inspector เลือกพื้นที่ ค้น/เลือกภาพที่ตรงกับโมเดล วิเคราะห์และตรวจพื้นที่ที่ระบบเสนอ จากนั้นใช้พื้นที่ที่ Inspector เลือกสร้างแผนให้โดรนไปตรวจ โดยไม่ต้องรอ Pi หรือ telemetry
+
+**สถานะ29ต.ค.:** รับคำยืนยันผู้ใช้ว่าบัญชีตรวจได้แล้ว ไม่คงบัญชีเป็นตัวขวางเริ่มแผน AI และไม่ขอให้ส่งรหัสผ่าน แต่ไม่ขยายคำยืนยันเป็นรายงานว่าแชทนี้เพิ่งทดสอบทุกกรณี A–B/session/concurrency แล้ว ขอบเขตรอบแรกใช้ผล SAR ที่เตรียมไว้เท่านั้น ชื่อปุ่มจึงต้องสื่อว่าโหลด/เปิดผล AI ไม่แสดงว่าได้รันโมเดลใหม่ ส่วนระบบประมวลผลภาพใหม่ในช่วง C เป็นงานอนาคต
 
 **ขอบเขตล่าสุด27ต.ค.:** วันนี้เริ่มจากชุดผลSARที่เตรียมไว้ ผู้ใช้ตัดงานnormalflow/profileและstart-derived-endใหม่ออกจากเกณฑ์ปิดงาน ยอมรับprototypeplannerเดิม อนุมัติUX/บัญชี/AI และกำหนดให้Inspectorแก้ตำแหน่ง/ขอบเขตพื้นที่เสี่ยง เพิ่มเองหรือปฏิเสธผลAIได้ แชทหลักแก้เว็บเพียงแชทเดียว ส่วนsupportทำdata/testdesign รายละเอียดeditorข้อ3.15มีผลแทนแผนเก่าที่ขัดกัน
 
@@ -25,11 +27,11 @@
 | ช่วงส่งมอบ | ผลลัพธ์ที่ต้องได้ในอนาคต | สิ่งที่ยังไม่ควรกล่าวอ้าง |
 | --- | --- | --- |
 | A: เชื่อมผลที่บันทึกไว้ | ผล SAR ที่มีพิกัด → overlay → Inspector review → target → planner ในเครื่อง | ยังไม่ใช่การวิเคราะห์ภาพใหม่ และไม่ใช่หลักฐานความแม่นยำ |
-| B: บันทึกภารกิจส่วนตัว | เปิดภารกิจกลับแล้วได้ source/result/review/plan revision เดิม และบัญชีอื่นเข้าถึงไม่ได้ | งานบัญชีข้อใหม่ 3 ยังไม่เสร็จในปัจจุบัน |
+| B: บันทึกภารกิจส่วนตัว | เปิดภารกิจกลับแล้วได้ source/result/review/plan revision เดิม และบัญชีอื่นเข้าถึงไม่ได้ | บัญชีล่าสุด2/เดิม5เผยแพร่และผู้ใช้ยืนยัน29ต.ค.ว่าตรวจได้แล้ว แต่ AI review/target ยังต้องเชื่อมกับ Save/history |
 | C: วิเคราะห์ภาพใหม่ | ค้นภาพ SAR ที่รองรับ → worker วิเคราะห์ → ผลเข้าทางเดียวกับ A → สร้างแผน | ผลโมเดลยังเป็นพื้นที่เสนอให้ตรวจ ไม่ใช่การยืนยันน้ำมันหน้างาน |
 | D: ตรวจรับและเตรียม release | หลักฐานจาก build เดียวกัน ครบกรณีปกติ/ผิดพลาด/สิทธิ์/การเปลี่ยน revision | ยังไม่ทดสอบในรอบวางแผน และยังไม่มีคำสั่งเผยแพร่รุ่นนี้ |
 
-งานก่อนหน้า1/เดิม3ถูกตัดจากรอบนี้ ไม่เป็นdependencyของAIอีกต่อไป งานบัญชีล่าสุด2/เดิม5ยังต้องมีownershipก่อนเปิดprivateAIhistory การเตรียมadapterทำขนานกับบัญชีได้ และไม่เปลี่ยนexport/readinessของprototypeเดิมเพื่อทำให้ดูผ่าน
+งานก่อนหน้า1/เดิม3ถูกตัดจากรอบนี้ ไม่เป็นdependencyของAIอีกต่อไป ใช้ ownership/session/Save/history ที่เผยแพร่แล้วเป็นฐานของ private AI review และไม่เปลี่ยนexport/readinessเดิมเพื่อทำให้ดูผ่าน
 
 ## 3. รายละเอียด
 
@@ -249,3 +251,107 @@ rawgeometrycomplex/holes/multiplecomponentsคงไว้ plannerยังPolyg
 supportส่งdataแล้ว: raw14candidate/32utilitychecksตามรายงาน;mainตรวจ12SHA256ตรงโดยไม่รันconversionซ้ำ นัดงานต่อเป็นriskeditfixtures/tests14กรณีในREVIEW_EDIT_ADDENDUM.md ส่วนUX/บัญชี/AIwebintegrationเป็นงานmainเท่านั้น เวลาสร้างnormalprofileและscheduleใหม่ถูกตัดจากเกณฑ์ปิดงาน ไม่ถือว่าส่วนนั้นimplementแล้ว
 
 การยืนยันคุณสมบัตินี้ต้องมีหลักฐานedit/undo/cancel/rawhash/reopen/history/twotabconflict/crossowner/staleexport/378pointlimit/manualcoverageจริง รายการออกแบบทดสอบไม่ใช่ผลผ่านapplication รอบแก้แผนนี้ไม่มีapplicationimplementation/tests/newinference/pushdeploy
+
+### 3.16 แผนลงมือ prepared AI และ Inspector risk editor — 29 ตุลาคม 2026
+
+**หัวข้อ:** ล่าสุดข้อ3/เดิมข้อ6 หลังผู้ใช้ยืนยันว่าบัญชีตรวจได้แล้ว รอบนี้จัดทำแผนและตรวจ source/data แบบอ่านอย่างเดียว ไม่เริ่มแก้ application หรือใช้ migration
+
+**สรุป:** ใช้ผล SAR เดิม → แสดงพื้นที่เสนอพร้อมแหล่ง/วันภาพ → Inspectorรับ แก้ ย้าย วาดเพิ่ม หรือปฏิเสธ → ยืนยันหนึ่งพื้นที่บินตรวจ → คำนวณด้วย planner เดิม → Save/reopen/history ส่วนตัว คง3ขั้น/4ตัวคำนวณ ไม่เพิ่ม Pi, โมเดลใหม่, normal-profile หรือ schedule rewrite
+
+#### 3.16.1 ฐานที่ตรวจได้และข้อจำกัดที่กระทบวิธีทำ
+
+| จุดที่อ่านจริง | ผลต่อแผนลงมือ |
+| --- | --- |
+| `setGeometry()` ใน `src/planning-trial-client.js` | ล้างภาพ/review/routeและรีเซ็ตเวลา จึงใช้เมื่อเปลี่ยนพื้นที่ค้นหาจริงเท่านั้น ไม่ใช้ทุกvertex gesture/Undo/Cancelของriskdraft |
+| `body()` / `prepareMission()` ในไฟล์เดียวกัน | ใช้geometryเดียวและเทียบimage geometryแบบเท่ากัน ต้องเพิ่ม target adapter และตรวจ coverage/pixelsของtargetแทนการถือว่าภาพพร้อมจากflagเก่า |
+| `initializeInspector().captureDocument/restoreDocument` | บันทึก `analysisRef:null/riskDraft:null` และยังไม่คืนAI ต้องต่อrefs/draft/confirmedreviewและrestoreแบบตรวจครบก่อนเปลี่ยนงานปัจจุบัน |
+| `src/inspector-validation.js` / `db/inspector-foundation.sql` | ปฏิเสธ `confirm_risk` ทั้งBFFและRPCอยู่แล้ว การเปิดปุ่มUIอย่างเดียวไม่พอ ต้องเพิ่มserver-authoritativeconfirmationอย่างครบเส้นทาง |
+| `contracts/inspector-mission-document.schema.json` | มีanalysisRefและriskDraftรองรับopen/incomplete sketchesแล้ว รักษาร่างเก่าและbytebudget1MiB/inputs64KiB ไม่ยัดrasterหรือrawcatalogซ้ำทุกrevision |
+| `src/domain.js` / `src/mission-flow.js` | pointWithinเดิมไม่หักholes ห้ามใช้แทนvalidcoverage validatorที่อาจมีรู; imagecoverageต้องตรวจทั้งขอบ/รู ไม่ใช่เพียงbboxหรือvertices |
+| Support core/fixtures | 29ต.ค.ตรวจSHA256 core12ไฟล์ใหม่ตรงทั้งหมด; raw14candidate,13ชิ้นเข้า120vertexและหนึ่งชิ้น378vertex มี19geometry/14scenariofixturesส่งแล้ว ผล298assertionsเป็นหลักฐานsupportเดิม ไม่ใช่webtestsใหม่ |
+
+JSONหลักที่มีอยู่มีขนาดmanifest13,119bytes/rawcandidates93,239bytes/coverage120,547bytes/footprints1,497bytesตามไฟล์ที่อ่านรอบนี้ ขนาดชุดนี้เหมาะกับโหลดครั้งเดียวตามresult/hashและวาดแบบvector ไม่ต้องสร้างMLworkerหรือบริการstorageใหม่เพื่อพิสูจน์integration ห้ามcommitต้นฉบับGeoTIFF/weights/credentialsลงbundle
+
+#### 3.16.2 หน้าจอและการใช้งานภายใน3ขั้นเดิม
+
+1. **ขั้น1 เลือกพื้นที่:** คงวาด/นำเข้า/เปิดภารกิจเดิม เพิ่มทางเลือกเปิดพื้นที่ของผลที่เตรียมไว้ ถ้าพื้นที่ปัจจุบันไม่ตรง ให้บอกว่าไม่มีผลชุดนี้ครอบคลุมและให้ผู้ใช้เลือกเปลี่ยนพื้นที่อย่างชัดเจน เก็บงานเดิมจนยืนยันเปลี่ยน ไม่วางผลSARชุดเดียวบนทุกพื้นที่อัตโนมัติ
+2. **ขั้น2 ตรวจภาพ/ผล AI:** เพิ่มpanel `AI risk areas` รายการ14พื้นที่และlayerเปิด/ปิด rawAI,coverage/NoData,draft,confirmedtarget เลือกรายการแล้วเน้นพื้นที่บนแผนที่ แสดงวันที่SAR9ต.ค./วิเคราะห์11ต.ค.แยกจากSentinel-2contextที่เว็บเลือก คะแนนใช้ชื่อmodel score ไม่แปลงเป็นเปอร์เซ็นต์ความแม่นยำ
+3. **เครื่องมือ Inspector:** เลือกพื้นที่ / ใช้พื้นที่นี้ / แก้ขอบเขต / ย้ายพื้นที่ / วาดเพิ่ม / ปฏิเสธ / Undo / Redo / Cancel / Reset draft / ยืนยันพื้นที่บินตรวจ `Reset draft`ต้องแจ้งก่อนทิ้งการแก้หลายรายการ ส่วนCancelคืนtransactionที่กำลังแก้ ไม่คืนsource/sessionที่หมดอายุ
+4. **ขั้น3 เตรียมแผน:** รับเฉพาะconfirmedtargetหนึ่งPolygonต่อแผน แสดงที่มาและrevisionสั้นๆ คงHome/เส้นทาง/เที่ยวบิน/เวลา/ข้อมูลสภาพแวดล้อม/2D3D/readiness/downloadเดิม ไม่มีป้ายPrototypeหรือคำอธิบายเทคนิคพร่ำเพรื่อในflow
+
+ช่วงโหลดผล/ยืนยัน/Saveให้แสดงpendingทันทีและกันกดซ้ำ ระบุerror/retryและเก็บdraftเมื่อผิดพลาด หากเป็นผลที่เตรียมไว้ใช้ขั้นสถานะโหลด→ตรวจข้อมูล→แสดงผล ไม่สร้างเปอร์เซ็นต์หรือข้อความว่ากำลังรันinferenceที่ไม่ได้เกิดขึ้น
+
+#### 3.16.3 แยกข้อมูลและstateก่อนต่อปุ่ม
+
+`SearchContext` (AOI/image coverage/scene) → `PreparedAnalysis` (immutable result/hash/source/coverage) → `RiskDraft` (editable sketches/decisions/undo) → `ConfirmedRiskReview` (server-owned actor/time/revision) → `PlanningTarget` (validated polygon/hash) → `PlanRevision`
+
+- rawAIไม่ถูกแก้ในplace; ยอมรับ/ปฏิเสธเป็นdecisionของInspector ไม่ลบcandidateต้นฉบับ การวาดเองมีoriginmanual การแก้จากAIมีsourceCandidateIdsสืบย้อนกลับ
+- เริ่มedit:พักสิทธิ์exportทันที เก็บconfirmedtargetเดิมในstateเพื่อCancelได้ ไม่คำนวณrouteทุกpointermove
+- จบgestureหนึ่งครั้ง:เพิ่มundoหนึ่งรายการ อัปเดตเฉพาะdraftoverlay/area summaryแบบboundedRAF ใช้sharedstyles ไม่serializerawหรือเรียกGEEตอนscroll
+- Confirmสำเร็จเท่านั้น:แทนtargetและrevision ล้างroute/readiness/ผลGEEตามdependency รักษาภาพและเวลาเดิมเมื่อtargetยังอยู่ในภาพที่ตรวจแล้วและมีvisiblepixelsตรงtargetจริง ถ้าพื้นที่หลุดภาพให้เก็บdraftและให้โหลด/ตรวจภาพพื้นที่ใหม่
+- เปลี่ยนHome:คงraw/reviewแต่ประเมินrouteใหม่; เปลี่ยนresult/source/account:กันผลasyncเก่าทับงานใหม่ด้วยmission/result/draft/review/sessiontokens ตรวจซ้ำหลังexportresponse
+- Cancel/Undoไม่คืนreadyเก่าที่หมดอายุ ผลterrain/environment/image/sessionต้องตรวจความสดปัจจุบันก่อนปลดexportอีกครั้ง
+
+#### 3.16.4 Geometry policy สำหรับรอบแรก
+
+confirmedtargetต้องเป็นPolygonวงเดียวไม่มีรู3–120จุดไม่รวมจุดปิดวง ปิดวงจริง ไม่ซ้อนตัดตัวเอง ไม่degenerate ไม่เกินเพดานพื้นที่และขอบเขตmissionที่ระบบเดิมรับ
+
+- candidate13ชิ้นที่เข้าlimit:เลือกใช้หรือแก้เป็นdraftแล้วInspectorยืนยัน
+- candidateใหญ่378จุด:แสดงrawครบ ให้Inspectorวาดขอบเขตบินตรวจภายใน/บริเวณที่เลือกใหม่ ไม่autosimplify/hull/bboxเงียบๆ ไม่เปลี่ยนrawเป็นรูปง่ายเพื่อให้ผ่านschema รอบแรกยังไม่ทำautomaticหลายพื้นที่หลายแผน
+- draftอาจยังเปิดวง/เกินlimitได้และSave draftได้ตามbudget แต่ปุ่มConfirmต้องอธิบายข้อที่ไม่ผ่านพร้อมแก้ ไม่แทนด้วยศูนย์หรือclipเงียบๆ
+- manualtargetอยู่นอกcandidateแต่ในภาพที่reviewได้:ใช้ได้ในฐานะพื้นที่Inspectorเลือก ไม่อ้างAIตรวจพบ ถ้าข้ามSARNoDataให้แยกcoverage/ที่มาส่วนที่ไม่มีข้อมูล ไม่เรียกว่าพื้นที่AIครอบคลุมทั้งหมด
+- ถ้าออกนอกภาพ/บริบทค้นหาที่reviewจริง ให้แก้contextและตรวจภาพใหม่ก่อนวางแผน ห้ามผ่านด้วยbboxอย่างเดียว การยืนยันcoverageที่มีรูต้องใช้polygoncoverageจริง
+- ไม่ส่งพื้นที่เสี่ยงจากSARไปเป็นพื้นที่น้ำมันยืนยันหรือคำนวณความหนา/แคปซูลโดยอัตโนมัติ ตัวคำนวณน้ำมันยังต้องใช้หลักฐานตามเกณฑ์เดิม
+
+#### 3.16.5 Result catalog, private persistence และความน่าเชื่อถือของConfirm
+
+แนวทางหลักคือใช้BFF/RPC/session/append-onlymissionrevisionsเดิม เพิ่ม immutable prepared-analysis catalog ในschemaส่วนตัว และnullable server-owned confirmedreview/target payloadบนmissionrevisionพร้อมresponseenvelope (ยังไม่จำเป็นต้องสร้างreviewtableแยก) ไม่ใส่reviewer/timeในclient-editabledocument ไม่สร้างbackendแยกและไม่ย้ายระบบบัญชี
+
+แพ็กข้อมูลเว็บจากfixedresultallowlist/versionedserver-onlydirectory แปลงbrowsermanifestเป็นสำเนาที่ตัดabsolute localpaths/checkpointlocations/DriveIDsที่ไม่จำเป็นออก โดยเก็บsource/hashสำคัญไว้และไม่เขียนทับmanifestต้นฉบับ ตรวจ`vercel.json`/buildfunctionincludefilesให้catalogถูกbundleจริง เพราะbuildปัจจุบันสร้าง`dist/index.html`เป็นหลัก ไม่ถือว่าไฟล์ในoutputsจะขึ้นproductionเอง Catalogอ้างอิงชุดกลางแต่draft/review/confirmedtargetต้องprivateตามownerเสมอ
+
+**APIที่เสนอ (ยังไม่มี):** โหลดcatalog/resultที่อนุญาตผ่านเส้นทางย่อยของInspectorAPI; ใช้save_draftเดิมสำหรับanalysisRef/riskDraft และเปิดconfirm_riskด้วยmissionexpectedRevision/baseReviewRevision/mutationId/target Serverต้องตรวจresult/hash/candidateIDs/selecteddraft/geometry/coverage/ownerก่อนcommit พร้อมคืนreviewID/revision/targethash/createdAtจากserver Persistactorจากsession ไม่รับowner/reviewer/readysealจากclient
+
+**Trust boundary:** authenticatedusersเรียกRPCได้ตรง จึงห้ามทำgeometry/catalogvalidationเฉพาะBFFแล้วให้RPCยอมรับconfirmedflag ใส่authoritativechecksในRPCเดียวกับowner/CAS/idempotencyและserver timestamps เก็บcatalogให้Inspectorอ่านเฉพาะผ่านAPIที่กำหนด ผู้ใช้แก้catalogไม่ได้ ไม่มีservice-roleหรือsecretในbrowser
+
+**Engineering checkpointก่อนเขียนmigration:** ตรวจinstalled/allowedPostGISและความสามารถชุดทดสอบแบบอ่านอย่างเดียวก่อน เลือกใช้spatialvalidationที่databaseทำได้จริง เช่นvalidity/wholepolygoncoverage/metricareaโดยqualifiedschema ถ้ามีPostGISให้ตรวจเอกสารปัจจุบันและunit/integrationกับSQLจริง ถ้ายังไม่มีให้ประเมินboundedSQLgeometryสำหรับtarget≤120จุดเทียบcatalogนี้ หรือจัดทำextensionmigrationที่reviewแยก ห้ามลดระดับเป็นBFF-onlyvalidationเพื่อเร่งงาน และไม่อ้างว่ามีextensionพร้อมแล้วจากรอบวางแผนนี้ เป็นการตัดสินใจวิศวกรรม ไม่ใช่คำถามproductที่ต้องให้ผู้ใช้ตอบตอนนี้
+
+**Migration boundary:** preparedcatalog/confirmedreviewต้องมีSQLreview+localtestsก่อนใช้live ไม่applyDDLหรือseedจากรอบวางแผนนี้ การอนุมัติSQLfoundationเดิมไม่ใช่การใช้migrationใหม่โดยอัตโนมัติ
+
+**Save/reopen:** บันทึกrefs/decisions/draftและserverreview/targetlinkตามrevision ไม่เก็บtileURLs/sessioncredentials/readinessเก่า เปิดmissionเก่าที่analysisRef/riskDraft=nullได้เหมือนเดิม เปิดAIrevisionคืนrawจากhashตรงและdraft/targetรุ่นนั้นก่อน แต่ต้องโหลดภาพ/conditionsที่หมดอายุใหม่ Saveล้มเหลวเก็บdraft; CASconflictไม่เขียนทับงานอีกtab; retryใช้mutationIDเดิม
+
+#### 3.16.6 ไฟล์และชุดงานลงมือที่เสนอ
+
+| ชุดงาน | ขอบเขตแก้ที่เสนอ | เกณฑ์ส่งต่อก่อนทำชุดถัดไป |
+| --- | --- | --- |
+| A — Contract/data | server-onlycatalogadapter, `contracts/inspector-*.schema.json`, fixtures/tests; ตรวจimmutablehashes/provenanceและgeometrypolicy | โหลด14candidateตรงพิกัด/วัน/coverageได้ และแยกraw/draft/targetในcontractชัด |
+| B — Editor | modulesใหม่ที่เสนอ `planning-risk-state.js`, `planning-risk-geometry.js`, `planning-risk-overlay.js`, `planning-risk-editor.js`; ต่อmarkupในbuildscriptที่ใช้จริง/CSS | accept/edit/move/add/reject/Undo/Redo/Cancelทำได้;rawไม่เปลี่ยน;ภาพ/เวลาไม่resetจากgesture |
+| C — Server confirmation | `src/inspector-validation.js`, `api/inspector.mjs`, migrationใหม่และcatalog/reviewintegrationtests หลังspatialcheckpoint | RPCตรงก็ไม่ปลอมconfirmationได้;owner/CAS/idempotency/coverageผ่านทั้งpositiveและnegativecases |
+| D — Planner/save | proposed `planning-risk-target.js`; จุดbody/prepare/capture/restore/exportใน`planning-trial-client.js`, `inspector-client/state`เท่าที่จำเป็น | confirmedtargetเข้าengineเดิม;staledraft/exportถูกกัน;Save/reopen/historyคืนtargetตรงreview |
+| E — Acceptance/release preparation | tests/source checks/3builds/browserบนcandidateเดียวกัน +สองMD/queue/evidence | ครบflowAIจริง/มือถือ/2D3D/บัญชี/privacy ไม่มีfalseReady;จัดผลให้reviewก่อนเผยแพร่ตามคำสั่งรอบนั้น |
+
+ชื่อโมดูล/API/tableทั้งหมดเป็นข้อเสนอ ไม่ใช่ไฟล์หรือendpointที่สร้างแล้ว เลือกไม่รื้อclientหลักทั้งไฟล์ ไม่เพิ่มgeospatial/MLdependencyก่อนตรวจที่มีอยู่ ใช้OpenLayersinteractionsเดิมและแยกdispose/listeners/AbortControllersให้ชัด
+
+#### 3.16.7 เกณฑ์ตรวจรับที่ต้องรันเมื่อimplementation
+
+1. เปิดผลที่เตรียมไว้เห็น14พื้นที่/coverage/NoDataตรงsource พร้อมวันSARและSentinel-2แยก;พื้นที่อื่นไม่ถูกแปะผลชุดเดิม
+2. แก้จุด/ย้าย/วาดเพิ่ม/รับ/ปฏิเสธ/Undo/Redo/Cancel/Resetตามtransaction rawhashคงเดิม;แก้แล้วภาพและเวลาไม่reset
+3. invalidselfintersection/0area/รู/MultiPolygon/121vertices/outsidefootprint/coverageholes/378rawถูกจัดการตามpolicyไม่clipหรือconfirmแทนInspector
+4. manualareaบนbackgroundหรือNoDataไม่ถูกอ้างAIพบ/ครอบคลุม และไม่ทำให้oil/capsuleได้หลักฐานปลอม
+5. serverconfirm→planner→Savev1→แก้/confirmv2→History→reopenแต่ละrevisionคืนrawrefs/draft/targetถูกชุด ภารกิจรุ่นเก่าไม่มีAIยังเปิดได้
+6. สองtabs/revisionconflict/Savefailed/retry/expiredsession/accountswitch/lateanalysis/lateconfirm/lateexportไม่ทับงานใหม่ ไม่เปิดข้ามowner ตรวจRPCตรงด้วย
+7. 390/768/1280px,keyboard/touchediting,dialogscroll/page/3Downership,loading/retry/confirmationfocus คง3steps/4calculators/imageryvisiblepixel/24h/readiness/downloadgates
+8. targetedtests/fullsuite/syntax/3buildsและbrowserจากbuildเดียวกัน บันทึกrunใหม่แยกsupport32checks/298assertionsและ531testsของUXreleaseเดิม ไม่เรียกplannedcasesว่าผ่าน
+
+#### 3.16.8 งานคู่ขนานและจุดตรวจส่งมอบ
+
+แชทหลักเป็นผู้แก้source/contracts/API/schema/tests/configและรวมผลเพียงแชทเดียว Supportอ่านแผน3.16และ19fixtures/14scenariosเดิม แล้วส่งgapmatrixสำหรับcoverageholes/NoData/378vertices/UndoCancel/RPCdirect/conflict/lateexport พร้อมexpectedresultและevidenceที่ต้องเก็บ ภายหลังรับartifactจากmainค่อยreviewว่าแต่ละcaseได้รันจริงหรือยัง ไม่แก้web/corepackage ไม่สร้างSQL/account/commit/deploy และไม่รันtraining/inferenceใหม่
+
+Checkpointแรกคือ contract+spatialtrustboundaryและตัวอย่างflowหนึ่งcandidate → edit → confirm → plannerก่อนขยายกรณีทั้งหมด CheckpointถัดไปคือSave/reopen/history แล้วจึงตรวจรวมและmobile ไม่เริ่มกรอบ4ชั่วโมงใหม่หรือรับประกันเวลาจากข้อมูลวางแผนนี้ ไม่มีการส่งข้อความไปuser-ownedchatอื่นในรอบนี้
+
+#### 3.16.9 หลักฐานของรอบวางแผนนี้
+
+อ่านactivecheckoutHEADd899784พร้อมเอกสารdirty3ไฟล์จากรอบสรุปก่อนหน้า รักษารายการเดิม ตรวจsource/schema/RPC/handoffและSHA256core12ไฟล์ใหม่ตรงทั้งหมด ไม่รันconversion/model/tests/build/browser/API/liveDB ไม่แก้application/SQL/Auth/account/config ไม่commit/push/deploy บัญชีเป็นuser-confirmed29ต.ค. ไม่ใช่agent-executedfreshacceptance ไม่มีคำถามผู้ใช้ค้าง อัปเดตแผนนี้พร้อมcanonicalworklog/WEBSITE_DETAILS/structuredqueue
+
+### 3.17 Implementation result — 29 ตุลาคม 2026
+
+ผู้ใช้อนุมัติลงมือและpush/deployในข้อความหลังแผน3.16แล้ว MilestonesA–DลงมือครบตามWEBSITE_DETAILS3.37 ใช้boundedPostgreSQLที่ตรวจliveว่าไม่มีPostGIS ไม่เพิ่มextensionหรือBFF-onlytrust Migration+seedappliedบนxedoและตรวจสิทธิ์แล้ว Eautomated564pass/3builds/browserlocalrealGEEผ่าน กำลังตรวจproductionreleaseหลังpush ผล32checks/298assertions/531testsเดิมไม่ใช้แทนrunนี้ Realaccountผู้ใช้ยืนยันแล้วแต่agentไม่ใช้passwordจริงทดสอบAI;productionAIreviewเป็นขอบเขตหลักฐานที่ต้องระบุให้ชัด ไม่สร้างบัญชีใหม่ ไม่มีคำถามผู้ใช้ค้าง

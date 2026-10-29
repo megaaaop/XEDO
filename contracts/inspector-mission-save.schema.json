@@ -1,7 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "XEDO authenticated mission save/confirm request v1",
-  "description": "Inspector API implements save_draft; its production database migration is applied. Real-account acceptance awaits team provisioning. confirm_risk is reserved and rejected by the current API/RPC. Atomic CAS, append-only revisions and idempotent receipts; owner/actor/time/hashes are server-derived. Schema validation is not authorization or complete geometry validation.",
+  "description": "Inspector API/RPC implement save_draft and authoritative confirm_risk against a controlled prepared-analysis catalog. Atomic CAS, append-only revisions and idempotent receipts; owner/actor/time/hashes are server-derived. Schema validation alone is not authorization or complete geometry validation.",
   "type": "object",
   "additionalProperties": false,
   "required": [

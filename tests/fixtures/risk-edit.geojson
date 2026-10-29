@@ -1,0 +1,3632 @@
+{
+  "type": "FeatureCollection",
+  "generatorId": "xedo-review-edit-fixtures/1.0",
+  "fixture": true,
+  "classification": "test_fixture",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "candidate-small-original",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "candidate-small-original",
+        "origin": "candidate",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": "candidate-00001",
+        "parentCandidateGeometrySha256": "797c76e7e34d10826dadef9e0c0a86bc96eea2288d920c49342ad01cec212771",
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "797c76e7e34d10826dadef9e0c0a86bc96eea2288d920c49342ad01cec212771",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": true,
+        "expectedCoverageRelationship": "within_valid",
+        "derivation": "Exact raw geometry copied into an explicitly labeled fixture; parent raw unchanged",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.2530904583859,
+              12.555503611913549
+            ],
+            [
+              101.25308967166558,
+              12.555413252042761
+            ],
+            [
+              101.25299768863019,
+              12.555414024861614
+            ],
+            [
+              101.25299611527201,
+              12.555233305106595
+            ],
+            [
+              101.25308809824331,
+              12.55523253229922
+            ],
+            [
+              101.25308888495138,
+              12.555322892171318
+            ],
+            [
+              101.25336483392469,
+              12.555320573543042
+            ],
+            [
+              101.25336640755151,
+              12.555501293250849
+            ],
+            [
+              101.2530904583859,
+              12.555503611913549
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "candidate-small-vertex-edit",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "candidate-small-vertex-edit",
+        "origin": "edited_candidate",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": "candidate-00001",
+        "parentCandidateGeometrySha256": "797c76e7e34d10826dadef9e0c0a86bc96eea2288d920c49342ad01cec212771",
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "0126db117b6b41e9f54404aac145f2835be5ebb0631941c788479e86b6741ad5",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": true,
+        "expectedCoverageRelationship": "within_valid",
+        "derivation": "Synthetic one-vertex 1 metre displacement in UTM; not an actual Inspector review",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.2530904583859,
+              12.555503611913549
+            ],
+            [
+              101.25309886996878,
+              12.555413174759146
+            ],
+            [
+              101.25299768863019,
+              12.55541402486161
+            ],
+            [
+              101.25299611527201,
+              12.555233305106595
+            ],
+            [
+              101.25308809824331,
+              12.55523253229922
+            ],
+            [
+              101.25308888495138,
+              12.555322892171317
+            ],
+            [
+              101.25336483392469,
+              12.555320573543042
+            ],
+            [
+              101.25336640755151,
+              12.555501293250849
+            ],
+            [
+              101.2530904583859,
+              12.555503611913549
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "candidate-small-moved",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "candidate-small-moved",
+        "origin": "edited_candidate",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": "candidate-00001",
+        "parentCandidateGeometrySha256": "797c76e7e34d10826dadef9e0c0a86bc96eea2288d920c49342ad01cec212771",
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "2e3c9902c7c8cf96ebab0aa6c4a587ea1a9fe5b3c32542e4958129e0ac7cd5af",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": true,
+        "expectedCoverageRelationship": "within_valid",
+        "derivation": "Synthetic 30 metre east translation in UTM",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.25336640755151,
+              12.555501293250849
+            ],
+            [
+              101.25336562073504,
+              12.555410933397276
+            ],
+            [
+              101.25327363771801,
+              12.555411706310588
+            ],
+            [
+              101.25327206416752,
+              12.555230986589997
+            ],
+            [
+              101.25336404712046,
+              12.555230213688155
+            ],
+            [
+              101.25336483392469,
+              12.555320573543039
+            ],
+            [
+              101.25364078284291,
+              12.555318254631374
+            ],
+            [
+              101.25364235666203,
+              12.555498974304749
+            ],
+            [
+              101.25336640755151,
+              12.555501293250849
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "candidate-small-added-vertex",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "candidate-small-added-vertex",
+        "origin": "edited_candidate",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": "candidate-00001",
+        "parentCandidateGeometrySha256": "797c76e7e34d10826dadef9e0c0a86bc96eea2288d920c49342ad01cec212771",
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "943eadcccaccbc84c460de7b696007ab189311431d051ba6cb02f977f1518bd7",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": true,
+        "expectedCoverageRelationship": "within_valid",
+        "derivation": "Explicit insertion of one edge midpoint; draft structural test only",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.2530904583859,
+              12.555503611913549
+            ],
+            [
+              101.25309006502496,
+              12.55545843197824
+            ],
+            [
+              101.25308967166558,
+              12.555413252042765
+            ],
+            [
+              101.25299768863019,
+              12.55541402486161
+            ],
+            [
+              101.25299611527201,
+              12.555233305106595
+            ],
+            [
+              101.25308809824331,
+              12.55523253229922
+            ],
+            [
+              101.25308888495138,
+              12.555322892171317
+            ],
+            [
+              101.25336483392469,
+              12.555320573543042
+            ],
+            [
+              101.25336640755151,
+              12.555501293250849
+            ],
+            [
+              101.2530904583859,
+              12.555503611913549
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "candidate-small-deleted-vertex",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "candidate-small-deleted-vertex",
+        "origin": "edited_candidate",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": "candidate-00001",
+        "parentCandidateGeometrySha256": "797c76e7e34d10826dadef9e0c0a86bc96eea2288d920c49342ad01cec212771",
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "a9c3322a77a2cb077ad47ca6b92010a9599ab9a525c162f8b38d67d299c2ea2c",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": true,
+        "expectedCoverageRelationship": "within_valid",
+        "derivation": "Explicit one-vertex deletion in test draft, not raw",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.25308967166558,
+              12.555413252042765
+            ],
+            [
+              101.25299768863019,
+              12.55541402486161
+            ],
+            [
+              101.25299611527201,
+              12.555233305106595
+            ],
+            [
+              101.25308809824331,
+              12.55523253229922
+            ],
+            [
+              101.25308888495138,
+              12.555322892171317
+            ],
+            [
+              101.25336483392469,
+              12.555320573543042
+            ],
+            [
+              101.25336640755151,
+              12.555501293250849
+            ],
+            [
+              101.25308967166558,
+              12.555413252042765
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "manual-valid-outside-candidates",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "manual-valid-outside-candidates",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": null,
+        "parentCandidateGeometrySha256": null,
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "8e808f0d9fe610c78130a331385c17f98d5c8e756a4569f8be674c780f2b0f71",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": true,
+        "expectedCoverageRelationship": "valid_disjoint_candidates",
+        "derivation": {
+          "rowZeroBased": 390,
+          "columnZeroBased": 789,
+          "widthPixels": 20,
+          "heightPixels": 20,
+          "derivation": "window selected by actual source mask class and AOI centre tests; area intersections independently validated"
+        },
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.25226025128141,
+              12.555239486432056
+            ],
+            [
+              101.2522445241739,
+              12.553432287819808
+            ],
+            [
+              101.25408417059653,
+              12.553416833022556
+            ],
+            [
+              101.25409991052352,
+              12.55522402933985
+            ],
+            [
+              101.25226025128141,
+              12.555239486432056
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "manual-valid-nodata-crossing",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "manual-valid-nodata-crossing",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": null,
+        "parentCandidateGeometrySha256": null,
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "9c9675c43288e5a3832f8da617738c1dbc30842506f96f3ff1f7b5f9dd1a3df1",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": true,
+        "expectedCoverageRelationship": "crosses_valid_nodata",
+        "derivation": {
+          "rowZeroBased": 755,
+          "columnZeroBased": 847,
+          "widthPixels": 20,
+          "heightPixels": 20,
+          "derivation": "window selected by actual source mask class and AOI centre tests; area intersections independently validated"
+        },
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.25730794417763,
+              12.522213331769766
+            ],
+            [
+              101.25729222464524,
+              12.520406135034477
+            ],
+            [
+              101.2591316303591,
+              12.520390685693409
+            ],
+            [
+              101.25914736267434,
+              12.522197880128882
+            ],
+            [
+              101.25730794417763,
+              12.522213331769766
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "manual-nodata-only",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "manual-nodata-only",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": null,
+        "parentCandidateGeometrySha256": null,
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "d095d6dbf2f890284c18012496dfef3239642867bd6db17681296d9fb6bbb364",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": true,
+        "expectedCoverageRelationship": "nodata_only",
+        "derivation": {
+          "rowZeroBased": 774,
+          "columnZeroBased": 866,
+          "widthPixels": 20,
+          "heightPixels": 20,
+          "derivation": "window selected by actual source mask class and AOI centre tests; area intersections independently validated"
+        },
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.2590404466572,
+              12.520481818192485
+            ],
+            [
+              101.25902471731165,
+              12.518674623393267
+            ],
+            [
+              101.26086410855308,
+              12.518659164307687
+            ],
+            [
+              101.26087985067952,
+              12.520466356805338
+            ],
+            [
+              101.2590404466572,
+              12.520481818192485
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "manual-outside-footprint",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "manual-outside-footprint",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": null,
+        "parentCandidateGeometrySha256": null,
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "4ffd2c57bb4746b1e9c15ff403d6a16a98e960599735b182338943afea10bf01",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": true,
+        "expectedCoverageRelationship": "outside_footprint",
+        "derivation": {
+          "rowZeroBased": 670,
+          "columnZeroBased": 1307,
+          "widthPixels": 20,
+          "heightPixels": 20,
+          "derivation": "Window deliberately crossing actual output-grid right edge; no clipping"
+        },
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.29968203066854,
+              12.529535122662091
+            ],
+            [
+              101.29966600653715,
+              12.527727980411449
+            ],
+            [
+              101.301505409653,
+              12.527712232277462
+            ],
+            [
+              101.30152144657382,
+              12.529519372185167
+            ],
+            [
+              101.29968203066854,
+              12.529535122662091
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "candidate-large-raw-378",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "candidate-large-raw-378",
+        "origin": "candidate",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": "candidate-00012",
+        "parentCandidateGeometrySha256": "99f6169a72a3bfd3d78c0f2bc321d903faf820e0a25d1377589592ca9fae5911",
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "99f6169a72a3bfd3d78c0f2bc321d903faf820e0a25d1377589592ca9fae5911",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": false,
+        "expectedCoverageRelationship": "within_valid",
+        "derivation": "Exact 378-vertex raw candidate; must remain intact",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.23479195067223,
+              12.556379671674517
+            ],
+            [
+              101.23479117028187,
+              12.556289310671891
+            ],
+            [
+              101.23442323222636,
+              12.55629237687485
+            ],
+            [
+              101.2344224519703,
+              12.556202015848813
+            ],
+            [
+              101.23433046747331,
+              12.556202782315133
+            ],
+            [
+              101.23432968725535,
+              12.55611242128275
+            ],
+            [
+              101.23405373382413,
+              12.556114720475687
+            ],
+            [
+              101.23405295370841,
+              12.556024359425582
+            ],
+            [
+              101.23377700031872,
+              12.556026658318025
+            ],
+            [
+              101.23377622030524,
+              12.555936297250199
+            ],
+            [
+              101.23368423586194,
+              12.555937063479009
+            ],
+            [
+              101.23368345588659,
+              12.555846702404839
+            ],
+            [
+              101.23359147146927,
+              12.55584746859647
+            ],
+            [
+              101.23359069153203,
+              12.555757107515959
+            ],
+            [
+              101.2334067227433,
+              12.555758639793375
+            ],
+            [
+              101.23340594287625,
+              12.555668278700828
+            ],
+            [
+              101.23331395850484,
+              12.555669044786612
+            ],
+            [
+              101.2333131786759,
+              12.555578683687724
+            ],
+            [
+              101.23322119433047,
+              12.555579449736332
+            ],
+            [
+              101.23322041453966,
+              12.555489088631104
+            ],
+            [
+              101.23312843022022,
+              12.555489854642536
+            ],
+            [
+              101.23312765046751,
+              12.555399493530965
+            ],
+            [
+              101.23303566617406,
+              12.555400259505214
+            ],
+            [
+              101.23303488645949,
+              12.555309898387307
+            ],
+            [
+              101.23294290219202,
+              12.55531066432438
+            ],
+            [
+              101.23294056318085,
+              12.555039580949664
+            ],
+            [
+              101.23284857900349,
+              12.55504034683819
+            ],
+            [
+              101.23284701975713,
+              12.554859624573727
+            ],
+            [
+              101.2327550356378,
+              12.554860390419396
+            ],
+            [
+              101.23275269690993,
+              12.554589307000734
+            ],
+            [
+              101.23266071288069,
+              12.554590072797858
+            ],
+            [
+              101.23265915382319,
+              12.554409350504104
+            ],
+            [
+              101.23256716985199,
+              12.554410116258369
+            ],
+            [
+              101.23256639036438,
+              12.554319755104823
+            ],
+            [
+              101.23247440641916,
+              12.554320520821914
+            ],
+            [
+              101.23247362696969,
+              12.55423015966203
+            ],
+            [
+              101.23238164305045,
+              12.55423092534195
+            ],
+            [
+              101.23238086363908,
+              12.554140564175727
+            ],
+            [
+              101.23228887974582,
+              12.55414132981847
+            ],
+            [
+              101.23228498294019,
+              12.553689523949105
+            ],
+            [
+              101.23237696667319,
+              12.55368875833478
+            ],
+            [
+              101.23237151117561,
+              12.553056230129945
+            ],
+            [
+              101.23227952766695,
+              12.553056995704479
+            ],
+            [
+              101.23227874836647,
+              12.552966634524056
+            ],
+            [
+              101.23218676488378,
+              12.552967400061423
+            ],
+            [
+              101.23218286863249,
+              12.552515594121056
+            ],
+            [
+              101.2319989019694,
+              12.552517125044501
+            ],
+            [
+              101.23199812280141,
+              12.552426763843096
+            ],
+            [
+              101.23181415617817,
+              12.552428294629244
+            ],
+            [
+              101.23181337708034,
+              12.552337933415819
+            ],
+            [
+              101.23107751060125,
+              12.552344055255643
+            ],
+            [
+              101.23107673176584,
+              12.552253693996104
+            ],
+            [
+              101.23098474846073,
+              12.552254459078732
+            ],
+            [
+              101.23098552726408,
+              12.552344820343949
+            ],
+            [
+              101.23089354392086,
+              12.552345585400776
+            ],
+            [
+              101.23089432269823,
+              12.552435946671023
+            ],
+            [
+              101.23034242231938,
+              12.552440536384923
+            ],
+            [
+              101.23034320091054,
+              12.552530897688593
+            ],
+            [
+              101.23015923400504,
+              12.552532427352723
+            ],
+            [
+              101.23016156962258,
+              12.552803511293883
+            ],
+            [
+              101.23006958606462,
+              12.552804276095761
+            ],
+            [
+              101.23007114310916,
+              12.552984998731286
+            ],
+            [
+              101.22997915948103,
+              12.552985763513036
+            ],
+            [
+              101.22997993798035,
+              12.553076124835494
+            ],
+            [
+              101.22988795431412,
+              12.55307688959144
+            ],
+            [
+              101.22988951126683,
+              12.553257612245742
+            ],
+            [
+              101.22979752753044,
+              12.553258376981562
+            ],
+            [
+              101.22980064138035,
+              12.553619822305027
+            ],
+            [
+              101.22952468975028,
+              12.553622116391702
+            ],
+            [
+              101.22952391137487,
+              12.553531755044782
+            ],
+            [
+              101.2294319275181,
+              12.553532519671691
+            ],
+            [
+              101.2294311491808,
+              12.553442158318445
+            ],
+            [
+              101.22924718151322,
+              12.55344368746645
+            ],
+            [
+              101.22924640324605,
+              12.553353326101192
+            ],
+            [
+              101.2289704517954,
+              12.553355619570032
+            ],
+            [
+              101.22896967363043,
+              12.553265258187093
+            ],
+            [
+              101.22878570603051,
+              12.553266786997542
+            ],
+            [
+              101.22878492793568,
+              12.553176425602592
+            ],
+            [
+              101.22869294415868,
+              12.553177189954914
+            ],
+            [
+              101.22869061000671,
+              12.552906105749118
+            ],
+            [
+              101.2285986263198,
+              12.55290687005293
+            ],
+            [
+              101.22859551433011,
+              12.552545424413333
+            ],
+            [
+              101.22850353076532,
+              12.552546188662964
+            ],
+            [
+              101.22849886315467,
+              12.552004020149875
+            ],
+            [
+              101.22859084652718,
+              12.552003255934293
+            ],
+            [
+              101.22858929064131,
+              12.551822533102708
+            ],
+            [
+              101.22868127394366,
+              12.551821768866995
+            ],
+            [
+              101.22868049597777,
+              12.551731407455895
+            ],
+            [
+              101.22877247924204,
+              12.551730643194375
+            ],
+            [
+              101.2287709232643,
+              12.551549920381563
+            ],
+            [
+              101.22886290645843,
+              12.551549156099915
+            ],
+            [
+              101.22886135044084,
+              12.551368433295835
+            ],
+            [
+              101.22895333356483,
+              12.551367668994056
+            ],
+            [
+              101.22895255553307,
+              12.551277307596711
+            ],
+            [
+              101.22904453861896,
+              12.551276543269127
+            ],
+            [
+              101.2290437605612,
+              12.551186181876801
+            ],
+            [
+              101.229135743609,
+              12.551185417523413
+            ],
+            [
+              101.22913496552526,
+              12.551095056136111
+            ],
+            [
+              101.22922694853496,
+              12.551094291756922
+            ],
+            [
+              101.22922539232157,
+              12.550913568991703
+            ],
+            [
+              101.22931737526113,
+              12.550912804592388
+            ],
+            [
+              101.22931659713146,
+              12.55082244321447
+            ],
+            [
+              101.22950056292834,
+              12.550820914332757
+            ],
+            [
+              101.22949978474067,
+              12.550730552965542
+            ],
+            [
+              101.22968375044924,
+              12.55072902396927
+            ],
+            [
+              101.22968063750272,
+              12.550367578539275
+            ],
+            [
+              101.22958865477963,
+              12.55036834303044
+            ],
+            [
+              101.22958787659019,
+              12.550277981665626
+            ],
+            [
+              101.2294039111899,
+              12.55027951054217
+            ],
+            [
+              101.2294031330706,
+              12.550189149165346
+            ],
+            [
+              101.22921916771017,
+              12.550190677904627
+            ],
+            [
+              101.22921838966099,
+              12.550100316515797
+            ],
+            [
+              101.22912640700373,
+              12.550101080832547
+            ],
+            [
+              101.22912562899265,
+              12.550010719437386
+            ],
+            [
+              101.22903364636139,
+              12.550011483716982
+            ],
+            [
+              101.22903209042146,
+              12.549830760913345
+            ],
+            [
+              101.2289401078482,
+              12.549831525150113
+            ],
+            [
+              101.22893855199658,
+              12.549650802332502
+            ],
+            [
+              101.22884656948135,
+              12.549651566526444
+            ],
+            [
+              101.22884423584541,
+              12.549380482278092
+            ],
+            [
+              101.22875225342025,
+              12.549381246423533
+            ],
+            [
+              101.22875069775732,
+              12.549200523576676
+            ],
+            [
+              101.22865871539017,
+              12.54920128767929
+            ],
+            [
+              101.22865638203727,
+              12.548930203387066
+            ],
+            [
+              101.22856439976017,
+              12.548930967441182
+            ],
+            [
+              101.22856362202002,
+              12.548840606003456
+            ],
+            [
+              101.2284716397689,
+              12.548841370020424
+            ],
+            [
+              101.22846775131909,
+              12.548389562793606
+            ],
+            [
+              101.22855973341002,
+              12.548388798805014
+            ],
+            [
+              101.2285581780084,
+              12.548208075921057
+            ],
+            [
+              101.22874214204396,
+              12.548206547872153
+            ],
+            [
+              101.22874136428815,
+              12.54811618644054
+            ],
+            [
+              101.22883334626484,
+              12.548115422374556
+            ],
+            [
+              101.22883256848304,
+              12.548025060947964
+            ],
+            [
+              101.22892455042164,
+              12.548024296856186
+            ],
+            [
+              101.22892299481217,
+              12.547843574012388
+            ],
+            [
+              101.22901497668063,
+              12.547842809900487
+            ],
+            [
+              101.22901342103131,
+              12.547662087065428
+            ],
+            [
+              101.22892143922691,
+              12.547662851165976
+            ],
+            [
+              101.22891988366588,
+              12.547482128316947
+            ],
+            [
+              101.22882790191947,
+              12.547482892374672
+            ],
+            [
+              101.22882712418009,
+              12.547392530943503
+            ],
+            [
+              101.22873514245967,
+              12.547393294964083
+            ],
+            [
+              101.22873358706308,
+              12.547212572088425
+            ],
+            [
+              101.22864160540068,
+              12.547213336066187
+            ],
+            [
+              101.22864082774349,
+              12.547122974621697
+            ],
+            [
+              101.22854884610707,
+              12.547123738562318
+            ],
+            [
+              101.22854729087493,
+              12.54694301566003
+            ],
+            [
+              101.2284553092965,
+              12.546943779557832
+            ],
+            [
+              101.22845453172155,
+              12.546853418100033
+            ],
+            [
+              101.22836255016912,
+              12.54685418196069
+            ],
+            [
+              101.22836177263224,
+              12.54676382049656
+            ],
+            [
+              101.22817780957327,
+              12.546765348112121
+            ],
+            [
+              101.2281770321065,
+              12.54667498663599
+            ],
+            [
+              101.22790108756874,
+              12.546677277806301
+            ],
+            [
+              101.22790031020412,
+              12.546586916312496
+            ],
+            [
+              101.22771634721276,
+              12.546588443590684
+            ],
+            [
+              101.22771556991823,
+              12.546498082084879
+            ],
+            [
+              101.22753160696674,
+              12.546499609225851
+            ],
+            [
+              101.22753082974232,
+              12.546409247708047
+            ],
+            [
+              101.22725488536578,
+              12.546411538166483
+            ],
+            [
+              101.22725410824351,
+              12.546321176631007
+            ],
+            [
+              101.22688618245154,
+              12.546324230112365
+            ],
+            [
+              101.22688540546343,
+              12.54623386855355
+            ],
+            [
+              101.22679342403235,
+              12.546234631839553
+            ],
+            [
+              101.22679187013833,
+              12.546053908708625
+            ],
+            [
+              101.22669988876525,
+              12.546054671951817
+            ],
+            [
+              101.22669211997835,
+              12.545151056201215
+            ],
+            [
+              101.22678410103116,
+              12.54515029301472
+            ],
+            [
+              101.2267825472823,
+              12.544969569868089
+            ],
+            [
+              101.226874528265,
+              12.544968806661473
+            ],
+            [
+              101.2268737513676,
+              12.544878445092843
+            ],
+            [
+              101.22696573231224,
+              12.544877681860433
+            ],
+            [
+              101.22696417847156,
+              12.544696958732555
+            ],
+            [
+              101.2270561593461,
+              12.544696195480023
+            ],
+            [
+              101.22705538240282,
+              12.544605833920773
+            ],
+            [
+              101.22714736323928,
+              12.544605070642447
+            ],
+            [
+              101.22714658627001,
+              12.544514709088215
+            ],
+            [
+              101.22723856706841,
+              12.544513945784098
+            ],
+            [
+              101.22723779007318,
+              12.544423584234883
+            ],
+            [
+              101.2319288011313,
+              12.54438461429555
+            ],
+            [
+              101.23192957975974,
+              12.54447497555523
+            ],
+            [
+              101.23202156024324,
+              12.54447421061508
+            ],
+            [
+              101.23202233890977,
+              12.544564571868417
+            ],
+            [
+              101.23211431941924,
+              12.544563806891121
+            ],
+            [
+              101.23211509812386,
+              12.544654168138127
+            ],
+            [
+              101.23202311758236,
+              12.5446549331211
+            ],
+            [
+              101.2320254536365,
+              12.544926016875229
+            ],
+            [
+              101.23211743427406,
+              12.5449252518752
+            ],
+            [
+              101.23211899173783,
+              12.545105974363311
+            ],
+            [
+              101.23221097243338,
+              12.54510520932045
+            ],
+            [
+              101.2322133087706,
+              12.545376293030655
+            ],
+            [
+              101.23230528955618,
+              12.545375527939278
+            ],
+            [
+              101.23230606837939,
+              12.545465889169023
+            ],
+            [
+              101.2322140875618,
+              12.54546665426608
+            ],
+            [
+              101.23221486635906,
+              12.545557015500851
+            ],
+            [
+              101.23230684720869,
+              12.545556250398107
+            ],
+            [
+              101.23230762604402,
+              12.545646611626541
+            ],
+            [
+              101.23221564516238,
+              12.54564737673497
+            ],
+            [
+              101.23221798160873,
+              12.54591846043339
+            ],
+            [
+              101.23249392452372,
+              12.545916164962554
+            ],
+            [
+              101.23249470344737,
+              12.546006526176999
+            ],
+            [
+              101.23258668443894,
+              12.546005760951436
+            ],
+            [
+              101.23258590548325,
+              12.545915399742674
+            ],
+            [
+              101.23304581018999,
+              12.545911573171306
+            ],
+            [
+              101.2330465893058,
+              12.546001934351638
+            ],
+            [
+              101.2332305512101,
+              12.546000403491458
+            ],
+            [
+              101.23323210958804,
+              12.546181125827413
+            ],
+            [
+              101.23332409059515,
+              12.546180360338754
+            ],
+            [
+              101.23332564906141,
+              12.546361082660718
+            ],
+            [
+              101.23341763012651,
+              12.546360317129215
+            ],
+            [
+              101.23341840940076,
+              12.546450678283527
+            ],
+            [
+              101.23351039049183,
+              12.546449912714873
+            ],
+            [
+              101.23351116980417,
+              12.546540273862847
+            ],
+            [
+              101.2336031509212,
+              12.546539508257036
+            ],
+            [
+              101.23360393027164,
+              12.546629869398664
+            ],
+            [
+              101.23369591141463,
+              12.546629103755699
+            ],
+            [
+              101.23369669080317,
+              12.546719464890986
+            ],
+            [
+              101.23378867197212,
+              12.546718699210865
+            ],
+            [
+              101.23378945139875,
+              12.546809060339813
+            ],
+            [
+              101.23388143259368,
+              12.546808294622535
+            ],
+            [
+              101.2338829915292,
+              12.54698901686708
+            ],
+            [
+              101.23397497278211,
+              12.546988251106962
+            ],
+            [
+              101.23397653180598,
+              12.547168973337515
+            ],
+            [
+              101.23406851311687,
+              12.547168207534549
+            ],
+            [
+              101.23406929266994,
+              12.547258568643155
+            ],
+            [
+              101.2341612740068,
+              12.547257802803033
+            ],
+            [
+              101.23416205359797,
+              12.547348163905294
+            ],
+            [
+              101.23425403496078,
+              12.547347398028013
+            ],
+            [
+              101.23425481459006,
+              12.547437759123929
+            ],
+            [
+              101.23434679597884,
+              12.547436993209487
+            ],
+            [
+              101.2343475756462,
+              12.547527354299064
+            ],
+            [
+              101.23443955706094,
+              12.547526588347466
+            ],
+            [
+              101.23444033676641,
+              12.547616949430695
+            ],
+            [
+              101.23453231820713,
+              12.547616183441937
+            ],
+            [
+              101.23453309795069,
+              12.547706544518823
+            ],
+            [
+              101.23462507941736,
+              12.547705778492903
+            ],
+            [
+              101.23462585919903,
+              12.547796139563447
+            ],
+            [
+              101.23471784069166,
+              12.547795373500366
+            ],
+            [
+              101.23471940033728,
+              12.547976095628101
+            ],
+            [
+              101.23481138188791,
+              12.547975329522172
+            ],
+            [
+              101.23481216175185,
+              12.548065690579369
+            ],
+            [
+              101.23490414332844,
+              12.548064924436277
+            ],
+            [
+              101.23490492323049,
+              12.548155285487129
+            ],
+            [
+              101.23499690483304,
+              12.548154519306875
+            ],
+            [
+              101.23499768477318,
+              12.548244880351378
+            ],
+            [
+              101.2350896664017,
+              12.54824411413396
+            ],
+            [
+              101.23509044637996,
+              12.548334475172119
+            ],
+            [
+              101.23518242803443,
+              12.548333708917543
+            ],
+            [
+              101.2351832080508,
+              12.548424069949354
+            ],
+            [
+              101.23536717140561,
+              12.548422537334398
+            ],
+            [
+              101.23536795149211,
+              12.548512898354172
+            ],
+            [
+              101.23545993319244,
+              12.548512131993794
+            ],
+            [
+              101.23546149344772,
+              12.548692854019992
+            ],
+            [
+              101.23555347520606,
+              12.548692087616754
+            ],
+            [
+              101.23555425537484,
+              12.54878244862318
+            ],
+            [
+              101.23573821893736,
+              12.548780915710905
+            ],
+            [
+              101.23573899917628,
+              12.548871276705292
+            ],
+            [
+              101.23601494457063,
+              12.548868977083758
+            ],
+            [
+              101.23601416423558,
+              12.548778616106453
+            ],
+            [
+              101.23619812773738,
+              12.548777082879456
+            ],
+            [
+              101.23619734734436,
+              12.548686721912883
+            ],
+            [
+              101.23638131075778,
+              12.548685188571383
+            ],
+            [
+              101.23638053030676,
+              12.548594827615545
+            ],
+            [
+              101.23647251197232,
+              12.548594060903282
+            ],
+            [
+              101.23647173149534,
+              12.548503699952485
+            ],
+            [
+              101.2365637131228,
+              12.548502933214444
+            ],
+            [
+              101.23656293261988,
+              12.548412572268687
+            ],
+            [
+              101.2373907667053,
+              12.548405670261335
+            ],
+            [
+              101.23739154749654,
+              12.548496031155826
+            ],
+            [
+              101.2376674921784,
+              12.548493729903127
+            ],
+            [
+              101.23766827307183,
+              12.548584090779869
+            ],
+            [
+              101.23785223622676,
+              12.548582556442646
+            ],
+            [
+              101.23785301719033,
+              12.548672917307343
+            ],
+            [
+              101.238036980385,
+              12.548671382832834
+            ],
+            [
+              101.23803776141874,
+              12.548761743685475
+            ],
+            [
+              101.238129743039,
+              12.548760976395315
+            ],
+            [
+              101.23813052411082,
+              12.548851337241604
+            ],
+            [
+              101.23831448739716,
+              12.548849802555464
+            ],
+            [
+              101.23831526853915,
+              12.548940163389696
+            ],
+            [
+              101.23840725020524,
+              12.548939395993717
+            ],
+            [
+              101.23840803138533,
+              12.549029756821598
+            ],
+            [
+              101.23859199476335,
+              12.549028221923821
+            ],
+            [
+              101.23859277601359,
+              12.549118582739649
+            ],
+            [
+              101.23877673943136,
+              12.54911704770458
+            ],
+            [
+              101.23877752075174,
+              12.549207408508346
+            ],
+            [
+              101.23914544764244,
+              12.549204338037724
+            ],
+            [
+              101.23914622909706,
+              12.549294698818033
+            ],
+            [
+              101.23933019257,
+              12.549293163382476
+            ],
+            [
+              101.23933097409477,
+              12.549383524150723
+            ],
+            [
+              101.23951493760744,
+              12.549381988577865
+            ],
+            [
+              101.23951571920237,
+              12.549472349334057
+            ],
+            [
+              101.23979166452186,
+              12.549470045721609
+            ],
+            [
+              101.23979244621898,
+              12.549560406460033
+            ],
+            [
+              101.24006839157984,
+              12.549558102547207
+            ],
+            [
+              101.24006917337917,
+              12.549648463267868
+            ],
+            [
+              101.24025313698671,
+              12.549646927157202
+            ],
+            [
+              101.2402539188562,
+              12.549737287865797
+            ],
+            [
+              101.24043788250349,
+              12.549735751617822
+            ],
+            [
+              101.24043866444313,
+              12.549826112314356
+            ],
+            [
+              101.24053064628967,
+              12.549825344137451
+            ],
+            [
+              101.24053142826745,
+              12.549915704827622
+            ],
+            [
+              101.2408073738667,
+              12.549913400090945
+            ],
+            [
+              101.24080815594665,
+              12.550003760763342
+            ],
+            [
+              101.24099211971314,
+              12.550002224103434
+            ],
+            [
+              101.24099290186327,
+              12.550092584763767
+            ],
+            [
+              101.2410848837694,
+              12.550091816380894
+            ],
+            [
+              101.24108566595766,
+              12.550182177034864
+            ],
+            [
+              101.24117764788976,
+              12.550181408614806
+            ],
+            [
+              101.24117843011614,
+              12.550271769262418
+            ],
+            [
+              101.24127041207419,
+              12.550271000805177
+            ],
+            [
+              101.24127119433868,
+              12.550361361446424
+            ],
+            [
+              101.2414551583006,
+              12.550359824426103
+            ],
+            [
+              101.24145672297601,
+              12.5505405456838
+            ],
+            [
+              101.24154870501192,
+              12.550539777115011
+            ],
+            [
+              101.2415494873908,
+              12.550630137737167
+            ],
+            [
+              101.24164146945266,
+              12.550629369131192
+            ],
+            [
+              101.24164225186965,
+              12.550719729746987
+            ],
+            [
+              101.24191819811482,
+              12.550717423723075
+            ],
+            [
+              101.24192837133958,
+              12.55189211144615
+            ],
+            [
+              101.2418363888474,
+              12.551892880226479
+            ],
+            [
+              101.24183873656469,
+              12.552163962010129
+            ],
+            [
+              101.2417467539703,
+              12.552164730776099
+            ],
+            [
+              101.24174988421707,
+              12.552526173167951
+            ],
+            [
+              101.24165790148842,
+              12.552526941925276
+            ],
+            [
+              101.24166259684897,
+              12.553069105527646
+            ],
+            [
+              101.24157061392195,
+              12.553069874287734
+            ],
+            [
+              101.24157452672962,
+              12.55352167730023
+            ],
+            [
+              101.2414825436363,
+              12.553522446057375
+            ],
+            [
+              101.2414841087379,
+              12.553703167269203
+            ],
+            [
+              101.24139212557436,
+              12.553703936006276
+            ],
+            [
+              101.24139290810224,
+              12.553794296616912
+            ],
+            [
+              101.24120894169283,
+              12.553795834008024
+            ],
+            [
+              101.2412097241627,
+              12.553886194629419
+            ],
+            [
+              101.24111774091683,
+              12.553886963283455
+            ],
+            [
+              101.24111852336074,
+              12.553977323909903
+            ],
+            [
+              101.24093455678663,
+              12.553978861134928
+            ],
+            [
+              101.24093533917251,
+              12.554069221772133
+            ],
+            [
+              101.24084335584428,
+              12.554069990343123
+            ],
+            [
+              101.24084413820421,
+              12.554160350985379
+            ],
+            [
+              101.24075215483784,
+              12.554161119530589
+            ],
+            [
+              101.24075371951187,
+              12.554341840824547
+            ],
+            [
+              101.24066173607532,
+              12.55434260934968
+            ],
+            [
+              101.2406633007096,
+              12.554523330652428
+            ],
+            [
+              101.24057131720285,
+              12.554524099157488
+            ],
+            [
+              101.24057288179738,
+              12.554704820469025
+            ],
+            [
+              101.24048089822045,
+              12.554705588954008
+            ],
+            [
+              101.2404816804948,
+              12.5547959496145
+            ],
+            [
+              101.24038969687972,
+              12.5547967180737
+            ],
+            [
+              101.2403904791281,
+              12.55488707873924
+            ],
+            [
+              101.24020651181559,
+              12.554888615574585
+            ],
+            [
+              101.24020729400596,
+              12.55497897625088
+            ],
+            [
+              101.240023326605,
+              12.554980512971682
+            ],
+            [
+              101.24002410873734,
+              12.555070873658728
+            ],
+            [
+              101.23993212499569,
+              12.555071641977598
+            ],
+            [
+              101.23993290710206,
+              12.555162002669693
+            ],
+            [
+              101.23984092332226,
+              12.555162770962783
+            ],
+            [
+              101.23984248748916,
+              12.555343492356416
+            ],
+            [
+              101.23975050363919,
+              12.55534426062942
+            ],
+            [
+              101.23975128569971,
+              12.555434621330956
+            ],
+            [
+              101.23965930181159,
+              12.555435389578175
+            ],
+            [
+              101.23966086588678,
+              12.55561611099069
+            ],
+            [
+              101.23956888192848,
+              12.555616879217823
+            ],
+            [
+              101.23956966394314,
+              12.555707239928799
+            ],
+            [
+              101.23938569594418,
+              12.555708776300003
+            ],
+            [
+              101.23938647790081,
+              12.55579913702173
+            ],
+            [
+              101.2392025098134,
+              12.555800673278378
+            ],
+            [
+              101.23920329171202,
+              12.555891034010852
+            ],
+            [
+              101.23892733943912,
+              12.555893338176746
+            ],
+            [
+              101.23892812124767,
+              12.555983698925672
+            ],
+            [
+              101.23791629542619,
+              12.55599214517185
+            ],
+            [
+              101.23791707688821,
+              12.55608250598282
+            ],
+            [
+              101.23653731273822,
+              12.556094017535905
+            ],
+            [
+              101.2365380937255,
+              12.556184378431672
+            ],
+            [
+              101.23534229660639,
+              12.556194349453556
+            ],
+            [
+              101.23534307718302,
+              12.556284710422684
+            ],
+            [
+              101.23515910824025,
+              12.556286243965056
+            ],
+            [
+              101.23515988875884,
+              12.556376604944914
+            ],
+            [
+              101.23479195067223,
+              12.556379671674517
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "large-explicit-redraw-draft",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "large-explicit-redraw-draft",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": "candidate-00012",
+        "parentCandidateGeometrySha256": "99f6169a72a3bfd3d78c0f2bc321d903faf820e0a25d1377589592ca9fae5911",
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "cb36c9e0342c1f28526343355fe2995f255adf0ed2f2677814596622d73151a8",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": true,
+        "expectedCoverageRelationship": "within_large_candidate",
+        "derivation": {
+          "rowZeroBased": 410,
+          "columnZeroBased": 663,
+          "widthPixels": 10,
+          "heightPixels": 10,
+          "derivation": "window selected by actual source mask class and AOI centre tests; area intersections independently validated",
+          "note": "Synthetic four-point manual redraw example from a verified interior pixel window; not hull, bounding box or simplification of parent, not Inspector-confirmed"
+        },
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.2406546955223,
+              12.553529363454873
+            ],
+            [
+              101.2406468732638,
+              12.55262575684283
+            ],
+            [
+              101.2415667012665,
+              12.55261807125886
+            ],
+            [
+              101.24157452672962,
+              12.55352167730023
+            ],
+            [
+              101.2406546955223,
+              12.553529363454873
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "invalid-self-intersection",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "invalid-self-intersection",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": null,
+        "parentCandidateGeometrySha256": null,
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "fc602f13d88f619489b28f26095ecc9c891b85ca4fce3a3cccca7d6deee47e79",
+        "expectedGeometryValid": false,
+        "expectedPlanningStructureValid": false,
+        "expectedCoverageRelationship": null,
+        "derivation": "Intentional bow-tie test geometry",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.2522445241739,
+              12.553432287819808
+            ],
+            [
+              101.25409991052352,
+              12.55522402933985
+            ],
+            [
+              101.25226025128141,
+              12.555239486432056
+            ],
+            [
+              101.25408417059653,
+              12.553416833022556
+            ],
+            [
+              101.2522445241739,
+              12.553432287819808
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "invalid-duplicate-degenerate",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "invalid-duplicate-degenerate",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": null,
+        "parentCandidateGeometrySha256": null,
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "dc99709e9d2c8d5967c2623d1e61623e9ea550d0651b08e8b6bc7791baaed2ad",
+        "expectedGeometryValid": false,
+        "expectedPlanningStructureValid": false,
+        "expectedCoverageRelationship": null,
+        "derivation": "Intentional repeated vertices with only two distinct points",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.2522445241739,
+              12.553432287819808
+            ],
+            [
+              101.2522445241739,
+              12.553432287819808
+            ],
+            [
+              101.25408417059653,
+              12.553416833022556
+            ],
+            [
+              101.25408417059653,
+              12.553416833022556
+            ],
+            [
+              101.2522445241739,
+              12.553432287819808
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "invalid-zero-area",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "invalid-zero-area",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": null,
+        "parentCandidateGeometrySha256": null,
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "0d229bcd2039cc35c9a89efd1409ddff7757975a0568076655728709f05fe32e",
+        "expectedGeometryValid": false,
+        "expectedPlanningStructureValid": false,
+        "expectedCoverageRelationship": null,
+        "derivation": "Intentional exactly collinear three-distinct-vertex geometry in delivered WGS84; do not assume UTM collinearity survives nonlinear reprojection",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.2522445241739,
+              12.553432287819808
+            ],
+            [
+              101.25316434738522,
+              12.553432287819808
+            ],
+            [
+              101.25408417059653,
+              12.553432287819808
+            ],
+            [
+              101.2522445241739,
+              12.553432287819808
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "target-3-vertices",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "target-3-vertices",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": null,
+        "parentCandidateGeometrySha256": null,
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "17c206c2b223357c06648c63d4eb4bbb5f625107278e67887a952b57aea51bf7",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": true,
+        "expectedCoverageRelationship": "valid_disjoint_candidates",
+        "derivation": "Synthetic regular 3-vertex draft inside verified manual background window; explicit planning boundary test",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.2536321272754,
+              12.55432429638089
+            ],
+            [
+              101.25294566363753,
+              12.55472136243989
+            ],
+            [
+              101.25293885151858,
+              12.553938822858504
+            ],
+            [
+              101.2536321272754,
+              12.55432429638089
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "target-120-vertices",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "target-120-vertices",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": null,
+        "parentCandidateGeometrySha256": null,
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "578c5b37f12533c629f0182a52a24ff4312d1d8f09432b639d18c1a8b0d5e8bd",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": true,
+        "expectedCoverageRelationship": "valid_disjoint_candidates",
+        "derivation": "Synthetic regular 120-vertex draft inside verified manual background window; explicit planning boundary test",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.2536321272754,
+              12.55432429638089
+            ],
+            [
+              101.25363170287977,
+              12.554347947021773
+            ],
+            [
+              101.25363001905777,
+              12.554371543430975
+            ],
+            [
+              101.25362708042424,
+              12.554395020932407
+            ],
+            [
+              101.25362289503344,
+              12.554418315175894
+            ],
+            [
+              101.25361747435687,
+              12.554441362313533
+            ],
+            [
+              101.25361083325191,
+              12.554464099174698
+            ],
+            [
+              101.25360298992105,
+              12.554486463439197
+            ],
+            [
+              101.25359396586198,
+              12.554508393808076
+            ],
+            [
+              101.25358378580874,
+              12.554529830171647
+            ],
+            [
+              101.2535724776639,
+              12.554550713774235
+            ],
+            [
+              101.253560072422,
+              12.554570987375236
+            ],
+            [
+              101.25354660408482,
+              12.554590595405994
+            ],
+            [
+              101.25353210956786,
+              12.554609484122134
+            ],
+            [
+              101.25351662859948,
+              12.554627601750845
+            ],
+            [
+              101.25350020361181,
+              12.554644898632821
+            ],
+            [
+              101.25348287962451,
+              12.554661327358339
+            ],
+            [
+              101.2534647041214,
+              12.554676842897242
+            ],
+            [
+              101.25344572692022,
+              12.554691402722344
+            ],
+            [
+              101.25342600003621,
+              12.554704966925998
+            ],
+            [
+              101.25340557753947,
+              12.554717498329488
+            ],
+            [
+              101.25338451540671,
+              12.554728962584932
+            ],
+            [
+              101.2533628713679,
+              12.554739328269429
+            ],
+            [
+              101.25334070474803,
+              12.554748566971197
+            ],
+            [
+              101.25331807630447,
+              12.554756653367424
+            ],
+            [
+              101.25329504806041,
+              12.55476356529372
+            ],
+            [
+              101.25327168313493,
+              12.554769283804827
+            ],
+            [
+              101.25324804556995,
+              12.554773793226579
+            ],
+            [
+              101.25322420015469,
+              12.554777081198836
+            ],
+            [
+              101.25320021224809,
+              12.554779138709405
+            ],
+            [
+              101.25317614759966,
+              12.5547799601187
+            ],
+            [
+              101.25315207216927,
+              12.554779543175222
+            ],
+            [
+              101.25312805194636,
+              12.554777889021734
+            ],
+            [
+              101.25310415276903,
+              12.554775002192125
+            ],
+            [
+              101.2530804401436,
+              12.554770890598968
+            ],
+            [
+              101.25305697906511,
+              12.554765565511868
+            ],
+            [
+              101.25303383383905,
+              12.554759041526527
+            ],
+            [
+              101.25301106790522,
+              12.554751336524783
+            ],
+            [
+              101.25298874366376,
+              12.55474247162556
+            ],
+            [
+              101.25296692230418,
+              12.55473247112701
+            ],
+            [
+              101.25294566363753,
+              12.55472136243989
+            ],
+            [
+              101.25292502593261,
+              12.554709176012443
+            ],
+            [
+              101.25290506575615,
+              12.554695945246943
+            ],
+            [
+              101.25288583781779,
+              12.554681706408134
+            ],
+            [
+              101.25286739482013,
+              12.554666498523822
+            ],
+            [
+              101.25284978731425,
+              12.554650363277915
+            ],
+            [
+              101.25283306356118,
+              12.554633344896168
+            ],
+            [
+              101.25281726939963,
+              12.554615490024943
+            ],
+            [
+              101.25280244812029,
+              12.554596847603383
+            ],
+            [
+              101.25278864034726,
+              12.554577468729242
+            ],
+            [
+              101.25277588392659,
+              12.554557406518839
+            ],
+            [
+              101.25276421382269,
+              12.554536715961483
+            ],
+            [
+              101.25275366202231,
+              12.554515453768717
+            ],
+            [
+              101.25274425744708,
+              12.554493678218906
+            ],
+            [
+              101.25273602587409,
+              12.554471448997482
+            ],
+            [
+              101.25272898986525,
+              12.554448827033342
+            ],
+            [
+              101.25272316870556,
+              12.55442587433186
+            ],
+            [
+              101.2527185783501,
+              12.554402653804933
+            ],
+            [
+              101.25271523138044,
+              12.554379229098515
+            ],
+            [
+              101.25271313697007,
+              12.55435566441821
+            ],
+            [
+              101.25271230085929,
+              12.554332024353256
+            ],
+            [
+              101.25271272533949,
+              12.554308373699495
+            ],
+            [
+              101.25271440924683,
+              12.554284777281776
+            ],
+            [
+              101.25271734796551,
+              12.554261299776282
+            ],
+            [
+              101.25272153344035,
+              12.55423800553323
+            ],
+            [
+              101.2527269541989,
+              12.554214958400529
+            ],
+            [
+              101.25273359538292,
+              12.554192221548742
+            ],
+            [
+              101.25274143878904,
+              12.55416985729796
+            ],
+            [
+              101.25275046291874,
+              12.55414792694699
+            ],
+            [
+              101.2527606430372,
+              12.554126490605318
+            ],
+            [
+              101.25277195124116,
+              12.554105607028383
+            ],
+            [
+              101.25278435653539,
+              12.55408533345651
+            ],
+            [
+              101.2527978249176,
+              12.554065725458027
+            ],
+            [
+              101.25281231947172,
+              12.554046836776966
+            ],
+            [
+              101.25282780046903,
+              12.554028719185746
+            ],
+            [
+              101.25284422547709,
+              12.554011422343269
+            ],
+            [
+              101.25286154947598,
+              12.553994993658815
+            ],
+            [
+              101.25287972498181,
+              12.553979478162102
+            ],
+            [
+              101.25289870217674,
+              12.55396491837985
+            ],
+            [
+              101.25291842904564,
+              12.553951354219233
+            ],
+            [
+              101.25293885151858,
+              12.553938822858504
+            ],
+            [
+              101.25295991361911,
+              12.553927358645065
+            ],
+            [
+              101.25298155761759,
+              12.553916993001364
+            ],
+            [
+              101.25300372418947,
+              12.553907754338734
+            ],
+            [
+              101.25302635257795,
+              12.553899667979557
+            ],
+            [
+              101.25304938076039,
+              12.553892756087823
+            ],
+            [
+              101.25307274561841,
+              12.553887037608405
+            ],
+            [
+              101.25309638311084,
+              12.55388252821513
+            ],
+            [
+              101.25312022844923,
+              12.553879240267813
+            ],
+            [
+              101.2531442162755,
+              12.553877182778384
+            ],
+            [
+              101.25316828084102,
+              12.553876361386196
+            ],
+            [
+              101.25319235618683,
+              12.553876778342552
+            ],
+            [
+              101.2532163763244,
+              12.553878432504558
+            ],
+            [
+              101.25324027541659,
+              12.553881319338235
+            ],
+            [
+              101.25326398795796,
+              12.553885430930947
+            ],
+            [
+              101.25328744895447,
+              12.553890756013114
+            ],
+            [
+              101.25331059410146,
+              12.553897279989073
+            ],
+            [
+              101.25333335996004,
+              12.553904984977102
+            ],
+            [
+              101.25335568413087,
+              12.553913849858418
+            ],
+            [
+              101.25337750542525,
+              12.553923850335067
+            ],
+            [
+              101.25339876403278,
+              12.55393495899654
+            ],
+            [
+              101.25341940168535,
+              12.553947145394856
+            ],
+            [
+              101.2534393618168,
+              12.553960376128076
+            ],
+            [
+              101.253458589718,
+              12.553974614931812
+            ],
+            [
+              101.25347703268672,
+              12.55398982277863
+            ],
+            [
+              101.25349464017222,
+              12.554005957985037
+            ],
+            [
+              101.25351136391367,
+              12.554022976325722
+            ],
+            [
+              101.25352715807254,
+              12.554040831154754
+            ],
+            [
+              101.25354197935809,
+              12.554059473533469
+            ],
+            [
+              101.25355578714624,
+              12.554078852364567
+            ],
+            [
+              101.2535685435907,
+              12.554098914532211
+            ],
+            [
+              101.25358021372688,
+              12.554119605047562
+            ],
+            [
+              101.25359076556757,
+              12.554140867199532
+            ],
+            [
+              101.25360017019077,
+              12.554162642710203
+            ],
+            [
+              101.25360840181887,
+              12.554184871894579
+            ],
+            [
+              101.25361543788931,
+              12.554207493824153
+            ],
+            [
+              101.25362125911646,
+              12.554230446493946
+            ],
+            [
+              101.25362584954448,
+              12.554253666992404
+            ],
+            [
+              101.25362919659099,
+              12.554277091673876
+            ],
+            [
+              101.25363129108169,
+              12.554300656333043
+            ],
+            [
+              101.2536321272754,
+              12.55432429638089
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "target-121-vertices",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "target-121-vertices",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": null,
+        "parentCandidateGeometrySha256": null,
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "2b8fd569dd1dc7366d7197c843e37901161e40d8c7bd61cf4e9bdc0d68c00140",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": false,
+        "expectedCoverageRelationship": "valid_disjoint_candidates",
+        "derivation": "Synthetic regular 121-vertex draft inside verified manual background window; explicit planning boundary test",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.2536321272754,
+              12.55432429638089
+            ],
+            [
+              101.25363171155237,
+              12.554347751694946
+            ],
+            [
+              101.25363005710588,
+              12.55437115419637
+            ],
+            [
+              101.25362716839564,
+              12.554394440796194
+            ],
+            [
+              101.25362305320877,
+              12.554417548717879
+            ],
+            [
+              101.25361772263874,
+              12.554440415666551
+            ],
+            [
+              101.25361119105551,
+              12.554462979996941
+            ],
+            [
+              101.25360347606676,
+              12.554485180879565
+            ],
+            [
+              101.2535945984704,
+              12.554506958464719
+            ],
+            [
+              101.25358458219861,
+              12.55452825404381
+            ],
+            [
+              101.25357345425321,
+              12.554549010207635
+            ],
+            [
+              101.25356124463295,
+              12.554569171001145
+            ],
+            [
+              101.25354798625257,
+              12.554588682074288
+            ],
+            [
+              101.25353371485416,
+              12.55460749082853
+            ],
+            [
+              101.25351846891071,
+              12.554625546558663
+            ],
+            [
+              101.25350228952249,
+              12.554642800589477
+            ],
+            [
+              101.25348522030617,
+              12.554659206406999
+            ],
+            [
+              101.2534673072773,
+              12.554674719783879
+            ],
+            [
+              101.25344859872622,
+              12.554689298898625
+            ],
+            [
+              101.2534291450879,
+              12.55470290444836
+            ],
+            [
+              101.25340899880595,
+              12.554715499754746
+            ],
+            [
+              101.25338821419129,
+              12.554727050862894
+            ],
+            [
+              101.25336684727569,
+              12.554737526632891
+            ],
+            [
+              101.25334495566071,
+              12.55474689882375
+            ],
+            [
+              101.25332259836247,
+              12.55475514216954
+            ],
+            [
+              101.25329983565253,
+              12.55476223444751
+            ],
+            [
+              101.25327672889536,
+              12.55476815653799
+            ],
+            [
+              101.25325334038295,
+              12.554772892475944
+            ],
+            [
+              101.25322973316689,
+              12.554776429494
+            ],
+            [
+              101.25320597088836,
+              12.554778758056889
+            ],
+            [
+              101.25318211760658,
+              12.55477987188711
+            ],
+            [
+              101.25315823762611,
+              12.554779767981922
+            ],
+            [
+              101.25313439532351,
+              12.554778446621363
+            ],
+            [
+              101.25311065497372,
+              12.554775911367557
+            ],
+            [
+              101.25308708057692,
+              12.55477216905508
+            ],
+            [
+              101.25306373568581,
+              12.554767229772537
+            ],
+            [
+              101.25304068323442,
+              12.554761106835377
+            ],
+            [
+              101.25301798536842,
+              12.554753816749988
+            ],
+            [
+              101.25299570327756,
+              12.554745379169201
+            ],
+            [
+              101.25297389703067,
+              12.554735816839312
+            ],
+            [
+              101.25295262541384,
+              12.55472515553875
+            ],
+            [
+              101.25293194577182,
+              12.554713424008597
+            ],
+            [
+              101.25291191385351,
+              12.554700653875093
+            ],
+            [
+              101.25289258366156,
+              12.554686879564393
+            ],
+            [
+              101.25287400730696,
+              12.55467213820973
+            ],
+            [
+              101.25285623486837,
+              12.554656469551345
+            ],
+            [
+              101.25283931425727,
+              12.554639915829323
+            ],
+            [
+              101.25282329108867,
+              12.554622521669735
+            ],
+            [
+              101.25280820855822,
+              12.554604333964324
+            ],
+            [
+              101.25279410732578,
+              12.554585401744102
+            ],
+            [
+              101.2527810254057,
+              12.554565776047165
+            ],
+            [
+              101.25276899806447,
+              12.554545509781086
+            ],
+            [
+              101.25275805772552,
+              12.554524657580309
+            ],
+            [
+              101.25274823388195,
+              12.554503275658847
+            ],
+            [
+              101.25273955301692,
+              12.554481421658739
+            ],
+            [
+              101.2527320385323,
+              12.55445915449466
+            ],
+            [
+              101.2527257106856,
+              12.55443653419508
+            ],
+            [
+              101.25272058653526,
+              12.554413621740474
+            ],
+            [
+              101.25271667989486,
+              12.554390478898885
+            ],
+            [
+              101.25271400129567,
+              12.55436716805943
+            ],
+            [
+              101.25271255795842,
+              12.554343752064094
+            ],
+            [
+              101.25271235377379,
+              12.554320294038344
+            ],
+            [
+              101.25271338929183,
+              12.554296857220935
+            ],
+            [
+              101.25271566172069,
+              12.554273504793416
+            ],
+            [
+              101.25271916493391,
+              12.554250299709835
+            ],
+            [
+              101.25272388948713,
+              12.554227304527002
+            ],
+            [
+              101.25272982264346,
+              12.554204581235851
+            ],
+            [
+              101.25273694840783,
+              12.554182191094334
+            ],
+            [
+              101.25274524757015,
+              12.554160194462264
+            ],
+            [
+              101.25275469775701,
+              12.554138650638615
+            ],
+            [
+              101.25276527349212,
+              12.554117617701644
+            ],
+            [
+              101.25277694626493,
+              12.554097152352336
+            ],
+            [
+              101.25278968460748,
+              12.55407730976155
+            ],
+            [
+              101.25280345417924,
+              12.554058143421274
+            ],
+            [
+              101.25281821785971,
+              12.554039705000438
+            ],
+            [
+              101.2528339358485,
+              12.554022044205631
+            ],
+            [
+              101.25285056577258,
+              12.55400520864707
+            ],
+            [
+              101.25286806280054,
+              12.553989243710289
+            ],
+            [
+              101.25288637976345,
+              12.553974192433767
+            ],
+            [
+              101.25290546728203,
+              12.553960095392911
+            ],
+            [
+              101.25292527389973,
+              12.553946990590683
+            ],
+            [
+              101.25294574622151,
+              12.55393491335514
+            ],
+            [
+              101.25296682905768,
+              12.553923896244198
+            ],
+            [
+              101.25298846557281,
+              12.553913968957882
+            ],
+            [
+              101.25301059743882,
+              12.553905158258233
+            ],
+            [
+              101.25303316499235,
+              12.553897487897189
+            ],
+            [
+              101.25305610739547,
+              12.553890978552538
+            ],
+            [
+              101.25307936279978,
+              12.553885647772189
+            ],
+            [
+              101.2531028685131,
+              12.55388150992686
+            ],
+            [
+              101.25312656116847,
+              12.553878576171341
+            ],
+            [
+              101.25315037689501,
+              12.55387685441442
+            ],
+            [
+              101.25317425149002,
+              12.553876349297571
+            ],
+            [
+              101.25319812059219,
+              12.553877062182433
+            ],
+            [
+              101.25322191985497,
+              12.553878991147156
+            ],
+            [
+              101.25324558512006,
+              12.553882130991541
+            ],
+            [
+              101.25326905259048,
+              12.553886473251133
+            ],
+            [
+              101.2532922590024,
+              12.553892006219963
+            ],
+            [
+              101.25331514179574,
+              12.553898714982147
+            ],
+            [
+              101.25333763928285,
+              12.553906581452097
+            ],
+            [
+              101.2533596908148,
+              12.553915584423253
+            ],
+            [
+              101.25338123694486,
+              12.553925699625273
+            ],
+            [
+              101.25340221958868,
+              12.553936899789452
+            ],
+            [
+              101.25342258218103,
+              12.553949154722234
+            ],
+            [
+              101.25344226982813,
+              12.553962431386598
+            ],
+            [
+              101.25346122945577,
+              12.553976693991142
+            ],
+            [
+              101.25347940995229,
+              12.553991904086548
+            ],
+            [
+              101.25349676230638,
+              12.55400802066924
+            ],
+            [
+              101.25351323973925,
+              12.554025000291919
+            ],
+            [
+              101.25352879783071,
+              12.554042797180683
+            ],
+            [
+              101.25354339463888,
+              12.554061363358445
+            ],
+            [
+              101.25355699081332,
+              12.554080648774235
+            ],
+            [
+              101.25356954970108,
+              12.554100601438162
+            ],
+            [
+              101.25358103744553,
+              12.554121167561538
+            ],
+            [
+              101.25359142307762,
+              12.554142291701902
+            ],
+            [
+              101.25360067859934,
+              12.554163916912465
+            ],
+            [
+              101.25360877905926,
+              12.554185984895646
+            ],
+            [
+              101.25361570261974,
+              12.554208436160204
+            ],
+            [
+              101.25362143061584,
+              12.554231210181639
+            ],
+            [
+              101.25362594760561,
+              12.554254245565344
+            ],
+            [
+              101.25362924141179,
+              12.55427748021211
+            ],
+            [
+              101.2536313031545,
+              12.554300851485541
+            ],
+            [
+              101.2536321272754,
+              12.55432429638089
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "target-with-hole",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "target-with-hole",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": null,
+        "parentCandidateGeometrySha256": null,
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "054720f12b775e0da316326bb7386169e68c883dca91116b63f7db1a58a649a5",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": false,
+        "expectedCoverageRelationship": "valid_disjoint_candidates",
+        "derivation": "Synthetic valid polygon with an interior ring; unsupported planning structure",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [
+              101.25226025128141,
+              12.555239486432056
+            ],
+            [
+              101.2522445241739,
+              12.553432287819808
+            ],
+            [
+              101.25408417059653,
+              12.553416833022556
+            ],
+            [
+              101.25409991052352,
+              12.55522402933985
+            ],
+            [
+              101.25226025128141,
+              12.555239486432056
+            ]
+          ],
+          [
+            [
+              101.25280113738673,
+              12.553969812107667
+            ],
+            [
+              101.25280742976807,
+              12.554692691277246
+            ],
+            [
+              101.25354329192652,
+              12.554686508715761
+            ],
+            [
+              101.25353699749405,
+              12.553963629913373
+            ],
+            [
+              101.25280113738673,
+              12.553969812107667
+            ]
+          ]
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "target-multipolygon",
+      "properties": {
+        "fixture": true,
+        "classification": "test_fixture",
+        "fixtureId": "target-multipolygon",
+        "origin": "manual",
+        "parentResultId": "XEDO_SAR_20261011T130518Z_6152a5",
+        "parentCandidateId": null,
+        "parentCandidateGeometrySha256": null,
+        "sourceArtifactSha256": "c5e2e6b5e864ca19197b2d43fea547d77484d163fd2c278283b7d7622ebe8304",
+        "rawCandidatesFileSha256": "af35d065d7570f8477e447ba1894a1c2744e8e8cb6ac4c74e3358453349e4797",
+        "crs": "EPSG:4326",
+        "coordinateOrder": [
+          "longitude",
+          "latitude"
+        ],
+        "geometrySha256": "e325e2c128e63c2ce4ff33aff53d9f64d9544d5d89e58d7f51b06caf660eb79b",
+        "expectedGeometryValid": true,
+        "expectedPlanningStructureValid": false,
+        "expectedCoverageRelationship": "valid_disjoint_candidates",
+        "derivation": "Two explicit disjoint manual fixture polygons, not raw result replacement",
+        "reviewer": null,
+        "reviewedAt": null,
+        "actualInspectorConfirmation": false
+      },
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                101.25233729288246,
+                12.553521875310146
+              ],
+              [
+                101.25279720484725,
+                12.55351801260536
+              ],
+              [
+                101.25280113738673,
+                12.553969812107667
+              ],
+              [
+                101.25234122462075,
+                12.553973674955845
+              ],
+              [
+                101.25233729288246,
+                12.553521875310146
+              ]
+            ]
+          ],
+          [
+            [
+              [
+                101.25326498349337,
+                12.55441774781485
+              ],
+              [
+                101.25372489675455,
+                12.554413883248982
+              ],
+              [
+                101.25372883120245,
+                12.554865682431611
+              ],
+              [
+                101.25326891714002,
+                12.554869547140935
+              ],
+              [
+                101.25326498349337,
+                12.55441774781485
+              ]
+            ]
+          ]
+        ]
+      }
+    }
+  ]
+}

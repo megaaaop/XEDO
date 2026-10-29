@@ -2,7 +2,7 @@
 
 ## 1. หัวข้อ
 
-- วันที่เริ่ม: 27 ตุลาคม 2026; อัปเดต: 28 ตุลาคม 2026, Asia/Bangkok
+- วันที่เริ่ม: 27 ตุลาคม 2026; อัปเดต: 29 ตุลาคม 2026, Asia/Bangkok
 - Active checkout: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เอกสารนี้อธิบายโครงสร้างและพฤติกรรมของเว็บ ใช้คู่กับ `XEDO_WORK_LOG.md` ซึ่งเก็บประวัติการแก้ ผลตรวจ และสถานะเผยแพร่
 - ตามคำสั่งล่าสุด ให้บันทึกทั้งสองไฟล์ทุกครั้งที่ทำงานลักษณะนี้ และปรับ `implementation-queue.json` เมื่อข้อกำหนดหรือสถานะเปลี่ยน
@@ -10,6 +10,10 @@
 ## 2. สรุป
 
 สถานะล่าสุด 28 ต.ค. CoreUXเผยแพร่และตรวจProductionแล้ว code32aa243/VercelREADY/mainCI40669324786success/HTMLตรงverifiedbuild ดู§3.34 พร้อมLoginpending-errorcleanup/normalGEE/3DSatellite/mobilecheckbox/demoPlan18items ไม่มีDBAuthchanges Qualificationphysicaltouch/trackpad/heap/fullappINP/selectivecalcยังคงแยกตาม§3.32
+
+สถานะ29ต.ค.: ผู้ใช้ยืนยันว่าบัญชีตรวจได้แล้ว รับเป็นuser-confirmedและเดินแผนAIต่อโดยไม่ให้บัญชีเป็นตัวขวาง คงprivateSave/history/A–B/sessionเป็นAIintegrationregression ไม่อ้างว่าagentตรวจใหม่ แผนpreparedAI/editor/serverconfirm/plannerอยู่AI_INTEGRATION_PLAN§3.16และ§3.36ด้านล่าง รอบนี้ตรวจsource/corehashes12ไฟล์และเขียนแผน ไม่เปลี่ยนapplicationหรือบริการสดและไม่เผยแพร่ใหม่ UXcoreเผยแพร่แล้ว เหลือqualificationที่บันทึกไว้
+
+Checkpointimplementationถัดมา29ต.ค.: ผู้ใช้สั่งลงมือและอนุมัติpush/deployแล้ว SourceAI/editor/BFF/SQLถูกapplyในcheckoutและlocalflowผ่านช่วงแรก MigrationAI+catalogใช้ในxedoแล้วโดยไม่เพิ่มAuthusers รายละเอียด§3.37 กำลังตรวจfinalcandidateก่อนเผยแพร่frontend ไม่ให้อ่านสถานะplanning-onlyย่อหน้าก่อนเป็นสถานะล่าสุด
 
 กติกาเพิ่มสำหรับงานคู่ขนาน: แชทหลักนี้แก้เว็บไซต์เพียงแชทเดียว แชทสนับสนุนเตรียมข้อมูลAI/หลักฐานตรวจ/คำแนะนำ/กรณีทดสอบในโฟลเดอร์แยก แล้วส่งให้แชทหลักตรวจรับและเชื่อม รายละเอียดownershipและhandoffอยู่ข้อ3.14 ไม่ให้การทำคู่ขนานกลายเป็นหลายแชทแก้source/configของเว็บพร้อมกัน
 
@@ -510,3 +514,61 @@ Releasechecksต้องยืนยันexactGitcommit/VercelREADY+alias/CI�
 **Browser/observability:**390requestedมีpage375scroll375/dialog356scroll356ไม่ล้นและcheckboxไม่ปิดdialog InteractExitคืนpan-y/pressedfalse Consoleerrors[] Runtimeerror/fatalfilterdeployment15mคืน0groups เป็นboundedscan การเปิดpanelปิดpanelและดาวน์โหลดไม่สร้างmissionproduction ไม่ทำSITL/hardwareหรือreal-accountSaveacceptance ตัวเลข11.15min/30dialogs/20modes/10areasเป็นlocalrunเดิม ไม่เอามาอ้างproductionsoak
 
 **Maintenance:**documentation-onlyfollow-upอาจเปลี่ยนGit/deploymentidentityแต่dist/APIcodeคงเดิม ให้ดูoutput/release-check/ux-2026-10-28/release-receipt.jsonสำหรับfinalidentityและHTTPchecksหลังเอกสารpush ไม่วนเขียนexactselfSHAกลับtrackedMD Qualification/device/perfและdependencyselectivecalcเดิมยังค้าง คงstagepartialqualificationแม้coreproductionเผยแพร่แล้ว ไม่มีpendinguseranswer
+
+<!-- remaining-after-ux-release-2026-10-28 -->
+### 3.35 งานที่เหลือหลัง UX เผยแพร่ — 28 ตุลาคม 2026
+
+**หัวข้อ:** ลำดับทำงานต่อและขอบเขตที่ต้องตรวจรับ โดยไม่เปลี่ยนเลขอ้างอิงล่าสุด1UX/2บัญชี/3AI (เดิม4/5/6)
+
+**สรุป:** สองงานหลักที่ยังต้องปิดคือบัญชีจริงตรวจรับและ prepared AI implementation พร้อม editable review; UX core อยู่ productionแล้ว จึงแยก qualification ที่เหลือออกจากการสร้างฟีเจอร์ใหม่
+
+**รายละเอียด:**
+
+1. **บัญชี ล่าสุด2/เดิม5:** Auth/BFF/UI/SQL/ownership guardsเผยแพร่แล้ว และบัญชีที่ขอมีenabled rosterแล้ว เหลือ real browser login → Save revision1/2 → reopen/history → logout/sessionexpiry และ A–Bอ่าน/แก้งานข้ามเจ้าของไม่ได้ ต้องใช้บัญชีผู้ทดลองจริงที่ทีมเตรียม การตรวจ guest invalidloginและsimulated Authเดิมไม่แทนเกณฑ์นี้ ไม่ขอให้ส่งpasswordในแชทและไม่สร้างบัญชีเพิ่มจากคำถามสถานะ
+2. **AI ล่าสุด3/เดิม6:** ใช้ prepared SARเดิมไม่รันโมเดลใหม่ → overlayตามพิกัด → Inspectorรับ/แก้จุด/เพิ่ม/ปฏิเสธ/Undo/Cancel → confirm review revision → inspection polygonที่plannerรับ → Save/reopen lineageส่วนตัว เก็บ rawAIผลเดิมแยกจาก review draft/confirmed inspection geometry มี14candidatesและcandidateใหญ่สุด378vertices ขณะที่plannerรับวงเดียวไม่มีรูไม่เกิน120vertices ต้องมีvalidated adapterและให้ผู้ใช้reviewขอบเขตที่เปลี่ยน ไม่ลดรูปrawหลักฐานทับต้นฉบับหรือใช้maskเป็นหลักฐานความหนาน้ำมัน
+3. **ตรวจปิดรวม/UX ล่าสุด1/เดิม4:** ทดสอบผลแก้AIเปลี่ยนแล้วinvalidateแผนเก่า การสลับบัญชี/revision/sourceล่าช้าไม่ทับงานใหม่ Save/reopenคืนreview/targetตรงรุ่น 3ขั้น/4calculators/2D3D/mobile/readiness/exportยังครบ เก็บ physicaltouch/trackpad/OSreducedmotion และfullappP95/fieldINP/heap/listenerผลเพิ่มตามแผน; dependencyselectivecalculationเป็นoptimizationที่ยังไม่ทำ ไม่อ้างไม่มีleak/ลื่นทุกเครื่องจากผลเดิม
+
+งานPi/telemetryและผลทดลอง/รายงานก่อน–หลังพักตามเดิม profileปกติ/start-derived-endที่ตัดออกไม่เป็นreleasegate กติกาคู่ขนานคงเดิม: แชทหลักแก้เว็บ แชทสนับสนุนตรวจข้อมูล/กรณีทดสอบ/หลักฐานแบบreadonly
+
+**หลักฐาน/ขอบเขตรอบนี้:** อ่านrepositoryและเอกสารที่HEADd899784ก่อนแก้markdown ไม่มีsource/SQL/Auth/account/config changes ไม่มีtests/build/browser/API/serviceใหม่ ไม่commit/push/deploy ผลตรวจreleaseก่อนหน้าคงเป็นประวัติ ไม่รายงานว่าเพิ่งรันใหม่ ไม่มีคำถามผู้ใช้ค้าง
+
+<!-- ai-editor-planning-account-confirmed-2026-10-29 -->
+### 3.36 แผน prepared AI/editor หลังผู้ใช้ยืนยันบัญชี — 29 ตุลาคม 2026
+
+**หัวข้อ:** ล่าสุดข้อ3/เดิม6 ใช้บัญชี/ownership/session/Savehistoryที่เผยแพร่แล้วเป็นฐาน ผู้ใช้รายงานบัญชีตรวจได้แล้ว ไม่เริ่มบัญชีใหม่และไม่อ้างรายละเอียดการทดสอบที่ไม่ได้รายงาน
+
+**สรุป:** แผนลงมือcanonicalที่docs/AI_INTEGRATION_PLAN.md§3.16 แบ่งAcontract/catalog→BeditableUI→Cserverconfirmation→Dplanner/save→Eacceptance คงflow3ขั้น/4ตัวคำนวณ ไม่มีinference/Pi/newnormalprofile/schedulerewriteในรอบแรก
+
+**รายละเอียดสถาปัตยกรรม:** แยกSearchContext/immutablePreparedAnalysis/RiskDraft/ConfirmedRiskReview/PlanningTarget/PlanRevision เพิ่มOpenLayerslayersและeditorcontrollerแยกจากrouteoverlay ไม่เรียกsetGeometryทุกgestureเพราะresetSurveyและschedule รักษาภาพ/เวลาเมื่อconfirmedtargetยังมีcoverage/visiblepixelsจริงในreviewedimage ไม่ปลดreadinessด้วยflagเก่า ผลAIhistorical9ต.ค.แยกจากSentinel-2context/currentenvironment Candidate378จุดแสดงrawครบและให้วาดtargetใหม่≤120จุด ไม่clip/simplify/hullเงียบๆ manual/NoDataไม่อ้างAIพบหรือความหนาน้ำมัน
+
+Capture/restoreต่อanalysisRef/riskDraftที่schemaมีอยู่ เพิ่มserver-ownednullableconfirmedreviewบนmissionrevisionพร้อมimmutablecatalogในprivate schema ไม่ยัดraw/rasterทุกsnapshot Catalogadapterต้องsanitizebrowsermanifestและกำหนดfunctionbundle/buildincludefilesจริง Hashsourceคงเดิม Actor/time/targethashผูกsession/server/CAS/idempotency;validategeometry/catalog/coverageที่RPCด้วยเพราะauthenticatedเรียกตรงได้ ไม่ใช้BFF-onlyconfirmedflag SpatialDBcapabilityเป็นcheckpointก่อนเลือกSQL/migration ไม่อ้างPostGISพร้อมจากการอ่านsource
+
+Acceptanceครอบคลุมdatahash/georeference/edit/UndoRedoCancel/invalidgeometry/coverageholes/NoData/378point/Savehistory/crossowner/conflict/directRPC/lateexport/mobile/2D3D/24h/readinessเดิม แชทหลักแก้เว็บเพียงคนเดียว Supportทำgapmatrixและreadonlyevidencereviewจากfixturesเดิม ยังไม่dispatchuser-ownedchatจากturnวางแผนนี้
+
+**การตรวจ/สถานะรอบนี้:** อ่านsource/contracts/SQL/handoffจริงและตรวจSHA256core12ไฟล์ใหม่ตรงทั้งหมด ไม่รันapplicationtests/build/browser/API/liveDB/conversion/inference ไม่แก้source/SQL/Auth/account/config ไม่commit/push/deploy อัปเดตAIplanและสองMD/queue ไม่มีproductdecisionรอคำตอบ ยังไม่ถือว่าAIเชื่อมเว็บแล้ว
+
+### 3.37 Prepared AI/editor implementation — 29 ตุลาคม 2026 (checkpointก่อนrelease)
+
+**หัวข้อ:** แยกriskstate/geometry/editor/overlay lifecycleออกจากsetGeometryเดิม เชื่อมprivateconfirmation/plannerโดยไม่แก้aircraftprofile/scheduleที่ตัดออก
+
+**สรุป:** `planning-risk-state.js`เก็บimmutableAI/draft/undo64steps/selectedarea/baseReviewRevision;`planning-risk-geometry.js`ตรวจwhole-polygoncoverageด้วยscanline/holes/concavity;`planning-risk-editor.js`แยกOLsources/Modify/Translate/Drawและtransaction,CSSresponsive `planning-trial-client.js`ใช้confirmedtargetในbody/geospatialinputแทนsurveyIdเมื่อมีAI เก็บsearch/imagegeometryเดิมและtargetpixelcheckก่อนConfirm/Prepare/Export ไม่ใช้readyflagเก่า
+
+**รายละเอียด:** InspectorAPIเพิ่มauthenticatedanalyses/resultreadและconfirm_riskผ่านRPCเดิม Docยังschema1และlegacyAI-nullเปิดได้ Draftsaveอนุญาตunfinishedsketchแต่ไม่confirm จัดserverownedreviewบนmission_revisions.confirmed_review พร้อมlatestReviewRevision/targetHash/draftHash/actor/time Catalogอยู่xedo_private.prepared_analysis_catalogไม่มีdirectgrants/RLSenabled PostGISไม่installed;ใช้boundedSQLvalidity/edgecoverage/holepredicates ส่วนbrowserแยกNoDataไม่อ้างoil/thickness/capsuledemand Hashcatalogpayloadde736b...และrawrefsเดิมคงอยู่ Modelไม่มีsemanticversionที่ยืนยันจึงอ้างcheckpointhash ไม่สร้างconfidencepercentใหม่
+
+LocalBrowserAuthจำลอง+GEEจริงโหลด14raw→candidate→pixels→SQLconfirmv1→route112mผ่าน ชุดtestsเพิ่มครอบคลุมforgeddirectRPC/imageryidentity/decisionlinkage/geometry/CAS/history/privacy พร้อมpending/harnessguardที่กำลังเก็บ FinalqualificationและproductionUIยังรอรอบท้าย ไม่เอาผลพัฒนาแทนผลrelease
+
+Migration+seedใช้จริงแล้วบนxedo/tstmjnlhwidwtzetqxbu ผ่านSQLdashboardเพราะconnectorใช้ไม่ได้ ผลlive-migration.jsonยืนยันcatalog1/14candidate/RLS/column/functionguardและไม่มีdirectanon/authcatalogaccess ไม่สร้างAuthuserหรือเปลี่ยนcredential DBbackwardscompatibleก่อนfrontenddeploy ไม่มีคำถามผู้ใช้ค้าง Source/UI/สองMD/queueจะเติมผลfinaltests/CI/Productionหลังตรวจเสร็จ
+
+#### 3.37.1 Final implementation and regression
+
+Risk transactionsเก็บrawไม่เปลี่ยนและไม่resetsearch/image/time ใช้หนึ่งselectedPolygon3–120จุดเป็นtarget Catalog14พื้นที่รวมraw378จุดแสดงครบ Targetcoverageตรวจunion/holes/concavityจริงและNoDataแยกpartial/complete/unavailable ไม่มีการสร้างconfidencepercentหรือoilvolumeจากSAR Candidateรับ/ปฏิเสธ/manualareaแยกorigin/sourceIDs UIมีModify/Translate/Draw/Undo/Redo/Cancel และGeoJSONimport เปิดผลเดิมซ้ำไม่ทิ้งร่าง
+
+Confirm_riskผ่านauthenticatedBFFและserverRPC ทุกRPCตรงตรวจsession/owner/CAS/idempotency/analysishashes/ทุกdecisionและarealink/validtarget/footprint/imageidentityแล้วderiveactor/time/hash/reviewrevision Draftsavecarryconfirmationเฉพาะriskdraft+target+analysisตรงเดิม ไม่เชื่อclientconfirmedflag CatalogRLSไม่มีdirectanon/authgrants;helpersไม่publicexecute ไม่ติดตั้งPostGIS;boundedSQLtarget≤120จุดและboundedcatalogแทน
+
+PlanningbodyomitssurveyIdเมื่อมีAI เพื่อไม่resolveกลับsearchAOI;geospatialไม่ขอforecastพื้นที่กว้างระหว่างdraftblocked;Confirm/Prepare/ExportตรวจvisiblepixelsภายในtargetจริงจากreviewedGEEtileและexpiry token/revision/sessionguardก่อนหลังasync Targeteditล็อกroute/exportเก่าจนconfirmใหม่ Capture/restoreเก็บdurableimageidentity,analysisRef,riskDraftและconfirmedReviewต่อrevision;ไม่เก็บtileURLหรือreadinessเก่า ภาพreloadสะดุดรักษาsavedref ส่วนภาพไม่อยู่ในsearchไม่เลือกnewestแทนเงียบๆ
+
+inspector-clientdedupdocumentเทียบcaptureก่อนmarkdirty แต่interactionEpochแยกกันlateOpenทับgesture Saveuncertainretryคงmutation/bodyเดิม,receiptมาช้ารักษาร่างใหม่และขยับbaseReview,postcommitlistrefreshfailไม่รายงานว่าSaveล้มเหลว DirectBFF/SQLtestรวมcrossowner/forgedreview/source/image/decision/coverageholes/oldmission/expiredsession/CAS/idempotency
+
+ผลสด:564automatedpass/0fail/0skip,syntaxและ3buildsผ่าน BrowserAuthจำลอง+realBFF/PGlite+liveGEEได้confirm→112mroute,edit/preserveimage-time/staleexportblock/UndoRedoCancel/nativeTranslateCancel/nativeDrawUndo/Savev1-v4/history/2accountisolation;mobile390ไม่แนวนอนล้น page375/panel341 คืนviewport ตรวจsavedstateหลังSavev4และreloadฉากเดิม ไม่อ้างsuccessfulrealpasswordAIflowจากlocalfixtures หลักฐานoutput/release-check/ai-2026-10-29/local-browser.json,local-mobile.png,live-migration.json และoutput/ai-tests-final.txt Publishidentity/CI/API/productionUIเติมหลังdeploy
+
+ยังคง3steps/4calculators/2D3D/readiness/24hpolicyเดิม งานใหม่ไม่เติมaircraftprofile/schedule rewrite/Pi/training/report Fieldtestโดรน/QGC/SITL,physicaltouch/native-trackpad/heap/longsoakยังไม่อ้างผ่าน

@@ -50,6 +50,7 @@ function harness(){
     const $=selector=>document.querySelector(selector);
     let geometry=${JSON.stringify(polygon())},surveyId=null,revision=0,example=false,draw={active:true},selectHome=false,result=null,working=false,currentStep=3,review={ready:true};
     const fileMode=true,runtime={label:'Local trial',localFile:true},geeHosted=false,basemap=null;
+    let savedImageSelection=null;
     const number=(value,places=2)=>Number.isFinite(value)?value.toLocaleString('en-US',{maximumFractionDigits:places}):'Unknown';
     function stopDraw(){calls.stopDraw++;draw=null;}
     async function loadSurvey(){calls.loadSurvey++;return true;}
