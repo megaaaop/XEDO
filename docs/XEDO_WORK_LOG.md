@@ -5,20 +5,28 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **31 ตุลาคม 2026 — Home altitude ขึ้นproductionแล้ว ภาพ/JSONตรงกัน CIและpostdeployผ่าน (§3.75)**
+- อัปเดตล่าสุด: **31 ตุลาคม 2026 — ฟอร์ม4ช่องผ่านbrowserจริงครบ กำลังpush/deployตามอนุญาต (§3.79)**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
-- จุดประสงค์รอบนี้: ทำข้อ1–4 ตรวจภาพ/JSON regression เอกสาร และ push/deploy เมื่อผ่าน
-- สถานะเผยแพร่: source5c0f8c0/CI41119318880success/ProductionEmjFcwuwREADY; finaldocs-onlyidentityและCIเก็บในrelease/publication.json
-- **ขอบเขตคำสั่งล่าสุด:** อนุญาตHome repairข้อ1–4 ทดสอบ บันทึกสองMD และpush/deployเมื่อผ่าน; ห้ามBilling/subscription
+- จุดประสงค์รอบนี้: ตรวจ4ช่องบนbuildสุดท้ายและเผยแพร่เมื่อผ่าน พร้อมตรวจCI/Productionและบันทึกผล
+- สถานะเผยแพร่: localbrowserผ่าน8casesแล้ว กำลังrelease4ช่อง; ผลจริงและidentityล่าสุดจะอยู่publication.jsonของรอบนี้
+- **ขอบเขตคำสั่งล่าสุด:** อนุญาตตรวจ4ช่องและpush/deployเมื่อผ่าน บันทึกสองMD; ห้ามBilling/subscription
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
 
 **กติกาเพิ่ม 27 ต.ค.:** งานแก้/ตรวจเว็บไซต์ลักษณะนี้ต้องบันทึกสองที่: ไฟล์นี้เก็บประวัติ ผลตรวจ และการเผยแพร่; `docs/WEBSITE_DETAILS.md` เก็บโครงสร้าง พฤติกรรม dependency และรายละเอียดวิธีแก้ อัปเดตทั้งสองก่อนจบรอบ และรักษาคิว JSON ให้ตรงกัน
 
 ## 2. สรุป
+
+**ตรวจฟอร์ม4ช่องครบและกำลังเผยแพร่ — 31 ต.ค. 2026 (§3.79): browserlocalbuildสุดท้ายผ่าน8cases ภาพ/JSONตรง60m/5m/validUntilตามmissionend/sourceprofile พร้อมHomeGEE0จริง รักษาmanual0/blank/วันที่ที่กรอกเองและfirmware เข้า–ออกdemoแล้วownershipยังถูกต้อง humanreviewfalse/Downloadยังblockตามข้อมูลที่ขาด Source14pathsและ25hostedfilesรวม39hashesตรงกับ652tests/3buildsเดิม ไม่รันlocalsuiteซ้ำแต่จะตรวจCIใหม่หลังpush ไม่มีBilling/subscription**
+
+**ผู้ใช้ขอให้เติมช่องที่เหลืออัตโนมัติ — 31 ต.ค. 2026 (§3.78): ตรวจแท็บจริงHome0ตรงกับGEEแล้ว แต่ceiling/corridor/validity/sourceยังmanual จึงเพิ่มeditableplanningprofile60m/5m/วันที่ตามเวลาจบ/แหล่งอ้างอิงโปรไฟล์ พร้อมปุ่มUse planning defaultsและเก็บmanual/importownership 652tests/syntax/3buildsผ่านในเครื่อง การตรวจbrowserbuildสุดท้ายยังไม่ครบเพราะเครื่องมือหยุดยืนยันURLWindowsไม่ได้ ยังไม่pushdeploy จึงยังไม่ปิดปัญหาฝั่งเว็บจริง**
+
+**ผู้ใช้ยืนยันปิดรายการรอคำตอบแล้ว — 31 ต.ค. 2026 (§3.77): ปัญหาเล็กน้อยที่เคยให้เลื่อนคือ Home altitude เรื่องเดียวกับที่แก้/ทดสอบ/push/deployแล้ว จึงปิดรายการค้างซ้ำ ไม่ต้องขอรายละเอียดเรื่องนี้อีก ไม่มีคำตอบรอจากรายการดังกล่าว งานก่อนนำเสนอคง2รายการ: ซ้อมหลังเปิดเครื่องใหม่บนเครื่อง/เน็ตจริง และเลือกชุดภารกิจ/ไฟล์สำรอง งานพักภายหลังคงเดิม รอบนี้แก้เอกสาร/คิวตามคำยืนยัน ไม่มีimplementation/tests/runtimeหรือpublicationใหม่**
+
+**สรุปก่อนนำเสนอหลังปิด Home altitude — 31 ต.ค. 2026 (§3.76): ฟังก์ชันหลักในscope prototypeเสร็จและเผยแพร่แล้ว เหลืองานแนะนำก่อนนำเสนอ2รายการ: ซ้อมหลังเปิดเครื่องใหม่บนเครื่อง/เน็ตจริง และเลือกชุดภารกิจพร้อมไฟล์สำรอง ปัญหาเล็กน้อยอื่นที่ผู้ใช้ให้เลื่อนยังรอคำตอบเรื่องรายละเอียด แยกextended qualification/Pi/รายงานทดลอง/cloudมีค่าใช้จ่ายไว้ภายหลัง ไม่รันtests/browser/AI/CIใหม่และไม่pushdeployในรอบสรุปนี้**
 
 **Home altitude เผยแพร่และตรวจบนเว็บจริงแล้ว — 31 ต.ค. 2026 (§3.75): source5c0f8c0 / dpl_EmjFcwuwgjVoWpmVHsSDrykZ9rxW READY, CI41119318880 success ภาพProductionกับJSONก่อน–หลังตรง10.788701057434082m ตรวจ7casesทั้งlocal/productionและHTTP32checks/25buildhashesผ่าน คงneedsreview/reviewedfalse/exportguard ไม่มีBilling/subscription รายการเอกสารติดตามและidentityล่าสุดอยู่publication.json**
 
@@ -2102,3 +2110,59 @@ PostpushHTTP32checksผ่าน: HTML23516bytesและ24assetsตรง25hash
 **ผลบน Production จริง:** Guestแท็บ889234787 ไม่ใช้บัญชี/ภารกิจเดิม พื้นที่/พิกัดเดียวกับlocalได้Home10.788701057434082 ภาพproduction-home-surface.pngตรงproduction-matched-proof.jsonก่อนและหลังcapture GEEplanningready/route needsreview/reviewedfalse/Downloaddisabled Manual99→Refreshคง99,ReplaceกลับGEE,Home12.65ล้างระหว่างรอแล้ว0จริง,Manualemptyrefreshคงempty,clearlongitudeล้างค่าและปิดReplaceครบ7cases consolewarn/error0 Runtimeerror/fatalqueryของdeploymentในช่วงตรวจไม่พบlogs ไม่อ้างครอบคลุมทุกtraffic/บัญชี/บินจริง
 
 **การส่งมอบและไฟล์:** เผยแพร่10pathsเฉพาะHome (source2/tests3/vercelassetinventory/รายงาน/สองMD/queue) ผลstrictscopeและcredentialscan35filesไม่พบcredential/clientservermarkers; helperตรวจscopeเคยtrimleadingstatusspaceทำให้pathแถวแรกไม่ตรง แก้helperเป็นtrimEndแล้วผ่าน ไม่แก้productเพื่อให้ผ่าน Publicationreceipt: C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json บันทึกsourceและเอกสารติดตามSHA/CI/deploymentแยกกันเพื่อไม่เขียนself-referentialcommitID ชุดเอกสารติดตามไม่เปลี่ยนclient/API/worker จึงตรวจCIและhash/liveUIของaliasล่าสุดซ้ำ ไม่มีBilling/subscription/env/schema/accountschange ไม่มีคำถามรอคำตอบ งานHomeข้อ1–4ปิดแล้ว ปัญหาอื่นที่ผู้ใช้ให้เลื่อนไว้และqualification/Pi/รายงานทดลองยังคงสถานะเดิม ไม่เปิดงานเพิ่ม
+
+
+<!-- presentation-readiness-summary-2026-10-31 -->
+### 3.76 สรุปสิ่งที่เสร็จ / ก่อนนำเสนอ / พักไว้ — 31 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้ขอสรุปงานตามลำดับ อ่านcanonicalMD/queue/Gitและrelease receiptล่าสุดโดยไม่เปิดruntimeใหม่ พบlatestRemainingWorkAuditยังค้างHomeเป็นvisualrecheckและlatestPublishedReleaseยังเป็นCPUdelivery จึงปรับsummaryให้ตรงกับหลักฐานreleaseที่ปิดแล้ว พร้อมเก็บreleaseCPUเดิมในpublicationHistory ไม่เปลี่ยนเลขlegacyหรือเอางานที่ตัดscopeกลับมาเป็นblocker
+
+**เสร็จแล้ว:** Planner3ขั้นตอน/4ตัวคำนวณ, Inspectorprivate/Save/History, preparedAIและnewareaCPU→Inspectorแก้พื้นที่→planner, coreUX/loading/scroll, 2D/3D satelliteground, GEEstatus/cache200MB/hostedsplit, CPUCMD/Desktopshortcut/คู่มือ/Git และfixเวลา>24h/Surface/Home ล่าสุดreceiptยืนยันsource5c0f8c0/finalb621fbd/CI41119703201success/deploymentBDn4FP9dREADY,639Node/3builds/7local+7productioncases/HTTP32checks ผล633Node/84Python/CPUnewjob/Savev3/demo20itemsเป็นหลักฐานซ้อมรอบก่อนแยกกัน ไม่ใช่รันใหม่ในturnสรุป
+
+**ก่อนนำเสนอเรียงลำดับ:** (1) ซ้อมหลังเปิดเครื่องใหม่ด้วยWindowsuserเดิมบนเครื่องและเน็ตที่จะใช้จริง: Shortcut→READY→Sign in→Analyzeพื้นที่ทดสอบ→แก้/ยืนยันพื้นที่→reviewภาพ→planner/2D/3D/Home→Save/History/Open และexportเมื่อข้อมูลพร้อม; เลือกpreparedpositivecandidateอย่างน้อยหนึ่งชุดสำหรับรับ/แก้/ปฏิเสธหากผลสด0candidate ผลซ้อมcurrentmachineผ่านแล้วแต่ไม่ได้ทำOSreboot/freshdaemonrestartหรือทดสอบvenue-networkโดยagent (2) เลือกภารกิจที่Saveและรู้ผล,preparedAI,พื้นที่เล็กสำหรับสด และรวม.planสาธิต/ภาพหรือวิดีโอ/คู่มือเปิดCPUเป็นชุดเปิดง่าย เป็นงานเตรียมส่งมอบ ไม่ใช่sourcefeatureที่หาย Analyzeใหม่ยังต้องเครื่อง/worker/เน็ต
+
+**รอคำตอบ/ภายหลัง:** ปัญหาเล็กน้อยที่ผู้ใช้ระบุว่าเดี๋ยวค่อยแก้ยังไม่มีรายละเอียด จึงไม่สมมติว่าเป็นHomeหรือประกาศปิดทั้งหมด เรื่องนี้ไม่เป็นเงื่อนไขให้หยุดสรุป; ถ้ามีอาการนอกHomeที่กระทบสาธิตต้องประเมินก่อนนำเสนอ Extendedqualification(physicaldevice/longsoak/heap/session/ownership/currentpositiveAI/worstcase/near200km²/cachegraph/100งานต่อเดือน)ทำเป็นงานขยายตามขอบเขต ไม่รับประกันเสถียรภาพจากpilot QGC/SITL/บินจริงเป็นอีกqualification Piรูป/telemetryเดิม7 และผลทดลอง/รายงานก่อน–หลังเดิม8ยังพักตามคำสั่ง AIcloudCPU/GPUที่เปิดBilling/subscriptionยังไม่ทำ ส่วนnormalflowdefaultsและrewriteเวลาเดิม3ถูกตัดจากcloseoutโดยผู้ใช้ ไม่ใช่งานค้างต้องนำกลับมาทำก่อนแสดงprototype
+
+**ไฟล์/ตรวจ/เผยแพร่:** แก้เฉพาะสองcanonicalMDและqueue รักษา3mainpartsและประวัติ ตรวจparseJSON/structure/diff/Gitเท่านั้น ไม่มีproduct/tests/build/browser/CI/GEE/AI/worker/account/schema/envใหม่ ไม่มีcommit/push/deploy/Billing/subscription หลักฐานสรุป C:/mega/codex/iENA/outputs/XEDO_Status_Summary_2026-10-31/status-summary.json ใช้release receiptเดิมเป็นฐาน ไม่อ้างยืนยันlivewebsiteใหม่ในturnนี้
+
+
+<!-- home-altitude-user-clarification-2026-10-31 -->
+### 3.77 ผู้ใช้ยืนยันว่ารายการรอคำตอบคือ Home altitude ที่ปิดแล้ว — 31 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้annotateรายการรอคำตอบและแนบภาพบทสนทนารายงานHome altitude ยืนยันว่าหมายถึงเรื่องนี้และทำไปแล้ว รับคำยืนยันผู้ใช้เป็นการระบุidentityของปัญหา ปิดรายการdeferred-user-issueที่เคยเก็บแยกไว้ ไม่สร้างงานแก้ใหม่หรือขอคำตอบซ้ำ
+
+**สรุป:** เปลี่ยนdeferredUserReportedIssueเป็นresolved_user_confirmed_same_as_published_home_altitude เชื่อมไปhome-altitude-gee-autofill-2026-10-31 ลบรายการนี้จากpresentationReadinessSummary.pendingUserDetails และปิดconditional/separateUserIssueAwaitingDetailsในlatestRemainingWorkAudit เก็บuserStatementและประวัติการเลื่อนเดิมไว้ พร้อมresolvedUserDetails ไม่มีคำถามรอคำตอบของเรื่องนี้แล้ว
+
+**รายละเอียด/งานที่ยังเหลือ:** Homeมีหลักฐานreleaseก่อนหน้าว่าsource5c0f8c0/finalb621fbd,CIผ่าน,ภาพ/JSONตรงและpostdeployผ่าน ไม่รันทวนruntime/CI/testsใหม่ในturnนี้ งานแนะนำก่อนนำเสนอยังคง2ข้อ: ซ้อมหลังบูตบนเครื่อง/เครือข่ายที่จะใช้จริง และเลือกชุดภารกิจพร้อมไฟล์สำรอง งานขยายqualification/Pi/รายงานทดลอง/cloudมีค่าใช้จ่ายคงพักตามscopeเดิม normalflowrewriteเดิม3ยังถูกตัดจากcloseout
+
+**ไฟล์/ตรวจ/เผยแพร่:** อัปเดตXEDO_WORK_LOG.md/WEBSITE_DETAILS.md/implementation-queue.json โดยอ่านเนื้อหาปัจจุบันและรักษาการแก้เอกสารจากรอบสรุปก่อนหน้าไว้ครบ ตรวจJSONparse,โครงสร้างสองMDสามส่วน,สถานะไม่มีpendingซ้ำและdiffเท่านั้น ไม่มีsource/build/browser/GEE/AI/worker/บัญชี/schema/envใหม่ ไม่commit/push/deploy และไม่เปิดBilling/subscription
+
+
+<!-- export-planning-autofill-2026-10-31 -->
+### 3.78 เติม export planning fields อัตโนมัติตามคำยืนยันผู้ใช้ — 31 ตุลาคม 2026
+
+**หัวข้อ/การแก้ความเข้าใจ:** ผู้ใช้รายงานแก้แล้วยังใช้ไม่ได้ ภาพมีArduPilot/Home0แต่4ช่องว่าง จึงถามขั้นที่ติด ผู้ใช้ตอบว่าต้องการให้ช่องที่เหลือเว็บเติมให้ ยืนยันเป็นscopeเพิ่มceilingM/corridorM/validUntil/source รอบHomeก่อนแก้เฉพาะDEMheightจึงไม่ครอบคลุมความต้องการนี้ ไม่ตีความว่าเป็นHomeGEEregressionอีกครั้งและไม่ย้อนเปิดปัญหาที่ผู้ใช้ยืนยันปิดโดยไม่มีเหตุ
+
+**หลักฐานจริงก่อนแก้:** อ่านChromeแท็บ889234666แบบread-only: Homefield0, GEEHome0/EGM2008/terrainReady และข้อความmodelestimate retainedตรงกัน;4ช่องว่าง,route terrainneedsreview,airspacereviewfalse,Downloaddisabled ไม่มีการกรอกค่า/review/refresh/reloadแท็บภารกิจเดิม เก็บเฉพาะสถานะฟอร์มในproduction-before.json ไม่มีพิกัดภารกิจถูกเพิ่มเข้าGit
+
+**Implementation:** เพิ่มplanning-export-defaults.js โปรไฟล์editable60mceiling/5mcorridorซึ่งอิงค่าที่ใช้ในprototypeเดิม ไม่ใช่flightpermissionจากGEEหรือหน่วยงาน วันที่automaticตามplannedEndAtที่แสดงในฟอร์มแบบUTCตั้งแต่environmentเติมเวลาเริ่มต้น ก่อนrouteanchorเกิดด้วย Sourceเป็นXEDO planning profile v1 · planning assumptions เปลี่ยนlabelเป็นPlanning ceiling/Planning constraints valid untilให้ตรงแหล่งค่า AddUse planning defaultsปุ่มคืน4ช่องเท่านั้น ไม่เปลี่ยนfirmware/Home ไม่สร้างno-goemptyหรือtickhumanreview ฟังก์ชันownershipแยกauto/manualรายช่อง รักษา0/blankที่ผู้ใช้แก้เอง บันทึกmetadataในexport.planningDefaultsและrestoreผ่านsnapshot/Inspector/demo backup เก่าไม่มีmetadataจะรักษาค่าที่มีอยู่และเติมเฉพาะช่องขาด metadataผิดจะไม่รับสิทธิ์overwrite APIreportแยกplanningassumptionsจากmanualsourceและยังblockเมื่อairspaceยังไม่review
+
+**ไฟล์:** src/planning-export-defaults.js/newtests, src/planning-trial-client.js, src/trial-export.js, src/planning-help-content.js, public/planning.html, package.jsonsyntaxcheck, tests/planning-workflow.test.mjs/tests/planning-fixed-ui.test.mjs/tests/trial-export.test.mjs, vercel.jsonregenerated24assetinventory และสองcanonicalMD/queue เก็บdirtyเอกสาร3ไฟล์จากสองturnก่อนหน้าไว้ ไม่ปรับbattery/wind/controllerfirmware/GEEheight/exportterraingate/schedulealgorithmหรือscopeที่ตัดเดิม3ในส่วนอื่น
+
+**ทดสอบ/ข้อพบ:** Focused45แล้ว75ผ่าน ระหว่างfullครั้งแรกVMharnessfixedUIยังไม่injectfactoryใหม่จึงล้ม แก้harnessไม่ลดassertions Full651ผ่าน/syntax/3builds จากนั้นbrowserlocal5189เปิดsettingsเห็น60/5/sourceโดยไม่กรอก แต่validityยังblankเพราะUIมีendtimeก่อนscheduleanchor แก้syncให้อ่านvisiblemissionendและเพิ่มproductionworkflowtestเป็น652 สุดท้ายfullconcurrency4ครั้งหนึ่งมีWindows spawn UNKNOWNก่อนเริ่มdefaults-testprocess เก็บlogแยกแล้วลดconcurrency2 ผ่าน652/0fail/cancel/skip17.486s; syntax/hosted/workspace/portableผ่านsourceล่าสุด TestVMครอบคลุมauto/manual/snapshot/demo roundtrip/replan/invalidmetadata/blank/0/airspacereviewblock ไม่อ้างSupaSaveจริงหรือfieldflightใหม่
+
+**Browser stop/สถานะเผยแพร่/ต้องต่อ:** หลังสร้างbuildสุดท้ายพยายามreloadlocaltab เครื่องมือแจ้งDebuggerunattachedและต่อมาหยุดComputerUseทั้งturnเพราะระบุcurrentWindowsbrowserURLไม่มั่นใจ หยุดUIautomationตามที่แจ้ง ไม่ใช้Playwright/CDP/เทคโนโลยีอื่นอ้อมข้อจำกัด จึงยังไม่มีmatchedscreenshot/JSONของ4ช่องครบในfinalbuild ต้องเริ่มตรวจในturnถัดไป (รอคำตอบเพื่อดำเนินตรวจต่อ) ไม่declareproductionpass ไม่push/deploy/commit/sourceServerenv/schema/account/Billing/subscription ผลHomeเก่าปิดและpublishedยังถูกต้อง ส่วนnewautofillยังlocalpending finalUI+publicationauthorization ไม่ใช้สิทธิ์Homeเก่าเป็นblanketpermissionสำหรับdefaultscopeใหม่ ปิดpreview5189ที่เปิดเองและไม่หยุดCPUworkerหรือแก้userdraft หลักฐาน C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_2026-10-31/validation.json และlogs
+
+
+<!-- export-autofill-release-2026-10-31 -->
+### 3.79 ตรวจฟอร์ม4ช่องและเผยแพร่ตามคำสั่งผู้ใช้ — 31 ตุลาคม 2026
+
+**หัวข้อ/authorization:** ผู้ใช้สั่งตรวจ4ช่องต่อให้ครบ ถ้าผ่านpush/deployได้ บันทึกสองMD ห้ามBilling/subscription อ่านcanonical/Gitก่อนงาน รักษา14dirtypathsจากรอบก่อน (รวมเอกสารสรุป/คำยืนยันHomeที่ค้างในเครื่อง) ไม่ใช้การอนุญาตHomeเก่าแทนคำสั่งใหม่ รอบนี้ไม่มีproductsourceแก้เพิ่ม
+
+**ฐานที่ตรวจ:** initial-manifest.jsonยืนยัน14source/docs/config/testpathsและ25hostedfilesรวม39SHA256ตรงcandidatevalidationทุกไฟล์ จึงเก็บ652Nodepass/0fail/cancel/skip,syncsyntax/3buildsจากรอบก่อนเป็นretainedresults ไม่เรียกว่าfreshlocalrun CurrentGitและproductionaliasก่อนpushเป็นb621fbd/BDn4FP9dREADY/projectxedoProduction ตรงtargetที่ผู้ใช้ขอ
+
+**Browserจริงรอบนี้:** GuestChromeใหม่localhost5189ไม่แตะuserdraft/login/CPUทดสอบ8cases: initial4fields60/5/source/validUntil=visibleend; เปลี่ยนend→validUntilตาม; manual75/corridor0/sourcecustom/expiryคงเดิมเมื่อendเปลี่ยน; ล้างsource/expiryเองแล้วไม่เติมทับ; Use planning defaultsคืน4ค่าและรักษาArduPilot; เข้า–ออกEstimateddemoคืนค่าครบ; เปลี่ยนendหลังออกdemoแล้วautoexpiryยังตาม; publicarea/Home[101.20,12.65]ได้GEE0จริงร่วมกับ4defaults Captureภาพlocal-four-fields.pngตรงlocal-proof.jsonก่อน/หลังและcapturedwarn/error0 Humanreviewsfalse/Downloaddisabledทุกcaseตามข้อมูลที่ยังขาด ไม่มีการลดexportgate/สร้างairspaceapprovalหรือHome0แทนmissing
+
+**เครื่องมือ/ขอบเขตการrestore:** ลองinputfilechooserโดยคลิกinputที่hiddenทำให้รอeventtimeout/kernelreset เก็บเป็นtoolerror แล้วเลือกlabelที่มองเห็นได้จริง ได้chooserแต่setFilesติดextensionAllow access to file URLs (toolรอ183s) แจ้งผู้ใช้ตามคู่มือ ไม่ปรับสิทธิ์extensionและไม่ใช้วิธีอ้อม จึงไม่อ้างUIfileimport/จริงSupaSaveใหม่ว่าผ่าน การrestore/snapshot/demoownershipมีVM/integrationtestผ่านในsuiteเดิม และdemoเข้า–ออกผ่านbrowserจริง เก็บtool limitationแยกจากfourfieldacceptance ไม่พบเหตุให้แก้productหรือหยุดrelease4ช่องที่ผ่านแล้ว Kernelresetทำให้เริ่มcaptureชุด8casesใหม่และบันทึกทีละcaseเพื่อรักษาหลักฐาน ไม่writevalueผ่านevaluateเพื่อสร้างproof
+
+**เผยแพร่/บันทึก:** แก้สองMDและqueueปิดรอคำตอบbrowserเดิม เตรียมstrict14pathscope/credentialscan/normalpushไปmain→automaticVercelProduction→CIexactSHA→HTTP32checksด้วยmanifestใหม่→liveformacceptanceจะเติมผลจริงต่อท้าย หลักฐาน C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/ ไม่มีaccounts/schema/env/paidservice/newAIjob/workerchangeหรือQGC/SITL/บินจริง งานซ้อมreboot/ชุดสำรองและงานพักอื่นยังแยกตามเดิม

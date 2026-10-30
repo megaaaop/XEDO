@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {createPlanningSchedule} from '../src/planning-schedule.js';
+import {createPlanningExportDefaults} from '../src/planning-export-defaults.js';
 import {planningRouteSamples} from '../src/planning-route-samples.js';
 import {createEstimatedDemoInputs} from '../src/planning-estimated-demo.js';
 import {FIXED_PLANNING_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings} from '../src/planning-fixed-settings.js';
@@ -68,7 +69,7 @@ function harness() {
   };
   const input=createEstimatedDemoInputs();
   const context=vm.createContext({
-    document, calls, schedule:{...schedule,setManual:fields=>schedule.setManual(plain(fields))}, geospatialUI, AbortController, structuredClone, Date, JSON,
+    document, calls, schedule:{...schedule,setManual:fields=>schedule.setManual(plain(fields))}, exportDefaults:createPlanningExportDefaults(), geospatialUI, AbortController, structuredClone, Date, JSON,
     FIXED_PLANNING_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,planningRouteSamples,setViewProperty,paintActionButton,downloadFeedback:createActionFeedback(),
     geometry:input.geometry,surveyId:null,result:null,working:false,revision:0,abort:null,
     draw:null,selectHome:false,routePoints:[],currentStep:3,review:{ready:true},calculationTimer:null,example:false,
@@ -123,6 +124,40 @@ function harness() {
     holdExport(){let resolve;heldExport=new Promise(yes=>{resolve=yes;});return data=>resolve(data);},
   };
 }
+
+test('The visible default mission end also fills validity before route analysis has created a schedule anchor',()=>{
+ const h=harness();h.field('export','validUntil').value='';h.context.exportDefaults.restore({});
+ assert.equal(h.schedule.getState().mode,'idle');
+ h.context.syncExportPlanningDefaults();
+ assert.equal(h.context.read('export').validUntil,h.context.read('export').plannedEndAt);
+});
+
+test('Normal planner fills the export profile and ties its validity to the schedule without approving reviews',()=>{
+ const h=harness();
+ for(const key of ['ceilingM','corridorM','validUntil','source'])h.field('export',key).value='';
+ h.context.exportDefaults.restore({});h.begin();
+ const payload=plain(h.context.body());
+ assert.equal(payload.export.ceilingM,60);assert.equal(payload.export.corridorM,5);
+ assert.equal(payload.export.validUntil,h.schedule.getPatch().plannedEndAt);
+ assert.match(payload.export.source,/planning assumptions/);
+ assert.equal(payload.export.airspaceReviewed,false);assert.equal(payload.export.flatSurfaceConfirmed,false);
+ assert.equal(payload.export.firmware,'PX4','The existing firmware choice is preserved.');
+ assert.equal(payload.export.planningDefaults.fields.validUntil.mode,'automatic');
+});
+
+test('Editing export defaults is preserved across Replan; explicit reset restores defaults and clears old review',()=>{
+ const h=harness();h.begin();h.confirm();
+ for(const [key,value] of Object.entries({ceilingM:'90',corridorM:'0',source:'Inspector notes',validUntil:'2026-11-02T01:00'})){
+  const input=h.field('export',key);input.value=value;h.context.changed({target:input});
+ }
+ h.setNow(h.now()+60000);h.node('trial-replan').onclick();
+ assert.equal(h.field('export','ceilingM').value,'90');assert.equal(h.field('export','corridorM').value,'0');
+ assert.equal(h.field('export','source').value,'Inspector notes');assert.equal(h.field('export','validUntil').value,'2026-11-02T01:00');
+ h.confirm();h.node('trial-export-defaults').onclick();
+ assert.equal(h.field('export','ceilingM').value,'60');assert.equal(h.field('export','corridorM').value,'5');
+ assert.equal(h.context.body().export.validUntil,h.schedule.getPatch().plannedEndAt);
+ assert.equal(h.node('export-airspace-reviewed').checked,false);assert.equal(h.node('trial-qgc').disabled,true);
+});
 
 test('Automatic Home filling and explicit replacement use the Home sample even when route terrain is review or unknown',()=>{
  for(const state of ['review','unknown']){

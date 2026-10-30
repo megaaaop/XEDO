@@ -12,6 +12,7 @@ import {createPlanningMapOverlay} from './planning-map-overlay.js';
 import {createInspectionTileReadiness,expectedInspectionTileKeys} from './planning-image-readiness.js';
 import {initializePlanningReadiness} from './planning-readiness.js';
 import {createPlanningSchedule} from './planning-schedule.js';
+import {createPlanningExportDefaults} from './planning-export-defaults.js';
 import {planningRouteSamples} from './planning-route-samples.js';
 import {initializePlanningHelp} from './planning-help.js';
 import {initializePlanningEnvironmentUI} from './planning-environment-ui.js';
@@ -64,7 +65,7 @@ const fields={
   camera:[['sensorWidthMm','Active sensor width (mm)'],['sensorHeightMm','Active sensor height (mm)'],['focalLengthMm','Actual focal length (mm)'],['imageWidthPx','Output width (px)'],['imageHeightPx','Output height (px)'],['sideOverlap','Side overlap (%)'],['frontOverlap','Front overlap (%)'],['minTriggerIntervalS','Camera minimum interval (s)']],
   aircraft:[['altitudeM','Requested height AGL (m)'],['speedMps','Target ground speed (m/s)'],['homeLongitude','Home longitude (°)'],['homeLatitude','Home latitude (°)'],['windEastMps','Flight-level wind east (m/s)'],['windNorthMps','Flight-level wind north (m/s)'],['windLimitMps','Aircraft wind limit (m/s)'],['maxAirspeedMps','Aircraft maximum airspeed (m/s)']],
   battery:[['usableWh','Starting usable energy (Wh)'],['reserveWh','Final landing reserve (Wh)'],['powerW','Calibrated / assumed power (W)'],['takeoffS','Takeoff + climb allowance (s)'],['landingS','Landing allowance (s)'],['turnS','Allowance per turn (s)']],
-  export:[['firmware','Flight firmware','select'],['qgcVersion','Target QGC version','text'],['homeAmslM','Home altitude AMSL (m)'],['relativeHeightM','Route height above home (m)'],['ceilingM','Permitted ceiling above home (m)'],['corridorM','Route corridor margin (m)'],['plannedTakeoffAt','Scheduled takeoff (UTC)','datetime-local'],['plannedEndAt','Mission window ends (UTC; automatic data requires this)','datetime-local'],['validUntil','Constraint validity ends (UTC)','datetime-local'],['source','Constraint source / review reference','text']],
+  export:[['firmware','Flight firmware','select'],['qgcVersion','Target QGC version','text'],['homeAmslM','Home altitude AMSL (m)'],['relativeHeightM','Route height above home (m)'],['ceilingM','Planning ceiling above home (m)'],['corridorM','Route corridor margin (m)'],['plannedTakeoffAt','Scheduled takeoff (UTC)','datetime-local'],['plannedEndAt','Mission window ends (UTC; automatic data requires this)','datetime-local'],['validUntil','Planning constraints valid until (UTC)','datetime-local'],['source','Constraint source / review reference','text']],
   oil:[['pixelCount','Reviewed oil pixels'],['gsdM','Image GSD X (m/pixel)'],['gsdYM','Image GSD Y (optional; same as X)'],['areaM2','OR measured oil area (m²)'],['thicknessLowUm','Lower thickness (µm)'],['thicknessHighUm','Upper thickness (µm; blank = unknown)'],['densityGml','Oil density (g/mL)'],['capacityGg','Capacity (g oil/g dry capsules)'],['allowance','Material allowance factor'],['targetFraction','Target fraction (0–1)'],['oilFraction','Oil fraction of emulsion (0–1)']]
 };
 const prefixes={drift:'drift',camera:'flight',aircraft:'flight',battery:'flight',export:'export',oil:'oil'};
@@ -86,6 +87,7 @@ for(const [group,items] of Object.entries(fields)){
 let environmentUI=null;let geospatialUI=null;let inspectorUI=null;let riskUI=null;let applyingRiskReceipt=false;let riskPixelKey=null;
 let estimatedDemo=false,missionBackup=null;
 const schedule=createPlanningSchedule();
+const exportDefaults=createPlanningExportDefaults();
 let routePoints=[],readinessUI=null;
 let geometry=null,surveyId=null,result=null,working=false,revision=0,abort=null,draw=null,sketch=null,sketchListener=null,vertexCount=0,selectHome=false,mode='2d',renderer=null,rendererTask=null,example=false;
 let currentStep=1,review=null,webMission=null,satelliteRaster=null,satelliteAbort=null,satelliteToken=0,calculationTimer=null,satelliteBusy=false;
@@ -136,10 +138,16 @@ function queueCalculations(){
   calculationTimer=setTimeout(()=>{if(currentStep===3&&review?.ready&&!draw&&!working)$('#trial-run').click();},250);
 }
 function invalidate(){
+  syncExportPlanningDefaults();
   if(!downloadFeedback.current){$('#trial-download-status').hidden=true;$('#trial-download-status').textContent='';}
   revision++;if(!applyingRiskReceipt)inspectorUI?.changed();abort?.abort();abort=null;result=null;clearTimeout(calculationTimer);$('#trial-qgc').disabled=true;$('#trial-snapshot').disabled=true;for(const id of ['drift','flight','export','oil'])$('#'+id+'-result').textContent='Results update automatically when the mission is prepared.';$('#trial-sortie').innerHTML='<option value="0">No assessed sorties</option>';drawMap();update3D();statuses();if(working)setWorking(false);refreshFlow();geospatialUI?.changed();queueCalculations();
 }
 function field(group,key){return $('#f-'+group+'-'+key);}
+function syncExportPlanningDefaults(){
+  const patch=exportDefaults.reconcile(read('export'));
+  for(const [key,value] of Object.entries(patch))field('export',key).value=key==='validUntil'?value?.replace(/Z$/,'')||'':value??'';
+  return Object.keys(patch).length>0;
+}
 function syncScheduleFields(patch){
   let changed=false;
   for(const key of ['plannedTakeoffAt','plannedEndAt']){
@@ -149,7 +157,7 @@ function syncScheduleFields(patch){
     const unchanged=value?input.value!==''&&Date.parse(input.value+'Z')===Date.parse(patch[key]):input.value==='';
     if(!unchanged){input.value=value;changed=true;}
   }
-  return changed;
+  return syncExportPlanningDefaults()||changed;
 }
 function terrainMode(){return $('#trial-terrain-mode').value==='manual'?'manual':'automatic';}
 function terrainAssessment(){return geospatialUI?.getTerrainAssessment({toleranceM:Number($('#trial-terrain-tolerance').value)})||{mode:'gee_model',state:'unknown',label:'GEE samples unavailable',reasons:['GEE surface samples are not available.']};}
@@ -221,10 +229,12 @@ function resetReview(home=false){$('#export-airspace-reviewed').checked=false;$(
 function clearGeometry(){riskUI?.reset();resetSurvey();resetReview();schedule.reset();routePoints=[];geometry=null;surveyId=null;environmentUI?.changed();$('#trial-survey').value='';$('#trial-geometry').value='';$('#trial-source').textContent='No boundary selected.';notice();invalidate();}
 function read(group){const data={};for(const item of document.querySelectorAll('[name^="'+group+'."]')){const key=item.name.slice(group.length+1),value=item.value.trim();if(item.type==='datetime-local'){const instant=new Date(value+'Z');data[key]=/^\d{4}-\d\d-\d\dT/.test(value)&&Number.isFinite(instant.getTime())?instant.toISOString():null;}else data[key]=value===''?null:item.type==='number'?Number(value):value;}return data;}
 function body(){
+  syncExportPlanningDefaults();
   const flight=read('flight'),lon=flight.homeLongitude,lat=flight.homeLatitude;delete flight.homeLongitude;delete flight.homeLatitude;
   flight.home=lon==null&&lat==null?null:[lon,lat];
   if(flight.sideOverlap!=null)flight.sideOverlap/=100;if(flight.frontOverlap!=null)flight.frontOverlap/=100;
-  const exportSettings={...read('export'),schedule:schedule.getPatch().schedule,homeConfirmed:$('#export-home-confirmed').checked,flatSurfaceConfirmed:$('#export-flat-confirmed').checked,airspaceReviewed:$('#export-airspace-reviewed').checked};
+  const exportValues=read('export');
+  const exportSettings={...exportValues,planningDefaults:exportDefaults.metadata(exportValues),schedule:schedule.getPatch().schedule,homeConfirmed:$('#export-home-confirmed').checked,flatSurfaceConfirmed:$('#export-flat-confirmed').checked,airspaceReviewed:$('#export-airspace-reviewed').checked};
   const noGo=$('#export-nogo').value.trim();if(noGo){try{exportSettings.noGo=JSON.parse(noGo);}catch{exportSettings.noGo=noGo;}}else exportSettings.noGo=null;
   const oil={...read('oil'),emulsion:$('#oil-emulsion').checked};if(oil.gsdYM==null)delete oil.gsdYM;if(!oil.emulsion&&oil.oilFraction==null)delete oil.oilFraction;
   const drift=read('drift'),automatic=environmentUI?.getPatch();if(automatic){Object.assign(flight,automatic.flight);Object.assign(drift,automatic.drift);}
@@ -352,10 +362,11 @@ function restoreInputs(inputs){
   $('#export-nogo').value=restored.export.noGo?JSON.stringify(restored.export.noGo):'';
   $('#oil-emulsion').checked=restored.oil.emulsion===true;
   $('#trial-camera-preset').value=XEDO_HARDWARE_PROFILE.cameraPreset;updateHardwareProfileState();
+  exportDefaults.restore(restored.export);syncExportPlanningDefaults();
 }
 // Keep raw values: even a partially entered mission must survive a demo visit.
 function captureMission(){
-  return {geometry:structuredClone(geometry),surveyId,schedule:schedule.getPatch(),source:$('#trial-source').textContent,back:$('#trial-back').getAttribute('href'),riskBackup:riskUI?.backup(),savedImageSelection:structuredClone(savedImageSelection),
+  return {geometry:structuredClone(geometry),surveyId,schedule:schedule.getPatch(),exportDefaults:exportDefaults.metadata(read('export')),source:$('#trial-source').textContent,back:$('#trial-back').getAttribute('href'),riskBackup:riskUI?.backup(),savedImageSelection:structuredClone(savedImageSelection),
     controls:[...document.querySelectorAll('#trial-settings input[id],#trial-settings select[id],#trial-settings textarea[id]')].filter(input=>input.type!=='file').map(input=>({id:input.id,value:input.value,checked:input.checked}))};
 }
 function useDemo(){
@@ -373,7 +384,7 @@ function leaveDemo(){
   if(previous?.geometry)setGeometry(previous.geometry,previous.surveyId);else clearGeometry();
   if(previous){
     for(const saved of previous.controls){const input=document.getElementById(saved.id);if(input){input.value=saved.value;if(typeof saved.checked==='boolean')input.checked=saved.checked;}}
-    $('#trial-source').textContent=previous.source;$('#trial-back').setAttribute('href',previous.back);schedule.restore(previous.schedule?.schedule,previous.schedule||{});savedImageSelection=structuredClone(previous.savedImageSelection||null);riskUI?.restoreBackup(previous.riskBackup);
+    $('#trial-source').textContent=previous.source;$('#trial-back').setAttribute('href',previous.back);schedule.restore(previous.schedule?.schedule,previous.schedule||{});exportDefaults.restore({...read('export'),planningDefaults:previous.exportDefaults});syncExportPlanningDefaults();savedImageSelection=structuredClone(previous.savedImageSelection||null);riskUI?.restoreBackup(previous.riskBackup);
   }else restoreInputs(applyFixedPlanningSettings({}));
   resetReview(true);notice();geospatialUI?.changed();invalidate();drawMap();error();
   announce('Mission inputs restored. Review the image and export confirmations again.');
@@ -405,6 +416,7 @@ $('#trial-restore').onchange=async event=>{
 };
 function changed(event){
   const input=event.target,name=input.name||'',id=input.id;
+  if(name.startsWith('export.'))exportDefaults.edited(name.slice(7));
   if(name==='drift.observedAt')delete input.dataset.satelliteObservedAt;
   if(['export.plannedTakeoffAt','export.plannedEndAt'].includes(name)){
     try{schedule.setManual(read('export'));}catch{error('Choose valid takeoff and end times.');return;}
@@ -443,6 +455,11 @@ $('#trial-terrain-use-model').onclick=()=>{
   if(working||terrainMode()!=='automatic'||!geospatialUI?.canUseModelHomeEstimate())return;
   geospatialUI?.revokeHomeEstimate();field('export','homeAmslM').value='';
   geospatialUI?.useModelHomeEstimate();resetReview();invalidate();
+};
+$('#trial-export-defaults').onclick=()=>{
+  if(working)return;
+  exportDefaults.reset(read('export'));syncExportPlanningDefaults();resetReview();invalidate();
+  announce('Planning values restored. Review the route and airspace before downloading.');
 };
 $('#trial-home-clear').onclick=()=>{
   if(working)return;selectHome=false;geospatialUI?.revokeHomeEstimate();

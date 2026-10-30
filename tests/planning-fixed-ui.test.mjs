@@ -8,6 +8,7 @@ import {fileTrialAPI} from '../src/planning-file-api.js';
 import {validateGeometry} from '../src/domain.js';
 import {ESTIMATED_DEMO_PROFILE,createEstimatedDemoInputs} from '../src/planning-estimated-demo.js';
 import {createPlanningSchedule} from '../src/planning-schedule.js';
+import {createPlanningExportDefaults} from '../src/planning-export-defaults.js';
 import {createActionFeedback} from '../src/action-feedback.js';
 
 const client=await readFile(new URL('../src/planning-trial-client.js',import.meta.url),'utf8');
@@ -45,7 +46,7 @@ function harness(){
     const helper=createPlanningSchedule(options);
     return {...helper,restore:(metadata,fields)=>helper.restore(metadata==null?metadata:plain(metadata),fields==null?fields:plain(fields)),setManual:fields=>helper.setManual(plain(fields))};
   }
-  const context=vm.createContext({document,calls,structuredClone,Date,JSON,downloadFeedback:createActionFeedback(),createPlanningSchedule:scheduleFactory,XEDO_HARDWARE_PROFILE,FIXED_PLANNING_SETTINGS,FIXED_SEARCH_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,fixedSettingConflicts,validateGeometry,ESTIMATED_DEMO_PROFILE,createEstimatedDemoInputs});
+  const context=vm.createContext({document,calls,structuredClone,Date,JSON,downloadFeedback:createActionFeedback(),createPlanningSchedule:scheduleFactory,createPlanningExportDefaults,XEDO_HARDWARE_PROFILE,FIXED_PLANNING_SETTINGS,FIXED_SEARCH_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,fixedSettingConflicts,validateGeometry,ESTIMATED_DEMO_PROFILE,createEstimatedDemoInputs});
   vm.runInContext(`
     const $=selector=>document.querySelector(selector);
     let geometry=${JSON.stringify(polygon())},surveyId=null,revision=0,example=false,draw={active:true},selectHome=false,result=null,working=false,currentStep=3,review={ready:true};
@@ -95,6 +96,22 @@ test('Real read/body includes hidden constants, converts overlap once and keeps 
   const input=ui.body();assertConstants(input);assert.deepEqual(input.flight.home,[0,0]);assert.equal(input.flight.windEastMps,0);assert.equal(input.flight.reserveWh,0);assert.equal(input.flight.usableWh,null);assert.equal(input.driftEnabled,false);assert.equal(input.oil.emulsion,false);
   for(const key of ['homeConfirmed','flatSurfaceConfirmed','airspaceReviewed'])assert.equal(input.export[key],false);
   assert.equal(input.export.noGo,null);assert.equal(Object.hasOwn(input.oil,'gsdYM'),false);assert.equal(Object.hasOwn(input.oil,'oilFraction'),false);assert.deepEqual(input.geometry,polygon());
+});
+
+test('A demo visit and saved restore retain automatic validity ownership and manual source edits',()=>{
+ const ui=harness(),start='2026-11-01T01:00:00Z',end='2026-11-01T02:00:00Z';
+ ui.restore({export:{plannedTakeoffAt:start,plannedEndAt:end,source:'Inspector field notes'}});
+ assert.equal(ui.body().export.validUntil,'2026-11-01T02:00:00.000Z');
+ const original=ui.body();
+ ui.node('trial-example').onclick();ui.node('trial-demo-exit').onclick();
+ assert.equal(ui.body().export.planningDefaults.fields.validUntil.mode,'automatic');
+ assert.equal(ui.body().export.source,'Inspector field notes');
+ const later={plannedTakeoffAt:'2026-11-01T03:00:00Z',plannedEndAt:'2026-11-01T04:00:00Z'};
+ ui.schedule.setManual(later);ui.context.syncScheduleFields(ui.schedule.getPatch());
+ assert.equal(ui.body().export.validUntil,'2026-11-01T04:00:00.000Z');
+ const restored=harness();restored.restore(original);restored.schedule.setManual(later);restored.context.syncScheduleFields(restored.schedule.getPatch());
+ assert.equal(restored.body().export.validUntil,'2026-11-01T04:00:00.000Z');
+ assert.equal(restored.body().export.source,'Inspector field notes');
 });
 
 test('Real restore adopts missing constants, retains mission zeros, and is stable for matching snapshots',()=>{

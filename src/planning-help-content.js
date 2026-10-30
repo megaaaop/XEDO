@@ -197,7 +197,7 @@ export const planningHelpTopics = {
     bullets: [
       'Camera, wind and battery checks must pass. Review the real launch point. Automatic surface mode requires fresh matching GEE samples and labelled model Home-height provenance; manual surface mode requires an independently reviewed Home AMSL and flat reference. Exported heights are relative to home; this is not terrain following.',
       'Automatic takeoff is anchored one hour after route analysis. Its window includes assessed flight duration, a five-minute buffer and ten minutes between sorties. Replan creates a new anchor; add further delays through a reviewed manual schedule. An expired takeoff blocks download.',
-      'Supply the ceiling, constraint source, planned time, validity, corridor and reviewed no-go polygons. An explicit empty collection means no polygons were found in your review; missing constraints remain unknown.',
+        'The editable XEDO planning profile starts with a 60 m ceiling above Home and a 5 m corridor. Its source identifies planning assumptions. The automatic validity follows the mission end; edited or imported values are retained. Use planning defaults restores these four values. Review current restrictions and supply reviewed no-go polygons. An explicit empty collection means no polygons were found in your review.',
       'The full outbound, survey and return route is checked against the supplied polygons and corridor. These are manual inputs, with no automatic CAAT/NOTAM lookup. The checks do not install onboard geofences or verify obstacle clearance.',
       'Recheck the manual confirmations when inputs change. Download sends no commands to an aircraft. Native QGC import, firmware compatibility and isolated SITL acceptance remain untested.'
     ],

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {buildTrialFlight} from '../src/trial-flight.js';
 import {checkTrialExport,buildQGCPlan} from '../src/trial-export.js';
+import {createPlanningExportDefaults} from '../src/planning-export-defaults.js';
 
 const NOW=Date.parse('2099-01-01T00:00:00Z');
 const target={type:'Polygon',coordinates:[[[101.2,12.6],[101.202,12.6],[101.202,12.602],[101.2,12.602],[101.2,12.6]]]};
@@ -10,6 +11,15 @@ const profile={sensorWidthMm:6.4,sensorHeightMm:4.8,focalLengthMm:4,imageWidthPx
 const settings={home,homeAmslM:12,firmware:'PX4',qgcVersion:'5.1.0',relativeHeightM:50,ceilingM:120,limitReference:'relative_home',flatSurfaceConfirmed:true,homeConfirmed:true,airspaceReviewed:true,source:'Test-only manually reviewed constraint fixture; not live authority data.',plannedTakeoffAt:'2099-01-01T00:10:00Z',validUntil:'2099-01-02T00:00:00Z',noGo:{type:'FeatureCollection',features:[]},corridorM:5};
 function fixture(){return {flight:buildTrialFlight(target,structuredClone(profile)),settings:structuredClone(settings)};}
 const check=(flight,input)=>checkTrialExport(flight,input,NOW);
+test('Automatic planning source is reported as assumptions and cannot bypass Inspector airspace review',()=>{
+ const {flight,settings}=fixture(),defaults=createPlanningExportDefaults();
+ settings.plannedEndAt='2099-01-01T01:00:00Z';
+ defaults.reset(settings);Object.assign(settings,defaults.reconcile(settings));settings.planningDefaults=defaults.metadata(settings);settings.airspaceReviewed=false;
+ const report=check(flight,settings);
+ assert.equal(report.pass,false);assert.ok(report.missing.length||report.errors.length);
+ assert.match(report.checks.find(row=>row.id==='constraint-source').message,/planning assumptions/);
+ assert.ok(report.checks.some(row=>row.id==='airspaceReviewed'&&row.state!=='pass'));
+});
 const rectangle=(west,south,east,north)=>({type:'Polygon',coordinates:[[[west,south],[east,south],[east,north],[west,north],[west,south]]]});
 function controlledRoute(points){const {flight,settings}=fixture();flight.battery.sorties=[{...flight.battery.sorties[0],waypoints:points.map((position,index)=>({position,altitudeM:50,altitudeReference:'AGL',purpose:index===0?'transit':index===points.length-1?'return':'survey',dispenser:'off'}))}];return {flight,settings};}
 

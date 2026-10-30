@@ -294,22 +294,17 @@
     "latestPlanPath": "docs/AI_INTEGRATION_PLAN.md"
   },
   "currentImplementationScope": {
-    "id": "home-altitude-gee-autofill-2026-10-31",
-    "status": "published_verified_production",
+    "id": "export-planning-autofill-2026-10-31",
+    "status": "verified_local_release_in_progress",
     "applicationFeatureRepairAuthorized": true,
-    "reportRequested": true,
     "pushAuthorized": true,
     "deployAuthorized": true,
     "billingAuthorized": false,
     "subscriptionAuthorized": false,
-    "baseSourceHead": "9acdd8a",
-    "report": "docs/HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md",
+    "baseSourceHead": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
+    "latestActionScope": "User explicitly authorized finishing four-field browser checks and push/deploy when passed. Eight local cases passed; publication in progress. No Billing/subscription.",
     "pendingUserInput": null,
-    "latestActionScope": "User authorized steps1–4: matched screenshot/DOM evidence, regression, canonical docs, push/deploy if verified; no Billing/subscription",
-    "visualEvidenceRecheckRequired": false,
-    "reviewEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Home_Altitude_Report_Review_2026-10-31\\review.json",
-    "releaseEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Home_Altitude_Release_2026-10-31",
-    "publicationReceipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json"
+    "releaseEvidence": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_2026-10-31"
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
@@ -392,6 +387,20 @@
       "rawRiskGeometryMayRemainComplex": true,
       "changesAfterConfirmationInvalidatePlan": true,
       "outsideAICoverageMustNotClaimAIOrigin": true
+    },
+    "exportPlanningAutofill": {
+      "confirmedOn": "2026-10-31",
+      "userRequirement": "Auto-fill the remaining ceiling/corridor/validity/source fields from screenshot",
+      "defaultValuesProposedByImplementation": {
+        "ceilingM": 60,
+        "corridorM": 5,
+        "validUntil": "Visible mission end in UTC, follows automatic changes until manually edited",
+        "source": "XEDO planning profile v1 · planning assumptions"
+      },
+      "parameterBasis": "60m/5m reuse existing prototype planning values; not measured or official flight permissions",
+      "manualOwnershipRequired": true,
+      "humanReviewRemainsManual": true,
+      "publicationStatus": "not_published"
     }
   },
   "stages": [
@@ -993,28 +1002,31 @@
     }
   ],
   "latestPublishedRelease": {
-    "commit": "bc533a8152a9308c2c797b1980ca4308fa21b6eb",
-    "productionDeploymentId": "dpl_7xjXAYyQE2uo1aJJx4FpMx4xACpX",
+    "commit": "5c0f8c0bdd65451fcf4e37e1795182a436a3cb9c",
+    "productionDeploymentId": "dpl_EmjFcwuwgjVoWpmVHsSDrykZ9rxW",
     "url": "https://xedo-eight.vercel.app/",
     "sourceBranch": "main",
     "ciRunIds": [
-      41112463796
+      41119318880
     ],
     "ciConclusion": "success",
     "publishedOn": "2026-10-31",
     "timezone": "Asia/Bangkok",
-    "scopeId": "presentation-rehearsal-cpu-git-delivery-2026-10-31",
-    "htmlSha256": "5baaaa8f51b84d810d4861c78868f0511c278550e2f7b04304fdc4b111b0354f",
-    "htmlBytes": 23516,
-    "verificationRecord": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31\\REPORT.md",
-    "qualifiedBrowserApplicationBase": "a767faf3b67c7248e55a329579dba67a02047532",
-    "hosted25HashesUnchanged": true,
-    "browserHistoryReopen": "fresh_pre_push_v3_geometry_and_sql_match",
+    "scopeId": "home-altitude-gee-autofill-2026-10-31",
+    "verificationRecord": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json",
     "documentationFollowup": {
-      "receipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31\\publication.json",
-      "productSourceChange": false,
-      "note": "Final docs-only identity/CI and static smoke recorded after push; private UI was executed prepush and is not relabeled replayed on documentation deployments."
-    }
+      "commit": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
+      "deploymentId": "dpl_BDn4FP9dYypi3cZhgmoJWGZLwb9w",
+      "ciRunIds": [
+        41119703201
+      ],
+      "ciConclusion": "success",
+      "state": "READY",
+      "receipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json"
+    },
+    "activeProductionCommit": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
+    "activeProductionDeploymentId": "dpl_BDn4FP9dYypi3cZhgmoJWGZLwb9w",
+    "note": "Identity is from retained successful release receipt; not a fresh online check in this summary turn."
   },
   "removedFromCurrentCloseout": [
     {
@@ -3889,9 +3901,9 @@
   },
   "latestRemainingWorkAudit": {
     "date": "2026-10-31",
-    "kind": "home_altitude_report_review",
-    "sourceSection": "3.74",
-    "corePrototypeFeatureFlow": "complete_with_prior_browser_api_evidence",
+    "kind": "export_autofill_user_requirement_implemented_browser_acceptance_pending",
+    "sourceSection": "3.78",
+    "corePrototypeFeatureFlow": "Prior flow published; new export-autofill request implemented locally, final UI acceptance pending",
     "priorRuntimeProof": "outputs/XEDO_Post_Reset_Check_2026-10-30",
     "followups": [
       {
@@ -3918,8 +3930,15 @@
       },
       {
         "id": "home-altitude-gee-autofill-2026-10-31",
-        "status": "local_patch_visual_evidence_recheck_before_publication",
-        "description": "Home-only availability patch and retained639testlog reviewed;7hashes match. after.jpg showsUnknown whileDOMJSONhas10.7887. Replay matched-build UI/capture before authorized publication. Production still9acdd8a."
+        "status": "published_verified_production",
+        "description": "Source5c0f8c0 and finaldocs b621fbd published; Home screenshot/JSON matched; fresh639tests/3builds/7local+7productioncases/32HTTPchecks passed in prior release turn",
+        "receipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json"
+      },
+      {
+        "id": "export-planning-autofill-2026-10-31",
+        "status": "implemented_tested_local_final_browser_verification_pending",
+        "description": "4 export defaults implemented; 652tests/syntax/3builds passed. Final browser replay stopped by browser URL confidence guard; not published.",
+        "evidence": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_2026-10-31"
       }
     ],
     "deferredLegacyStages": [
@@ -3936,17 +3955,17 @@
     "billingOrSubscriptionOpened": false,
     "canonicalNumberingUnchanged": true,
     "ciReadFreshThisTurn": false,
-    "productionIdentityReadFreshThisTurn": true,
+    "productionIdentityReadFreshThisTurn": false,
     "docsUpdatedLocallyThisTurn": true,
     "orderedRemainingGroups": [
       {
         "order": 1,
         "id": "presentation-rehearsal",
-        "status": "completed_current_browser_and_existing_worker_flow",
+        "status": "current_machine_flow_passed_actual_reboot_and_venue_rehearsal_recommended",
         "legacyStageNumber": 4,
         "title": "ซ้อมใช้งานบนเครื่องที่จะนำเสนอหลังเปิดเครื่องใหม่",
         "completion": "XEDO CPU Worker→READY→Sign in→Analyzeพื้นที่ใหม่→Inspectorแก้/ยืนยันพื้นที่→planner/3D→Save/History/Open; สาธิตไฟล์.planด้วยflowที่ข้อมูลพร้อม",
-        "limitation": "CPUยังทำงานบนเครื่องนี้และต้องออนไลน์; ไม่อ้างว่าทดสอบOSreboot/เครือข่ายสถานที่จริงในรอบCIนี้",
+        "limitation": "No actual OS reboot/fresh worker restart by agent; user previously reported reset with READY. Final acceptance on presentation equipment/network still recommended.",
         "actualOsReboot": false,
         "freshWorkerRestart": false,
         "proofDirectory": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31"
@@ -4000,17 +4019,21 @@
       "deferredGroups": 2,
       "newMissingCoreFeatureStages": 0,
       "legacyFeatureStageCountsUnchanged": true,
-      "separateUserIssueAwaitingDetails": true
+      "separateUserIssueAwaitingDetails": false,
+      "recommendedPresentationTasks": 2,
+      "conditionalDeferredUserIssue": 0,
+      "summaryReference": "presentationReadinessSummary"
     },
     "documentationCiPending": false,
     "summaryReviewedOn": "2026-10-31",
-    "summarySourceSection": "3.71",
-    "summaryReviewScope": "Local canonical queue and Git state only; no new CI/provider/runtime tests or publication",
+    "summarySourceSection": "3.76",
+    "summaryReviewScope": "Read current canonical documents, local Git and prior completed release receipt; no fresh runtime/CI/provider/browser checks this turn",
     "completedGroupsInThisExecution": [
       1,
       2
     ],
-    "deferredUserIssue": "reported_details_pending_deferred_by_user"
+    "deferredUserIssue": "resolved_user_confirmed_same_as_published_home_altitude",
+    "currentSummary": "See presentationReadinessSummary: core complete; two recommended presentation readiness tasks, conditional deferred issue, broader qualifications and deferred integrations separate"
   },
   "publicationHistory": [
     {
@@ -4075,6 +4098,30 @@
       },
       "activeProductionCommit": "a767faf3b67c7248e55a329579dba67a02047532",
       "activeProductionDeploymentId": "dpl_DYMmXXi5Qsm2oMNM2APy5CXwv7DS"
+    },
+    {
+      "commit": "bc533a8152a9308c2c797b1980ca4308fa21b6eb",
+      "productionDeploymentId": "dpl_7xjXAYyQE2uo1aJJx4FpMx4xACpX",
+      "url": "https://xedo-eight.vercel.app/",
+      "sourceBranch": "main",
+      "ciRunIds": [
+        41112463796
+      ],
+      "ciConclusion": "success",
+      "publishedOn": "2026-10-31",
+      "timezone": "Asia/Bangkok",
+      "scopeId": "presentation-rehearsal-cpu-git-delivery-2026-10-31",
+      "htmlSha256": "5baaaa8f51b84d810d4861c78868f0511c278550e2f7b04304fdc4b111b0354f",
+      "htmlBytes": 23516,
+      "verificationRecord": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31\\REPORT.md",
+      "qualifiedBrowserApplicationBase": "a767faf3b67c7248e55a329579dba67a02047532",
+      "hosted25HashesUnchanged": true,
+      "browserHistoryReopen": "fresh_pre_push_v3_geometry_and_sql_match",
+      "documentationFollowup": {
+        "receipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31\\publication.json",
+        "productSourceChange": false,
+        "note": "Final docs-only identity/CI and static smoke recorded after push; private UI was executed prepush and is not relabeled replayed on documentation deployments."
+      }
     }
   ],
   "ciDocumentationFollowupExecution": {
@@ -4098,11 +4145,17 @@
   },
   "deferredUserReportedIssue": {
     "recordedOn": "2026-10-31",
-    "status": "reported_details_pending_deferred_by_user",
+    "status": "resolved_user_confirmed_same_as_published_home_altitude",
     "userStatement": "ตอนนี้ผมลองใช้เเล้วมีปัญหานิดนึง เดี๋ยวค่อยเเก้",
-    "repairDeferredByUser": true,
+    "repairDeferredByUser": false,
     "blocksAuthorizedRehearsalAndDelivery": false,
-    "detailsSupplied": false
+    "detailsSupplied": true,
+    "pendingDetailsLabel": null,
+    "distinctFromClosedHomeAltitudeUntilUserClarifies": false,
+    "originalRepairDeferredByUser": true,
+    "sameIssueId": "home-altitude-gee-autofill-2026-10-31",
+    "resolvedOn": "2026-10-31",
+    "resolution": "ผู้ใช้ยืนยันว่าปัญหาเล็กน้อยที่ให้เลื่อนไว้คือ Home altitude ตามภาพรายงาน ซึ่งแก้และเผยแพร่ไปแล้ว"
   },
   "presentationCpuDeliveryExecution": {
     "recordedOn": "2026-10-31",
@@ -4313,5 +4366,238 @@
     "productionConsoleWarnError": 0,
     "runtimeErrorFatalQuery": "no_logs_found_in_scoped_window",
     "receipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json"
+  },
+  "presentationReadinessSummary": {
+    "recordedOn": "2026-10-31",
+    "sourceSection": "3.78",
+    "basis": "Read current canonical documents, local Git and prior completed release receipt; no fresh runtime/CI/provider/browser checks this turn",
+    "head": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
+    "verifiedReleaseReceipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json",
+    "completed": [
+      {
+        "id": "planner",
+        "title": "Planner 3 ขั้นตอนและตัวคำนวณ 4 ส่วน",
+        "evidence": "Existing workflow preserved; demo .plan actually downloaded/validated in rehearsal; normal export still requires complete inputs and review"
+      },
+      {
+        "id": "inspector",
+        "title": "บัญชี Inspector ส่วนตัว / Save / History / เปิดภารกิจกลับ",
+        "evidence": "User account accepted; real-account workflow and ownership evidence retained"
+      },
+      {
+        "id": "ai",
+        "title": "Prepared AI และวิเคราะห์พื้นที่ใหม่ผ่าน CPU ในเครื่อง พร้อมแก้พื้นที่เสี่ยง",
+        "evidence": "Published local CPU Analyze→editable/manual target→confirm→planner→Save/reopen pilot evidence"
+      },
+      {
+        "id": "ux",
+        "title": "ข้อความ / loading / checkbox / scroll lifecycle",
+        "evidence": "Core published with bounded desktop/browser checks; extended device/long-soak qualifications remain separate"
+      },
+      {
+        "id": "preview",
+        "title": "2D/3D และพื้นภาพดาวเทียม",
+        "evidence": "Published; route and satellite-ground browser rehearsal retained"
+      },
+      {
+        "id": "gee-performance",
+        "title": "GEE diagnostics / 200MB cache / ลดหน้าเริ่มต้น",
+        "evidence": "Published phase1–6; actual persistent reuse tested; no universal latency promise"
+      },
+      {
+        "id": "cpu-delivery",
+        "title": "CPU launcher / Desktop shortcut / คู่มือ / Git delivery",
+        "evidence": "Published bc533a8; shortcut READY and duplicate-start guard checked; actual OS reboot not performed by agent"
+      },
+      {
+        "id": "runtime-repairs",
+        "title": "เวลาอัตโนมัติเกิน24h / Surfaceข้อความ / Home altitude",
+        "evidence": "Published respective fixes; latest Home639tests/3builds/7local+7production cases/32HTTPchecks; matched visual+JSON"
+      }
+    ],
+    "beforePresentation": [
+      {
+        "order": 1,
+        "id": "export-planning-autofill-2026-10-31",
+        "status": "implemented_tested_local_final_browser_verification_pending",
+        "title": "ปิดงานเติม4ช่องอัตโนมัติ: ตรวจหน้าจอ build สุดท้าย แล้วเผยแพร่เมื่ออนุญาต",
+        "limitation": "Code/tests ready in local checkout; production still b621fbd and retains manual fields"
+      },
+      {
+        "order": 2,
+        "id": "actual-device-reboot-and-venue-rehearsal",
+        "status": "recommended_final_acceptance_not_run_this_turn",
+        "title": "ซ้อมหลังเปิดเครื่องใหม่ บนเครื่องและอินเทอร์เน็ตที่จะใช้จริง",
+        "steps": [
+          "Windows user เดิม→Desktop XEDO CPU Worker→READY",
+          "Sign in→Analyzeพื้นที่ทดสอบ→รอสำเร็จ",
+          "แก้/ยืนยันพื้นที่→reviewภาพ→planner/2D/3D/Home",
+          "Save→History→เปิดกลับ; สาธิต .plan ด้วยชุดข้อมูลพร้อม"
+        ],
+        "acceptance": "หนึ่งรอบต่อเนื่องสำเร็จ; ใช้prepared positive candidateเพื่อซ้อมรับ/แก้/ปฏิเสธอย่างน้อยหนึ่งชุดหากCPUสดไม่พบcandidate",
+        "limitation": "Prior current-machine flow and user reset report exist; no agent-verified actual OS reboot/venue-network run. Not a request to reboot the user computer now."
+      },
+      {
+        "order": 3,
+        "id": "fixed-presentation-and-backup-pack",
+        "status": "recommended_collection_not_run_this_turn",
+        "title": "เลือกชุดนำเสนอและจัดไฟล์สำรองให้เปิดได้ทันที",
+        "steps": [
+          "เลือกภารกิจที่Saveแล้วและรู้ผลอย่างน้อยหนึ่งงาน",
+          "เลือกprepared AIที่มีcandidateและพื้นที่เล็กสำหรับAnalyzeสด",
+          "รวม .planสาธิต/ภาพหน้าจอหรือวิดีโอ/คู่มือเปิดCPUไว้ในโฟลเดอร์เดียว"
+        ],
+        "acceptance": "เปิดmissionที่เลือก/ไฟล์สำรองได้ และระบุข้อมูลสาธิตตามจริง; Analyzeใหม่ยังต้องPC/worker/อินเทอร์เน็ต",
+        "limitation": "Existing missions/demo/evidence exist; no new package/video/analysis/rehearsal made in summary turn"
+      }
+    ],
+    "later": [
+      {
+        "order": 1,
+        "id": "extended-qualification",
+        "status": "optional_separately_scoped_qualification",
+        "title": "ทดสอบขยายหลังงานนำเสนอ",
+        "details": "Physical mobile/touch/trackpad, hours-long/heap/listeners, session expiry/conflict/two-account regression on current build, near200km²/worst-case geometry, long-run throughput/cache and changing asset graph; QGroundControl/SITL/real flight separate from prototype presentation"
+      },
+      {
+        "order": 2,
+        "id": "raspberry-pi-telemetry",
+        "legacyStage": 7,
+        "status": "deferred_by_user",
+        "title": "Raspberry Pi รูปและ telemetry"
+      },
+      {
+        "order": 3,
+        "id": "experiment-before-after-reports",
+        "legacyStage": 8,
+        "status": "deferred_by_user",
+        "title": "ผลทดลองและรายงานก่อน–หลัง; รอข้อมูลจริง"
+      },
+      {
+        "order": 4,
+        "id": "paid-cloud-runtime",
+        "status": "deferred_no_billing_or_subscription",
+        "title": "ย้าย AI ไป cloud CPU/GPU หรือบริการที่ต้องเปิด Billing/subscription"
+      }
+    ],
+    "excluded": {
+      "legacyStage": 3,
+      "status": "removed_by_user_not_a_remaining_blocker",
+      "scope": "Normal-flow aircraft defaults and user-start/derived-end rewrite were removed from current prototype closeout; normal export completeness is not a new closeout gate"
+    },
+    "pendingUserDetails": [],
+    "freshTests": false,
+    "freshBrowserOrAi": false,
+    "pushOrDeploy": false,
+    "billingOrSubscription": false,
+    "resolvedUserDetails": [
+      {
+        "recordedOn": "2026-10-31",
+        "sourceSection": "3.77",
+        "status": "resolved_user_confirmed_same_as_published_home_altitude",
+        "userClarification": "ผู้ใช้ยืนยันว่าปัญหาเล็กน้อยที่ให้เลื่อนไว้คือ Home altitude ตามภาพรายงาน ซึ่งแก้และเผยแพร่ไปแล้ว",
+        "sameIssueId": "home-altitude-gee-autofill-2026-10-31",
+        "priorReleaseReceipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json",
+        "newImplementationOrTests": false,
+        "pushOrDeploy": false,
+        "billingOrSubscription": false
+      }
+    ],
+    "clarificationThisTurn": true,
+    "currentRequiredRepair": "export-planning-autofill-2026-10-31"
+  },
+  "homeAltitudeUserClarification": {
+    "recordedOn": "2026-10-31",
+    "sourceSection": "3.77",
+    "status": "resolved_user_confirmed_same_as_published_home_altitude",
+    "userClarification": "ผู้ใช้ยืนยันว่าปัญหาเล็กน้อยที่ให้เลื่อนไว้คือ Home altitude ตามภาพรายงาน ซึ่งแก้และเผยแพร่ไปแล้ว",
+    "sameIssueId": "home-altitude-gee-autofill-2026-10-31",
+    "priorReleaseReceipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json",
+    "newImplementationOrTests": false,
+    "pushOrDeploy": false,
+    "billingOrSubscription": false
+  },
+  "priorImplementationScopes": [
+    {
+      "id": "home-altitude-gee-autofill-2026-10-31",
+      "status": "published_verified_production",
+      "applicationFeatureRepairAuthorized": true,
+      "reportRequested": true,
+      "pushAuthorized": true,
+      "deployAuthorized": true,
+      "billingAuthorized": false,
+      "subscriptionAuthorized": false,
+      "baseSourceHead": "9acdd8a",
+      "report": "docs/HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md",
+      "pendingUserInput": null,
+      "latestActionScope": "User authorized steps1–4: matched screenshot/DOM evidence, regression, canonical docs, push/deploy if verified; no Billing/subscription",
+      "visualEvidenceRecheckRequired": false,
+      "reviewEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Home_Altitude_Report_Review_2026-10-31\\review.json",
+      "releaseEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Home_Altitude_Release_2026-10-31",
+      "publicationReceipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json"
+    }
+  ],
+  "exportPlanningAutofillExecution": {
+    "date": "2026-10-31",
+    "scopeId": "export-planning-autofill-2026-10-31",
+    "status": "verified_local_release_in_progress",
+    "baseCommit": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
+    "automaticFields": {
+      "ceilingM": 60,
+      "corridorM": 5,
+      "validUntil": "Visible mission end in UTC, follows automatic changes until manually edited",
+      "source": "XEDO planning profile v1 · planning assumptions"
+    },
+    "parameterBasis": "60m/5m reuse existing prototype planning values; not measured or official flight permissions",
+    "homeFinding": "Production user-tab GEE Home value 0 matched the form; new requested scope is the other four blank fields",
+    "preserved": [
+      "Manual edits including 0 and empty",
+      "Saved/imported values and ownership metadata",
+      "Existing firmware and GEE Home",
+      "Human route/airspace review and all export gates",
+      "Three steps/four calculators"
+    ],
+    "tests": {
+      "pass": 652,
+      "fail": 0,
+      "cancel": 0,
+      "skip": 0,
+      "concurrency": 2,
+      "durationMs": 17485.9268
+    },
+    "syntax": "passed",
+    "builds": [
+      "hosted",
+      "workspace",
+      "portable"
+    ],
+    "browser": {
+      "productionBeforeReadOnly": true,
+      "userMissionModified": false,
+      "localInitialThreeProfileValuesSeen": true,
+      "localInitialValidityGapFoundAndFixed": true,
+      "finalBuildReplayCompleted": true,
+      "reason": null,
+      "previousStopReason": "Computer Use ended because it could not determine current Windows browser URL confidently; no further UI automation attempted.",
+      "matchedScreenshot": "local-four-fields.png",
+      "fourFieldsVerified": true,
+      "snapshotUploadThroughChrome": "not_executed_extension_file_url_permission; VM restore tests passed",
+      "capturedWarningsErrors": 0
+    },
+    "failuresRetained": [
+      "Initial VM harness lacked the imported helper; harness updated and re-tested",
+      "One Windows spawn UNKNOWN before the defaults test process started; full suite re-run at concurrency2 passed"
+    ],
+    "push": false,
+    "deploy": false,
+    "billingOrSubscription": false,
+    "evidence": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_2026-10-31",
+    "pushAuthorized": true,
+    "deployAuthorized": true,
+    "releaseEvidence": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31",
+    "localBrowserCases": 8,
+    "newLocalTestsRunThisTurn": false,
+    "retainedLocalTests": 652,
+    "sourceAndAssetHashesMatched": 39
   }
 }

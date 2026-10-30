@@ -1,6 +1,7 @@
 import proj4 from 'proj4';
 import {validateGeometry} from './domain.js';
 import {missionWindowProblem} from './planning-time-window.js';
+import {EXPORT_PLANNING_PROFILE} from './planning-export-defaults.js';
 
 const VERSION='xedo-qgc-trial/1';
 const MAX_SORTIES=40,MAX_WAYPOINTS=500,MAX_TOTAL_WAYPOINTS=5000,MAX_NO_GO=32,MAX_NO_GO_VERTICES=2000;
@@ -103,7 +104,11 @@ export function checkTrialExport(flight,settings={},nowMs=Date.now()){
   else add('qgc-version',/^v?5\.1(?:\.\d+)?$/.test(qgcVersion)?'pass':'blocked',/^v?5\.1(?:\.\d+)?$/.test(qgcVersion)?'QGroundControl 5.1.x format selected; native import testing remains required.':'This trial adapter targets QGroundControl 5.1.x only.');
   if(!text(settings.source))add('constraint-source','incomplete','Record the source of the manual constraint review.');
   else if(settings.source.length>1000)add('constraint-source','blocked','Constraint source must stay within 1000 characters.');
-  else add('constraint-source','pass','Manual source recorded. It is user-attested, not an authoritative provider lookup.');
+  else {
+    const profile=settings.planningDefaults,source=profile?.fields?.source;
+    const planningSource=profile?.version===1&&profile.profileId===EXPORT_PLANNING_PROFILE.id&&source?.mode==='automatic'&&source.value===settings.source&&settings.source===EXPORT_PLANNING_PROFILE.source;
+    add('constraint-source','pass',planningSource?'XEDO planning assumptions recorded. Current route and airspace restrictions still require Inspector review.':'Manual source recorded. It is user-attested, not an authoritative provider lookup.');
+  }
   const plannedTakeoffMs=isoTime(settings.plannedTakeoffAt),validUntilMs=isoTime(settings.validUntil);
   if(settings.plannedTakeoffAt==null||settings.plannedTakeoffAt==='')add('takeoff-time','incomplete','Specify the planned takeoff time with a UTC offset.');
   else if(plannedTakeoffMs===null)add('takeoff-time','blocked','Planned takeoff time must be a valid ISO timestamp with a UTC offset.');
