@@ -8,14 +8,15 @@
     "currentUserFacingOrderField": "remainingWorkOrder[].newNumber",
     "defaultForNewInstructions": "Use the 2026-10-27 revised numbering. Match quotations/annotations to their source numbering: previous1/legacy3 removed; revised1=previous2/legacy4, revised2=previous3/legacy5, revised3=previous4/legacy6.",
     "historicalReferences": "Existing stage IDs, resolved-decision stage references, release scope and prior publication authorization retain their legacy numbers. On-demand inference is a new2026-10-29 scope, current6/legacy9; prepared integration legacy6 remains published.",
-    "activeRemainingCount": 2,
+    "activeRemainingCount": 1,
     "deferredRemainingCount": 2,
-    "totalRemainingCount": 4,
+    "totalRemainingCount": 3,
     "completedLegacyStageIds": [
       1,
       2,
       5,
-      6
+      6,
+      9
     ],
     "excludedFromCurrentCloseoutLegacyStageIds": [
       3
@@ -58,7 +59,7 @@
       "newNumber": 1,
       "previousNumber": 2,
       "legacyStageNumber": 4,
-      "scope": "active",
+      "scope": "extended_qualification_only",
       "name": "Approved UX cleanup preserving accepted prototype behavior"
     },
     {
@@ -93,7 +94,7 @@
       "newNumber": 6,
       "previousNumber": null,
       "legacyStageNumber": 9,
-      "scope": "active_local_phases1_6_complete_website_release_pending",
+      "scope": "published_production_qualified_pilot",
       "name": "On-demand new-area SAR analysis using local CPU worker, with cloud execution deferred"
     }
   ],

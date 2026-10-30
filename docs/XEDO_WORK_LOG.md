@@ -64,7 +64,7 @@
 
 **ประเด็นเดิมในข้อก่อนหน้า1/เดิม3:** GEEdiagnosticsเผยแพร่แล้ว ส่วนprofileปกติและการกรอกstart/derivedendยังไม่implementและถูกผู้ใช้ตัดจากเกณฑ์ปิดงานล่าสุด เก็บรายละเอียดเดิมข้อ3.5ไว้เป็นประวัติ ไม่ให้งานที่ตัดกลับมาขวางUX/บัญชี/AI
 
-**คงเลขอ้างอิงเดิม: ฟังก์ชันหลักUX/บัญชี/preparedAIเผยแพร่แล้ว เหลือqualificationอุปกรณ์/ประสิทธิภาพและการตรวจรับAIด้วยบัญชีจริงของผู้ใช้ ส่วนPi/รายงานพักไว้2รายการ** ไม่ลบประวัติการตรวจบัญชีเดิมหรืออ้างผลagentใหม่ ข้อก่อนหน้า1/เดิม3ยังถูกตัดออกจากรอบนี้ ข้อเดิม1–2เผยแพร่แล้ว
+**คงเลขอ้างอิงเดิม: ฟังก์ชันหลักUX/บัญชี/preparedAI/AIพื้นที่ใหม่เผยแพร่แล้ว และตรวจproductionด้วยบัญชีจริงครบตาม§3.49–3.50 เหลือqualificationอุปกรณ์/ประสิทธิภาพแยก1กลุ่ม ส่วนPi/รายงานพักไว้2รายการ** ไม่มีคำถามรอคำตอบ ข้อก่อนหน้า1/เดิม3ยังถูกตัดออกจากรอบนี้
 
 | เลขล่าสุด | เลขเดิม | งาน | สถานะ/เกณฑ์ที่ต้องทำต่อ |
 | --- | --- | --- | --- |
@@ -1363,3 +1363,6 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 **เอกสาร/เผยแพร่/หลักฐาน:** เก็บscreenshots/production-history-versions.png,production-history-opened-v3.png,production-restored-ai-review.pngและปรับbrowser-actions.json/REPORT.md/queueเป็นpassed ไม่มีรอคำตอบ CanonicalสองMD/queue/localplan/workerREADMEอัปเดตclosureแล้ว Docscommitad1359ec2389043572c43dbee7638e0eb4d25917เคยREADYที่dpl_2bhptbByMBJwi6KxSnk7a1pdEWjC/mainCI41045535830และfeatureCI41045330460success;รอบนี้จะpushdocs-onlyfollowupปิดpendingและตรวจidentity/HTMLอีกครั้ง บันทึกสุดท้ายในphase7release-receipt.json ไม่เปลี่ยนapplicationหลัง6a1c626/ไม่applySQL/Auth/Billing/subscription ไม่รัน611Node/69PythonหรือCPUใหม่เพราะแก้เฉพาะเอกสาร ผลทดสอบเหล่านั้นเป็นpreflightสดของreleaseเดียวกัน มิใช่รอบใหม่ของการปิดHistory
 
 **ขอบเขตที่ยังแยกไว้:** browsercoreและprivatehistoryจบแล้ว; signed-inmobile/physicaltouch-trackpad/heap/listeners/100jobsmonthlongsoak/คนละmachine-sessionrace/รอharddeadline30minจริง/worstcase8192vertsยังไม่ทดสอบ ไม่ถือเป็นfeatureimplementationค้าง Pi/telemetryและรายงานก่อน–หลังยังพักตามผู้ใช้ ผล0candidateไม่ยืนยันว่าไม่มีน้ำมัน ไม่มีBilling/subscriptionหรือcloudcomputeใหม่
+
+
+**ปรับดัชนีคิวหลังปิดขั้น7:** remainingWorkOrderเลข6/เดิม9เป็นpublished_production_qualified_pilotและcompletedLegacyStageIdsเพิ่ม9;activeRemainingCount1/deferred2/total3หมายถึงqualificationUXแยกหนึ่งกลุ่มกับPi/รายงานที่พักสองรายการ ไม่ใช่ฟังก์ชันAIยังรอเผยแพร่ ไม่มีimplementation/SQL/Auth/testใหม่ในการแก้ดัชนีเอกสารนี้ รักษาผล611Node/69Pythonและproductionproofข้างบนเป็นหลักฐานreleaseเดียวกัน Finaldocs-onlycommit/deployment/CI/HTMLรับจริงบันทึกในphase7release-receipt.json
