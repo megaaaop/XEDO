@@ -278,7 +278,7 @@
   },
   "currentImplementationScope": {
     "id": "local-cpu-phase7-production-release-2026-10-30",
-    "status": "preflight_passed_awaiting_feature_ci",
+    "status": "published_core_verified_browser_history_reauth_pending",
     "hostedMigrationAuthorized": false,
     "hostedSchemaAlreadyApplied": true,
     "pushAuthorized": true,
@@ -286,7 +286,7 @@
     "billingAuthorized": false,
     "subscriptionAuthorized": false,
     "proof": "outputs/XEDO_Local_AI_Phase7_2026-10-30",
-    "pendingUserInput": null
+    "pendingUserInput": "phase7-browser-history-reauth"
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
@@ -517,7 +517,7 @@
     {
       "number": 9,
       "name": "On-demand new-area SAR inference via local CPU worker",
-      "status": "phase7_release_in_progress",
+      "status": "published_core_verified_browser_history_reauth_pending",
       "implementationApproved": true,
       "publicationApproved": true,
       "billingApproved": false,
@@ -583,7 +583,15 @@
         "New real-area qualification, ownership/Storage/security/failure regression before release"
       ],
       "futureGpu": "Benchmark T4/L4 only if model inference dominates measured end-to-end latency",
-      "pendingUserAnswers": [],
+      "pendingUserAnswers": [
+        {
+          "id": "phase7-browser-history-reauth",
+          "status": "รอคำตอบ",
+          "kind": "runtime_user_action",
+          "question": "Sign in ใหม่ที่เว็บ production แล้วแจ้งเข้าแล้ว เพื่อทดสอบ History → reopen ผ่านหน้าจอหลัง session หมดอายุ",
+          "doesNotBlockPublishedCore": true
+        }
+      ],
       "assuranceClarification": {
         "recordedOn": "2026-10-30",
         "cpuCloudIsProposal": true,
@@ -659,7 +667,7 @@
         },
         "evidenceDirectory": "outputs/XEDO_CPU_Readiness_2026-10-30",
         "report": "outputs/XEDO_CPU_Readiness_2026-10-30/READINESS_REPORT.md",
-        "cloudNextStep": "Local phases1-5 candidate verified. Remaining phase6 real hosted/multi-connection/extended qualification, then separately authorized phase7 SQL/machine account/registry/website release. No Cloud Run/GCS/Billing/subscription or publishing."
+        "cloudNextStep": "Local phases1-7 core published. Keep CPU daemon online for new jobs; no cloud execution/Billing/subscription. Production browser history reopen awaits user signin; extended qualifications remain separate."
       },
       "localBenchmarkExecutionApproved": true,
       "localBenchmark": {
@@ -733,11 +741,10 @@
         3,
         4,
         5,
-        6
-      ],
-      "remainingLocalPhases": [
+        6,
         7
       ],
+      "remainingLocalPhases": [],
       "approvedLocalPhases": [
         1,
         2,
@@ -757,10 +764,12 @@
         5,
         6
       ],
-      "latestImplementationScope": "Phase6 real Supabase schema/identity/owned queue + local CPU/browser qualification complete; no Billing/subscription, website commit/push/deploy.",
-      "latestEvidence": "outputs/XEDO_Local_AI_Phase6_2026-10-30/REPORT.md",
+      "latestImplementationScope": "Phase7 website published and production CPU/API/browser core verified. BrowserHistoryreopen awaits user reauthentication; extended qualifications remain separate. No Billing/subscription.",
+      "latestEvidence": "outputs/XEDO_Local_AI_Phase7_2026-10-30/REPORT.md",
       "hostedSchemaApplied": true,
-      "websiteReleaseAuthorized": true
+      "websiteReleaseAuthorized": true,
+      "productionCommit": "6a1c626cda0cf6dad22b603d6647f41b325598ff",
+      "productionDeploymentId": "dpl_6G8DzTyKUYskvxza8Fb5KUYEoByE"
     }
   ],
   "openIssues": [
@@ -796,7 +805,15 @@
       "currentCloseoutStatus": "GEE diagnostics published; broader legacy3 work removed by user"
     }
   ],
-  "unansweredDecisions": [],
+  "unansweredDecisions": [
+    {
+      "id": "phase7-browser-history-reauth",
+      "status": "รอคำตอบ",
+      "kind": "runtime_user_action",
+      "question": "Sign in ใหม่ที่เว็บ production แล้วแจ้งเข้าแล้ว เพื่อทดสอบ History → reopen ผ่านหน้าจอหลัง session หมดอายุ",
+      "doesNotBlockPublishedCore": true
+    }
+  ],
   "resolvedDecisions": [
     {
       "id": "inspector_account_production_release_approval",
@@ -947,16 +964,22 @@
     }
   ],
   "latestPublishedRelease": {
-    "commit": "d5ec33fbb186145440acffed718972c9b8fc8063",
-    "productionDeploymentId": "dpl_8tjaooDbxEodG8kmHiE5yJfNLwac",
-    "url": "https://xedo-eight.vercel.app",
+    "commit": "6a1c626cda0cf6dad22b603d6647f41b325598ff",
+    "productionDeploymentId": "dpl_6G8DzTyKUYskvxza8Fb5KUYEoByE",
+    "url": "https://xedo-eight.vercel.app/",
     "sourceBranch": "main",
-    "ciRunId": 40574633798,
+    "ciRunIds": [
+      41042450911,
+      41042599241
+    ],
     "ciConclusion": "success",
-    "publishedOn": "2026-10-28",
+    "publishedOn": "2026-10-30",
     "timezone": "Asia/Bangkok",
-    "scopeId": "time-surface-fix-2026-10-28",
-    "verificationRecord": "Follow-up documentation commit may advance deployment identity without changing application code; final identity recorded in local release-receipt.json"
+    "scopeId": "local-cpu-phase7-production-release-2026-10-30",
+    "htmlSha256": "6db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc",
+    "htmlBytes": 6207852,
+    "verificationRecord": "Application deployment verified. Documentation-only follow-up commit/deployment tracked in ignored phase7 release-receipt.json.",
+    "browserHistoryReopen": "pending_user_reauthentication"
   },
   "removedFromCurrentCloseout": [
     {
@@ -1336,9 +1359,9 @@
   },
   "closeoutSnapshot": {
     "recordedOn": "2026-10-30",
-    "kind": "phase7_release_in_progress",
+    "kind": "published_core_verified_browser_history_reauth_pending",
     "activeGroups": 2,
-    "substantiveCloseoutGroupsRemaining": 1,
+    "substantiveCloseoutGroupsRemaining": 0,
     "sourceFeatureGroupsRemaining": [],
     "qualificationTail": "Core UX is published; physical touch/trackpad, performance/heap/listener measurements and dependency-selective recomputation remain documented follow-ups. Integrated regression is an acceptance gate, not a new feature stage.",
     "publishedAccountGroupRemaining": "Account check accepted from direct user confirmation2026-10-29. Not a blocker for AI. Retain privacy/session/Save-history cases as integration regression without claiming a fresh agent run.",
@@ -1362,39 +1385,47 @@
         "legacy": 8
       }
     ],
-    "pendingUserDecisions": [],
+    "pendingUserDecisions": [
+      {
+        "id": "phase7-browser-history-reauth",
+        "status": "รอคำตอบ",
+        "kind": "runtime_user_action",
+        "question": "Sign in ใหม่ที่เว็บ production แล้วแจ้งเข้าแล้ว เพื่อทดสอบ History → reopen ผ่านหน้าจอหลัง session หมดอายุ",
+        "doesNotBlockPublishedCore": true
+      }
+    ],
     "teamProvisioningPending": false,
     "releasedRuntimeIssuesNotCountedAsPending": [
       "gee_automatic_mission_window_over_24_hours",
       "surface_missing_report_shows_area_home_mismatch"
     ],
     "integrationVerificationIsAcceptanceNotExtraFeatureStage": true,
-    "applicationChangedThisTurn": false,
+    "applicationChangedThisTurn": true,
     "testsOrServicesRunThisTurn": true,
-    "publicationThisTurn": false,
-    "record": "docs/WEBSITE_DETAILS.md#347-ปิดการทดสอบขั้น6กับ-supabaseจริงและ-cpu-ในเครื่อง--30-ตุลาคม-2026",
+    "publicationThisTurn": true,
+    "record": "docs/WEBSITE_DETAILS.md#349-ขั้น7เผยแพร่-local-cpu-ai-และตรวจ-production--30-ตุลาคม2026",
     "teamProvisioningPendingScope": "No requested first-account provisioning remains. Additional trial accounts stay team-created as needed for integration regression.",
     "recommendedExecutionOrder": [
       {
         "order": 1,
         "currentStage": 6,
         "legacyStage": 9,
-        "kind": "local_phases1_6_complete_release_pending",
-        "remaining": "Phase7: review/publish the tested local frontend+API+worker setup only after separate user authorization. SQL/registry/threeAuthroles are already installed and qualified; no Billing/subscription."
+        "kind": "published_core_browser_history_qa_pending",
+        "remaining": "User Sign in again on production; verify History→Version3→reopen. APIhistory already passed."
       },
       {
         "order": 2,
         "currentStage": 1,
         "legacyStage": 4,
-        "kind": "device_and_performance_qualification",
-        "remaining": "Retain existing physical touch/trackpad/heap/long-soak qualifications; user may accept prepared AI with existing real account."
+        "kind": "extended_device_and_performance_qualification",
+        "remaining": "Physical touch/trackpad/heap/listeners/longsoak remain separate future qualification; no paid resources authorized."
       }
     ],
-    "verificationScope": "611Node/57Python/3builds plus actual real3-actor Supabase queue+CPU3cases, natural cancellation/lease/offline protocol2jobs, browserAnalyze/edit/manual/confirm/planner/privateSave-history and geometrytimeoutrepair. No website release.",
+    "verificationScope": "Fresh611Node/69Python/3builds; production2smallnewareaCPUjobs; actualbrowserAnalyze/manualedit/confirm/planner/Savev3; APIhistory3,2,1 and A/Bdeny; guest390px/Login. BrowserHistoryreopen awaits reauth. Phase6near200/noSAR not rerun on production.",
     "applicationTestsRunThisTurn": true,
     "documentationChecksRunThisTurn": true,
     "workerSourceChangedThisTurn": false,
-    "databaseChangedThisTurn": true,
+    "databaseChangedThisTurn": false,
     "pendingRuntimeInputs": [],
     "qaHarnessChangedThisTurn": true
   },
@@ -2408,7 +2439,7 @@
       {
         "order": 7,
         "work": "Reviewable release and rollback/launcher documentation before separately authorized publishing",
-        "status": "not_authorized_no_publish_or_hosted_migration"
+        "status": "published_core_verified_browser_history_reauth_pending"
       }
     ],
     "acceptanceCasesStatus": "phase1_2_local_cases_executed_13_tests_passed_remaining_hosted_cases_designed_not_run",
@@ -2865,7 +2896,7 @@
   },
   "localCpuPhase7Release": {
     "recordedOn": "2026-10-30",
-    "status": "preflight_passed_awaiting_feature_ci",
+    "status": "published_core_verified_browser_history_reauth_pending",
     "authorized": true,
     "project": "prj_x35WcipWxA767cYwv3f0CXcdyea3",
     "team": "team_CV1O0uIz6BcarAQAOb8soV0I",
@@ -2873,9 +2904,17 @@
     "baselineCommit": "09b5e4911675afb9c2889e71bc447588e3474e14",
     "sourceBranch": "codex/xedo-hardware-profile",
     "billingOrSubscriptionChanged": false,
-    "push": false,
-    "deploy": false,
-    "pendingUserAnswers": [],
+    "push": true,
+    "deploy": true,
+    "pendingUserAnswers": [
+      {
+        "id": "phase7-browser-history-reauth",
+        "status": "รอคำตอบ",
+        "kind": "runtime_user_action",
+        "question": "Sign in ใหม่ที่เว็บ production แล้วแจ้งเข้าแล้ว เพื่อทดสอบ History → reopen ผ่านหน้าจอหลัง session หมดอายุ",
+        "doesNotBlockPublishedCore": true
+      }
+    ],
     "tests": {
       "nodePassed": 611,
       "pythonPassed": 69,
@@ -2890,6 +2929,38 @@
     "htmlSha256": "6db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc",
     "htmlBytes": 6207852,
     "qaIdentitiesPrivateConfig": true,
-    "localMachineOnlyInference": true
+    "localMachineOnlyInference": true,
+    "applicationCommit": "6a1c626cda0cf6dad22b603d6647f41b325598ff",
+    "productionDeploymentId": "dpl_6G8DzTyKUYskvxza8Fb5KUYEoByE",
+    "ciRunIds": [
+      41042450911,
+      41042599241
+    ],
+    "postDeploy": {
+      "realNewJobsPassed": 2,
+      "browserAnalyzeManualEditConfirmPlannerSave": true,
+      "missionVersion": 3,
+      "reviewVersion": 2,
+      "apiHistoryVersions": [
+        3,
+        2,
+        1
+      ],
+      "foreignReadsDenied": 4,
+      "foreignWritesDenied": 1,
+      "browserHistoryReopen": "pending_user_reauthentication",
+      "freshPasswordLoginTested": false,
+      "mobileGuestAndLoginViewport": [
+        390,
+        844
+      ],
+      "mobileDocumentWidth": 375,
+      "mobileSignedInFlowTested": false,
+      "privatePaths404": 6,
+      "workerDaemonRunning": true,
+      "workerConfig": "local-data/local-ai-worker/worker.config.json",
+      "requiresPcAwakeOnline": true,
+      "evidence": "outputs/XEDO_Local_AI_Phase7_2026-10-30/REPORT.md"
+    }
   }
 }

@@ -111,3 +111,16 @@ GEEclipและGDALcentre-rasterizationอาจต่างตรงขอบ�
 Productionเผยแพร่เฉพาะbrowser/NodeAPI ส่วนworkers/local-aiยังใช้PCเดิม ไม่มีBilling/subscription/GPUcloud เมื่อใช้localQAportalให้เตรียมignoredlocal-data/live-ai-qualification/account-identities.json มีเพียงprimaryUserIdและprimaryEmailที่ทีมตรวจยืนยันแล้ว เช่นรูปแบบ `{"primaryUserId":"00000000-0000-4000-8000-000000000001","primaryEmail":"inspector@example.invalid"}` ต้องแทนตัวอย่างด้วยบัญชีที่ยืนยันจริงในเครื่อง ห้ามใส่password/JWT/admin keyลงไฟล์นี้ หากไม่มีหรือรูปแบบไม่ถูกต้องserver/helperหยุดก่อนAuth ไม่hardcodeบัญชีบุคคลในsource QAhelper/bridge/qualification scriptsไม่ถูกนำขึ้นProduction
 
 `scripts/qualify-production-ai.py` เป็นเครื่องมือทดสอบproductionที่ต้องอนุญาต --run-real และตรงHTMLhash/มีpriorpassedreportก่อน ใช้DPAPIprimary/secondaryเดิมผ่านactualBFF สร้างQAmission/jobไม่เกินหนึ่งงานด้วยcheckpointเดิม ให้workerdaemonปกติรับงาน ไม่claim/เปิดเครื่องแทน ไม่สร้างAuth/SQL/paidresources Defaultไม่อ่านsessionและไม่ใช้network ผลAPIไม่ใช่browserproof
+
+
+### 3.8 เปิดรับงานจากเว็บ production หลังขั้น7
+
+เผยแพร่ browser/NodeAPI ที่ https://xedo-eight.vercel.app/ แล้ว (application 6a1c626cda0cf6dad22b603d6647f41b325598ff) CPUยังรันในPCเดิม ไม่ใช่Vercel/cloudGPU ไม่ต้องติดตั้งSQL/สร้างบัญชีซ้ำ หลังรอบdeployเปิดdaemonไว้แล้ว ถ้าปิดหน้าต่าง/รีสตาร์ตเครื่องให้เปิดPowerShellที่releasecheckoutแล้วใช้configที่เตรียมไว้เฉพาะเครื่อง:
+
+```powershell
+& 'C:\mega\codex\iENA\tmp\local-ai-worker-venv\Scripts\python.exe' -B workers/local-ai/remote_worker.py run --config local-data/local-ai-worker/worker.config.json
+```
+
+configอ้างDPAPImachine-sessionเดิม เก็บผลเต็มในlocal-data/local-ai-worker/runs ใช้heartbeat20s/poll10s/CPU4threads/หนึ่งงานต่อครั้ง เปิดเพียงdaemonเดียว หยุดด้วยCtrl+Cเมื่อไม่มีงานกำลังทำ ต้องเปิดPC/internetและไม่SleepสำหรับAnalyzeใหม่ หน้าเว็บแสดงOfflineเมื่อworkerขาดpresence ผลที่เผยแพร่และprivatehistoryยังอ่านได้จากSupabaseตอนCPUปิด ไม่เปิดpublicport/tunnel/paidfallback/Billing/subscription ห้ามcommitconfig/session/rawTIFF/modelweights ไม่ต้องเปิดlocalQAserver5193เพื่อใช้production
+
+ผู้ใช้ต้องSign inใหม่เมื่อbrowseraccesssessionหมดอายุ;ไม่ใส่passwordลงworkerconfig รุ่นเผยแพร่ทดสอบCPUsmallarea2งานและUIถึงSavev3แล้ว BrowserHistoryreopenหลังexpiryยังรอผู้ใช้Sign inใหม่ในรอบตรวจขั้น7 รายละเอียดล่าสุดในdocs/WEBSITE_DETAILS.md§3.49

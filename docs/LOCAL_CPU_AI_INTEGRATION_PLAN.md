@@ -293,6 +293,11 @@ scripts/qualify-real-ai.py --run-realพร้อมทดสอบrealBFF/three
 
 ### 3.17 ผลปิดขั้น6จริง — 30 ตุลาคม 2026
 
-**สถานะล่าสุดขั้น6 — ผ่านการทดสอบจริงในขอบเขต pilot:** Inspector เดิมเชื่อมสำเร็จครบสามบัญชีแล้ว ใช้ Supabase xedo จริงกับเว็บในเครื่องและ CPU ในเครื่องได้ตั้งแต่ Analyze พื้นที่ใหม่ → โหลดภาพ SAR → ผล owned AI → Inspector แก้/วาดพื้นที่ → ตรวจภาพ Sentinel-2 จริง → confirm → planner → Save/history/private reopen ไม่มีคำถามรอคำตอบ ขั้นถัดไปคือขั้น7เตรียมเผยแพร่เมื่อผู้ใช้อนุญาต โดยรอบนี้ไม่ commit/push/deploy ไม่เปิด Billing/subscription และไม่เปลี่ยนรหัสผ่านหรือบัญชีเดิม
+**ประวัติเมื่อปิดขั้น6ก่อนอนุญาตเผยแพร่ (สถานะปัจจุบันดูขั้น7):** Inspector เดิมเชื่อมสำเร็จครบสามบัญชีแล้ว ใช้ Supabase xedo จริงกับเว็บในเครื่องและ CPU ในเครื่องได้ตั้งแต่ Analyze พื้นที่ใหม่ → โหลดภาพ SAR → ผล owned AI → Inspector แก้/วาดพื้นที่ → ตรวจภาพ Sentinel-2 จริง → confirm → planner → Save/history/private reopen ไม่มีคำถามรอคำตอบ ขั้นถัดไปคือขั้น7เตรียมเผยแพร่เมื่อผู้ใช้อนุญาต โดยรอบนี้ไม่ commit/push/deploy ไม่เปิด Billing/subscription และไม่เปลี่ยนรหัสผ่านหรือบัญชีเดิม
 
 ดูWEBSITE_DETAILS§3.47สำหรับรายงาน3realqueuecases/2protocolreplayjobs/BrowserAnalyzeใหม่และedited/manualconfirmation เส้นทาง5.92/1.75km โค้ดตรวจcoverageที่timeout8sแก้ด้วยprivategeometryperformance migrationและ611Node/57Python/3buildsผ่าน รอบแรกtestwindowเลือกภาพ8ต.ค.17candidateจึงตรึงภาพ9ต.ค.exactassetเพื่อเทียบ14เดิม โดยrawscore/mask/hashตรง0pixels ไม่เปิดBilling/subscription Workerหยุดหลังทดสอบ ไม่มีsecretในdocs/Git ไม่มีคำถามรอคำตอบ ขั้น7ยังไม่อนุญาตและlongsoak/device/worstcasegeometryแยกเป็นqualificationtail ไม่ย้อนกลับไปขอสร้างusersหรือapplyqueueSQLซ้ำ
+
+
+### สถานะขั้น7 — 30 ตุลาคม2026
+
+เผยแพร่ application 6a1c626cda0cf6dad22b603d6647f41b325598ff / dpl_6G8DzTyKUYskvxza8Fb5KUYEoByE READY ที่ https://xedo-eight.vercel.app/ แล้ว ตรวจproduction2งานsmallarea/CPUจริง และInspectorแก้พื้นที่→confirm→planner→Savev3/APIhistory/A–Bdenyผ่าน CPUdaemonใช้ignoredlocal-data/local-ai-worker/worker.config.jsonและต้องเปิดPC/internetสำหรับงานใหม่ **รอคำตอบ:** Sign inใหม่เพื่อปิดbrowserHistoryreopenหลังsessionหมดอายุ ดูcanonical§3.49และphase7REPORT.md ไม่มีBilling/subscription/cloudcomputeเพิ่ม ไม่อ้างnear200/noSARรอบขั้น6ว่าเป็นproductionใหม่

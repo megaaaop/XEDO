@@ -5,13 +5,13 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **30 ตุลาคม2026 — ผู้ใช้อนุญาตขั้น7 push/deploy;กำลังตรวจชุดเผยแพร่และCIก่อนตรวจProductionจริง ไม่เปิดBilling/subscription**
+- อัปเดตล่าสุด: **30 ตุลาคม2026 — ขั้น7เผยแพร่จริงและตรวจcoreแล้ว;รอSign inใหม่ปิดbrowserHistoryreopen ไม่มีBilling/subscription**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
 - จุดประสงค์รอบนี้: เผยแพร่ local CPU AI integration ที่ผ่านขั้น6แล้ว ตรวจGit/CI/Production/browser/API/CPU roundtripและอัปเดตหลักฐานจริง
-- สถานะProductionอ้างอิงรอบเผยแพร่ก่อนหน้า ไม่ได้ตรวจProductionใหม่ในรอบทดสอบขั้น6นี้: applicationcommit b719d8e,เอกสารfollowup09b5e4911675afb9c2889e71bc447588e3474e14/Productiondpl_6UroUi1UMA9E8uXetDdEsaTphuNXREADY/CI40793917955และ40793917608success;HTML SHA256da57bb8c6e12d66c801722065d559bec5c62f9b3d8162ea4ab9942b124bb5292ตรงbuild6197220bytesตามreceipt
+- Productionล่าสุด: application 6a1c626cda0cf6dad22b603d6647f41b325598ff / dpl_6G8DzTyKUYskvxza8Fb5KUYEoByE READY/CI2branches success/HTML6207852bytes SHA2566db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc; เอกสารfollowupอ้างrelease-receipt.json
 - **ขอบเขตคำสั่งล่าสุด:** อนุญาตขั้น7 commit/push/deploy และตรวจหลังเผยแพร่ตามข้อความผู้ใช้30ต.ค. ไม่เปิดBilling/subscription ไม่สร้างบริการเสียเงินหรือเปลี่ยนบัญชีเดิม
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
@@ -22,9 +22,9 @@
 
 ### สถานะล่าสุดที่มีหลักฐาน
 
-**ขั้น7กำลังเผยแพร่ — 30 ตุลาคม2026:** ผู้ใช้อนุญาต commit/push/deploy เว็บจริงและตรวจหลังเผยแพร่แล้ว โดยไม่เปิด Billing/subscription Targetเดิม xedo/prj_x35WcipWxA767cYwv3f0CXcdyea3/team_CV1O0uIz6BcarAQAOb8soV0I → xedo-eight.vercel.app Rootใช้GitintegrationเดิมหลังตรวจCIและdeployment identity; Supabase schema/registry/สามบัญชีติดตั้งและผ่านขั้น6แล้ว ไม่สร้างบัญชีหรือapplySQLซ้ำ AIยังรันบนCPUในเครื่อง ไม่รันPython/GPUบนVercel
+**ขั้น7เผยแพร่แล้ว — 30 ตุลาคม2026:** เว็บจริง https://xedo-eight.vercel.app/ ใช้ application commit 6a1c626cda0cf6dad22b603d6647f41b325598ff / Production dpl_6G8DzTyKUYskvxza8Fb5KUYEoByE READY; CI feature41042450911/main41042599241success หน้าHTMLตรงbuild6207852bytes/SHA2566db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc ทดสอบproductionBFF→Supabase→CPUในเครื่อง→ผลใหม่2งานสำเร็จ Browserจริง Analyzeพื้นที่ใหม่→manual draw/edit/UndoRedo→confirmreviewv2/complete→planner1.76km→Savev3 ผ่าน APIอ่านhistory3/2/1และทดสอบบัญชีอื่นอ่าน/แก้ไม่ได้ หน้าmobile390px/Loginไม่ล้นแนวนอน **รอคำตอบ:** ให้ผู้ใช้Sign inใหม่เพื่อปิดกรณีHistory→reopenผ่านหน้าจอหลังsessionหมดอายุ (APIhistoryผ่านแล้ว) ไม่มีBilling/subscription/SQL/Auth changesรอบนี้ ดู§3.49
 
-**สถานะล่าสุดขั้น6 — ผ่านการทดสอบจริงในขอบเขต pilot:** Inspector เดิมเชื่อมสำเร็จครบสามบัญชีแล้ว ใช้ Supabase xedo จริงกับเว็บในเครื่องและ CPU ในเครื่องได้ตั้งแต่ Analyze พื้นที่ใหม่ → โหลดภาพ SAR → ผล owned AI → Inspector แก้/วาดพื้นที่ → ตรวจภาพ Sentinel-2 จริง → confirm → planner → Save/history/private reopen ไม่มีคำถามรอคำตอบ ขั้นถัดไปคือขั้น7เตรียมเผยแพร่เมื่อผู้ใช้อนุญาต โดยรอบนี้ไม่ commit/push/deploy ไม่เปิด Billing/subscription และไม่เปลี่ยนรหัสผ่านหรือบัญชีเดิม
+**ประวัติเมื่อปิดขั้น6ก่อนอนุญาตเผยแพร่ (สถานะปัจจุบันดูขั้น7):** Inspector เดิมเชื่อมสำเร็จครบสามบัญชีแล้ว ใช้ Supabase xedo จริงกับเว็บในเครื่องและ CPU ในเครื่องได้ตั้งแต่ Analyze พื้นที่ใหม่ → โหลดภาพ SAR → ผล owned AI → Inspector แก้/วาดพื้นที่ → ตรวจภาพ Sentinel-2 จริง → confirm → planner → Save/history/private reopen ไม่มีคำถามรอคำตอบ ขั้นถัดไปคือขั้น7เตรียมเผยแพร่เมื่อผู้ใช้อนุญาต โดยรอบนี้ไม่ commit/push/deploy ไม่เปิด Billing/subscription และไม่เปลี่ยนรหัสผ่านหรือบัญชีเดิม
 
 **ประวัติก่อนเชื่อม primary สำเร็จ (แทนที่ด้วยสถานะล่าสุดข้างบน):** ทีมสร้างInspectorTestTEST_INSPECTOR_LOCALและmachineCPU_WORKER_LOCALในxedoแล้ว ทั้งสองconfirmed/มีpassword/identityครบ RootเปิดInspectorTestและผูกmachineกับInspectorเดิมPRIMARY_INSPECTOR_LOCAL ตรวจenabledInspectors2/registeredWorkers1/machineInInspectorRoster0 RealAuthGetUserและRPC7checksผ่าน: secondaryInspectorใช้งานได้/machinepresenceownerถูก/สองroleใช้สิทธิ์สลับกันไม่ได้ ตอนนี้มีDPAPIsessionสองroleแล้ว เหลือprimary ผู้ใช้แจ้งลืมรหัสและเลือกลองรหัสที่Chromeบันทึกก่อน ไม่ได้ส่งrecoveryemail/เปลี่ยนรหัส/ลบสร้างuserใหม่ RootเปิดเฉพาะSupabaseUserDetailsพบปุ่มSendpasswordrecovery(ส่งemailเท่านั้น) ไม่อ่านPasswordManager/clipboard รอprimaryconnectสำเร็จ
 
@@ -32,7 +32,7 @@
 
 **ผลสดขั้น3–5 — 30ต.ค.:** กดAnalyzeบนเว็บทดสอบได้จริง งานfd333481-5af8-4d17-8a51-1d0fdea2f13dใช้GEE Sentinel-1 acquisition26ต.ค.23:00:37UTCจากพื้นที่ใหม่5.0172กม² ทำCPU/package23.373s/runner0.504s/nativepeak509.92MiB;คิวถึงpublished28.421s ผล0candidateเป็นsuccessตามโมเดล ไม่ใช่ยืนยันไม่มีน้ำมัน Inspectorวาดและแก้manualtarget/UndoRedo/reviewSentinel-2/confirmv2→plannerroute11.47km→Save/reopen4versionsสำเร็จ Result10303bytesเปิดได้หลังworkerหยุดและserverrestart บัญชีBobไม่เห็นงานAliceผ่านUI/BFF/localSQL เว็บ606tests/Python30tests/3buildsผ่าน ดูรายละเอียดรอบล่าสุดท้ายไฟล์และWEBSITE_DETAILS§3.45
 
-**สถานะใช้งาน:** localcandidateผ่านขั้น1–6กับSupabaseจริงแล้ว SQL/registry/สามAuthrolesพร้อมและตรวจCPUผ่านหน้าเว็บจริง ยังไม่เผยแพร่frontendProductionใหม่ ผู้ใช้ต้องเปิดเครื่องและworkerสำหรับงานใหม่ ผลที่เสร็จแล้วอ่านจากDBได้ ไม่มีคำถามรอคำตอบ
+**สถานะใช้งาน:** ขั้น1–7เผยแพร่coreแล้วผ่านproductionsmall-areaCPUและInspectorแก้พื้นที่/confirm/planner/Save APIhistory/privateownershipผ่าน เหลือbrowserHistoryreauthและqualificationแยกตาม§3.49
 
 **ประวัติผลimplementationขั้น1–2ในรอบก่อนหน้า30ต.ค.:** โปรแกรมworkers/local-aiพร้อมรับพื้นที่GeoJSONแล้วค้น/โหลดหนึ่งSARscene→validate→CPU→score/mask/preview→candidate/coveragepackageอัตโนมัติ โดยใช้computePixelsเพราะcredentialเดิมไม่มีthumbnails.create ไม่เพิ่มIAM/Billing ภาพใหม่5.0172/197.5274กม²และautodownloadbaseline176.478กม²ผ่าน Score/maskbaselineต่าง0ทุกpixel/validDATAและVALIDตรงเดิม/13Python testsผ่าน ดูoutputs/XEDO_Local_CPU_Pipeline_2026-10-30/REPORT.mdและWEBSITE_DETAILS§3.44 ยังไม่เชื่อมhostedqueue/ส่งresultเข้าฐานข้อมูลหรือปุ่มAnalyzeบนเว็บ
 
@@ -73,7 +73,7 @@
 | **3** (ก่อนหน้า4) | **6** | preparedAI+Inspectorแก้พื้นที่เสี่ยง+planner | **เชื่อม ทดสอบ และเผยแพร่29ต.ค.แล้ว** เปิดpreparedSAR14พื้นที่ แก้/เพิ่ม/ปฏิเสธ ยืนยันtarget ส่งplannerและprivateSave/history; agentตรวจlocalfixtureAuth+liveGEE,productionguest/API/liveDB ไม่ใช้passwordจริง |
 | **4** (ก่อนหน้า5) | **7** | Pi / ภาพ / telemetry | **พักตามคำสั่งผู้ใช้** |
 | **5** (ก่อนหน้า6) | **8** | ผลทดลองและรายงานก่อน–หลัง | **พักตามคำสั่งผู้ใช้** |
-| **6** (งานใหม่29ต.ค.) | **9** | AI วิเคราะห์พื้นที่ใหม่ด้วย CPU ในเครื่อง | **ขั้น1–6ทำและทดสอบSupabaseจริง/หน้าเว็บ/CPUแล้ว30ต.ค.** เหลือขั้น7เผยแพร่เมื่อได้รับอนุญาต;ไม่มีBilling/subscription |
+| **6** (งานใหม่29ต.ค.) | **9** | AI วิเคราะห์พื้นที่ใหม่ด้วย CPU ในเครื่อง | **ขั้น1–7เผยแพร่coreแล้ว** production2งานใหม่/Inspectorแก้พื้นที่→confirm→planner→Save/APIhistoryผ่าน; **รอคำตอบ:** Sign inใหม่ปิดbrowserHistoryreopen;qualificationระยะยาวยังแยก ไม่มีBilling/subscription |
 
 การรับคำสั่งใหม่ที่ระบุเพียง “ข้อ 1/2/3…” ให้ใช้ **เลขใหม่** จากตารางนี้ หากผู้ใช้บอก “เลขเดิม” หรืออ้างข้อความเก่า ให้จับคู่ตามบริบท รายละเอียดเชิงเทคนิคและประวัติที่บันทึกก่อนรอบเรียงใหม่นี้ รวมทั้ง HTML แผน AI เดิม ยังใช้เลขเดิมเมื่อไม่ได้ระบุว่าเป็นเลขใหม่
 
@@ -1326,6 +1326,29 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 ก่อนแก้ตรวจHEAD09b5e4911675afb9c2889e71bc447588e3474e14/featurebranchcodex/xedo-hardware-profile;fetchoriginแล้วmainและfeatureยังSHAเดียวกัน ไม่ทับงานภายนอก Productionเดิมdpl_6UroUi1UMA9E8uXetDdEsaTphuNXREADY/main09b5e49/node24.x Vercelconnectorยืนยันtargetโดยไม่อ่านenvsecrets BrowserproductionเปิดInspectorเดิมได้โดยไม่ขอรหัสผ่านใหม่ กำลังตรวจeligibleuploadและตัดworkers/tests/docs/db/localQAhelpersจากVercel source upload เพิ่มignoreสำหรับDPAPI/TIFF/model ไม่ใส่privateconfigลงGit ก่อนcommitต้องทดสอบซอฟต์แวร์/buildและบันทึกผลจริง หลังpushจะตรวจCI/ProductionSHA/HTMLhash/realAPI/browser/CPUroundtrip ไม่ใช้ผลขั้น6แทนpostdeployproof
 
 
-**Pre-pushตรวจแล้ว:** Node611pass/0fail/0skip, Python69passหลังเพิ่มidentityconfigและproductionacceptanceofflinecontracts6cases, syntaxและbuildweb/workspace/standaloneผ่านทั้ง3 HTML6207848bytes/SHA2566db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc ไม่รันโมเดล/realjobซ้ำในpreflightนี้ ใช้ผลขั้น6เป็นbaselineแยกจากpostdeployที่จะรันใหม่ .vercelignoreเพิ่มworkers/tests/db/docs/localQAtools; .gitignoreเพิ่มDPAPI/TIFF/model ผู้ใช้ยังไม่ต้องตอบอะไรเพิ่ม บัญชีproductionเดิมเปิดได้ RootจะpushfeatureตรวจCIก่อนfast-forwardmainให้Gitintegrationเดิมdeploy ห้ามforcepush/เปลี่ยนแพ็กเกจ
+**Pre-pushตรวจแล้ว:** Node611pass/0fail/0skip, Python69passหลังเพิ่มidentityconfigและproductionacceptanceofflinecontracts6cases, syntaxและbuildweb/workspace/standaloneผ่านทั้ง3 HTML6207852bytes/SHA2566db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc ไม่รันโมเดล/realjobซ้ำในpreflightนี้ ใช้ผลขั้น6เป็นbaselineแยกจากpostdeployที่จะรันใหม่ .vercelignoreเพิ่มworkers/tests/db/docs/localQAtools; .gitignoreเพิ่มDPAPI/TIFF/model ผู้ใช้ยังไม่ต้องตอบอะไรเพิ่ม บัญชีproductionเดิมเปิดได้ RootจะpushfeatureตรวจCIก่อนfast-forwardmainให้Gitintegrationเดิมdeploy ห้ามforcepush/เปลี่ยนแพ็กเกจ
 
 **ค่าบัญชีเฉพาะเครื่อง:** QAhelpersอ่านignoredlocal-data/live-ai-qualification/account-identities.jsonเพียงprimaryUserId/primaryEmail (ไม่เกิน4KB/validateUUIDและemail/missingfailclosed) ตัวอย่างทดสอบใช้fixtureบัญชีสมมติ ExactAuthUUIDในpublicdocsใช้aliasPRIMARY_INSPECTOR_LOCAL/TEST_INSPECTOR_LOCAL/CPU_WORKER_LOCAL รายละเอียดจริงอยู่privateignoredreceipts ไม่ใช่JWT/ไม่ใช้aliasเรียกAPI Productionไม่มีQAbridgeและไม่ติดตั้งPython/โมเดลเพิ่ม
+
+
+### 3.49 ขั้น7เผยแพร่ local CPU AI และตรวจ production — 30 ตุลาคม2026
+
+**หัวข้อ:** ผู้ใช้อนุญาตpush/deployและตรวจหลังเผยแพร่ โดยไม่เปิดBilling/subscription อ่านcanonical/Gitก่อนแก้ รักษาสามขั้นตอนและสี่ตัวคำนวณ ไม่สร้างAuth/schemaซ้ำ ไม่เปลี่ยนขอบเขตnormalflightprofileที่ผู้ใช้พักไว้
+
+**สรุปการเผยแพร่:** application 6a1c626cda0cf6dad22b603d6647f41b325598ff, feature/mainfast-forwardไม่forcepush; CI41042450911และ41042599241success; Production dpl_6G8DzTyKUYskvxza8Fb5KUYEoByE READY/targetproduction/mainSHAตรง URL https://xedo-eight.vercel.app/ FinalHTML6207852bytes SHA2566db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc ตรงไฟล์distและHTTPbodyทุกbyte ค่าคอนโซลbuild6207848เป็นintermediateก่อนเปลี่ยนhostedtitle ไม่ใช่ขนาดfinalartifact เอกสารปิดงานจะตามด้วยdocs-onlycommit; identityสุดท้ายบันทึกในoutputs/XEDO_Local_AI_Phase7_2026-10-30/release-receipt.json ไม่อ้างcommitอนาคตในเอกสารนี้
+
+**Productionใหม่จริง:** APIacceptanceหนึ่งQAmission/หนึ่งjobและBrowserจริงอีกหนึ่งQAmission/job แยกกัน ไม่เปลี่ยนAPIreceipt browserProof:falseให้กลายเป็นUIproof ทั้งสองโหลดSentinel-1จากGEEและรันCPUจริง พื้นที่grid5.0172กม²/valid48679จาก50172pixels ได้0candidateและroundtripcandidate/valid/NoDataต่าง0 Pipeline18.546s/inference0.344s/peak508.953MiB(APIงาน);13.848s/inference0.268s/peak509.723MiB(UIงาน) เป็น2ตัวอย่างเล็ก ไม่ใช่P95/SLA/200กม²ใหม่/100jobsเดือน และ0candidateไม่ยืนยันว่าไม่มีน้ำมัน
+
+**Browserจริงและข้อมูลที่บันทึก:** ใช้Inspectorเดิมที่มีsessionอยู่ เลือกพื้นที่ใหม่ระยอง→Analyze/ยืนยัน→progressจนสำเร็จและเปิดผลอัตโนมัติ→วาดmanual4จุด→แก้vertexผ่านGeoJSON→Undo/Redo→โหลดSentinel-2วันที่22ต.ค.cloud14.1%และตรวจpixels→confirmreviewv2/complete→Prepareเส้นทาง1.76km→Saveจนmissionrevision3 ตรวจproductionAPIกลับได้history[3,2,1]/manualtarget4จุด/analysisRefผูกownedresult บัญชีBอ่าน4กรณีและเขียน1กรณีถูกปฏิเสธ hash/revisionของเจ้าของไม่เปลี่ยน Downloadยังถูกล็อกเมื่อHome/airspace/dronebatteryไม่ครบตามเดิม
+
+**กรณีค้างเฉพาะการทดสอบหน้าจอ:** หลังSavesessionbrowserหมดอายุ กดHistoryแล้วระบบให้Sign inใหม่ตามpolicy ไม่อ่านหรือขอpassword/recoverylinkและไม่เปลี่ยนบัญชี **รอคำตอบ:** ผู้ใช้Sign inใหม่แล้วแจ้งเข้าแล้วเพื่อทดสอบHistory→Version3→reopenผ่านหน้าจอ กรณีAPIhistory/openผ่านแล้ว แต่ไม่ใช้แทนbrowserreopen การSign inด้วยpasswordสดรอบนี้ยังไม่อ้างว่ารันทดสอบใหม่ (ใช้sessionเดิมก่อนหมดอายุ)
+
+**มือถือ/หลักฐาน:** Chromeproductionguest390×844มีAnalyzeareaและLoginpanel; documentwidth375≤viewport390/dialogwidth362 ไม่พบhorizontaloverflowในสองหน้าที่ตรวจ เก็บproduction-mobile-390.png/production-mobile-login.pngและproduction-confirmed-route.pngในscreenshots แรกเปิดหน้าใหม่มีnavigationtimeout/DOMloadingก่อนดาวน์โหลดHTMLครบ แล้วตรวจreadyStatecomplete/695nodes/Analyzeareaจริงก่อนถ่ายหลักฐาน ไม่ถือIABภาพเก่าหรือblankช่วงloadingว่าresponsivepass ไม่อ้างphysicaltouch/trackpad/performanceprofilingหรือsigned-inmobileflowผ่าน Consoleerror/warnที่จับในแท็บทดสอบเป็น[]; Vercelerror/fatalqueryไม่พบmatchinggroupsในsnapshotที่อ่าน ไม่ใช่รับรองว่าไม่มีerrorทั้งระบบ
+
+**Build/securityสด:** Node611/Python69pass/0fail/0skip; syntaxและweb/workspace/standalonebuildผ่าน3แบบ Stage50ไฟล์ไม่พบprivateaccountUUID/secret/forbiddenartifacts Dependencytracebrowser454/API15inputsไม่มีworker/model/session/QAในruntimegraph .gitignore/.vercelignoreกันDPAPI/TIFF/model/localQA เว็บไซต์จริงตอบ404สำหรับ/.env,/local-data/live-ai-qualification/primary.session.dpapi,/qa/setup,/qa/browser-session,/scripts/preview-live-ai.mjs,/workers/local-ai/remote_worker.py ไม่เปิดproductioncredentialbridge ไม่มีservice_roleในbrowser/PC
+
+**เครื่องCPUใช้งานต่อ:** เปิดdaemonเดิมด้วยignoredlocal-data/local-ai-worker/worker.config.json ใช้DPAPImachineidentityเดิมผ่านoutboundHTTPS/heartbeat20s/poll10s/หนึ่งงานต่อครั้ง ไม่เปิดpublicport/tunnel โปรแกรมต้องเปิดอยู่ เครื่องไม่Sleepและinternetพร้อมสำหรับAnalyzeงานใหม่ ผลที่เผยแพร่สำเร็จและprivatehistoryอยู่Supabaseเปิดย้อนหลังได้ตอนCPUปิด หากปิดdaemonให้ใช้คำสั่งในworkers/local-ai/README.md§3.8เพื่อเปิดอีกครั้ง ไม่ย้ายโมเดลไปVercel/ไม่เปิดcloudcompute/Billing/subscriptionหรือเพิ่มแพ็กเกจ
+
+**ไฟล์เปลี่ยนและหลักฐาน:** applicationcommitรวม50ไฟล์ phase1–6/QAprivacy/releaseguards;รอบปิดงานแก้docs/XEDO_WORK_LOG.md,WEBSITE_DETAILS.md,implementation-queue.json,LOCAL_CPU_AI_INTEGRATION_PLAN.mdและworkers/local-ai/README.md Evidenceapplication-deployment.json,ci-application.json,public-html-receipt.json,private-route-checks.json,acceptance/production-6db264f4e06c5c98b718.json,browser-api-receipts.json,browser-actions.json,browser-console.json,REPORT.mdอยู่outputs/XEDO_Local_AI_Phase7_2026-10-30 ไม่เผยแพร่DPAPI/privateactorUUID/rawTIFF/weights
+
+**งานเหลือแยกจากreleasecore:** browserHistoryreauthตามข้างบน;qualification100jobs/monthlongsoak/คนละmachine-sessionglobalclaimrace/harddeadline30minจริง/worst-case8192vertices/physicaltouch-trackpad/heap-listenersยังไม่รัน ไม่reusephase6near200กม²/noSARว่าเป็นproductionใหม่ Pi/telemetryและรายงานก่อน–หลังยังdeferredตามผู้ใช้ ไม่เปิดBilling/subscription
