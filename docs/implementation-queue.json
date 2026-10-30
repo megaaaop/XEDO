@@ -295,7 +295,7 @@
   },
   "currentImplementationScope": {
     "id": "export-planning-autofill-2026-10-31",
-    "status": "verified_local_release_in_progress",
+    "status": "published_verified_production",
     "applicationFeatureRepairAuthorized": true,
     "pushAuthorized": true,
     "deployAuthorized": true,
@@ -304,7 +304,8 @@
     "baseSourceHead": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
     "latestActionScope": "User explicitly authorized finishing four-field browser checks and push/deploy when passed. Eight local cases passed; publication in progress. No Billing/subscription.",
     "pendingUserInput": null,
-    "releaseEvidence": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_2026-10-31"
+    "releaseEvidence": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_2026-10-31",
+    "publicationReceipt": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json"
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
@@ -400,7 +401,7 @@
       "parameterBasis": "60m/5m reuse existing prototype planning values; not measured or official flight permissions",
       "manualOwnershipRequired": true,
       "humanReviewRemainsManual": true,
-      "publicationStatus": "not_published"
+      "publicationStatus": "published_verified"
     }
   },
   "stages": [
@@ -1002,31 +1003,24 @@
     }
   ],
   "latestPublishedRelease": {
-    "commit": "5c0f8c0bdd65451fcf4e37e1795182a436a3cb9c",
-    "productionDeploymentId": "dpl_EmjFcwuwgjVoWpmVHsSDrykZ9rxW",
+    "commit": "5ead6605a56923aa4ed0a665024a6c8f1d1a3438",
+    "productionDeploymentId": "dpl_FTnxwMJ9wtHf35oQFGzJe7gJKk8U",
     "url": "https://xedo-eight.vercel.app/",
     "sourceBranch": "main",
     "ciRunIds": [
-      41119318880
+      41131117157
     ],
     "ciConclusion": "success",
     "publishedOn": "2026-10-31",
     "timezone": "Asia/Bangkok",
-    "scopeId": "home-altitude-gee-autofill-2026-10-31",
-    "verificationRecord": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json",
+    "scopeId": "export-planning-autofill-2026-10-31",
+    "verificationRecord": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json",
+    "htmlBytes": 23620,
+    "hostedHashMatches": 25,
     "documentationFollowup": {
-      "commit": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
-      "deploymentId": "dpl_BDn4FP9dYypi3cZhgmoJWGZLwb9w",
-      "ciRunIds": [
-        41119703201
-      ],
-      "ciConclusion": "success",
-      "state": "READY",
-      "receipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json"
-    },
-    "activeProductionCommit": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
-    "activeProductionDeploymentId": "dpl_BDn4FP9dYypi3cZhgmoJWGZLwb9w",
-    "note": "Identity is from retained successful release receipt; not a fresh online check in this summary turn."
+      "receipt": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json",
+      "productSourceChange": false
+    }
   },
   "removedFromCurrentCloseout": [
     {
@@ -3901,9 +3895,9 @@
   },
   "latestRemainingWorkAudit": {
     "date": "2026-10-31",
-    "kind": "export_autofill_user_requirement_implemented_browser_acceptance_pending",
-    "sourceSection": "3.78",
-    "corePrototypeFeatureFlow": "Prior flow published; new export-autofill request implemented locally, final UI acceptance pending",
+    "kind": "four_field_release_completed",
+    "sourceSection": "3.79",
+    "corePrototypeFeatureFlow": "complete_with_published_export_autofill",
     "priorRuntimeProof": "outputs/XEDO_Post_Reset_Check_2026-10-30",
     "followups": [
       {
@@ -3936,9 +3930,10 @@
       },
       {
         "id": "export-planning-autofill-2026-10-31",
-        "status": "implemented_tested_local_final_browser_verification_pending",
-        "description": "4 export defaults implemented; 652tests/syntax/3builds passed. Final browser replay stopped by browser URL confidence guard; not published.",
-        "evidence": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_2026-10-31"
+        "status": "published_verified_production",
+        "description": "8local+8productionbrowsercases/CI/32HTTPchecks/25hashes passed; matched visual and JSON",
+        "evidence": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_2026-10-31",
+        "receipt": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json"
       }
     ],
     "deferredLegacyStages": [
@@ -4122,6 +4117,33 @@
         "productSourceChange": false,
         "note": "Final docs-only identity/CI and static smoke recorded after push; private UI was executed prepush and is not relabeled replayed on documentation deployments."
       }
+    },
+    {
+      "commit": "5c0f8c0bdd65451fcf4e37e1795182a436a3cb9c",
+      "productionDeploymentId": "dpl_EmjFcwuwgjVoWpmVHsSDrykZ9rxW",
+      "url": "https://xedo-eight.vercel.app/",
+      "sourceBranch": "main",
+      "ciRunIds": [
+        41119318880
+      ],
+      "ciConclusion": "success",
+      "publishedOn": "2026-10-31",
+      "timezone": "Asia/Bangkok",
+      "scopeId": "home-altitude-gee-autofill-2026-10-31",
+      "verificationRecord": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json",
+      "documentationFollowup": {
+        "commit": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
+        "deploymentId": "dpl_BDn4FP9dYypi3cZhgmoJWGZLwb9w",
+        "ciRunIds": [
+          41119703201
+        ],
+        "ciConclusion": "success",
+        "state": "READY",
+        "receipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json"
+      },
+      "activeProductionCommit": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
+      "activeProductionDeploymentId": "dpl_BDn4FP9dYypi3cZhgmoJWGZLwb9w",
+      "note": "Identity is from retained successful release receipt; not a fresh online check in this summary turn."
     }
   ],
   "ciDocumentationFollowupExecution": {
@@ -4413,18 +4435,17 @@
         "id": "runtime-repairs",
         "title": "เวลาอัตโนมัติเกิน24h / Surfaceข้อความ / Home altitude",
         "evidence": "Published respective fixes; latest Home639tests/3builds/7local+7production cases/32HTTPchecks; matched visual+JSON"
+      },
+      {
+        "id": "export-planning-autofill-2026-10-31",
+        "title": "เติม4ช่อง export planning อัตโนมัติพร้อมรักษาmanual",
+        "evidence": "Published5ead660;8local+8productioncases/matchedscreenshots/CI/32HTTPchecks passed",
+        "receipt": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json"
       }
     ],
     "beforePresentation": [
       {
         "order": 1,
-        "id": "export-planning-autofill-2026-10-31",
-        "status": "implemented_tested_local_final_browser_verification_pending",
-        "title": "ปิดงานเติม4ช่องอัตโนมัติ: ตรวจหน้าจอ build สุดท้าย แล้วเผยแพร่เมื่ออนุญาต",
-        "limitation": "Code/tests ready in local checkout; production still b621fbd and retains manual fields"
-      },
-      {
-        "order": 2,
         "id": "actual-device-reboot-and-venue-rehearsal",
         "status": "recommended_final_acceptance_not_run_this_turn",
         "title": "ซ้อมหลังเปิดเครื่องใหม่ บนเครื่องและอินเทอร์เน็ตที่จะใช้จริง",
@@ -4438,7 +4459,7 @@
         "limitation": "Prior current-machine flow and user reset report exist; no agent-verified actual OS reboot/venue-network run. Not a request to reboot the user computer now."
       },
       {
-        "order": 3,
+        "order": 2,
         "id": "fixed-presentation-and-backup-pack",
         "status": "recommended_collection_not_run_this_turn",
         "title": "เลือกชุดนำเสนอและจัดไฟล์สำรองให้เปิดได้ทันที",
@@ -4504,7 +4525,7 @@
       }
     ],
     "clarificationThisTurn": true,
-    "currentRequiredRepair": "export-planning-autofill-2026-10-31"
+    "currentRequiredRepair": null
   },
   "homeAltitudeUserClarification": {
     "recordedOn": "2026-10-31",
@@ -4540,7 +4561,7 @@
   "exportPlanningAutofillExecution": {
     "date": "2026-10-31",
     "scopeId": "export-planning-autofill-2026-10-31",
-    "status": "verified_local_release_in_progress",
+    "status": "published_verified_production",
     "baseCommit": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
     "automaticFields": {
       "ceilingM": 60,
@@ -4582,14 +4603,17 @@
       "matchedScreenshot": "local-four-fields.png",
       "fourFieldsVerified": true,
       "snapshotUploadThroughChrome": "not_executed_extension_file_url_permission; VM restore tests passed",
-      "capturedWarningsErrors": 0
+      "capturedWarningsErrors": 0,
+      "productionFourFieldsVerified": true,
+      "productionMatchedScreenshot": "production-four-fields.png",
+      "capturedProductionWarningsErrors": 0
     },
     "failuresRetained": [
       "Initial VM harness lacked the imported helper; harness updated and re-tested",
       "One Windows spawn UNKNOWN before the defaults test process started; full suite re-run at concurrency2 passed"
     ],
-    "push": false,
-    "deploy": false,
+    "push": true,
+    "deploy": true,
     "billingOrSubscription": false,
     "evidence": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_2026-10-31",
     "pushAuthorized": true,
@@ -4598,6 +4622,14 @@
     "localBrowserCases": 8,
     "newLocalTestsRunThisTurn": false,
     "retainedLocalTests": 652,
-    "sourceAndAssetHashesMatched": 39
+    "sourceAndAssetHashesMatched": 39,
+    "sourceCommit": "5ead6605a56923aa4ed0a665024a6c8f1d1a3438",
+    "productionDeploymentId": "dpl_FTnxwMJ9wtHf35oQFGzJe7gJKk8U",
+    "ciRunId": 41131117157,
+    "ciConclusion": "success",
+    "productionBrowserCases": 8,
+    "httpChecks": 32,
+    "hostedHashMatches": 25,
+    "publicationReceipt": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json"
   }
 }
