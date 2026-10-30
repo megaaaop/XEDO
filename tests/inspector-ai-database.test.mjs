@@ -10,6 +10,7 @@ const {db,actors,rpc}=await createInspectorDatabase();
 const check=(name,fn)=>t.test(name,fn);
 try{
  await db.exec(await readFile(root+'/db/inspector-ai.sql','utf8'));
+ await db.exec(await readFile(root+'/db/inspector-risk-performance.sql','utf8'));
  const catalog=JSON.parse(await readFile(root+'/db/prepared-sar.json','utf8'));
  await db.query('insert into xedo_private.prepared_analysis_catalog(result_id,payload) values($1,$2::jsonb)',[catalog.resultId,JSON.stringify(catalog)]);
  const doc=JSON.parse(await readFile(root+'/contracts/examples/inspector-save-draft.json','utf8')).document;

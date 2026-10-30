@@ -5,7 +5,7 @@
 **ลำดับล่าสุด3 / ก่อนหน้า4 / เดิม6 — prepared AI → Inspectorแก้พื้นที่เสี่ยง → ยืนยันพื้นที่บินตรวจ → planner → ภารกิจส่วนตัว**
 
 - วันที่เริ่ม26ตุลาคม2026; ปรับล่าสุด29ตุลาคม2026 ตามเวลา Asia/Bangkok
-- สถานะ: **ผู้ใช้ยืนยันว่าบัญชีตรวจใช้งานได้แล้ว และสั่งเริ่มวางแผน AI/editor; แผนลงมือฉบับปัจจุบันอยู่§3.16 มีผลแทนข้อความสถานะเก่าที่ขัดกัน Application AI ยังไม่implement รอบนี้ตรวจ12corefilehashesใหม่ตรงทั้งหมด ไม่รันwebsite tests/inferenceหรือเผยแพร่**
+- สถานะ: **preparedAI/editor/privateconfirmation/plannerเผยแพร่แล้วตาม§3.17; on-demand SAR สำหรับพื้นที่ใหม่100งานเดือน/กรอบ≤200กม² ใช้แนวทางCPUในเครื่องตามLOCAL_CPU_AI_INTEGRATION_PLAN.mdแล้ว30ต.ค. โดยมีbenchmark16รอบเป็นหลักฐานก่อนหน้า ยังไม่implementonlineworker/queue/UIหรือเปิดBilling/subscription;แผนcloudเดิมเป็นทางเลือกอนาคต**
 - เอกสารสถานะกลาง: [XEDO_WORK_LOG.md](XEDO_WORK_LOG.md) และ [implementation-queue.json](implementation-queue.json)
 - เอกสารนี้ลงรายละเอียดการออกแบบ ไม่ใช่บันทึกสถานะอีกชุด หากมีความคืบหน้าให้อัปเดต work log และ queue กลางด้วย
 - รอบนี้ไม่เปลี่ยน source ของเว็บไซต์ ไม่เรียก inference ไม่สร้างบัญชีจริง และไม่ commit/push/deploy
@@ -357,3 +357,29 @@ Checkpointแรกคือ contract+spatialtrustboundaryและตัวอ�
 ผู้ใช้อนุมัติลงมือและpush/deployในข้อความหลังแผน3.16แล้ว MilestonesA–DลงมือครบตามWEBSITE_DETAILS3.37 ใช้boundedPostgreSQLที่ตรวจliveว่าไม่มีPostGIS ไม่เพิ่มextensionหรือBFF-onlytrust Migration+seedappliedบนxedoและตรวจสิทธิ์แล้ว Eautomated564pass/3builds/browserlocalrealGEEผ่าน กำลังตรวจproductionreleaseหลังpush ผล32checks/298assertions/531testsเดิมไม่ใช้แทนrunนี้ Realaccountผู้ใช้ยืนยันแล้วแต่agentไม่ใช้passwordจริงทดสอบAI;productionAIreviewเป็นขอบเขตหลักฐานที่ต้องระบุให้ชัด ไม่สร้างบัญชีใหม่ ไม่มีคำถามผู้ใช้ค้าง
 
 **ผลเผยแพร่3.17:** codeb719d8e/Productiondpl_87f1XznCMD1MU4gAzVPqyyzydyAZREADY+mainalias/CI2branchesผ่าน/HTMLhashตรงverifiedbuildแล้ว A–Dimplemented/Eautomated+localbrowser+productionguestAPIและ3Dregressionผ่านตามWEBSITE_DETAILS3.37.2 เกณฑ์realpasswordAIuseracceptance/physicaldevicequalificationยังระบุแยก ไม่อ้างผ่านจากfixtures
+
+### 3.18 On-demand SAR จากพื้นที่ใหม่ — แผน29ตุลาคม2026
+
+ผู้ใช้ต้องการกดวิเคราะห์พื้นที่ใหม่ผ่านเว็บและตอบแล้วว่าpilot1user/100งานเดือน/กรอบexport≤200กม² ส่วนนี้เป็นstageใหม่legacy9/current6 ไม่ย้อนให้preparedintegrationlegacy6ที่เผยแพร่แล้วกลายเป็นยังไม่เริ่ม
+
+ข้อเสนอคือCloudRunJobsCPU4vCPU8GiBตามงาน,1activeworker,privateGCS,Supabaseownedjob/resultและVercel202/jobId+polling โมเดลเดิมcheckpoint2MB/488561params/CPU9tiles2.22238sเป็นเหตุผลเริ่มCPU แต่เวลานั้นไม่รวมGEE/coldstart/modelload/preview/vectorize/upload ต้องbenchmarkcloudจริงก่อนรับปากLatencyหรือRAM
+
+คำนวณ100งาน×10billableนาที=$5.28/เดือนก่อนfreeallowanceที่us-central1หรือ$0.06เฉพาะcomputeเมื่อโควตาทั้งหมดว่าง เปรียบเทียบGPUตามเวลาเดียวกันโดยไม่สมมติspeedupในCLOUD_AI_EXECUTION_PLAN.md มีข้อกำหนดGEEserviceidentity/downloadlimits/registration/การคุมงบและเกณฑ์ทดสอบครบ เสนอสำรองcloud$10–15/เดือนแต่ยังไม่ได้เปิดBillingหรือขอใช้เงินจริง
+
+ต้องสร้างdurablequeue/lease/outbox/reconciliation,แทนmanualDriveTasks,เพิ่มownedimmutableanalysislookupทั้งBFF/directRPCและถอดfixedresultId รวมresultadapter/progress/editor/confirm/plannerเดิม ดูแผนฉบับเต็มและcosts.json คำถามvolumeตอบแล้ว ไม่มีpendinguserquestion รอบนี้document/research/calculationเท่านั้น ไม่แก้application/SQL/บริการ ไม่รันmodel/tests/build ไม่commit/push/deploy
+
+### 3.19 แผน on-demand โดยใช้ local CPU — 30 ตุลาคม 2026
+
+คำสั่งล่าสุดให้วางแผนเชื่อมwebsiteกับCPUในเครื่องโดยไม่เปิดBilling/subscription ดูLOCAL_CPU_AI_INTEGRATION_PLAN.md และWEBSITE_DETAILS§3.43 แนวทางเริ่มต้นเป็นlocalworkeroutboundHTTPSRPCดึงownedjobsในSupabase ไม่ใช้CloudRun/paidtunnel/publicport คงrawTIFFในเครื่องส่งcatalog/coverage/candidates/privatepreviewกลับให้เปิดInspectoredit/confirm/plannerและprivatehistoryได้
+
+ต้องทำautomaticSARdownload/workercredentials-registry/queue-lease-fence/atomicownedresult/dynamicresolverและUIprogress/offline/latejobguards ไม่รันโมเดลในbrowser/Vercel/Supabase ไม่แทนภาพSARด้วยS2RGB ผลCPU16รอบเป็นหลักฐานรอบก่อน;รอบนี้วางแผน/source/officialdocs/packagemetadata/เลขคณิตเท่านั้น ไม่มีinstallation/inference/tests/liveDB/SQL/Authmachine/Billing/subscriptionหรือpush/deploy
+
+### 3.20 Localpipelineขั้น1–2เสร็จในเครื่อง — 30 ตุลาคม 2026
+
+ตามคำสั่งถัดจากแผน ลงมือworkers/local-aiแล้ว ใช้computePixelsสิทธิ์เดิมแทนgetDownloadURL→nativeVH/VV+VALID+metadata→CPUเดิม→candidate/coverage/GeoTIFF/previewโดยอัตโนมัติ พื้นที่ใหม่5.0172/197.5274กม²และbaselineautodownload176.478กม²ผ่าน ผลbaselinepixel/hashตรงทุกค่า/13testsผ่าน รายละเอียดLOCAL_CPU_AI_INTEGRATION_PLAN§3.14และWEBSITE_DETAILS§3.44 ยังไม่ต่อqueue/ownedDBresults/workeridentity/AnalyzeUI/เผยแพร่ ไม่มีBilling/subscription/SQL/Auth/bucket/IAMchangeหรือpush/deploy
+
+
+สถานะล่าสุดต่อจากขั้น1–2 — 30ต.ค.: localCPUขั้น3–5เชื่อมและทดสอบในเครื่องแล้วตามLOCAL_CPU_AI_INTEGRATION_PLAN§3.15/WEBSITE_DETAILS§3.45: Analyze→ownedqueue→GEE/CPUจริง→ownedcatalog→Inspectoredit/confirm→planner/Save/history เว็บ606/Python30tests/3buildsผ่าน ยังไม่applyhostedSQL/Authหรือเผยแพร่ TIFF/previewอยู่local ไม่สร้างStoragebucket งานขั้น6qualification/7releaseยังเหลือ ไม่มีBilling/subscription/IAM/push/deploy Cloudworkerยังเป็นfutureoptionไม่ได้เลือกใช้ รายงานoutputs/XEDO_Local_AI_Web_2026-10-30/REPORT.md
+
+
+ขั้น6รับอนุญาตเชื่อมSupabaseจริง30ต.ค.แล้ว: SQLqueue/statusติดตั้งและRLS/ACL/PostgRESTตรวจผ่าน ทีมสร้างInspectorTest+machineและผูกownerสำเร็จ สองAuthroleผ่าน7checks เหลือprimarypassword/reconnectเพื่อfullqueue-CPU-Inspectorqualification ดูLOCAL_CPU_AI_INTEGRATION_PLAN§3.16/WEBSITE_DETAILS§3.46/รายงานoutputs/XEDO_Local_AI_Phase6_2026-10-30 ไม่มีBilling/subscription/push/deploy

@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
-  "updatedOn": "2026-10-29",
+  "updatedOn": "2026-10-30",
   "timezone": "Asia/Bangkok",
   "numbering": {
     "effectiveOn": "2026-10-27",
     "legacyStageIdField": "stages[].number",
     "currentUserFacingOrderField": "remainingWorkOrder[].newNumber",
     "defaultForNewInstructions": "Use the 2026-10-27 revised numbering. Match quotations/annotations to their source numbering: previous1/legacy3 removed; revised1=previous2/legacy4, revised2=previous3/legacy5, revised3=previous4/legacy6.",
-    "historicalReferences": "Existing stage IDs, resolved-decision stage references, release scope and prior publication authorization retain their legacy numbers.",
-    "activeRemainingCount": 1,
+    "historicalReferences": "Existing stage IDs, resolved-decision stage references, release scope and prior publication authorization retain their legacy numbers. On-demand inference is a new2026-10-29 scope, current6/legacy9; prepared integration legacy6 remains published.",
+    "activeRemainingCount": 2,
     "deferredRemainingCount": 2,
-    "totalRemainingCount": 3,
+    "totalRemainingCount": 4,
     "completedLegacyStageIds": [
       1,
       2,
@@ -88,6 +88,13 @@
       "legacyStageNumber": 8,
       "scope": "deferred",
       "name": "Experiment results and before-after reports"
+    },
+    {
+      "newNumber": 6,
+      "previousNumber": null,
+      "legacyStageNumber": 9,
+      "scope": "active_local_phases1_6_complete_website_release_pending",
+      "name": "On-demand new-area SAR analysis using local CPU worker, with cloud execution deferred"
     }
   ],
   "purpose": "Queued XEDO implementation requirements and unresolved user decisions for this conversation.",
@@ -109,8 +116,8 @@
       "websiteDetailsPath": "docs/WEBSITE_DETAILS.md",
       "updateBothForWebsiteImplementationAndInvestigation": true
     },
-    "execution": "Latest2026-10-29 user explicitly requests implementation/testing/documentation of prepared AI/editor and authorizes push/deploy. Main applies website changes; helpers draft/review outside checkout. Account check is user-confirmed. Prior normal-flow/profile/schedule rewrite remains excluded.",
-    "publication": "AI/editor publication authorized by latest2026-10-29 user request. Apply reviewed/tested additive AI migration, finish local acceptance, then push/deploy and verify production. No real account provisioning, password/Auth setting changes or inference training authorized by this scope.",
+    "execution": "Latest user authorizes phase6 real Supabase integration and tests, including reviewed backend schema. Use existingInspector plus team-createdInspectorTest andmachine. User enterspasswords locally; no Billing/subscription/IAM/commit/push/deploy.",
+    "publication": "Backend migration applied for authorized phase6; no website push/deploy or paid service. Full signed-in qualification pending successfulrealAuth.",
     "authorizedPublicationStages": [
       1,
       2
@@ -192,7 +199,7 @@
   },
   "currentPlanningScope": {
     "id": "same-day-closeout-2026-10-27",
-    "status": "ai_editor_execution_plan_prepared_after_user_account_confirmation",
+    "status": "historical_2026_10_27_closeout_plan_superseded_by_currentImplementationScope",
     "userAvailabilityMinutes": 240,
     "userAvailabilityIsHardWorkLimit": false,
     "confirmedByUser": [
@@ -203,7 +210,7 @@
     ],
     "currentRemainingStageNumbers": [
       1,
-      3
+      6
     ],
     "legacyStageNumbers": [
       4,
@@ -215,7 +222,7 @@
       5
     ],
     "firstCheckpointMinutes": 20,
-    "criticalDependency": "User confirmed account check passed on2026-10-29. AI planning can proceed; next engineering checkpoint is separating search/image context from editable targets and authoritative RPC geometry/catalog confirmation.",
+    "criticalDependency": "Local new-area CPU steps1-5 complete. Remaining hosted PostgREST/machine identity/qualification/release are separate; preserve earlier four-hour schedule as historical, not a restarted timebox.",
     "schedule": [
       {
         "fromMinute": 0,
@@ -270,55 +277,16 @@
     "latestPlanPath": "docs/AI_INTEGRATION_PLAN.md"
   },
   "currentImplementationScope": {
-    "id": "3d-satellite-ground-2026-10-27",
-    "status": "published",
-    "applicationCommit": "dc4743caf16e270d900fabe906ba6a41c9831e84",
-    "verifiedDeploymentId": "dpl_HRWQ22Sxg1cM2b8KzrxTHVCWM1vw",
-    "ciRunId": 40488389541,
-    "items": [
-      "Diagram/Satellite 3D ground mode switch",
-      "Real georeferenced GEE Sentinel-2 tile texture across the existing floor",
-      "Preserve preview dimensions, floor extent and camera state",
-      "Bounded display-only imagery lifecycle, progress, attribution, retry and cancellation"
-    ],
-    "planWrittenBeforeImplementation": "docs/WEBSITE_DETAILS.md",
-    "documentationPaths": [
-      "docs/XEDO_WORK_LOG.md",
-      "docs/WEBSITE_DETAILS.md"
-    ],
+    "id": "local-cpu-phase7-production-release-2026-10-30",
+    "status": "preflight_passed_awaiting_feature_ci",
+    "hostedMigrationAuthorized": false,
+    "hostedSchemaAlreadyApplied": true,
     "pushAuthorized": true,
     "productionDeployAuthorized": true,
-    "separateUserTrialRequested": false,
-    "verification": {
-      "automatedTests": {
-        "passed": 482,
-        "failed": 0,
-        "skipped": 0
-      },
-      "syntax": "passed",
-      "builds": [
-        "build",
-        "build:workspace",
-        "build:file"
-      ],
-      "localLiveApi": "Browser actual GEE basemap and native-scale tile texture ready; diagram/satellite switching, keyboard orbit, same AOI and canvas dimensions verified; mobile390px no horizontal overflow",
-      "evidenceDirectory": "output/release-check/3d-satellite-ground-2026-10-27",
-      "production": "Production alias READY at exact application commit and CI success. Browser normal flow loads a reviewed scene, prepares route, renders real GEE satellite ground Ready, switches Diagram/Satellite and keyboard orbit with unchanged AOI and viewport. No console error found. Evidence: production-browser.json and production-satellite.jpg."
-    },
-    "preserve": [
-      "three workflow steps",
-      "four calculators",
-      "original inspection/review/calculation geometry",
-      "truthful Unknown and freshness checks",
-      "existing 3D preview size, floor extent and camera fit"
-    ],
-    "outsideThisRelease": [
-      "aircraft simulation defaults in the normal flow",
-      "user-start/derived-end schedule change",
-      "account implementation",
-      "AI integration",
-      "Pi and experimental reports"
-    ]
+    "billingAuthorized": false,
+    "subscriptionAuthorized": false,
+    "proof": "outputs/XEDO_Local_AI_Phase7_2026-10-30",
+    "pendingUserInput": null
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
@@ -545,6 +513,254 @@
       "status": "deferred_remaining",
       "userInstruction": "Do not implement now; keep marked as remaining work.",
       "requiredForCurrentWebsiteGoal": false
+    },
+    {
+      "number": 9,
+      "name": "On-demand new-area SAR inference via local CPU worker",
+      "status": "phase7_release_in_progress",
+      "implementationApproved": true,
+      "publicationApproved": true,
+      "billingApproved": false,
+      "planUpdatedOn": "2026-10-30",
+      "planPath": "docs/LOCAL_CPU_AI_INTEGRATION_PLAN.md",
+      "currentUserFacingNumber": 6,
+      "userConfirmedWorkload": {
+        "users": 1,
+        "jobsPerMonth": 100,
+        "maxExportGridKm2": 200,
+        "confirmedOn": "2026-10-29"
+      },
+      "proposedWorker": {
+        "executionLocation": "user_windows_pc",
+        "transport": "outbound_https_supabase_rpc_pull",
+        "compute": "CPU",
+        "threads": 4,
+        "batchSize": 1,
+        "precision": "float32",
+        "concurrentGlobalJobs": 1,
+        "pendingLimit": 2,
+        "maxSeconds": 1800,
+        "maxGridPixels": 2000000,
+        "maxGridDimension": 4096,
+        "maxExportGridKm2": 200,
+        "userFacingRole": "Inspector",
+        "machineIdentity": "dedicated_auth_uid_not_in_inspector_roster",
+        "requiresComputerAwakeOnline": true,
+        "requiresPublicPortOrTunnel": false,
+        "serviceRoleDistributed": false,
+        "fullTiffsStored": "local_disk",
+        "reviewResultsStored": "owned_database_catalog_only; TIFF_and_preview_remain_local; no_Storage_upload_in_this_milestone",
+        "cloudExecutionSelected": false
+      },
+      "costScenario": {
+        "currency": "USD",
+        "region": "us-central1",
+        "billableMinutesEach": 10,
+        "grossCompute100Jobs": 5.28,
+        "computeIfUnusedFullFreeAllowance": 0.06,
+        "proposedAdditionalMonthlyBudget": [
+          10,
+          15
+        ],
+        "budgetAccepted": false,
+        "excluded": [
+          "GEE commercial usage if applicable",
+          "object storage and transfer",
+          "build images and logs",
+          "taxes"
+        ],
+        "notMeasuredCloudLatency": true,
+        "appliesTo": "historical_future_cloud_option_not_current_local_plan"
+      },
+      "dependencies": [
+        "Verify existing project Free quotas, Storage policy and explicit RPC grants without upgrades",
+        "Isolated worker environment: earthengine-api/pyproj/shapely missing in benchmark venv",
+        "Automatic bounded single-scene GEE DATA/VALID/METADATA download replacing Drive Tasks",
+        "Dedicated machine Auth identity/private registry and owned queue/attempt lease/fencing RPC",
+        "Reusable CPU packaging with geometry/coverage roundtrip and explicit complexity failure",
+        "Immutable owned result resolver for list/detail/save/confirm/history and bound private previews",
+        "Analyze/status/offline/late-result UI and analysis-jobs route-parser allowlist tests",
+        "New real-area qualification, ownership/Storage/security/failure regression before release"
+      ],
+      "futureGpu": "Benchmark T4/L4 only if model inference dominates measured end-to-end latency",
+      "pendingUserAnswers": [],
+      "assuranceClarification": {
+        "recordedOn": "2026-10-30",
+        "cpuCloudIsProposal": true,
+        "cloudBenchmarkExecuted": false,
+        "noCrashGuaranteed": false,
+        "noChargeGuaranteed": false,
+        "proposedBilling": "pay_as_you_go_no_committed_subscription_selected",
+        "costScenarioNotFixedInvoice": true,
+        "billingNotEnabledByAgent": true,
+        "paidResourcesCreated": false,
+        "pendingUserAnswers": []
+      },
+      "readinessInspectionApproved": true,
+      "benchmarkPreparationApproved": true,
+      "actualCloudExecutionApproved": false,
+      "latestUserBudgetConstraints": {
+        "month": "2026-10",
+        "noSubscriptionPlanAvailable": true,
+        "billingEnablementAllowed": false,
+        "additionalCloudSpendAuthorized": false,
+        "cloudExecutionAuthorized": false,
+        "notifyBeforeAnyCost": true,
+        "localPreparationApproved": true,
+        "localBenchmarkExecutionApproved": true,
+        "localIntegrationPlanningApproved": true,
+        "noBillingOrSubscriptionUntilExplicitApproval": true,
+        "localPhases1And2ImplementationApproved": true
+      },
+      "readiness": {
+        "checkedOn": "2026-10-30",
+        "project": "test-01-494520",
+        "credentialAvailable": true,
+        "credentialsLogged": false,
+        "gee": {
+          "apiEnabled": true,
+          "registration": "REGISTERED_NOT_COMMERCIALLY",
+          "tier": "Community",
+          "eligibilityExpiresVisible": "Feb 10, 2028",
+          "monthlyEecuSecondUsagePercentVisible": 0.87
+        },
+        "billing": {
+          "linked": false,
+          "source": "Cloud Console visible Billing page",
+          "apiRead": {
+            "status": 403,
+            "reason": "SERVICE_DISABLED",
+            "notUsedToInferNoBilling": true
+          }
+        },
+        "services": {
+          "earthengine.googleapis.com": "ENABLED",
+          "run.googleapis.com": "DISABLED",
+          "storage.googleapis.com": "ENABLED",
+          "cloudbuild.googleapis.com": "DISABLED",
+          "artifactregistry.googleapis.com": "DISABLED"
+        },
+        "local": {
+          "dependenciesReady": true,
+          "existingVenv": "tmp/gee-colab-venv",
+          "dryRunPassed": true,
+          "readyForExplicitLocalRun": true,
+          "inferenceExecuted": true,
+          "cloudCpuLimitEmulated": false,
+          "fixtureGridKm2": 176.478,
+          "new200Km2CasePrepared": false,
+          "gcloudFound": false,
+          "dockerDaemonRunning": false,
+          "initialPreparationInferenceExecuted": false,
+          "localBenchmarkReport": "outputs/XEDO_CPU_Benchmark_2026-10-30/CPU_BENCHMARK_REPORT.md",
+          "automaticInputAcquisitionExecuted": true,
+          "newRealAreaNear200Km2Tested": 197.5274,
+          "workerDependenciesReady": true
+        },
+        "evidenceDirectory": "outputs/XEDO_CPU_Readiness_2026-10-30",
+        "report": "outputs/XEDO_CPU_Readiness_2026-10-30/READINESS_REPORT.md",
+        "cloudNextStep": "Local phases1-5 candidate verified. Remaining phase6 real hosted/multi-connection/extended qualification, then separately authorized phase7 SQL/machine account/registry/website release. No Cloud Run/GCS/Billing/subscription or publishing."
+      },
+      "localBenchmarkExecutionApproved": true,
+      "localBenchmark": {
+        "executedOn": "2026-10-30",
+        "status": "completed_exact_output_match",
+        "executionApproved": true,
+        "completedProcesses": 8,
+        "completedInferencePasses": 16,
+        "failedProcesses": 0,
+        "fixtureGridKm2": 176.478,
+        "validKm2": 106.183,
+        "threads": [
+          2,
+          4
+        ],
+        "coldFreshProcessesEach": 3,
+        "warmPassesEach": 5,
+        "warmReuseStatisticsUsePasses": [
+          2,
+          3,
+          4,
+          5
+        ],
+        "fourThreadColdFullProcessMedianSeconds": 12.242073900066316,
+        "fourThreadWarmReuseProcessingMedianSeconds": 2.2969660000000003,
+        "fourThreadWarmReuseIncludingPreviewMedianSeconds": 4.171135899960063,
+        "maximumNativePeakWorkingSetMiB": 891.296875,
+        "exactScoreAndMaskPixelAgreementAll16": true,
+        "scoreMaxAbsoluteError": 0,
+        "maskDifferentPixelsIncludingNoData": 0,
+        "candidatePixels": 15248,
+        "inputHashesAfterRunMatchAllSix": true,
+        "isGroundTruthAccuracy": false,
+        "isCloudOr200Km2Qualification": false,
+        "report": "outputs/XEDO_CPU_Benchmark_2026-10-30/CPU_BENCHMARK_REPORT.md",
+        "metrics": "outputs/XEDO_CPU_Benchmark_2026-10-30/metrics-summary.json",
+        "receipt": "outputs/XEDO_CPU_Readiness_2026-10-30/preparation/runs/20261030T055818Z_7c53fb88/benchmark-receipt.json",
+        "cloudExecution": false,
+        "billingOrSubscriptionChanged": false,
+        "applicationChanged": false,
+        "pushDeploy": false
+      },
+      "historicalCloudWorkerProposal": {
+        "provider": "Google Cloud",
+        "product": "Cloud Run Jobs",
+        "compute": "CPU",
+        "vCpu": 4,
+        "memoryGiB": 8,
+        "concurrentGlobalJobs": 1,
+        "pendingLimit": 2,
+        "maxSeconds": 1800,
+        "maxGridPixels": 2000000,
+        "maxGridDimension": 4096
+      },
+      "historicalCloudDependencies": [
+        "Verify existing GCP/GEE registration and billing with authorized account",
+        "Freeze model/input/grid and reproduce container baseline",
+        "Owned durable queue/outbox/global lease/reconciliation",
+        "Automatic GEE download or GCS export replacing Drive/Tasks handoff",
+        "Private owned analysis result lookup including direct RPC",
+        "Progress/result adapter and existing Inspector editor/planner integration"
+      ],
+      "preferredExecutionMode": "local_cpu_outbound_pull",
+      "cloudExecutionDeferred": true,
+      "localIntegrationPlanPath": "docs/LOCAL_CPU_AI_INTEGRATION_PLAN.md",
+      "localIntegrationPlanningApproved": true,
+      "localIntegrationImplementationApproved": true,
+      "completedLocalPhases": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "remainingLocalPhases": [
+        7
+      ],
+      "approvedLocalPhases": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "fullHostedImplementationApproved": false,
+      "localPipelineReport": "outputs/XEDO_Local_CPU_Pipeline_2026-10-30/REPORT.md",
+      "localIntegrationImplementationApprovalScope": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "latestImplementationScope": "Phase6 real Supabase schema/identity/owned queue + local CPU/browser qualification complete; no Billing/subscription, website commit/push/deploy.",
+      "latestEvidence": "outputs/XEDO_Local_AI_Phase6_2026-10-30/REPORT.md",
+      "hostedSchemaApplied": true,
+      "websiteReleaseAuthorized": true
     }
   ],
   "openIssues": [
@@ -1119,10 +1335,10 @@
     "documentationFollowup": "Follow-up documentation commit may advance deployment identity without changing application code; final identity recorded in local release-receipt.json"
   },
   "closeoutSnapshot": {
-    "recordedOn": "2026-10-29",
-    "kind": "prepared_ai_published_qualifications_and_user_acceptance_remaining",
-    "activeGroups": 1,
-    "substantiveCloseoutGroupsRemaining": 0,
+    "recordedOn": "2026-10-30",
+    "kind": "phase7_release_in_progress",
+    "activeGroups": 2,
+    "substantiveCloseoutGroupsRemaining": 1,
     "sourceFeatureGroupsRemaining": [],
     "qualificationTail": "Core UX is published; physical touch/trackpad, performance/heap/listener measurements and dependency-selective recomputation remain documented follow-ups. Integrated regression is an acceptance gate, not a new feature stage.",
     "publishedAccountGroupRemaining": "Account check accepted from direct user confirmation2026-10-29. Not a blocker for AI. Retain privacy/session/Save-history cases as integration regression without claiming a fresh agent run.",
@@ -1130,6 +1346,10 @@
       {
         "current": 1,
         "legacy": 4
+      },
+      {
+        "current": 6,
+        "legacy": 9
       }
     ],
     "deferredNumberMapping": [
@@ -1149,28 +1369,34 @@
       "surface_missing_report_shows_area_home_mismatch"
     ],
     "integrationVerificationIsAcceptanceNotExtraFeatureStage": true,
-    "applicationChangedThisTurn": true,
+    "applicationChangedThisTurn": false,
     "testsOrServicesRunThisTurn": true,
-    "publicationThisTurn": true,
-    "record": "docs/WEBSITE_DETAILS.md#3372-published-aieditor-release-evidence",
+    "publicationThisTurn": false,
+    "record": "docs/WEBSITE_DETAILS.md#347-ปิดการทดสอบขั้น6กับ-supabaseจริงและ-cpu-ในเครื่อง--30-ตุลาคม-2026",
     "teamProvisioningPendingScope": "No requested first-account provisioning remains. Additional trial accounts stay team-created as needed for integration regression.",
     "recommendedExecutionOrder": [
       {
         "order": 1,
-        "currentStage": 3,
-        "legacyStage": 6,
-        "kind": "user_acceptance_not_unimplemented_feature",
-        "remaining": "User may inspect one prepared AI mission with their existing real Inspector account; agent did not use a real password."
+        "currentStage": 6,
+        "legacyStage": 9,
+        "kind": "local_phases1_6_complete_release_pending",
+        "remaining": "Phase7: review/publish the tested local frontend+API+worker setup only after separate user authorization. SQL/registry/threeAuthroles are already installed and qualified; no Billing/subscription."
       },
       {
         "order": 2,
         "currentStage": 1,
         "legacyStage": 4,
         "kind": "device_and_performance_qualification",
-        "remaining": "Physical touch/native trackpad and heap/listener/long-soak qualification; do not claim these from automated browser checks."
+        "remaining": "Retain existing physical touch/trackpad/heap/long-soak qualifications; user may accept prepared AI with existing real account."
       }
     ],
-    "verificationScope": "564 automated pass; 3 builds; simulated Auth + real BFF/PGlite/live GEE editable AI/save/history/isolation; live Supabase migration/catalog/RLS; production guest APIs/browser/3D; 2 CI success; exact HTML match. Real-password AI production review not executed."
+    "verificationScope": "611Node/57Python/3builds plus actual real3-actor Supabase queue+CPU3cases, natural cancellation/lease/offline protocol2jobs, browserAnalyze/edit/manual/confirm/planner/privateSave-history and geometrytimeoutrepair. No website release.",
+    "applicationTestsRunThisTurn": true,
+    "documentationChecksRunThisTurn": true,
+    "workerSourceChangedThisTurn": false,
+    "databaseChangedThisTurn": true,
+    "pendingRuntimeInputs": [],
+    "qaHarnessChangedThisTurn": true
   },
   "inspectorEnablementExecution": {
     "id": "inspector-enablement-2026-10-28",
@@ -1761,5 +1987,909 @@
     },
     "evidenceDirectory": "output/release-check/ai-2026-10-29",
     "pendingUserAnswers": []
+  },
+  "onDemandAiPlanning": {
+    "updatedOn": "2026-10-30",
+    "status": "phase7_release_in_progress",
+    "request": "User-authorized phase6 real Supabase and local CPU browser integration, qualification and canonical documentation; no Billing/subscription/push/deploy.",
+    "workloadConfirmed": true,
+    "planPath": "docs/LOCAL_CPU_AI_INTEGRATION_PLAN.md",
+    "calculationPath": "outputs/XEDO_Cloud_AI_Plan_2026-10-29/costs.json",
+    "sourceBaseline": {
+      "checkpointBytes": 2017845,
+      "parameterCountAnalytic": 488561,
+      "existingCpuProcessingSeconds": 2.22238,
+      "tiles": 9,
+      "gridPixels": 1764780,
+      "excludesEndToEndOverheads": true,
+      "freshInferenceExecuted": false
+    },
+    "recommendation": {
+      "executionLocation": "user_windows_pc",
+      "transport": "outbound_https_supabase_rpc_pull",
+      "compute": "CPU",
+      "threads": 4,
+      "batchSize": 1,
+      "precision": "float32",
+      "concurrentGlobalJobs": 1,
+      "pendingLimit": 2,
+      "maxSeconds": 1800,
+      "maxGridPixels": 2000000,
+      "maxGridDimension": 4096,
+      "maxExportGridKm2": 200,
+      "userFacingRole": "Inspector",
+      "machineIdentity": "dedicated_auth_uid_not_in_inspector_roster",
+      "requiresComputerAwakeOnline": true,
+      "requiresPublicPortOrTunnel": false,
+      "serviceRoleDistributed": false,
+      "fullTiffsStored": "local_disk",
+      "reviewResultsStored": "existing_supabase_owned_catalog_and_private_preview_within_verified_quota",
+      "cloudExecutionSelected": false
+    },
+    "costScenario": {
+      "currency": "USD",
+      "region": "us-central1",
+      "billableMinutesEach": 10,
+      "grossCompute100Jobs": 5.28,
+      "computeIfUnusedFullFreeAllowance": 0.06,
+      "proposedAdditionalMonthlyBudget": [
+        10,
+        15
+      ],
+      "budgetAccepted": false,
+      "excluded": [
+        "GEE commercial usage if applicable",
+        "object storage and transfer",
+        "build images and logs",
+        "taxes"
+      ],
+      "notMeasuredCloudLatency": true,
+      "appliesTo": "historical_future_cloud_option_not_current_local_plan"
+    },
+    "verificationThisTurn": {
+      "realSupabase": true,
+      "threeAuthRoles": true,
+      "realQueueCpuCases": 3,
+      "browserAnalyze": true,
+      "browserEditedCandidateAndManualConfirm": true,
+      "privateSaveHistory": true,
+      "foreignOwnerDenied": true,
+      "naturalLeaseAndOfflineQualification": true,
+      "nodeTestsPassed": 611,
+      "pythonTestsPassed": 57,
+      "buildFormats": 3,
+      "hostedGeometryRepair": true,
+      "actualProcessor": "local CPU",
+      "dbChanged": true,
+      "passwordOrAccountChanged": false,
+      "billingOrSubscriptionChanged": false,
+      "pushDeploy": false
+    },
+    "pendingUserAnswers": [],
+    "assuranceClarification": {
+      "recordedOn": "2026-10-30",
+      "cpuCloudIsProposal": true,
+      "cloudBenchmarkExecuted": false,
+      "noCrashGuaranteed": false,
+      "noChargeGuaranteed": false,
+      "proposedBilling": "pay_as_you_go_no_committed_subscription_selected",
+      "costScenarioNotFixedInvoice": true,
+      "billingNotEnabledByAgent": true,
+      "paidResourcesCreated": false,
+      "pendingUserAnswers": []
+    },
+    "initialPlanningVerification": {
+      "sourceRead": true,
+      "checkpointHashCompared": true,
+      "officialPricingReviewed": true,
+      "arithmeticExecuted": true,
+      "modelInference": false,
+      "cloudBenchmark": false,
+      "applicationTests": false,
+      "build": false,
+      "browser": false,
+      "applicationApiCalls": false,
+      "sourceChanged": false,
+      "sqlChanged": false,
+      "accountOrServiceChanged": false,
+      "paidResourcesCreated": false,
+      "pushDeploy": false
+    },
+    "latestUserBudgetConstraints": {
+      "month": "2026-10",
+      "noSubscriptionPlanAvailable": true,
+      "billingEnablementAllowed": false,
+      "additionalCloudSpendAuthorized": false,
+      "cloudExecutionAuthorized": false,
+      "notifyBeforeAnyCost": true,
+      "localPreparationApproved": true,
+      "localBenchmarkExecutionApproved": true,
+      "localIntegrationPlanningApproved": true,
+      "noBillingOrSubscriptionUntilExplicitApproval": true,
+      "localPhases1And2ImplementationApproved": true
+    },
+    "readiness": {
+      "checkedOn": "2026-10-30",
+      "project": "test-01-494520",
+      "credentialAvailable": true,
+      "credentialsLogged": false,
+      "gee": {
+        "apiEnabled": true,
+        "registration": "REGISTERED_NOT_COMMERCIALLY",
+        "tier": "Community",
+        "eligibilityExpiresVisible": "Feb 10, 2028",
+        "monthlyEecuSecondUsagePercentVisible": 0.87
+      },
+      "billing": {
+        "linked": false,
+        "source": "Cloud Console visible Billing page",
+        "apiRead": {
+          "status": 403,
+          "reason": "SERVICE_DISABLED",
+          "notUsedToInferNoBilling": true
+        }
+      },
+      "services": {
+        "earthengine.googleapis.com": "ENABLED",
+        "run.googleapis.com": "DISABLED",
+        "storage.googleapis.com": "ENABLED",
+        "cloudbuild.googleapis.com": "DISABLED",
+        "artifactregistry.googleapis.com": "DISABLED"
+      },
+      "local": {
+        "dependenciesReady": true,
+        "existingVenv": "tmp/gee-colab-venv",
+        "dryRunPassed": true,
+        "readyForExplicitLocalRun": true,
+        "inferenceExecuted": true,
+        "cloudCpuLimitEmulated": false,
+        "fixtureGridKm2": 176.478,
+        "new200Km2CasePrepared": false,
+        "gcloudFound": false,
+        "dockerDaemonRunning": false,
+        "initialPreparationInferenceExecuted": false,
+        "localBenchmarkReport": "outputs/XEDO_CPU_Benchmark_2026-10-30/CPU_BENCHMARK_REPORT.md",
+        "automaticInputAcquisitionExecuted": true,
+        "newRealAreaNear200Km2Tested": 197.5274,
+        "workerDependenciesReady": true
+      },
+      "evidenceDirectory": "outputs/XEDO_CPU_Readiness_2026-10-30",
+      "report": "outputs/XEDO_CPU_Readiness_2026-10-30/READINESS_REPORT.md",
+      "cloudNextStep": "Local phases1-5 candidate verified. Remaining phase6 real hosted/multi-connection/extended qualification, then separately authorized phase7 SQL/machine account/registry/website release. No Cloud Run/GCS/Billing/subscription or publishing."
+    },
+    "localBenchmarkExecutionApproved": true,
+    "localBenchmark": {
+      "executedOn": "2026-10-30",
+      "status": "completed_exact_output_match",
+      "executionApproved": true,
+      "completedProcesses": 8,
+      "completedInferencePasses": 16,
+      "failedProcesses": 0,
+      "fixtureGridKm2": 176.478,
+      "validKm2": 106.183,
+      "threads": [
+        2,
+        4
+      ],
+      "coldFreshProcessesEach": 3,
+      "warmPassesEach": 5,
+      "warmReuseStatisticsUsePasses": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "fourThreadColdFullProcessMedianSeconds": 12.242073900066316,
+      "fourThreadWarmReuseProcessingMedianSeconds": 2.2969660000000003,
+      "fourThreadWarmReuseIncludingPreviewMedianSeconds": 4.171135899960063,
+      "maximumNativePeakWorkingSetMiB": 891.296875,
+      "exactScoreAndMaskPixelAgreementAll16": true,
+      "scoreMaxAbsoluteError": 0,
+      "maskDifferentPixelsIncludingNoData": 0,
+      "candidatePixels": 15248,
+      "inputHashesAfterRunMatchAllSix": true,
+      "isGroundTruthAccuracy": false,
+      "isCloudOr200Km2Qualification": false,
+      "report": "outputs/XEDO_CPU_Benchmark_2026-10-30/CPU_BENCHMARK_REPORT.md",
+      "metrics": "outputs/XEDO_CPU_Benchmark_2026-10-30/metrics-summary.json",
+      "receipt": "outputs/XEDO_CPU_Readiness_2026-10-30/preparation/runs/20261030T055818Z_7c53fb88/benchmark-receipt.json",
+      "cloudExecution": false,
+      "billingOrSubscriptionChanged": false,
+      "applicationChanged": false,
+      "pushDeploy": false
+    },
+    "readinessPreparationVerification": {
+      "cloudControlPlaneGet": true,
+      "browserConsoleReadOnly": true,
+      "officialPrerequisitesRead": true,
+      "harnessSyntaxAndDryRun": true,
+      "sixFileHashesVerified": true,
+      "modelInference": false,
+      "cloudBenchmark": false,
+      "applicationTests": false,
+      "build": false,
+      "sourceChanged": false,
+      "sqlChanged": false,
+      "accountOrServiceChanged": false,
+      "billingLinked": false,
+      "apisEnabled": false,
+      "paidResourcesCreated": false,
+      "pushDeploy": false
+    },
+    "historicalCloudRecommendation": {
+      "provider": "Google Cloud",
+      "product": "Cloud Run Jobs",
+      "compute": "CPU",
+      "vCpu": 4,
+      "memoryGiB": 8,
+      "concurrentGlobalJobs": 1,
+      "pendingLimit": 2,
+      "maxSeconds": 1800,
+      "maxGridPixels": 2000000,
+      "maxGridDimension": 4096
+    },
+    "preferredExecutionMode": "local_cpu_outbound_pull",
+    "cloudExecutionDeferred": true,
+    "localIntegrationPlanPath": "docs/LOCAL_CPU_AI_INTEGRATION_PLAN.md",
+    "localIntegrationPlanningApproved": true,
+    "localIntegrationImplementationApproved": true,
+    "cloudPlanPath": "docs/CLOUD_AI_EXECUTION_PLAN.md",
+    "localBenchmarkVerification": {
+      "localModelInference": true,
+      "inferencePasses": 16,
+      "processes": 8,
+      "pixelGridNoDataComparisonAll16": true,
+      "comparisonToolSelfChecksPassed": 5,
+      "postRunSixInputHashesVerified": true,
+      "metricsAggregatedAndIndependentlyReviewed": true,
+      "cloudControlPlaneGet": false,
+      "browserConsoleReadOnly": false,
+      "cloudBenchmark": false,
+      "applicationTests": false,
+      "build": false,
+      "sourceChanged": false,
+      "sqlChanged": false,
+      "accountOrServiceChanged": false,
+      "billingLinked": false,
+      "apisEnabled": false,
+      "paidResourcesCreated": false,
+      "subscriptionCreated": false,
+      "commitPushDeploy": false
+    },
+    "completedLocalPhases": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "remainingLocalPhases": [
+      7
+    ],
+    "approvedLocalPhases": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "fullHostedImplementationApproved": false,
+    "localPipelineReport": "outputs/XEDO_Local_CPU_Pipeline_2026-10-30/REPORT.md",
+    "localIntegrationImplementationApprovalScope": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "latestEvidence": "outputs/XEDO_Local_AI_Phase6_2026-10-30/REPORT.md",
+    "productionChangedThisTurn": false,
+    "hostedSchemaApplied": true,
+    "websiteReleaseAuthorized": true,
+    "initialRequest": "Plan connecting website new-area analysis to local CPU without Billing/subscriptions; document work log and website architecture. No implementation/publishing requested.",
+    "historicalVerificationBeforePhase6": {
+      "readinessBrowserReadOnly": true,
+      "geeConfigRead": true,
+      "geePixelRequests": true,
+      "localCpuInference": true,
+      "pythonTestsPassed": 13,
+      "pythonTestsFailed": 0,
+      "baselineScoreMaskPixelAndFileHashParity": true,
+      "candidateCoverageRoundtripMismatchPixels": 0,
+      "sixOriginalHashesUnchanged": true,
+      "sourceChanged": true,
+      "workerSourceOnly": true,
+      "webApplicationSourceChanged": false,
+      "sqlChanged": false,
+      "packagesInstalledInNewEnvironment": true,
+      "benchmarkEnvironmentModified": false,
+      "applicationTests": false,
+      "build": false,
+      "websiteBrowserFlowTest": false,
+      "dbOrAccountChanged": false,
+      "bucketCreated": false,
+      "iamChanged": false,
+      "billingOrSubscriptionChanged": false,
+      "pushDeploy": false
+    }
+  },
+  "localCpuIntegrationPlanning": {
+    "recordedOn": "2026-10-30",
+    "status": "local_cpu_phases_1_5_implemented_tested_hosted_qualification_and_release_remaining_no_billing",
+    "planPath": "docs/LOCAL_CPU_AI_INTEGRATION_PLAN.md",
+    "currentStage": 6,
+    "legacyStage": 9,
+    "planningApproved": true,
+    "implementationApproved": true,
+    "publicationApproved": false,
+    "noBillingSubscriptionOrPaidCloud": true,
+    "architecture": {
+      "executionLocation": "user_windows_pc",
+      "transport": "outbound_https_supabase_rpc_pull",
+      "compute": "CPU",
+      "threads": 4,
+      "batchSize": 1,
+      "precision": "float32",
+      "concurrentGlobalJobs": 1,
+      "pendingLimit": 2,
+      "maxSeconds": 1800,
+      "maxGridPixels": 2000000,
+      "maxGridDimension": 4096,
+      "maxExportGridKm2": 200,
+      "userFacingRole": "Inspector",
+      "machineIdentity": "dedicated_auth_uid_not_in_inspector_roster",
+      "requiresComputerAwakeOnline": true,
+      "requiresPublicPortOrTunnel": false,
+      "serviceRoleDistributed": false,
+      "fullTiffsStored": "local_disk",
+      "reviewResultsStored": "existing_supabase_owned_catalog_and_private_preview_within_verified_quota",
+      "cloudExecutionSelected": false
+    },
+    "proposedCaps": {
+      "reviewCatalogKiB": 512,
+      "previewKiB": 512,
+      "rawCandidates": 256,
+      "totalRawVertices": 8192,
+      "targetVertices": 120,
+      "logicalJobsPerMonth": 100
+    },
+    "proposedDefaults": {
+      "sarLookbackDays": 30,
+      "activeHeartbeatSeconds": 20,
+      "leaseSeconds": 120,
+      "idlePresenceSeconds": 60,
+      "offlineAfterSeconds": 180,
+      "activeWorkerPollSeconds": 10,
+      "idleWorkerPollSeconds": 60,
+      "browserActivePollSeconds": [
+        3,
+        5
+      ]
+    },
+    "defaultsAreProposalsNotDeployed": true,
+    "existingBenchmarkEnvironmentMissingPackages": [
+      "earthengine-api",
+      "shapely"
+    ],
+    "phases": [
+      {
+        "order": 1,
+        "work": "Verify existing quota/permissions and freeze job-result contracts/isolated runtime",
+        "status": "implemented_verified_local"
+      },
+      {
+        "order": 2,
+        "work": "Automatic GEE input adapter plus local CPU/geometry package baseline",
+        "status": "implemented_verified_local"
+      },
+      {
+        "order": 3,
+        "work": "Owned job/result registry/RPC with authorization and lease/fencing tests",
+        "status": "implemented_verified_local_candidate_not_published"
+      },
+      {
+        "order": 4,
+        "work": "Outbound worker lifecycle, DPAPI, progress, checkpoint/retry and owned catalog publication; TIFF/preview local",
+        "status": "implemented_verified_local_candidate_not_published"
+      },
+      {
+        "order": 5,
+        "work": "Analyze UI, dynamic result resolver and Inspector/editor/planner/history",
+        "status": "implemented_verified_local_candidate_not_published"
+      },
+      {
+        "order": 6,
+        "work": "Genuine new-area/end-to-end/failure/privacy/UX/quota qualification",
+        "status": "in_progress_real_schema_security_verified_real_auth_pending"
+      },
+      {
+        "order": 7,
+        "work": "Reviewable release and rollback/launcher documentation before separately authorized publishing",
+        "status": "not_authorized_no_publish_or_hosted_migration"
+      }
+    ],
+    "acceptanceCasesStatus": "phase1_2_local_cases_executed_13_tests_passed_remaining_hosted_cases_designed_not_run",
+    "sarAndContextImageIdentitiesSeparate": true,
+    "fullValidSarCoverageIsNotANewImplicitGate": true,
+    "publishedSmallResultsAvailableWhenPcOffline": true,
+    "fullTiffRetrievalDependsOnLocalMachine": true,
+    "pendingUserAnswers": [],
+    "verificationThisTurn": {
+      "readinessBrowserReadOnly": true,
+      "geeConfigRead": true,
+      "geePixelRequests": true,
+      "localCpuInference": true,
+      "pythonTestsPassed": 13,
+      "pythonTestsFailed": 0,
+      "baselineScoreMaskPixelAndFileHashParity": true,
+      "candidateCoverageRoundtripMismatchPixels": 0,
+      "sixOriginalHashesUnchanged": true,
+      "sourceChanged": true,
+      "workerSourceOnly": true,
+      "webApplicationSourceChanged": false,
+      "sqlChanged": false,
+      "packagesInstalledInNewEnvironment": true,
+      "benchmarkEnvironmentModified": false,
+      "applicationTests": false,
+      "build": false,
+      "websiteBrowserFlowTest": false,
+      "dbOrAccountChanged": false,
+      "bucketCreated": false,
+      "iamChanged": false,
+      "billingOrSubscriptionChanged": false,
+      "pushDeploy": false
+    },
+    "completedLocalPhases": [
+      1,
+      2
+    ],
+    "remainingLocalPhases": [
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "approvedLocalPhases": [
+      1,
+      2
+    ],
+    "fullHostedImplementationApproved": false,
+    "localPipelineReport": "outputs/XEDO_Local_CPU_Pipeline_2026-10-30/REPORT.md",
+    "implementationApprovalScope": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ],
+    "missingPackagesHistoricalBeforeWorkerSetup": true,
+    "workerEnvironment": {
+      "path": "tmp/local-ai-worker-venv",
+      "kind": "isolated_overlay_reusing_read_only_benchmark_site_packages",
+      "benchmarkEnvironmentModified": false,
+      "earthengine-api": "1.7.50",
+      "shapely": "2.2.0",
+      "setuptools": "78.1.0",
+      "pyprojRequired": false,
+      "pipCheckPassed": true
+    },
+    "transportForAcquisition": "GEE computePixels GEO_TIFF exact native PixelGrid",
+    "getDownloadUrlStatus": "not_used_missing_earthengine.thumbnails.create_no_iam_grant",
+    "remainingHostedStoragePrerequisite": "No bucket exists yet. Create private bucket/RLS only in separately authorized hosted integration phase.",
+    "latestEvidence": "outputs/XEDO_Local_AI_Web_2026-10-30/REPORT.md",
+    "currentArtifactPublication": "Owned catalog/coverage in database; no Storage preview upload in milestone3-5; full TIFF/preview remain local"
+  },
+  "localCpuPipelineExecution": {
+    "recordedOn": "2026-10-30",
+    "authorizedPhases": [
+      1,
+      2
+    ],
+    "status": "local_cpu_phases_1_2_implemented_tested_hosted_integration_remaining_no_billing",
+    "entrypoint": "workers/local-ai/pipeline.py",
+    "usageGuide": "workers/local-ai/README.md",
+    "evidenceDirectory": "outputs/XEDO_Local_CPU_Pipeline_2026-10-30",
+    "downloadMethod": "computePixels",
+    "newAreaGridKm2": [
+      5.0172,
+      197.5274
+    ],
+    "baselineGridKm2": 176.478,
+    "baselineCandidatePixels": 15248,
+    "baselineComponents": 14,
+    "newAreasCandidatePixels": [
+      0,
+      0
+    ],
+    "zeroCandidatesNotProofOfOilAbsence": true,
+    "noDataDifference": "59550 originally invalid NaN band values canonicalized to -9999; valid values and VALID unchanged",
+    "verification": {
+      "readinessBrowserReadOnly": true,
+      "geeConfigRead": true,
+      "geePixelRequests": true,
+      "localCpuInference": true,
+      "pythonTestsPassed": 13,
+      "pythonTestsFailed": 0,
+      "baselineScoreMaskPixelAndFileHashParity": true,
+      "candidateCoverageRoundtripMismatchPixels": 0,
+      "sixOriginalHashesUnchanged": true,
+      "sourceChanged": true,
+      "workerSourceOnly": true,
+      "webApplicationSourceChanged": false,
+      "sqlChanged": false,
+      "packagesInstalledInNewEnvironment": true,
+      "benchmarkEnvironmentModified": false,
+      "applicationTests": false,
+      "build": false,
+      "websiteBrowserFlowTest": false,
+      "dbOrAccountChanged": false,
+      "bucketCreated": false,
+      "iamChanged": false,
+      "billingOrSubscriptionChanged": false,
+      "pushDeploy": false
+    },
+    "pendingUserAnswers": [],
+    "historicalScope": "Prior phases1-2 execution record only; current phase3-5 status/evidence is localCpuWebIntegrationExecution."
+  },
+  "previousImplementationScopes": [
+    {
+      "id": "3d-satellite-ground-2026-10-27",
+      "status": "published",
+      "applicationCommit": "dc4743caf16e270d900fabe906ba6a41c9831e84",
+      "verifiedDeploymentId": "dpl_HRWQ22Sxg1cM2b8KzrxTHVCWM1vw",
+      "ciRunId": 40488389541,
+      "items": [
+        "Diagram/Satellite 3D ground mode switch",
+        "Real georeferenced GEE Sentinel-2 tile texture across the existing floor",
+        "Preserve preview dimensions, floor extent and camera state",
+        "Bounded display-only imagery lifecycle, progress, attribution, retry and cancellation"
+      ],
+      "planWrittenBeforeImplementation": "docs/WEBSITE_DETAILS.md",
+      "documentationPaths": [
+        "docs/XEDO_WORK_LOG.md",
+        "docs/WEBSITE_DETAILS.md"
+      ],
+      "pushAuthorized": true,
+      "productionDeployAuthorized": true,
+      "separateUserTrialRequested": false,
+      "verification": {
+        "automatedTests": {
+          "passed": 482,
+          "failed": 0,
+          "skipped": 0
+        },
+        "syntax": "passed",
+        "builds": [
+          "build",
+          "build:workspace",
+          "build:file"
+        ],
+        "localLiveApi": "Browser actual GEE basemap and native-scale tile texture ready; diagram/satellite switching, keyboard orbit, same AOI and canvas dimensions verified; mobile390px no horizontal overflow",
+        "evidenceDirectory": "output/release-check/3d-satellite-ground-2026-10-27",
+        "production": "Production alias READY at exact application commit and CI success. Browser normal flow loads a reviewed scene, prepares route, renders real GEE satellite ground Ready, switches Diagram/Satellite and keyboard orbit with unchanged AOI and viewport. No console error found. Evidence: production-browser.json and production-satellite.jpg."
+      },
+      "preserve": [
+        "three workflow steps",
+        "four calculators",
+        "original inspection/review/calculation geometry",
+        "truthful Unknown and freshness checks",
+        "existing 3D preview size, floor extent and camera fit"
+      ],
+      "outsideThisRelease": [
+        "aircraft simulation defaults in the normal flow",
+        "user-start/derived-end schedule change",
+        "account implementation",
+        "AI integration",
+        "Pi and experimental reports"
+      ]
+    }
+  ],
+  "localCpuWebIntegrationExecution": {
+    "recordedOn": "2026-10-30",
+    "status": "local_cpu_phases_1_5_implemented_tested_hosted_qualification_and_release_remaining_no_billing",
+    "currentStage": 6,
+    "legacyStage": 9,
+    "approvedPhases": [
+      3,
+      4,
+      5
+    ],
+    "completedLocally": [
+      3,
+      4,
+      5
+    ],
+    "auth": "simulated local fixture only",
+    "database": "persistent local PGlite PostgreSQL; production schema unchanged",
+    "gee": "real read-only existing project computePixels",
+    "cpu": "real existing local CPU model/pipeline",
+    "hostedSqlFiles": [
+      "db/inspector-local-jobs.sql",
+      "db/inspector-local-jobs-status.sql"
+    ],
+    "hostedSqlApplied": false,
+    "realMachineAccountCreated": false,
+    "storageUploadImplemented": false,
+    "serviceRoleDistributed": false,
+    "publicPortOrTunnel": false,
+    "publicationThisTurn": false,
+    "commit": false,
+    "push": false,
+    "deploy": false,
+    "billingOrSubscriptionChanged": false,
+    "tests": {
+      "applicationPassed": 606,
+      "applicationFailed": 0,
+      "applicationSkipped": 0,
+      "databaseIncluded": 18,
+      "coordinationIncluded": 21,
+      "newBffIncluded": 3,
+      "pythonPassed": 30,
+      "pythonFailed": 0,
+      "builds": [
+        "build",
+        "build:workspace",
+        "build:file"
+      ]
+    },
+    "realLocalRun": {
+      "jobId": "fd333481-5af8-4d17-8a51-1d0fdea2f13d",
+      "resultId": "XEDO_LOCAL_RESULT_96c461bcab3d46d69b1c543adc33b991",
+      "gridKm2": 5.0172,
+      "acquiredAt": "2026-10-26T23:00:37Z",
+      "pipelineSeconds": 23.3730661,
+      "runnerProcessingSeconds": 0.504272,
+      "nativePeakMiB": 509.92,
+      "createdToPublishedSeconds": 28.421,
+      "catalogApiBytes": 10303,
+      "candidateCount": 0,
+      "manualReviewConfirmed": true,
+      "plannerRouteKm": 11.47,
+      "savedVersions": 4,
+      "isGroundTruthAccuracy": false,
+      "isSlaOr100JobQualification": false
+    },
+    "acceptance": [
+      "browser Analyze to real GEE/CPU/owned result",
+      "manual draw/edit/UndoRedo/confirm and planner",
+      "Save/reopen4versions",
+      "worker stopped plus DB restart readback",
+      "Bob BFF job/result/mission/history denial",
+      "browser queued cancel and real offline presence",
+      "late manual result response preserves active edit"
+    ],
+    "pendingUserAnswers": [],
+    "remaining": [
+      "Phase6 real Auth binding, signed-in multi-connection and full workflow qualification",
+      "Phase7 separate website release authorization; schema is now applied by phase6"
+    ],
+    "report": "outputs/XEDO_Local_AI_Web_2026-10-30/REPORT.md",
+    "evidenceDirectory": "outputs/XEDO_Local_AI_Web_2026-10-30",
+    "sourceHashReceipt": "outputs/XEDO_Local_AI_Web_2026-10-30/local-http-acceptance.json",
+    "historicalScope": "Prior phases3-5 local execution only. Current hosted migration/Auth progress belongs to localCpuPhase6Execution; historical hostedSqlApplied=false is not current state."
+  },
+  "localCpuPhase6Execution": {
+    "recordedOn": "2026-10-30",
+    "status": "complete_real_supabase_cpu_browser_acceptance_release_pending",
+    "realSupabaseProject": "tstmjnlhwidwtzetqxbu",
+    "schemaApplied": true,
+    "migration": "xedo_local_cpu_queue_and_owned_results",
+    "versions": [
+      "xedo-local-cpu-jobs/1",
+      "xedo-local-cpu-status/2"
+    ],
+    "newTables": 6,
+    "allPrivateTablesRls": true,
+    "directClientCrud": 0,
+    "postgrestAnonymousRpcStatus": 401,
+    "privateTableStatus": 404,
+    "preparedCatalogHashUnchanged": true,
+    "realAuthAcceptance": true,
+    "machineAccountBound": true,
+    "realQueueCpuRoundtrip": true,
+    "tests": {
+      "nodePassed": 611,
+      "pythonPassed": 57,
+      "failed": 0,
+      "skipped": 0,
+      "buildsRunThisTurn": true,
+      "buildFormats": [
+        "web",
+        "workspace",
+        "standalone"
+      ]
+    },
+    "freshDirectCpu": {
+      "gridKm2": 197.5274,
+      "pipelineSeconds": 34.979631799971685,
+      "runnerSeconds": 4.097603,
+      "nativePeakMiB": 725.34,
+      "validPixels": 1918260,
+      "candidates": 0,
+      "hostedQueue": false
+    },
+    "realNoSarCase": "1900-01-01; NO_SAR_SCENE; no model execution",
+    "credentialPortal": "http://127.0.0.1:5193/qa/setup",
+    "pendingUserAction": null,
+    "accountCreationChoiceResolved": true,
+    "billingOrSubscriptionChanged": false,
+    "commit": false,
+    "push": false,
+    "deploy": false,
+    "evidenceDirectory": "outputs/XEDO_Local_AI_Phase6_2026-10-30",
+    "authUsers": 3,
+    "confirmedAuthUsers": 3,
+    "enabledInspectors": 2,
+    "machineOwnerUid": "PRIMARY_INSPECTOR_LOCAL",
+    "machineInInspectorRoster": 0,
+    "connectedProtectedRoles": [
+      "primary",
+      "secondary",
+      "machine"
+    ],
+    "partialRealAuthChecksPassed": 7,
+    "credentialPortalGateChecksPassed": 12,
+    "passwordRecoveryChoice": "Resolved by user reconnecting original primary locally; no recovery email/password update/identity recreation.",
+    "qualificationRunner": "scripts/qualify-real-ai.py",
+    "qualificationRunnerExecuted": true,
+    "browserAnalyzeRoundtrip": true,
+    "inspectorEditConfirmPlanner": true,
+    "qualificationReport": "qualification/qualification-20261030T095749Z_3c412eae.json",
+    "postQualificationReport": "qualification/post-run-20261030T100321Z_eb106ca8.json",
+    "browserAcceptanceReport": "browser-acceptance.json",
+    "browserSessionGateChecksPassed": 11,
+    "workerRunningAfterTest": false,
+    "localServerOrigin": "http://127.0.0.1:5193",
+    "pendingRelease": true,
+    "websiteProductionChanged": false,
+    "freshRealQueueCases": [
+      {
+        "name": "historical-positive",
+        "status": "passed",
+        "jobId": "a9212b3b-4995-4609-8d75-e9080ea276d5",
+        "missionId": "ebb2aa7c-ba51-45de-8e1d-afef457ce948",
+        "workerSeconds": 37.03099999995902,
+        "pipelineSeconds": 33.570758499903604,
+        "inferenceSeconds": 2.18816,
+        "nativePeakMiB": 723.97265625,
+        "jobStatus": "succeeded",
+        "errorCode": null,
+        "resultId": "XEDO_LOCAL_RESULT_71baaf4e5c2a4f2b94c76c85ddaaa1cf",
+        "candidateCount": 14
+      },
+      {
+        "name": "near-limit-current",
+        "status": "passed",
+        "jobId": "0803f635-0117-4f4d-a542-b3c7bc112290",
+        "missionId": "a55f0d18-8f86-46b6-bd72-b7e90883ce6d",
+        "workerSeconds": 39.812999999849126,
+        "pipelineSeconds": 36.60848239995539,
+        "inferenceSeconds": 3.132048,
+        "nativePeakMiB": 710.08203125,
+        "jobStatus": "succeeded",
+        "errorCode": null,
+        "resultId": "XEDO_LOCAL_RESULT_1b8825af526e47338ab349dcf463b5d8",
+        "candidateCount": 0
+      },
+      {
+        "name": "deterministic-no-sar",
+        "status": "passed",
+        "jobId": "24b67f4a-3b8c-49cf-89c5-65fd4971609f",
+        "missionId": "e6f28b2d-43bb-486a-87c3-db60983d2c6b",
+        "workerSeconds": 6.812999999849126,
+        "pipelineSeconds": 5.819369599921629,
+        "inferenceSeconds": null,
+        "nativePeakMiB": 90.46875,
+        "jobStatus": "failed",
+        "errorCode": "input_invalid",
+        "resultId": null,
+        "candidateCount": null
+      }
+    ],
+    "protocolAcceptance": {
+      "status": "passed",
+      "mode": "protocol_replay_not_new_inference",
+      "logicalJobs": 2,
+      "cases": [
+        {
+          "name": "cross_session_cancel_publish",
+          "status": "passed"
+        },
+        {
+          "name": "natural_offline_presence",
+          "status": "passed"
+        },
+        {
+          "name": "natural_lease_reclaim_and_fencing",
+          "status": "passed"
+        }
+      ],
+      "quietSeconds": 183,
+      "primarySessionsRevoked": false
+    },
+    "geometryRepair": {
+      "migration": "xedo_risk_geometry_performance",
+      "actualCause": "SQLSTATE57014 authenticated8s timeout during risk_geometry_covers",
+      "nodeComparisons": {
+        "point": 959,
+        "coverage": 18,
+        "invalid": 8
+      },
+      "nativeCoverageSeconds": 1.371837,
+      "actualBrowserConfirmationPassed": true,
+      "timeoutOrGeometryPolicyChanged": false,
+      "newPrivilege": false
+    },
+    "actualBrowserMissions": [
+      {
+        "missionId": "81d4ebcb-b882-44c9-bfaf-ba4a6729cb14",
+        "resultId": "XEDO_LOCAL_RESULT_71baaf4e5c2a4f2b94c76c85ddaaa1cf",
+        "revision": 2,
+        "reviewRevision": 1,
+        "origin": "edited_candidate",
+        "coverageState": "complete",
+        "historyRevisions": [
+          2,
+          1
+        ],
+        "otherOwnerDenials": 5,
+        "deniedForeignWritesLeaveDocumentUnchanged": true
+      },
+      {
+        "missionId": "a26646c9-a8a6-4080-b14c-5da5189c8481",
+        "resultId": "XEDO_LOCAL_RESULT_a45765ce2cf2410bb6967866b7982eba",
+        "revision": 4,
+        "reviewRevision": 4,
+        "origin": "manual",
+        "coverageState": "complete",
+        "historyRevisions": [
+          4,
+          3,
+          2,
+          1
+        ],
+        "otherOwnerDenials": 5,
+        "deniedForeignWritesLeaveDocumentUnchanged": true
+      }
+    ],
+    "remainingQualification": [
+      "Different machine-session global claim race",
+      "Real 30 minute hard-deadline wait",
+      "100jobs/month long soak",
+      "Worst-case full geometry limits and device/performance qualifications"
+    ]
+  },
+  "localCpuPhase7Release": {
+    "recordedOn": "2026-10-30",
+    "status": "preflight_passed_awaiting_feature_ci",
+    "authorized": true,
+    "project": "prj_x35WcipWxA767cYwv3f0CXcdyea3",
+    "team": "team_CV1O0uIz6BcarAQAOb8soV0I",
+    "domain": "xedo-eight.vercel.app",
+    "baselineCommit": "09b5e4911675afb9c2889e71bc447588e3474e14",
+    "sourceBranch": "codex/xedo-hardware-profile",
+    "billingOrSubscriptionChanged": false,
+    "push": false,
+    "deploy": false,
+    "pendingUserAnswers": [],
+    "tests": {
+      "nodePassed": 611,
+      "pythonPassed": 69,
+      "failed": 0,
+      "skipped": 0
+    },
+    "buildFormats": [
+      "web",
+      "workspace",
+      "standalone"
+    ],
+    "htmlSha256": "6db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc",
+    "htmlBytes": 6207852,
+    "qaIdentitiesPrivateConfig": true,
+    "localMachineOnlyInference": true
   }
 }

@@ -6,6 +6,18 @@ const json=(data,status=200,cookie)=>Response.json(data,{status,headers:{...head
 const fail=(status,code,message)=>Object.assign(Error(message),{status,code});
 const uuid=/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const messages={401:'Sign in again to access your missions.',403:'Your Inspector account has not been enabled by the team.',404:'Mission not found.',409:'This mission changed, or the save request was reused. Open the latest version or save a new copy.',422:'Check the mission data before saving.',429:'Too many requests. Try again shortly.'};
+// Only these database labels may cross the BFF. Arbitrary provider/SQL text is
+// still suppressed; the browser receives a useful next action for queue errors.
+const jobErrors={
+  WORKER_OFFLINE:[503,'Local processor offline. Open the AI worker on your computer, then try again.'],
+  QUEUE_FULL:[429,'The analysis queue is full. Wait for a job to finish or cancel a queued job.'],
+  MONTHLY_JOB_LIMIT:[429,'The monthly limit of 100 analyses has been reached. Existing results remain available.'],
+  MISSION_REVISION_CHANGED:[409,'This mission changed. Save or reopen the latest version before analyzing.'],
+  JOB_NOT_FOUND:[404,'Analysis job not found in your account.'],
+  JOB_AREA_INVALID:[422,'Draw a valid inspection area between 80°S and 84°N before analyzing.'],
+  JOB_DATES_INVALID:[422,'Choose a past SAR search period of at most 90 days.'],
+  MUTATION_REUSED:[409,'This request changed after submission. Refresh your analyses before trying again.']
+};
 
 function selectedRoute(url){
   const prefix='/api/v1/inspector/',routes=url.searchParams.getAll('route'),captures=url.searchParams.getAll('path');
@@ -14,7 +26,7 @@ function selectedRoute(url){
   const route=url.pathname==='/api/inspector'?routes[0]||'session':publicRoute;
   // Vercel carries the :path* rewrite capture into the function query. It is
   // accepted only when it identifies the same endpoint as the request path.
-  if(!route||!/^\w+(?:\/[A-Za-z0-9_-]+)*$/.test(route)||(publicRoute!==null&&routes.length&&routes[0]!==publicRoute)||(captures.length&&captures[0]!==route))return null;
+  if(!route||!(/^(?:\w+(?:\/[A-Za-z0-9_-]+)*|analysis-jobs(?:\/[A-Za-z0-9_-]+(?:\/cancel)?)?|analysis-worker)$/.test(route))||(publicRoute!==null&&routes.length&&routes[0]!==publicRoute)||(captures.length&&captures[0]!==route))return null;
   return route;
 }
 
@@ -61,7 +73,7 @@ export async function inspectorFetch(request,{env=process.env,fetchImpl=fetch}={
       catch{throw fail(503,'AUTH_UNAVAILABLE','The account service is unavailable. Try again.');}
       if(response.status===204)return null;
       let data;try{data=await response.json();}catch{throw fail(503,'AUTH_RESPONSE_INVALID','The account service returned an invalid response.');}
-      if(!response.ok){const status=[400,401,403,404,409,422,429].includes(response.status)?response.status:503;throw fail(status,'INSPECTOR_'+status,messages[status]||'The account service could not complete this request.');}
+      if(!response.ok){const known=path==='/rest/v1/rpc/xedo_inspector'&&jobErrors[data?.message];if(known&&known[0]===response.status)throw fail(known[0],data.message,known[1]);const status=[400,401,403,404,409,422,429].includes(response.status)?response.status:503;throw fail(status,'INSPECTOR_'+status,messages[status]||'The account service could not complete this request.');}
       return data;
     };
     const rpc=(action,payload={},access=token)=>upstream('/rest/v1/rpc/xedo_inspector',{access,body:{p_action:action,p_payload:payload}});
@@ -95,6 +107,21 @@ export async function inspectorFetch(request,{env=process.env,fetchImpl=fetch}={
     if(route==='session'&&request.method==='GET'){if(request.headers.has('x-xedo-inspector'))sameActor(user);await rpc('session');return json({user:{id:user.id,email:user.email,role:'Inspector'}});}
     sameActor(user);
     if(route==='analyses'&&request.method==='GET')return json({analyses:await rpc('analyses')});
+    if(route==='analysis-worker'&&request.method==='GET')return json(await rpc('worker_status'));
+    if(route==='analysis-jobs'&&request.method==='GET')return json(await rpc('jobs'));
+    if(route==='analysis-jobs'&&request.method==='POST'){
+      const input=await readJSON(request,8192);
+      if(!input||Object.keys(input).some(k=>!['missionId','expectedRevision','mutationId','start','end'].includes(k))||!uuid.test(input.missionId||'')||!uuid.test(input.mutationId||'')||!Number.isInteger(input.expectedRevision)||input.expectedRevision<1||['start','end'].some(k=>input[k]!==undefined&&(typeof input[k]!=='string'||!/^\d{4}-\d{2}-\d{2}$/.test(input[k]))))throw fail(422,'ANALYSIS_JOB_INVALID','Save the current area before starting analysis.');
+      return json(await rpc('create_job',input),202);
+    }
+    const job=/^analysis-jobs\/([0-9a-f-]{36})(\/cancel)?$/i.exec(route);
+    if(job&&uuid.test(job[1])){
+      if(!job[2]&&request.method==='GET')return json(await rpc('job',{jobId:job[1]}));
+      if(job[2]&&request.method==='POST'){
+        const input=await readJSON(request,1024);if(!input||Object.keys(input).length)throw fail(422,'ANALYSIS_JOB_INVALID','Invalid cancellation request.');
+        return json(await rpc('cancel_job',{jobId:job[1]}));
+      }
+    }
     const analysis=/^analyses\/([A-Za-z0-9_-]{1,160})$/.exec(route);
     if(analysis&&request.method==='GET')return json(await rpc('analysis',{resultId:analysis[1]}));
     if(route==='missions'&&request.method==='POST')return json(await rpc('save',validateInspectorSave(await readJSON(request,1100000))));

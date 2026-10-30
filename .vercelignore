@@ -44,6 +44,26 @@ local-data/
 **/credentials.json
 **/*.log
 
+# Local CPU inference and qualification tools are distributed through Git only.
+# Vercel builds the browser and existing Node API; it never runs this worker.
+workers/
+tests/
+db/
+docs/
+scripts/local-ai-*.py
+scripts/local_ai_qa_identity.py
+scripts/qualify-real-ai*.py
+scripts/qualify-production-ai.py
+scripts/preview*.mjs
+server.mjs
+**/*.dpapi
+**/*.tif
+**/*.tiff
+**/*.pth
+**/*.pt
+**/*.onnx
+**/*.safetensors
+
 # Local caches and editor files
 **/__pycache__/
 **/*.py[cod]

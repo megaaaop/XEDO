@@ -792,7 +792,7 @@ inspectorUI=initializeInspector({localFile:runtime.localFile,
   invalidateContext:()=>{resetReview();invalidate();},
   onSaved:(data,options)=>riskUI?.saved(data,options)
 });
-if(!runtime.localFile)riskUI=initializeRiskEditor({map,inspector:()=>inspectorUI,getContext:()=>({geometry:geometry?structuredClone(geometry):null,imageReady:!!review?.ready,imageGeometry:review?.geometry,imageKey:satelliteToken,working,step:currentStep}),useArea:area=>setGeometry(area),onDraft:()=>invalidate(),onTarget:()=>{applyingRiskReceipt=true;try{routePoints=[];resetReview();invalidate();}finally{applyingRiskReceipt=false;}},prepareEdit:()=>{inspectorUI?.interactionStarted();stopDraw();selectHome=false;renderReadiness();},verifyTargetPixels:verifyRiskTargetPixels});
+if(!runtime.localFile)riskUI=initializeRiskEditor({map,inspector:()=>inspectorUI,getContext:()=>({geometry:geometry?structuredClone(geometry):null,imageReady:!!review?.ready,imageGeometry:review?.geometry,imageKey:satelliteToken,working,editing:!!draw,step:currentStep}),useArea:area=>setGeometry(area),onDraft:()=>invalidate(),onTarget:()=>{applyingRiskReceipt=true;try{routePoints=[];resetReview();invalidate();}finally{applyingRiskReceipt=false;}},prepareEdit:()=>{inspectorUI?.interactionStarted();stopDraw();selectHome=false;renderReadiness();},verifyTargetPixels:verifyRiskTargetPixels});
 
 async function verifyRiskTargetPixels(target){
   if(!review?.ready||review.image.kind!=='gee'||Date.parse(review.image.expiresAt)<=Date.now()||!coversGeometry(review.geometry,target))throw Error('Reload a covering Earth Engine image before confirming this inspection area.');

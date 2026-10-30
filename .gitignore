@@ -48,6 +48,14 @@ credentials/
 spool/
 
 # Python caches and environments
+# Machine sessions and inference rasters/checkpoints stay local.
+*.dpapi
+*.tif
+*.tiff
+*.pth
+*.pt
+*.onnx
+*.safetensors
 __pycache__/
 *.py[cod]
 .venv/

@@ -10,6 +10,8 @@ import {Style,Stroke,Fill,Circle as CircleStyle} from 'ol/style.js';
 import {unByKey} from 'ol/Observable.js';
 import {createRiskState} from './planning-risk-state.js';
 import {validateRiskTarget,coversGeometry,geometryEquals} from './planning-risk-geometry.js';
+import {createAnalysisJobs} from './planning-analysis-jobs.js';
+import {paintActionButton} from './action-feedback.js';
 
 const RESULT='XEDO_SAR_20261011T130518Z_6152a5';
 const copy=value=>structuredClone(value);
@@ -21,6 +23,7 @@ const style=(color,fill)=>new Style({stroke:new Stroke({color,width:2}),fill:new
 export function initializeRiskEditor({map,inspector,getContext,useArea,onDraft,onTarget,verifyTargetPixels,prepareEdit}){
   const panel=document.createElement('section');panel.className='risk-panel';panel.setAttribute('aria-labelledby','risk-title');
   panel.innerHTML=`<div class="risk-heading"><h3 id="risk-title">AI risk areas</h3><button id="risk-load" class="button secondary" type="button">Open prepared AI area</button></div>
+    <section class="analysis-jobs" aria-label="Analyze selected area"><div class="risk-actions"><button id="analysis-start" class="button primary" type="button">Analyze area</button><button id="analysis-refresh" class="button quiet" type="button">Refresh analyses</button><button id="analysis-cancel" class="button quiet" type="button" hidden>Cancel analysis</button></div><p id="analysis-worker" class="muted"></p><p id="analysis-status" role="status" aria-live="polite"></p><progress id="analysis-progress" max="1" hidden aria-label="SAR analysis progress"></progress><ul id="analysis-history" class="analysis-history" aria-label="Recent analyses"></ul></section>
     <p id="risk-status" role="status" aria-live="polite">Open a prepared SAR result, then review and choose the area to inspect.</p>
     <div id="risk-content" hidden><p id="risk-source" class="muted"></p><div class="risk-layers"><label><input id="risk-raw" type="checkbox" checked> Show AI candidates</label><label><input id="risk-coverage" type="checkbox"> Show data coverage</label></div>
     <div class="risk-lists"><label>AI candidates<select id="risk-candidates" size="4" aria-label="AI candidates"></select></label><label>Inspector areas<select id="risk-areas" size="4" aria-label="Inspector areas"></select></label></div>
@@ -33,7 +36,7 @@ export function initializeRiskEditor({map,inspector,getContext,useArea,onDraft,o
   const styles={raw:style('#edb977','#edb97718'),draft:style('#49d3d0','#49d3d028'),selected:style('#c0fc8e','#c0fc8e30'),coverage:style('#889cb6','#889cb60c')};
   const rawLayer=new VectorLayer({source:raw,style:styles.raw}),draftLayer=new VectorLayer({source:drafts,style:f=>f.get('selected')?styles.selected:styles.draft}),coverageLayer=new VectorLayer({source:coverage,style:styles.coverage,visible:false});
   rawLayer.setZIndex(22);coverageLayer.setZIndex(21);draftLayer.setZIndex(24);map.addLayer(coverageLayer);map.addLayer(rawLayer);map.addLayer(draftLayer);
-  let analysis=null,state=null,confirmed=null,baseline=null,busy=false,epoch=0,interaction=null,editMode=null,keys=[],silent=false,restorePending=false;
+  let analysis=null,state=null,confirmed=null,baseline=null,busy=false,epoch=0,interaction=null,editMode=null,keys=[],silent=false,restorePending=false,jobController=null,jobView=null,historyKey='';
   const message=(text,error=false)=>{$('risk-status').textContent=text;$('risk-status').dataset.error=String(error);};
   const readFeature=f=>format.writeGeometryObject(f.getGeometry(),{featureProjection:'EPSG:3857',dataProjection:'EPSG:4326'});
   const addFeature=(source,geometry,props={})=>{const f=format.readFeature({type:'Feature',geometry,properties:props},{dataProjection:'EPSG:4326',featureProjection:'EPSG:3857'});source.addFeature(f);return f;};
@@ -41,12 +44,13 @@ export function initializeRiskEditor({map,inspector,getContext,useArea,onDraft,o
   function blocked(){return restorePending||!!analysis&&(!confirmed||state?.snapshot().editing||draftKey(state.getDraft())!==baseline);}
   function render(){
     $('risk-content').hidden=!state;panel.setAttribute('aria-busy',String(busy));$('risk-load').disabled=busy;
-    if(!state)return;
+    if(!state){renderJobs();return;}
     const s=state.snapshot(),selected=state.getSelected();if(!interaction){drafts.clear();for(const area of s.draft.areas)addFeature(drafts,shape(area),{areaId:area.id,selected:area.id===s.draft.selectedAreaId});}
     const value=s.draft.selectedAreaId;$('risk-areas').replaceChildren();for(const [i,area] of s.draft.areas.entries())$('risk-areas').append(new Option((i+1)+'. '+area.origin.replaceAll('_',' '),area.id));$('risk-areas').value=value||'';
-    for(const b of panel.querySelectorAll('button'))b.disabled=busy;
+    for(const b of $('risk-content').querySelectorAll('button'))b.disabled=busy;
     for(const id of ['risk-edit','risk-move','risk-apply'])$(id).disabled=busy||!selected||s.editing;
     for(const id of ['risk-accept','risk-reject','risk-add','risk-reset','risk-candidates','risk-areas'])$(id).disabled=busy||s.editing;
+    for(const id of ['risk-accept','risk-reject','risk-candidates'])$(id).disabled=busy||s.editing||!analysis.candidates.features.length;
     $('risk-undo').disabled=busy||s.editing||!s.canUndo;$('risk-redo').disabled=busy||s.editing||!s.canRedo;
     $('risk-finish').hidden=!s.editing;$('risk-cancel').hidden=!s.editing;
     $('risk-geometry').disabled=busy||s.editing||!selected;$('risk-geometry').value=selected?JSON.stringify(selected.geometry):'';
@@ -56,6 +60,7 @@ export function initializeRiskEditor({map,inspector,getContext,useArea,onDraft,o
     else if(!blocked())text='Confirmed review v'+confirmed.reviewRevision+' · '+confirmed.target.origin.replaceAll('_',' ')+' · '+(confirmed.coverageState||'Coverage recorded');
     $('risk-target-status').textContent=text;$('risk-confirm').disabled=busy||s.editing||!valid;
     $('risk-confirm').textContent=busy?'Working…':'Confirm inspection area';
+    renderJobs();
   }
   function changed(){render();if(!silent)onDraft?.();}
   function install(data,draft=null,envelope={}){
@@ -69,7 +74,45 @@ export function initializeRiskEditor({map,inspector,getContext,useArea,onDraft,o
   }
   async function action(label,run){if(busy)return;busy=true;message(label);render();const token=epoch;try{await run();if(token!==epoch)return;}catch(e){if(token===epoch)message(e.message,true);}finally{if(token===epoch){busy=false;render();}}}
   const attempt=run=>()=>{try{run();}catch(e){message(e.message,true);}};
-  $('risk-load').onclick=()=>action('Loading prepared AI result…',async()=>{if(analysis?.resultId===RESULT){message('This AI result is already open. Your Inspector draft is kept.');return;}const token=epoch,data=await inspector()?.analysisRequest('analyses/'+RESULT);if(token!==epoch)return;if(!data)throw Error('Inspector accounts are available on the hosted website.');const current=getContext(),same=geometryEquals(current.geometry,data.searchGeometry);if(current.geometry&&!same&&!await inspector().confirmChange('Open the prepared SAR area and replace the current inspection boundary?','Open prepared area')){message('Opening cancelled. Your current area is kept.');return;}if(token!==epoch)return;if(!same)useArea(data.searchGeometry);install(data);message('AI result loaded. Review a covering context image and choose the area to inspect.');onDraft?.();});
+  function matchesJobGuard(guard){return guard&&guard.account===inspector()?.accountId?.()&&guard.context===inspector()?.contextKey?.()&&guard.geometry===JSON.stringify(getContext().geometry);}
+  async function openResult(resultId,{automatic=false,guard=null}={}){
+    if(analysis?.resultId===resultId){message('This AI result is already open. Your Inspector draft is kept.');return true;}
+    if(interaction||getContext().editing||getContext().working){if(automatic)return false;throw Error('Finish the current map edit or mission request before opening another result.');}
+    if(automatic&&!matchesJobGuard(guard))return false;
+    const opening={account:inspector()?.accountId?.(),context:inspector()?.contextKey?.(),geometry:JSON.stringify(getContext().geometry)};
+    const stillReady=()=>matchesJobGuard(opening)&&!interaction&&!getContext().editing&&!getContext().working;
+    const token=epoch,data=await inspector()?.analysisRequest('analyses/'+encodeURIComponent(resultId));
+    if(token!==epoch||automatic&&!matchesJobGuard(guard))return false;
+    if(!stillReady()){if(automatic)return false;throw Error('The area or draft changed while opening this result. Your current work is kept. Open the result again when ready.');}
+    if(!data)throw Error('Inspector accounts are available on the hosted website.');
+    const current=getContext(),same=geometryEquals(current.geometry,data.searchGeometry);
+    if(automatic&&!same)return false;
+    if(!automatic&&(analysis||current.geometry&&!same)&&!await inspector().confirmChange('Open this AI result and replace the current risk review? Your saved versions are kept.','Open AI result'))return false;
+    if(token!==epoch||automatic&&!matchesJobGuard(guard))return false;
+    if(!stillReady()){if(automatic)return false;throw Error('The area or draft changed while opening this result. Your current work is kept.');}
+    if(!same)useArea(data.searchGeometry);
+    install(data);message(data.candidates.features.length?'AI result loaded. Review a covering context image and choose the inspection area.':'Analysis completed with no candidates at this threshold. Review coverage and draw an inspection area if needed. This does not establish an absence of oil.');onDraft?.();return true;
+  }
+  function renderJobs(){
+    if(!jobView)return;
+    const active=jobView.job&&!['succeeded','failed','cancelled'].includes(jobView.job.status);
+    $('analysis-status').textContent=jobView.message;$('analysis-status').dataset.error=String(jobView.error);
+    $('analysis-worker').textContent=!jobView.signedIn?'Sign in to analyze and reopen your private results.':jobView.worker?.online?'Local processor · Ready':'Local processor · '+(jobView.worker?'Offline — open the AI worker on your computer.':'Checking availability');
+    paintActionButton($('analysis-start'),jobView.busy||active,active?'Analyzing…':'Working…','Analyze area');
+    $('analysis-start').disabled=busy||jobView.busy||active||!!interaction||!!getContext().working||!!getContext().editing;
+    $('analysis-refresh').disabled=jobView.busy;$('analysis-cancel').hidden=!active;$('analysis-cancel').disabled=jobView.busy;
+    const progress=$('analysis-progress');progress.hidden=!active;
+    if(active&&jobView.job.totalTiles>0&&jobView.job.stage==='inferencing'){progress.value=jobView.job.processedTiles/jobView.job.totalTiles;progress.setAttribute('aria-label','Analyzed '+jobView.job.processedTiles+' of '+jobView.job.totalTiles+' tiles');}
+    else progress.removeAttribute('value');
+    const key=JSON.stringify(jobView.jobs.map(j=>[j.jobId,j.status,j.resultId,j.createdAt]));
+    if(key!==historyKey){historyKey=key;$('analysis-history').replaceChildren();for(const job of jobView.jobs.slice(0,10)){
+      const li=document.createElement('li'),text=document.createElement('span');text.textContent=new Date(job.createdAt).toLocaleString()+' · '+job.status.replaceAll('_',' ');li.append(text);
+      if(job.resultId){const open=document.createElement('button');open.type='button';open.className='button quiet';open.textContent='Open result';open.onclick=()=>jobController.open(job.resultId);li.append(open);}$('analysis-history').append(li);
+    }}
+  }
+  jobController=createAnalysisJobs({inspector,getContext,openResult,onChange:value=>{jobView=value;renderJobs();},isVisible:()=>!document.hidden});
+  $('analysis-start').onclick=()=>jobController.analyze();$('analysis-refresh').onclick=()=>jobController.refresh();$('analysis-cancel').onclick=()=>jobController.cancel();
+  $('risk-load').onclick=()=>action('Loading prepared AI result…',()=>openResult(RESULT));
   $('risk-candidates').onchange=()=>{const id=$('risk-candidates').value,f=raw.getFeatures().find(f=>f.get('candidateId')===id);if(f)map.getView().fit(f.getGeometry().getExtent(),{padding:[60,60,60,60],maxZoom:16,duration:200});};
   $('risk-areas').onchange=attempt(()=>state.setSelected($('risk-areas').value));
   $('risk-accept').onclick=attempt(()=>{state.accept($('risk-candidates').value);$('risk-candidates').onchange();message('Candidate copied into your Inspector draft.');});
@@ -111,11 +154,11 @@ export function initializeRiskEditor({map,inspector,getContext,useArea,onDraft,o
     capture:()=>({analysisRef:copy(analysis?.analysisRef||null),riskDraft:state?.getDraft()||null}),
     backup:()=>analysis?{analysis:copy(analysis),draft:state.getDraft(),confirmedReview:copy(confirmed),latestReviewRevision:state.getDraft().baseReviewRevision}:null,
     restoreBackup(value){if(value)install(value.analysis,value.draft,value);else this.reset();},
-    acceptReceipt,reset(){epoch++;busy=false;stop();analysis=null;state=null;confirmed=null;baseline=null;restorePending=false;raw.clear();drafts.clear();coverage.clear();message('Open a prepared SAR result, then review and choose the area to inspect.');render();},
+    acceptReceipt,reset(){epoch++;busy=false;stop();analysis=null;state=null;confirmed=null;baseline=null;restorePending=false;raw.clear();drafts.clear();coverage.clear();jobController?.syncContext();message('Analyze the selected area or open an existing SAR result, then choose the inspection area.');render();},
     saved(receipt,{current}){if(!analysis)return;silent=true;state.setBaseReviewRevision(receipt.latestReviewRevision??receipt.confirmedReview?.reviewRevision??null);silent=false;if(current)acceptReceipt(receipt);else{confirmed=null;baseline=null;render();}},
     cancelEdit(){if(state?.snapshot().editing){stop();state.cancel();}},editing:()=>!!state?.snapshot().editing,
     validateRestore(doc,data){if(!doc.analysisRef)return;if(!data?.analysis||JSON.stringify(data.analysis.analysisRef)!==JSON.stringify(doc.analysisRef))throw Error('The saved AI source does not match its original hashes. Your current mission is kept.');const check=createRiskState({analysis:data.analysis});check.restore(doc.riskDraft);},
     restore(doc,data){if(!doc.analysisRef){this.reset();return;}install(data.analysis,doc.riskDraft,data);message('Saved AI review restored. Reload context imagery and review flight readiness.');},
-    dispose(){stop();map.getTargetElement().removeEventListener('keydown',escape);map.removeLayer(rawLayer);map.removeLayer(draftLayer);map.removeLayer(coverageLayer);panel.remove();}
+    dispose(){jobController.dispose();stop();map.getTargetElement().removeEventListener('keydown',escape);map.removeLayer(rawLayer);map.removeLayer(draftLayer);map.removeLayer(coverageLayer);panel.remove();}
   };
 }

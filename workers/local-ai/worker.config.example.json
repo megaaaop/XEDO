@@ -1,0 +1,11 @@
+{
+  "baseUrl": "https://tstmjnlhwidwtzetqxbu.supabase.co",
+  "publishableKey": "sb_publishable_REPLACE_WITH_XEDO_PUBLIC_KEY",
+  "sessionFile": "../../local-data/local-ai-machine/session.dpapi",
+  "workRoot": "../../local-data/local-ai-machine/runs",
+  "pipelinePath": "pipeline.py",
+  "heartbeatSeconds": 20,
+  "pollSeconds": 10,
+  "timeoutSeconds": 1800,
+  "maxRssMiB": 2048
+}

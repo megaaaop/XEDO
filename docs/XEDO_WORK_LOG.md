@@ -5,14 +5,14 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **29 ตุลาคม 2026 — prepared SAR AI และ Inspector risk editor เชื่อมเว็บ ทดสอบ564ผ่าน ใช้SQLจริง push/deployProductionREADYแล้ว ตรวจเว็บจริง/CIผ่าน**
+- อัปเดตล่าสุด: **30 ตุลาคม2026 — ผู้ใช้อนุญาตขั้น7 push/deploy;กำลังตรวจชุดเผยแพร่และCIก่อนตรวจProductionจริง ไม่เปิดBilling/subscription**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
-- จุดประสงค์รอบนี้: ลงมือเชื่อม prepared SAR AI ให้ Inspector แก้พื้นที่เสี่ยง ยืนยันและส่ง target เข้า planner พร้อม Save/history ส่วนตัว ทดสอบและเผยแพร่ตามคำสั่งล่าสุด
-- สถานะProductionที่ตรวจรอบนี้: codecommit b719d8edc15a926401e8c5ccbf3368a114e10553; Vercel dpl_87f1XznCMD1MU4gAzVPqyyzydyAZ READY, alias xedo-eight.vercel.app; mainCI40793396659/branchCI40793396559success; HTML SHA256 da57bb8c6e12d66c801722065d559bec5c62f9b3d8162ea4ab9942b124bb5292 ตรงbuild6197220bytes เอกสารfollow-upอาจเลื่อนdeploymentSHAโดยbundleเดิม ดูrelease-receipt.json
-- **ขอบเขตคำสั่งล่าสุด:** ผู้ใช้สั่งเริ่มทำAI/editorตามแผน ทดสอบ อัปเดตสองMarkdown แล้วpush/deployได้ อนุมัติimplementation/publicationของชุดนี้แล้ว คง3steps/4calculators ไม่เพิ่มinference/Pi/normalprofile/schedulerewriteหรือสร้างบัญชีจริง
+- จุดประสงค์รอบนี้: เผยแพร่ local CPU AI integration ที่ผ่านขั้น6แล้ว ตรวจGit/CI/Production/browser/API/CPU roundtripและอัปเดตหลักฐานจริง
+- สถานะProductionอ้างอิงรอบเผยแพร่ก่อนหน้า ไม่ได้ตรวจProductionใหม่ในรอบทดสอบขั้น6นี้: applicationcommit b719d8e,เอกสารfollowup09b5e4911675afb9c2889e71bc447588e3474e14/Productiondpl_6UroUi1UMA9E8uXetDdEsaTphuNXREADY/CI40793917955และ40793917608success;HTML SHA256da57bb8c6e12d66c801722065d559bec5c62f9b3d8162ea4ab9942b124bb5292ตรงbuild6197220bytesตามreceipt
+- **ขอบเขตคำสั่งล่าสุด:** อนุญาตขั้น7 commit/push/deploy และตรวจหลังเผยแพร่ตามข้อความผู้ใช้30ต.ค. ไม่เปิดBilling/subscription ไม่สร้างบริการเสียเงินหรือเปลี่ยนบัญชีเดิม
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
 
@@ -21,6 +21,24 @@
 ## 2. สรุป
 
 ### สถานะล่าสุดที่มีหลักฐาน
+
+**ขั้น7กำลังเผยแพร่ — 30 ตุลาคม2026:** ผู้ใช้อนุญาต commit/push/deploy เว็บจริงและตรวจหลังเผยแพร่แล้ว โดยไม่เปิด Billing/subscription Targetเดิม xedo/prj_x35WcipWxA767cYwv3f0CXcdyea3/team_CV1O0uIz6BcarAQAOb8soV0I → xedo-eight.vercel.app Rootใช้GitintegrationเดิมหลังตรวจCIและdeployment identity; Supabase schema/registry/สามบัญชีติดตั้งและผ่านขั้น6แล้ว ไม่สร้างบัญชีหรือapplySQLซ้ำ AIยังรันบนCPUในเครื่อง ไม่รันPython/GPUบนVercel
+
+**สถานะล่าสุดขั้น6 — ผ่านการทดสอบจริงในขอบเขต pilot:** Inspector เดิมเชื่อมสำเร็จครบสามบัญชีแล้ว ใช้ Supabase xedo จริงกับเว็บในเครื่องและ CPU ในเครื่องได้ตั้งแต่ Analyze พื้นที่ใหม่ → โหลดภาพ SAR → ผล owned AI → Inspector แก้/วาดพื้นที่ → ตรวจภาพ Sentinel-2 จริง → confirm → planner → Save/history/private reopen ไม่มีคำถามรอคำตอบ ขั้นถัดไปคือขั้น7เตรียมเผยแพร่เมื่อผู้ใช้อนุญาต โดยรอบนี้ไม่ commit/push/deploy ไม่เปิด Billing/subscription และไม่เปลี่ยนรหัสผ่านหรือบัญชีเดิม
+
+**ประวัติก่อนเชื่อม primary สำเร็จ (แทนที่ด้วยสถานะล่าสุดข้างบน):** ทีมสร้างInspectorTestTEST_INSPECTOR_LOCALและmachineCPU_WORKER_LOCALในxedoแล้ว ทั้งสองconfirmed/มีpassword/identityครบ RootเปิดInspectorTestและผูกmachineกับInspectorเดิมPRIMARY_INSPECTOR_LOCAL ตรวจenabledInspectors2/registeredWorkers1/machineInInspectorRoster0 RealAuthGetUserและRPC7checksผ่าน: secondaryInspectorใช้งานได้/machinepresenceownerถูก/สองroleใช้สิทธิ์สลับกันไม่ได้ ตอนนี้มีDPAPIsessionสองroleแล้ว เหลือprimary ผู้ใช้แจ้งลืมรหัสและเลือกลองรหัสที่Chromeบันทึกก่อน ไม่ได้ส่งrecoveryemail/เปลี่ยนรหัส/ลบสร้างuserใหม่ RootเปิดเฉพาะSupabaseUserDetailsพบปุ่มSendpasswordrecovery(ส่งemailเท่านั้น) ไม่อ่านPasswordManager/clipboard รอprimaryconnectสำเร็จ
+
+**ประวัติช่วงเริ่มขั้น6ก่อนสร้างบัญชีเพิ่ม30ต.ค.:** Supabaseจริงxedo/tstmjnlhwidwtzetqxbuผ่านMCPบัญชีmegaphijak ติดตั้งmigrationxedo_local_cpu_queue_and_owned_results(v1+statusv2)สำเร็จในtransactionเดียว มี6ตารางใหม่และ12privateRLS ไม่มีanon/authenticateddirectCRUD PublicworkerRPCเป็นInvoker/anonexecute=false/authenticated=true PostgRESTanonymousRPCตอบ401/private-table404 Preparedcataloghashเดิมคงเดิม Catalog14candidates/3coverageเก่าvalidateบนPostgreSQLจริง0.289493s/99404JSONBbytes(ไม่persistเป็นownedresultและไม่ใช่freshinference) FreshNode606/Python45ผ่าน CPU197.5274กม²รอบใหม่34.980s/runner4.098s/peak725.34MiB/0candidate;GEEจริงช่วง1900-01-01ได้NO_SAR_SCENEตามคาด ขณะนี้Authจริงยังมีเพียงบัญชีเดิม หน้าsetupLoginยังไม่สำเร็จ จึงยังไม่อ้างsigned-inCPU/owner/concurrencyผ่าน ดูWEBSITE_DETAILS§3.46
+
+**ผลสดขั้น3–5 — 30ต.ค.:** กดAnalyzeบนเว็บทดสอบได้จริง งานfd333481-5af8-4d17-8a51-1d0fdea2f13dใช้GEE Sentinel-1 acquisition26ต.ค.23:00:37UTCจากพื้นที่ใหม่5.0172กม² ทำCPU/package23.373s/runner0.504s/nativepeak509.92MiB;คิวถึงpublished28.421s ผล0candidateเป็นsuccessตามโมเดล ไม่ใช่ยืนยันไม่มีน้ำมัน Inspectorวาดและแก้manualtarget/UndoRedo/reviewSentinel-2/confirmv2→plannerroute11.47km→Save/reopen4versionsสำเร็จ Result10303bytesเปิดได้หลังworkerหยุดและserverrestart บัญชีBobไม่เห็นงานAliceผ่านUI/BFF/localSQL เว็บ606tests/Python30tests/3buildsผ่าน ดูรายละเอียดรอบล่าสุดท้ายไฟล์และWEBSITE_DETAILS§3.45
+
+**สถานะใช้งาน:** localcandidateผ่านขั้น1–6กับSupabaseจริงแล้ว SQL/registry/สามAuthrolesพร้อมและตรวจCPUผ่านหน้าเว็บจริง ยังไม่เผยแพร่frontendProductionใหม่ ผู้ใช้ต้องเปิดเครื่องและworkerสำหรับงานใหม่ ผลที่เสร็จแล้วอ่านจากDBได้ ไม่มีคำถามรอคำตอบ
+
+**ประวัติผลimplementationขั้น1–2ในรอบก่อนหน้า30ต.ค.:** โปรแกรมworkers/local-aiพร้อมรับพื้นที่GeoJSONแล้วค้น/โหลดหนึ่งSARscene→validate→CPU→score/mask/preview→candidate/coveragepackageอัตโนมัติ โดยใช้computePixelsเพราะcredentialเดิมไม่มีthumbnails.create ไม่เพิ่มIAM/Billing ภาพใหม่5.0172/197.5274กม²และautodownloadbaseline176.478กม²ผ่าน Score/maskbaselineต่าง0ทุกpixel/validDATAและVALIDตรงเดิม/13Python testsผ่าน ดูoutputs/XEDO_Local_CPU_Pipeline_2026-10-30/REPORT.mdและWEBSITE_DETAILS§3.44 ยังไม่เชื่อมhostedqueue/ส่งresultเข้าฐานข้อมูลหรือปุ่มAnalyzeบนเว็บ
+
+**แผนรอบก่อน30ต.ค. (ก่อนอนุญาตลงมือขั้น1–2):** `LOCAL_CPU_AI_INTEGRATION_PLAN.md` กำหนดwebsite→ownedjobqueue→localworkerดึงงานผ่านSupabaseHTTPSRPC→GEEdownloadหนึ่งSARscene→CPU→ownedcatalog/preview→Inspectoredit/confirm/planner คงrawTIFFในเครื่อง ไม่ต้องpublicport/tunnel/CloudRun ผู้ใช้ต้องเปิดเครื่อง/โปรแกรมและต่ออินเทอร์เน็ต;ผลที่publishแล้วเปิดsmallreviewย้อนหลังได้ตอนเครื่องปิด มีdefaultoffline/lease/fence/atomicpublish/geometrycap/quotasและdesigned_not_runacceptanceครบ รอบนี้อ่านsource/officialdocs/package metadata ไม่รันโมเดล/tests/API/บริการจริงหรือเผยแพร่
+
+**ผล CPU รอบก่อน30ต.ค. (ไม่ได้รันใหม่รอบวางแผนนี้):** 8 โปรเซส/16 inference passes สำเร็จทั้งหมด ทั้ง 2 และ 4 threads โดยใช้ runner/checkpoint/ภาพจริงเดิม เปรียบเทียบ score/mask/grid/NoData ครบทุกพิกเซลตรง baseline และ SHA256 TIFF ตรงด้วย 4 threads เปิดโปรเซสใหม่เต็มงาน median12.242s; ใช้โมเดลซ้ำ processing2.297s/รวม preview4.171s; RAM native peak สูงสุด891.297MiB/0.8704GiB ตรวจ hash ไฟล์อ้างอิง6ไฟล์หลังรันยังตรงเดิม ดูรายงาน `outputs/XEDO_CPU_Benchmark_2026-10-30/CPU_BENCHMARK_REPORT.md` และ WEBSITE_DETAILS§3.42 ผลนี้เป็น local reproducibility/performance ไม่ใช่ cloud qualification หรือ accuracy หน้างาน และยังไม่มี online worker สำหรับพื้นที่ใหม่
 
 **AI/editor เผยแพร่แล้ว29ต.ค.:** preparedSAR14candidate พร้อมแยกraw/draft/confirmedtarget; Inspectorรับ/แก้/ย้าย/วาดเพิ่ม/ปฏิเสธ/Undo/Redo/Cancelได้ ยืนยันแล้วคำนวณtargetผ่านplannerและบันทึกprivatehistory ตรวจserverRPCสิทธิ์/geometry/hash/revisionและliveSQLแล้ว 564testsผ่าน/3builds/CI2branches/ProductionREADY+HTMLhashตรง ดูรายละเอียดท้ายไฟล์และWEBSITE_DETAILS§3.37.2 ผู้ใช้ตรวจAIด้วยบัญชีจริงได้ต่อ; agentไม่ใช้passwordจริงในรอบนี้
 
@@ -55,6 +73,7 @@
 | **3** (ก่อนหน้า4) | **6** | preparedAI+Inspectorแก้พื้นที่เสี่ยง+planner | **เชื่อม ทดสอบ และเผยแพร่29ต.ค.แล้ว** เปิดpreparedSAR14พื้นที่ แก้/เพิ่ม/ปฏิเสธ ยืนยันtarget ส่งplannerและprivateSave/history; agentตรวจlocalfixtureAuth+liveGEE,productionguest/API/liveDB ไม่ใช้passwordจริง |
 | **4** (ก่อนหน้า5) | **7** | Pi / ภาพ / telemetry | **พักตามคำสั่งผู้ใช้** |
 | **5** (ก่อนหน้า6) | **8** | ผลทดลองและรายงานก่อน–หลัง | **พักตามคำสั่งผู้ใช้** |
+| **6** (งานใหม่29ต.ค.) | **9** | AI วิเคราะห์พื้นที่ใหม่ด้วย CPU ในเครื่อง | **ขั้น1–6ทำและทดสอบSupabaseจริง/หน้าเว็บ/CPUแล้ว30ต.ค.** เหลือขั้น7เผยแพร่เมื่อได้รับอนุญาต;ไม่มีBilling/subscription |
 
 การรับคำสั่งใหม่ที่ระบุเพียง “ข้อ 1/2/3…” ให้ใช้ **เลขใหม่** จากตารางนี้ หากผู้ใช้บอก “เลขเดิม” หรืออ้างข้อความเก่า ให้จับคู่ตามบริบท รายละเอียดเชิงเทคนิคและประวัติที่บันทึกก่อนรอบเรียงใหม่นี้ รวมทั้ง HTML แผน AI เดิม ยังใช้เลขเดิมเมื่อไม่ได้ระบุว่าเป็นเลขใหม่
 
@@ -1101,3 +1120,212 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 **แยกหลักฐานให้ชัด:** liveDBmigration+14catalog/RLSตรวจจริง;AIedit/confirm/Savehistory/2accountprivacyตรวจlocalAuthจำลอง+realBFF/SQL+liveGEEและautomatedtests ไม่มีการสร้างAuthusers/เปลี่ยนpassword และไม่ได้sign-in/confirmAIบนProductionด้วยpasswordจริงของผู้ใช้ บัญชีผู้ใช้ยืนยันใช้งานได้ก่อนหน้า;การตรวจรับAIหนึ่งภารกิจด้วยบัญชีจริงยังเป็นuseracceptanceต่อ ไม่เรียกข้อจำกัดนี้ว่าทดสอบผ่านแล้ว Physicaltouch/native-trackpad/heap-longsoakและfieldQGC/SITLยังไม่ทำ Pi/telemetry/reportsยังพัก และprofile/scheduleที่ผู้ใช้ตัดไม่กลับเข้าขอบเขต
 
 **เอกสาร/หลักฐาน:** อัปเดตcanonicalworklogนี้และWEBSITE_DETAILS§3.37,AIplan3.17/queue เก็บlocal-browser.json/production-browser.json/production-api.json/live-migration.json/ภาพและrelease-receipt.jsonในoutput/release-check/ai-2026-10-29 สองMarkdown/queueผลreleaseจะpushเป็นdocumentation-onlyfollowup;identityสุดท้ายเก็บreceiptไม่commitอ้างตัวเองวน ไม่มีคำถามผู้ใช้รอคำตอบ
+
+### 29 ตุลาคม 2026 — ชี้แจงว่า AI ประมวลผลที่ไหน
+
+**หัวข้อ:** ผู้ใช้ถามตำแหน่งที่ AI รันในระบบปัจจุบัน
+
+**สรุป:** เว็บไซต์ปัจจุบันโหลดผล SARUNet ที่ประมวลผลล่วงหน้าแล้วจาก Supabase ผ่าน API บน Vercel ไม่มีคำขอรันโมเดลใหม่เมื่อเลือกพื้นที่หรือกด Open prepared AI area ชุดที่เปิดได้คือผลวันที่11ต.ค.จากภาพ Sentinel-1 วันที่9ต.ค.2026 รวม14candidate
+
+**รายละเอียดและหลักฐาน:** ตรวจ src/planning-risk-editor.js ซึ่งระบุ resultId คงที่, api/inspector.mjs และ db/inspector-ai.sql ที่อ่าน prepared_analysis_catalog; summary.json ของผล6152a5 ระบุ model.device=cpu และ torch2.14.1+cpu เอกสาร outputs/XEDO_GEE_Colab_2026-10-11/VALIDATION_TH.md ระบุว่ารัน pipeline ด้วยไฟล์จริงในเครื่องแล้ว ส่วน cloud Colab ขณะนั้นยังไม่ผ่านขั้น Allocating runtime จึงไม่เรียกผลนี้ว่ารันบน Colab/GPU Google Earth Engine จัดหาข้อมูลภาพ/แผนที่; Vercel ให้บริการเว็บ/API; Supabase เก็บผล/บัญชี/ภารกิจ ส่วน planner คำนวณแผนจาก target ที่ Inspector ยืนยัน การวาดพื้นที่ใหม่จึงยังไม่ทำให้เกิดผล AI ใหม่โดยอัตโนมัติ
+
+**ไฟล์/การตรวจ/การเผยแพร่:** รอบนี้อ่าน source/ผลต้นทาง/บันทึก validation และอัปเดตบันทึกนี้กับ WEBSITE_DETAILS เท่านั้น ไม่แก้ application/SQL/service ไม่รัน inference/tests/build/browser หรือ push/deploy ใหม่ คิวสถานะและ requirement ไม่เปลี่ยน ไม่มีคำถามผู้ใช้รอคำตอบ
+
+### 29 ตุลาคม 2026 — แผนวิเคราะห์พื้นที่ใหม่ด้วย cloud CPU/GPU
+
+**หัวข้อ:** รับrequirementเลือกAOIใหม่แล้วAIวิเคราะห์อัตโนมัติ ผู้ใช้ยืนยัน1user/100งานต่อเดือน/กรอบภาพ≤200กม² ไม่ใช่การให้replayผลเดิมหรือรันColabmanual
+
+**สรุป:** จัดทำdocs/CLOUD_AI_EXECUTION_PLAN.mdครบ3ส่วนและสถาปัตยกรรม/API/คิว/สิทธิ์/GEE/runner/progress/งบ/benchmark แนะนำCloudRunJobsCPU4vCPU8GiBแบบเปิดตามงาน,1activeworkerแทนGPUตลอดเวลา VercelคงUI/API,Supabaseคงaccount/job/mission/privateownedresults,GCSเก็บraster โมเดลSARUNetcheckpointจริง2,017,845bytes/488,561parameters ผลเดิม9tilesมีprocessingtimer2.22238sบนCPUแต่ไม่รวมGEEdownload/coldstart/vectorization จึงยังไม่รับประกันเวลารวมบนcloud
+
+**รายละเอียดต้นทุน:** ตรวจราคาofficialCloudRun/Modal29ต.ค. CPU4/8ที่us-central1=$0.3168/ชั่วโมง;100งาน×10billableนาที=$5.28ก่อนfreeallowance ถ้าallowanceเหลือครบ240kvCPU-s/450kGiB-sคำนวณcompute$0.06 ไม่ใช่billรับประกัน ModalT4และL4พร้อม2physicalCPUcores/8GiBที่เวลาเดียวกัน=$12.4776/$15.9576ก่อนเครดิต ไม่สมมติว่าGPUเร็วเท่ากันหรือเร่งGEEได้ เสนอสำรองงบcloud$10–15/เดือน แต่ยังไม่ยืนยันGEEregistration/credits/egress/builds/taxesหรือขอเปิดใช้เงินจริง
+
+**รายละเอียดเชื่อม:** POSTjobตรวจsession/owner/grid/idempotency→durablequeue/outbox→CloudRunexecution→GEEVH/VV+VALID/metadata→CPUtiles→privateartifacts→ownedresult→editor/confirm/plannerเดิม ต้องเปลี่ยนmanualDriveTasksเป็นboundedGEEdownloadหรือGCSexportและเปลี่ยนfixedresultlookupเป็นownedimmutableanalysislookup ห้ามใส่ผลพื้นที่ส่วนตัวลงsharedpreparedcatalogโดยไม่มีownerfilter DirectRPCต้องตรวจownerด้วย คง3steps/4calculators/target≤120จุด/readiness/24h ไม่ใช้Sentinel2RGBเข้าSAR ไม่autosimplifyraw
+
+**ความพร้อมและงบ:** pilotmaxgrid2ล้านpixels/ด้าน4096,100logicaljobsเดือน,1active/2pending,30mdeadline,จำกัดretryและgloballeaseจริงเพราะparallelism1ไม่กันหลายexecution ค่าEECUของGEEแยกจากCloudRunต้องตรวจnoncommercialtier/registrationจริง ใช้budgetalertและspendcapที่บัญชีรองรับพร้อมapplicationquota ไม่เรียกalert-onlyว่าhardcap
+
+**ไฟล์และหลักฐาน:** เพิ่มCLOUD_AI_EXECUTION_PLAN.md,ปรับAI_INTEGRATION_PLAN§3.18/สถานะหัวไฟล์,WEBSITE_DETAILS§3.39และqueueเพิ่มงานใหม่legacy9/current6แยกจากpreparedAIlegacy6ที่เผยแพร่แล้ว คำนวณเลขด้วยoutputs/XEDO_Cloud_AI_Plan_2026-10-29/calculate-costs.mjsและcosts.json ตรวจsource/summary/checkpointhashและเอกสารผู้ให้บริการ;helpersอ่าน/researchเท่านั้น ไม่มีใครแก้websiteนอกmain รักษา2dirtyMDจากรอบคำชี้แจงก่อนหน้า
+
+**การทดสอบ/การเผยแพร่/คำตอบ:** รันเฉพาะสคริปต์เลขคณิตและตรวจเอกสาร/JSON ไม่รันmodeltraining/inference/cloudbenchmark/applicationtests/build/browser/APIของapplication ไม่แก้source/SQL/Auth/config ไม่commit/push/deploy ไม่สร้างaccount/paidresources คำถามปริมาณตอบแล้ว ไม่มีคำถามผู้ใช้รอคำตอบ การอนุมัติลงมือและงบเงินจริงยังไม่อนุมานจากคำสั่งวางแผน
+
+### 30 ตุลาคม 2026 — ชี้แจง CPU cloud, crash และ subscription
+
+**หัวข้อ:** ผู้ใช้ถามว่าการเลือกcloudCPUและการคำนวณเดิมรับประกันว่าจะไม่crashหรือไม่ติดsubscriptionแน่นอนหรือไม่
+
+**สรุป:** ยืนยันวิธีที่เสนอคือCloudRunJobsCPU4vCPU8GiBตามงานสำหรับ1user/100งานเดือน/กรอบ≤200กม² ส่วนno-crash/no-chargeยังยืนยันไม่ได้ เพราะยังไม่วัดcloudpeakRAM/latency/งานสูงสุดจริง รูปแบบpay-as-you-goตามแผนไม่เลือกsubscriptionหรือcommitted-useรายเดือน แต่ต้องเปิดBillingและยังมีค่าใช้จริงตามทรัพยากร
+
+**รายละเอียด:** อ่านแผน/คิว/GitปัจจุบันและตรวจofficialCloudRunpricing/memory/spendcapใหม่30ต.ค. Memoryเกินlimitทำให้instanceถูกหยุด;GEE/เครือข่าย/timeoutอาจทำให้งานล้มเหลว ต้องbenchmarkขนาดสูงสุดและมีqueue/globalconcurrency/timeout/limitedretry/เก็บร่างและเหตุผล failure $5.28คือscenario100×10นาทีไม่ใช่บิลสูงสุด;freeallowanceและspendcapไม่ใช่คำรับประกันศูนย์บาท/ไม่มีoverage Spendcapมีdelayและinflightworkยังเกิดค่าใช้จ่ายได้ ต้องใช้applicationquota/reservationประกอบ
+
+**ไฟล์/การตรวจ/สถานะ:** เพิ่มคำชี้แจงในCLOUD_AI_EXECUTION_PLAN.mdและWEBSITE_DETAILS§3.40/queue ไม่เปลี่ยนปริมาณหรือสถานะpublishedของpreparedAI รักษาdirtydocsจากรอบก่อน ไม่รันmodel/cloudbenchmark/applicationtests/build/browser/API ไม่แก้source/SQL/Auth/บริการ ไม่เปิดBilling/paidresources ไม่commit/push/deploy ไม่มีคำถามค้าง คำถามนี้ไม่ใช่การอนุมัติลงมือหรือใช้เงินจริง
+
+### 30 ตุลาคม 2026 — ตรวจ Google Cloud/GEE และเตรียม CPU โดยไม่เพิ่มค่าใช้จ่าย
+
+**หัวข้อ:** ผู้ใช้สั่งเริ่มตรวจcloud/GEEและเตรียมCPUtest พร้อมกำชับแจ้งก่อนเปิดBilling/มีค่าใช้จ่าย และไม่มีงบsubscriptionเดือนนี้ ดำเนินการขั้นที่ไม่เปิดบริการเสียเงินให้ครบ
+
+**สรุปผลสด:** projectที่webconfigและserviceaccountอ้างตรงกันคือtest-01-494520 GEEconfigGET200/REGISTERED_NOT_COMMERCIALLY;EarthEngineAPIENABLED ConsoleยืนยันCommunityTier,eligibilityexpireFeb10,2028,monthlyEECUusage0.87% ณเวลาตรวจ BillingconsoleแสดงThis project is not linked to a billing account จึงยังไม่เริ่มCloudRun ส่วนRun/CloudBuild/ArtifactRegistryAPIDISABLEDและStorageAPIENABLED ไม่เปลี่ยนสถานะบริการใด
+
+**รายละเอียดการตรวจสิทธิ์:** ใช้credentialเดิมauthกับGoogleแล้วเรียกGETเฉพาะcontrol-planemetadata ไม่พิมพ์key/token Project/BillingAPIตอบ403SERVICE_DISABLED ไม่ได้สรุปว่าBillingปิดจาก403และไม่กดenableAPIเพื่อแก้ ใช้consoleที่ลงชื่ออยู่ตรวจBillingต่อจนเห็นunlinkedชัดเจน ไม่กดLinkBilling/FreeTrial/CloudShell/ManageTier/Registrationหรือquota ไม่มีGEEpixel/valuecompute/exportและไม่มีCloudRunexecution
+
+**เตรียมCPU:** พบvenvเดิมtmp/gee-colab-venvพร้อมPython3.11.9/torch2.14.1+cpu/numpy2.4.6/rasterio1.4.4/affine3.0.1/matplotlib3.11.2/psutil7.2.2 ไม่ติดตั้งเพิ่ม Pythonหลักไม่มีdepsชุดนี้ พบDockerCLIแต่daemonไม่ทำงานและไม่พบgcloudPATH/standardlocations ไม่เปิดหรือติดตั้งเพิ่ม เครื่องOSรายงานRyzen7 8845HS/16logicalprocessors/RAM15.26GiB ไม่อ้างเป็นCloudRun4/8
+
+**การตรวจชุดเตรียม:** helperเขียนเฉพาะoutputs/XEDO_CPU_Readiness_2026-10-30/preparation ไม่แตะwebsite Rootอ่านharnessและรันdefaultdry-runใหม่ ผ่าน6filehashes/dependenciesพร้อมและreadyForExplicitLocalRun:true แต่inferenceExecuted:false/cloudResourcesCreated:false มีCPUbatch1/threads2,4/cold-warmtiming/peakRSS/timeout/outputhashพร้อมสำหรับรอบexecute-local ภาพเดิม176.478กม²/9tiles ไม่ใช่caseใหม่10/100/200กม²และthreadsไม่จำลองcloudRAM/vCPUlimit
+
+**ไฟล์/หลักฐาน:** READINESS_REPORT.md,cloud-metadata.json,evidence/billing-console.json+ภาพ,evidence/gee-console.json+ภาพ,local-resources.json,preparation/README.md/benchmark_cpu.py/fixture-manifest.json/prepare_manifest.py/dry-run-receipt.json อยู่outputs/XEDO_CPU_Readiness_2026-10-30 อัปเดตcanonicalสองMD/CLOUD_AI_EXECUTION_PLAN/queue รักษาdirtydocsจากรอบก่อน Supportทำreadonlyresearch/prepareแยกพื้นที่ Mainเป็นผู้แก้เอกสารกลาง
+
+**การทดสอบ/การเผยแพร่/ข้อจำกัด:** รอบนี้control-planeGET+consoleอ่านอย่างเดียว,syntax/metadata/hashdry-run ไม่รันAIinference/training/CPUbenchmarkจริง/cloudbenchmark/applicationtests/build ไม่สร้างcloudresource/APIenable/Billinglink/IAMchange/subscription ไม่แก้application/SQL/Auth ไม่commit/push/deploy สถานะเตรียมlocalพร้อม ส่วนcloudexecutionไม่เริ่มเพราะต้องมีBillingและงบยังไม่อนุมัติ ไม่มีคำถามผู้ใช้ค้าง ไม่ขอให้เปิดBillingสวนข้อจำกัดเดือนนี้
+
+### 30 ตุลาคม 2026 — ทดสอบ CPU local จริง วัดเวลา/RAM และเทียบผลเดิม
+
+**หัวข้อ:** ผู้ใช้อนุญาตให้เริ่ม CPU ในเครื่องจากภาพเดิม วัดเวลาและ RAM แล้วเทียบ baseline พร้อมกำชับไม่เปิด Billing/subscription หรือ cloud ที่มีค่าใช้จ่าย อ่าน log/queue และ Git ก่อนทำงาน; HEAD09b5e4911675afb9c2889e71bc447588e3474e14 มี dirty docs จากรอบก่อนและรักษาไว้ ไม่แก้ application
+
+**สรุปผลสด:** 8/8 โปรเซสและ16/16 inference passes สำเร็จในชุดจับเวลา138.535s แบ่ง threads2/4 ชุดละ3fresh-process +1workerที่โหลดโมเดลครั้งเดียวรัน5passes ใช้ CPU/batch1/float32/threshold0.3/9tiles ด้วยภาพจริงเดิม1317×1340/176.478กม² (valid106.183กม²) ไม่ดาวน์โหลดหรือสร้างภาพใหม่
+
+| สิ่งที่วัด | 2 threads | 4 threads |
+|---|---:|---:|
+| Fresh process เต็มงาน median3รอบ รวม imports/load/preview/ไฟล์ผล/hash (s) |12.430|12.242|
+| Fresh process เต็มงาน min–max (s) |12.073–16.377|11.611–13.019|
+| Runner processing ของ fresh process median3รอบ (s) |2.991|2.350|
+| Runner processing ใช้โมเดลซ้ำ medianรอบ2–5, n4 (s) |3.183|2.297|
+| ใช้โมเดลซ้ำ รวม preview/return files medianรอบ2–5 (s) |4.991|4.171|
+| Native peak RAM สูงสุดใน3fresh processes (MiB) |670.699|671.844|
+| Native peak RAM ของ worker5passes (MiB) |875.977|891.297|
+
+**เทียบผล:** helperตรวจหลังจับเวลาจบ ครบ16outputs แบบwindowed raster comparison: score maxabs/MAE/RMSE0,maskต่าง0pixelรวมNoData,CRS/transform/grid/dtype/GDALmask/inputVALIDตรงทั้งหมด Candidate15,248pixelsต่อรอบ Valid1,061,830/NoData702,950 TIFFscoreและmaskSHA256ตรงbaselineทุกไฟล์ ไม่ใช่เพียงผลwithin-tolerance ตัวcomparatorผ่าน5self-checkcases Rootตรวจreadbackและhashอ้างอิง6ไฟล์หลังรันยังตรงmanifest
+
+**การตีความ:** เป็นการทำซ้ำผลโมเดลเดิม ไม่ใช่ground-truthaccuracy เวลารอบเดิม2.22238sเทียบได้เฉพาะrunnerprocessing ไม่เทียบกับfullprocess12.24s;4threadswarmmedian2.296966sใกล้เคียงเดิมแต่ต่างสภาพแวดล้อม RAMใช้Windowsnativepeakรวมimports/model/previewทั้งworker;sampledRSS50msเริ่มหลังloadเป็นตัวประกอบ Warmpeakสูงกว่าcoldไม่พอสรุปว่าleakหรือไม่มีleak Coldไม่ล้างOSfilecacheและไม่จำลองcloudstartup ตั้งlocalthreadsไม่จำกัดcloudvCPU/RAMจริง ตัวอย่างนี้ไม่ใช่200กม²ใหม่/100jobsเดือน/งานพร้อมกัน และไม่วัดGEE/network/vectorization/upload/DB
+
+**ข้อสรุปและงานเหลือ:** ใช้CPUต่อสำหรับโมเดล/ภาพนี้ได้โดยไม่มีเหตุให้ซื้อGPUจากผลรอบนี้ 4threadsเป็นฐานlocalถัดไป RAM512MiBต่ำกว่าที่พบและ1GiBมีheadroomน้อย;การทดสอบsingleworker2GiBในอนาคตยังเป็นข้อเสนอ ต้องวัดlimitจริงก่อนใช้cloud แผนonlineพื้นที่ใหม่ยังเหลือqueue/lease/ownedresults/automaticGEE/worker/UI;ยังไม่ได้อนุมัติfullimplementationหรือpaidexecution
+
+**ไฟล์/หลักฐาน:** เพิ่มoutputs/XEDO_CPU_Benchmark_2026-10-30/CPU_BENCHMARK_REPORT.md,metrics-summary.json,measurements.csv,summarize_benchmark.py และcomparison/{README,compare_outputs.py,comparison-report.json,comparison-tool-selfcheck.json} ข้อมูลดิบอยู่outputs/XEDO_CPU_Readiness_2026-10-30/preparation/runs/20261030T055818Z_7c53fb88/benchmark-receipt.jsonและworkerreports/TIFF แก้canonicalสองMD/CLOUD_AI_EXECUTION_PLAN/AI_INTEGRATION_PLAN/queueและเพิ่มpointerในreadiness/preparationREADME รักษาบันทึกdry-runเดิมเป็นประวัติ แชทหลักทำinference+docs;helpersทำcomparison/read-onlymeasurementreview ไม่แก้เว็บ
+
+**การตรวจ/เผยแพร่/คำถาม:** รันlocalCPU16passes+pixelcomparison+selfchecks5+aggregation/post-runhash6ไฟล์และตรวจdiff/JSON/เอกสาร ไม่มีการรันapplicationtests/build/browser/API/SQL/Authหรือcloudใหม่ ไม่reuse564testsเป็นfreshresult ไม่เปิดBilling/subscription/API/paidresources ไม่มีcommit/push/deploy ไม่มีคำถามผู้ใช้รอคำตอบในขอบเขตรอบนี้
+
+### 30 ตุลาคม 2026 — แผนเชื่อมเว็บไซต์กับ local CPU สำหรับพื้นที่ใหม่
+
+**หัวข้อ:** ผู้ใช้ให้วางแผนwebsite→CPUในเครื่อง→ผลAIจากพื้นที่ใหม่ โดยไม่เปิดBilling/subscription และบันทึกสองMD อ่านlog/queue/AGENTS/HEAD09b5e491และdirtydocsก่อนทำงาน รักษาข้อ1–3ที่เผยแพร่แล้วและสามขั้นตอน/สี่ตัวคำนวณ
+
+**สรุป:** เพิ่มLOCAL_CPU_AI_INTEGRATION_PLAN.mdเป็นแผนข้อปัจจุบัน6/เดิม9 ใช้Supabaseownedjobqueue เครื่องรับงานผ่านoutboundHTTPSRPCด้วยmachineidentityจำกัดสิทธิ์ที่ไม่เป็นInspector ไม่ต้องpublicport/tunnel/CloudRun/paidcron Workerค้นหนึ่งSARsceneในช่วงย้อนหลัง30วันตามdefault→automaticgetDownloadURLสำหรับDATA/VALID/metadata→CPU4threads→polygonize/coverage→immutableownedcatalog+privatepreview→Inspectoredit/confirm/plannerเดิม เก็บTIFFเต็มในเครื่องและsmallreviewresultในระบบเดิมให้เปิดย้อนหลังได้ตอนเครื่องปิด
+
+**สิ่งที่ต้องทำจริง:** เพิ่มjob/status/cancelAPIพร้อมselectedRouteallowlist (ชื่อanalysis-jobsยังถูกregexเดิมปฏิเสธ),workerregistry/Auth+privateRPC/lease/fence/idempotency,automaticGEEinputadapterแทนDriveTasks,packagerreusableแทนsupportone-off,dynamicresultresolverครอบคลุมlist/detail/save/confirm/history,UIstatus/latejobguardsและtests ไม่เพียงเอาendpointมาต่อกับrunnerเพราะcatalog/resultIdยังคงที่
+
+**ข้อจำกัดที่ตรวจใหม่:** benchmarkvenvพร้อมCPUแต่ยังไม่มีearthengine-api/pyproj/shapelyจากpackage metadata ต้องเตรียมworker environmentแยกเมื่อimplement ไม่installรอบนี้ Runnerเดิมรับ100Mpxจึงต้องwrappercap2Mpx/4096/กรอบraster≤200กม² Candidate256/document1MiB/target120จุดยังเป็นขอบจริง เสนอreviewcatalog512KiB/totalrawvertices8192และpreview512KiB ต้องทดสอบก่อนfreeze เกินcapให้RESULT_TOO_COMPLEXไม่truncate raw ไม่ใช้risk_valid_target120จุดตรวจraw378จุด
+
+**ความปลอดภัย/พฤติกรรม:** DBตรวจmachine/session/owner/frozeninput/attempt/lease/fence/cancelทุกwriteและserverderivecanonicalcatalogseals ไม่เชื่อhash/ownerจากclient TIFFhashเป็นproducer-reportedเพราะserverไม่อ่านไฟล์นั้น StorageอัปโหลดโดยmachineUIDจึงต้องpolicyผูกpublishedowner/job/path ไม่ใช้uploaderUIDเป็นInspectorโดยอัตโนมัติ คงSARกับcontextimageคนละidentity;targetอยู่ในsearch/image/analysisfootprint ส่วนvalidSARcoveragecomplete/partial/unavailableแยกตามข้อมูลจริง ไม่แอบเพิ่มfull-validgate
+
+**Offline/งบ:** ผู้ใช้ต้องเปิดเครื่อง/โปรแกรมและไม่Sleepระหว่างรับงาน หน้าเว็บตรวจpresenceก่อนsubmit เครื่องหลุดระหว่างงานเก็บqueued/recovering ไม่spinnerไม่สิ้นสุด ค่าเริ่ม1active/2pending/100logicaljobsเดือนและ30mdeadline ไม่มีservice_roleในเครื่อง/ไม่มีpaidfallback Rawไฟล์อยู่localประมาณ28MBต่อgrid2Mpxก่อนoverhead;smallcatalog/previewรวมcapประมาณ1MiB/job ต้องตรวจremainingquotaจริงก่อนเปิดpilot ไม่เอาFreeplanเพดานแทนremainingprojectusage ไม่เปิดBilling/subscription/upgradeอัตโนมัติ
+
+**ไฟล์/การตรวจ:** เพิ่มLOCAL_CPU_AI_INTEGRATION_PLAN.md;แก้สองcanonicalMD/implementation-queue.json/AI_INTEGRATION_PLAN/CLOUD_AI_EXECUTION_PLANเพื่อให้localเป็นpreferredและcloudเป็นfutureoption เก็บcapacityarithmetic/documentchecksในoutputs/XEDO_Local_CPU_Integration_Plan_2026-10-30 ผู้ช่วยอ่านsource/เสนอcontractsและreviewแผนเท่านั้น Mainรวมเอกสาร แก้คำอธิบายvalidcoverage/claimleaseและrouteparserตามหลักฐานreviewแล้ว
+
+**Verification/publication:** รอบนี้source/doc/Gitread,officialwebdocsและpackage-metadata inspection/เลขคณิต/JSON/Markdown/diffcheckเท่านั้น MCPsearch_docsใช้ไม่ได้เพราะconnectionargumentจึงfallbackofficialdocs และอ่านHTMLchangelogเมื่อ.mdcontenttypeไม่รองรับ ไม่รันAI/GEEpixelrequest/benchmark/applicationtests/build/browser/liveDB/Storagequotaquery ไม่install/changeAuthmachine/bucket/API/SQL/config/เปิดBilling/subscription/commit/push/deploy ผลCPU16รอบและ564webtestsยังเป็นรอบก่อน ทุกacceptancecaseใหม่designed_not_run ไม่มีคำถามรอคำตอบ;defaultของแผนไม่ใช่การเปลี่ยนระบบจริงหรืออนุมัติimplementation
+
+### 30 ตุลาคม 2026 — ลงมือ local CPU plan ขั้น1–2 และตรวจข้อมูลจริง
+
+**หัวข้อ:** ผู้ใช้อนุญาตเฉพาะขั้น1–2ของLOCAL_CPU_AI_INTEGRATION_PLAN (คิว6/เดิม9) ให้โหลดภาพพื้นที่ใหม่และวิเคราะห์CPUในเครื่อง ทดสอบ/บันทึกสองMD ห้ามเปิดBilling/subscriptionหรือpush/deploy อ่านlog/queue/Gitและรักษาdirtydocsเดิม HEAD09b5e491ไม่เปลี่ยน
+
+**ผลสำเร็จ:** เพิ่มworkers/local-ai/{common,acquisition,package_result,pipeline}.py,tests/test_pipeline.py,vendor/gee_sar_inference.py,requirements.lock.txt,setup/run-local-ai.ps1,READMEและ3areaexamples โปรแกรมรับGeoJSON→single-sceneGEEsearch→DATA/VALID/METADATA→validate→CPU4threads/batch1/float32→GeoTIFF/preview→unreviewedlocalcandidate/coverageพร้อมพิกัด ไม่ต่อhostedqueue/DB/UIในรอบนี้
+
+**Readinessสด:** GEEconfigprojecttest-01-494520/REGISTERED_NOT_COMMERCIALLYและอ่านpixelsจริงสำเร็จ Supabaseconnectorขาดlink_idจึงอ่านChromeDashboardตามskill:megaphijakFree/xedoHealthyNano,DB25.5MB/0.5GBต่อproject,Storage0/1GBและegress0/5GBตามUIปัดเศษ/delay ไม่มีbucketอยู่และไม่สร้างหรือทดสอบwrite สิทธิ์upload/RLSเป็นงานขั้น3ต่อ Receiptอยู่outputs/XEDO_Local_CPU_Pipeline_2026-10-30/readiness/supabase-readonly-readiness.json
+
+**Environment:** tmp/local-ai-worker-venvเป็นoverlayใหม่อ่านbenchmarkCPUstackเดิมแบบread-onlyผ่าน.pth เพิ่มEarthEngine1.7.50/Shapely2.2.0/Setuptools78.1.0ในvenvใหม่เท่านั้น pipcheckผ่าน ไม่ใช้pyprojเพราะrasterio/GDALแปลงCRSได้ Vendorenginebyte-identicalSHA1eaada...และcheckpoint41a2bd...ทุกครั้ง ตรวจhash6ไฟล์ต้นฉบับหลังรันไม่เปลี่ยน ไม่มีweights/data/credentialเข้าGitหรือVercelbundle
+
+**วิธีแก้จริง:** getDownloadURLที่ลองตอนพัฒนาติดearthengine.thumbnails.create denied เปลี่ยนเป็นcomputePixels/GEO_TIFFบนexplicitnativePixelGridด้วยpermissioncomputations.createเดิม ไม่เพิ่มIAM/API/Billing/exportresource Snapwholepixelcrop/check2Mpx/4096/200กม²ก่อนdownload แยกVH,VVfloat32Sigma0dBกับVALIDuint8 ไม่logซ้ำ/resize ตรวจgrid/nodata/scales/offsets/finiteและbothbandvalidity Normalizationตั้งDATAเฉพาะVALID0เป็น-9999และverifyvalidcellsไม่เปลี่ยน
+
+| Acceptance runสด | กรอบrasterกม² | pipelineวินาที | runnerprocessingวินาที | nativepeakMiB | candidatepixels |
+|---|---:|---:|---:|---:|---:|
+| Newsmallarea |5.0172|18.47|0.336|508.92|0|
+| Finalnewareaใกล้limit |197.5274|31.11|4.041|725.95|0|
+| Finalautomaticbaselinedownload |176.4780|27.94|3.031|721.52|15,248|
+| Finalexplicitreplay/progress |176.4780|10.72|2.711|690.93|15,248|
+
+เวลาคือแต่ละrunหลังCLIbootstrapimports ไม่ใช่median/P95/SLAและมีบางrunช่วงใกล้กัน ไม่ใช้แทนCPUbenchmarkแบบแยกresource NewSARacquired26ต.ค./baseline9ต.ค. ZeroCandidateเป็นผลโมเดลไม่ใช่การยืนยันปลอดน้ำมัน baselineทั้งdownload/replayให้14componentsและscore/maskต่าง0pixel/TIFFhashตรงเดิม ValidVH/VVและVALIDตรงเดิมทั้งหมด ต่าง59,550bandvaluesเฉพาะinvalidNaNของต้นฉบับที่เปลี่ยนเป็นcanonical-9999 ไม่อ้างrawDATAทุกbyteเท่ากัน
+
+**Geometry/feedback:** 4connected/holes/components/WGS84serialization→nativerasterroundtripต่าง0ทั้งcandidate/valid/NoDataทุกacceptancecase ตรวจGDALmasks/summarygridด้วย พบGEEclip/GDALcentreAOIedgefringeจึงdensifyและอนุญาตเฉพาะครึ่งpixel-diagonal (~7.071mที่10m)พร้อมรายงาน ไม่clipraw Component/ring/vertex/bytesเกินcapเป็นRESULT_TOO_COMPLEXเก็บTIFFเต็ม Vendorcallbackข้ามท้ายemptytilesจึงwrapperemitfinal9/9จากsummaryที่ตรวจแล้วก่อนpackagingโดยไม่แก้engine
+
+**ทดสอบ/หลักฐาน:** Pythonunit/contractสด13pass/0fail,pipcheckผ่าน,sourceAST/PowerShellparser/docJSON/diff/hashchecksและrealGEE/CPUcasesตามREPORT.md Helperตรวจsourceและartifactซ้ำแบบreadonlyทั้งgrid/GDALmask/GeoJSONroundtrip/hash/parityผ่าน ไม่รันweb564tests/build/browserflowใหม่เพราะไม่แก้src/api/dbของเว็บ Runtimewarningsเรื่องPythonfutureEOL/Affineoperatorเป็นdeprecationnotice ไม่ใช่testfailure หลักฐานrawfaileddevelopment3attemptsยังเก็บตามจริง สาเหตุpermission/strictAOIedgeแก้แล้ว
+
+**ไฟล์/สถานะเหลือ:** อัปเดตcanonicalสองMD/LOCAL_CPU_AI_INTEGRATION_PLAN/AI_INTEGRATION_PLAN/CLOUD_AI_EXECUTION_PLAN/queue ผลและsourcehashesอยู่outputs/XEDO_Local_CPU_Pipeline_2026-10-30/{REPORT.md,final-validation.json,final-input-parity.json,python-tests-final.txt,readiness,rawruns} ยังเหลือขั้น3–7 ownedqueue/result/workeridentity/transport/UI/qualification/release ยังไม่มีPCoffline-recovery/wholeworkerharddeadlineหรือ100jobslongsoak ไม่เปลี่ยนSQL/Auth/bucket/IAM/serviceconfig ไม่เปิดBilling/subscription ไม่commit/push/deploy ไม่มีคำถามผู้ใช้รอคำตอบ
+
+### 30 ตุลาคม 2026 — Local CPU ขั้น3–5: เว็บ Analyze ถึง Inspector/planner/history
+
+**หัวข้อ/ขอบเขต:** ผู้ใช้อนุญาตขั้น3–5ต่อจากpipelineเดิม ให้กดAnalyzeบนเว็บแล้วCPUในเครื่องรับงาน/ส่งผลให้Inspectorแก้พื้นที่ ทดสอบและอัปเดตสองMD โดยห้ามBilling/subscription/push/deploy อ่านcanonicallog/queue/AGENTS/Gitจริงก่อนแก้ HEAD09b5e491คงเดิม รักษาdirtydocs/workersขั้น1–2 สามขั้นตอน/สี่ตัวคำนวณ ไม่ตีความคำสั่งเก่าเป็นสิทธิ์เผยแพร่ใหม่ รอบนี้ไม่applySQLกับhostedSupabaseหรือสร้างAuthmachine/bucketจริง
+
+**สิ่งที่ทำ:** เพิ่มdb/inspector-local-jobs.sqlและinspector-local-jobs-status.sql เป็นadditive/versionedatomicSQLหลังinspector-ai.sql มีprivateworkerregistry/jobs/attempts/immutableownedresults/publishreceipts/RLS/revokedlive-sessionguards FreezeAOIจากsavedrevisionและownerจากsession จำกัดหนึ่งrunningทั่วqueue/สองpending/100logicaljobsเดือน/30นาที;claimlease120s/fence/attemptmax2/cancel/idempotentsubmit-publish เก็บanalysisRefhashที่DBderiveเองจากcanonicalJSONB (xedo-jsonb-seal/1) แยกproducerreportedTIFFhashและโมเดลออกจากserverseal Ownedresolverใช้กับlist/detail/save/confirm/historyและยังอ่านpreparedcatalogเดิมได้
+
+**CPU/transport:** เพิ่มremote_worker.py+tests+configexample ใช้dedicatedmachineUIDที่ห้ามอยู่Inspectorroster ไม่มีservice_role รหัสผ่านรับผ่านgetpassไม่เก็บ;access/refreshsessionเป็นWindowscurrentuserDPAPI Workerเชื่อมออกHTTPSRPCเอง ไม่เปิดpublicport/tunnel childเป็นpipelineเดิมCPU4threads มีheartbeatอิสระ/จริงtiles/timeout/RSSwatchdog2048MiB/cancel checkpointpublishใช้mutation/bodyเดิมเมื่อไม่ทราบcommitและเปิดใหม่โดยไม่รันCPUซ้ำ ถ้าparentหยุดระหว่างprocessing ตรวจPID/create-time/commandก่อนจัดการchildเดิม NormalmodeรับเฉพาะprojectXEDO;--local-qaรับเฉพาะ127.0.0.1:5193 ไม่เปิดpaidfallback
+
+**เว็บ/UI:** api/inspector.mjsเพิ่มexplicitanalysis-worker/analysis-jobs/detail/cancelroutesและsafewhitelistederrors src/inspector-client.jsเพิ่มSave-before-Analyze/accountID/analysisrequestoptions src/planning-analysis-jobs.jsคุมstatus/poll/cancel/history/uncertainsubmit/lateaccount-AOI-contextguards พร้อมstageจริงและtileprogress ไม่แสดงGEEเปอร์เซ็นต์ปลอม Backgroundpollไม่คำนวณrouteหรือสร้างvectorlayersใหม่ หยุดrequestเมื่อhidden/guestและไม่ซ้อนpendingaction src/planning-risk-editor.jsรับresultIdจริงจากงาน/Historyแทนfixedpreparedเท่านั้น รักษาrawcandidate/Inspectordraft/confirmedtargetแยกกันและmanualDrawได้แม้0candidate ภาพS2บริบทต้องreview/pixelsครอบคลุมก่อนconfirm ใช้planner/Save/history/readinessเดิม
+
+**ปัญหาที่พบและแก้ระหว่างรวม:** latepresence/cancel/finallyจากบัญชีเก่าอาจคืนstateเก่าหรือปลดbusyบัญชีใหม่ จึงตรวจepoch+liveidentityหลังawaitทั้งหมด;pollช่วงsubmitเคยล้างautoopenguard จึงserializefetching/busy;manualHistoryOpenระหว่างเริ่มuncommittedmapeditมีช่องให้installหยุดedit จึงsnapshotfullcontextและตรวจinteraction/workingหลังfetch/confirm;ownerpollเดิมไม่expirejobเมื่อPCตายและไม่มีclaimใหม่ จึงเพิ่มstatusSQLให้ownerjob/jobs/cancelreadsปิดharddeadline/expiredcancelและจบattemptเอง พร้อมworkerOnline/lease/deadlinefields ข้อมูลที่recoverได้ยังให้workerclaim/fenceใหม่ ไม่แอบpublishด้วยwriterเก่า Passivepresenceไม่ล้างข้อความfailed/completedทันที
+
+**หลักฐานจริงในเครื่อง:** scripts/preview-local-ai.mjsbind127.0.0.1:5193 ใช้Authfixture/PGliteดิสก์กับBFF/SQLจริงและGEEเดิมจริง ไม่มีliveAuth/DBchanges LoginAlice→importRayongAOI4.83กม²geodesic/กรอบraster5.0172กม²→Analyze→jobfd333481-5af8-4d17-8a51-1d0fdea2f13d→S1acquired2026-10-26T23:00:37Z→CPU→ownedresultXEDO_LOCAL_RESULT_96c461bcab3d46d69b1c543adc33b991สำเร็จ pipeline23.373s/runner0.504s/nativepeak509.92MiB;created→publish28.421s catalogAPI10303bytes ผล0candidateไม่ใช่absenceofoil Inspectorวาด/Applyboundary/UndoRedoผ่าน ยืนยันก่อนภาพถูกปฏิเสธและรักษาdraft จากนั้นreviewS2วันที่27ต.ค./confirmv2→plannerroute11.47km→Save/reopenถึง4versionsสำเร็จ Exportยังล็อกเมื่อHome/drone/readinessขาดตามเดิม
+
+**Acceptanceเพิ่มเติม:** หยุดCPUและrestartlocalserverแล้วอ่านresult/confirmedmanualtarget/historyได้;BobUIไม่มีงานAliceและBFFอ่านjob/result/mission/historyAliceได้404ทั้งสี่;queuedjobcancelจริงโดยไม่ล้างconfirmedreview;presenceofflineจริงหลังTTL180sและผลเก่ายังอ่านได้;Browserหน่วงanalysisdetail7sแล้วกดDrawระหว่างHistoryOpen ยังคง14preparedcandidates+activeedit ไม่เปิดผลช้าทับ;reloadfinalbuildและreopenv4ผ่าน ไม่มีconsoleerrorในscopeที่ตรวจ Screenshot/HTTPreadback/sourcehashesอยู่outputs/XEDO_Local_AI_Web_2026-10-30 (localHTTP5checksผ่าน)
+
+**ทดสอบสด:** Nodeapplication606pass/0fail/0skip (`node --test --test-concurrency=4 tests/*.test.mjs`) รวมDB18/coordination21/newBFF3และregressionเดิม Python30pass/0fail (pipeline13/remote17;DPAPIจริง+fixturechildprocess) Syntaxnpmcheckและnewmodules/harnessผ่าน Build/build:workspace/build:fileผ่านทั้งสาม finalhostedHTML6207852UTF-8bytes (buildlog6207848เป็นJSstringlength) Fullsuiteรอบหนึ่งผ่าน567ก่อนเพิ่มtests;รอบnpmหลังเพิ่มเคยหยุดค้างไม่สรุปจึงหยุดและรันNodeconcurrency4ตรง ๆ ผ่าน605แล้ว606หลังแก้statusfeedback ไม่ถือรอบค้างเป็นผ่าน FocusedDB/controller38ก่อนเพิ่มpassivefeedbackcaseผ่าน HTTPhelperรอบแรกอ้างanalysisในgetmissionenvelopeผิดจึงแก้ตัวตรวจให้อ่านownedanalysisdetailแยกและรันใหม่5/5ผ่าน ไม่ใช่productionbug
+
+**ไฟล์/ผู้รับผิดชอบ:** แชทหลักแก้src/api/scripts/db/testsและcanonicalMD/queue HelpersเขียนdraftDB/worker/harness/testsและreadonlyreviewใต้outputsแยกเท่านั้น Mainตรวจแล้วcopy/แก้/รันทดสอบในcheckoutเอง workers/local-ai/README.mdอธิบายการเริ่ม/DPAPI/config/ภายหลังmigration LOCAL_CPU_AI_INTEGRATION_PLAN§3.15/WEBSITE_DETAILS§3.45/REPORT.mdมีรายละเอียดรวม ไม่มีรหัส/weights/TIFF/sessionเข้าGitหรือbundle
+
+**งานเหลือ/เผยแพร่:** ขั้น3–5ผ่านlocalacceptanceตามขอบเขต ยังเหลือขั้น6realSupabasePostgREST/multi-connection/hostedfailure-partial-noSAR-near200UI/longsoak/devicequotaqualification และขั้น7ติดตั้งSQLสองไฟล์/ทีมสร้างdedicatedmachineAuth+registry/productionreleaseเมื่ออนุญาต Storagepreviewuploadเป็นoptionalfutureไม่ได้ทำ;durablereviewcatalogไม่พึ่งbucket CPU/RAM/เวลาเป็นหนึ่งrunไม่ใช่SLA/100jobsqualification ไม่มีBilling/subscription/IAM/APIupgrade/cloudcompute/publictunnel ไม่มีcommit/push/deploy/productionmigration หยุดlocalQAserver/workerและปิดแท็บทดสอบหลังเก็บหลักฐานแล้ว ไม่มีคำถามผู้ใช้รอคำตอบ
+
+
+### 30 ตุลาคม 2026 — ขั้น6 Supabaseจริงและการเตรียมบัญชีทดสอบ
+
+**คำสั่ง/ขอบเขต:** ผู้ใช้อนุญาตเชื่อมSupabaseจริง/ทดสอบ/บันทึกสองMDต่อจากขั้น3–5 ห้ามBilling/subscription/push/deploy อ่านlog/queue/AGENTS/Gitจริงก่อนทำ HEAD09b5e491และdirtyงานก่อนหน้าคงเดิม Mainแก้checkout/ใช้MCP Helpersเขียนdraftและreadonlyreviewใต้outputs/XEDO_Local_AI_Phase6_2026-10-30แยก ไม่แก้เว็บหรือบริการจริง
+
+**การเชื่อม/SQLจริง:** MCPครั้งแรกไม่ส่งlink_idจึงใช้ไม่ได้ จากนั้นอ่านtoolmetadataบัญชีที่เปิดให้ใช้และเลือกmegaphijakตามองค์กรที่ผู้ใช้ยืนยัน พบxedoACTIVE_HEALTHY/Postgres17.11 ตรวจpredecessor2markers/RLS/ACL/Authsessionscolumns/versionsก่อนapply เก็บpg_get_functiondefและpreparedcataloghashก่อนเปลี่ยน ติดตั้งdb/inspector-local-jobs.sqlตามด้วย-status.sqlในtransactionเดียวผ่านapply_migrationชื่อxedo_local_cpu_queue_and_owned_results สำเร็จ ตรวจversionxedo-local-cpu-jobs/1และstatus/2ครบ6ตารางใหม่ เปิดRLS/ไม่มีdirectclientCRUD PublicworkerInvokerและauthenticatedexecuteเฉพาะwrapperที่guardsession/machineroster ทั้ง12privateRLSยังปิดdirectCRUD Preparedhash24476c493413b461b6f43a92e7bfa057f79d46376fee32f90b869b10be560f1cไม่เปลี่ยน DBsizeSQLก่อน11466419/หลัง11802291bytesเป็นdatabasephysicalmeasurementไม่ใช่Dashboardquotausageทั้งหมด
+
+**PostgREST/advisors:** PublicRPCสองตัวถูกdiscoverจริงและanonymousได้401permissiondenied Privateanalysis_jobs/owned_analysis_resultsไม่exposeได้404PGRST205 PurecatalogvalidationบนPostgresจริงด้วยfixturebaseline14candidates/3coverageใช้0.289493s/99404JSONBbytes derivehashสำเร็จและยังunreviewed/accuracyfalse ไม่persistresultหรืออ้างfreshmodel/job เผยauthenticatedstatement_timeout8s/anon3sจากallowlistsettingsเท่านั้นไม่dumpjwtsecret Advisorsไม่มีERROR;INFO12privateRLS-no-policyเป็นintentionaldenybydefault+RPCguard,performance10unindexedFK/2unusedindexes INFO และWARNleaked-password-protectionเดิมยังไม่เปลี่ยนsettingหรือplan
+
+**สิ่งที่เตรียม:** scripts/preview-live-ai.mjsเปิดเว็บlocalแต่เรียกrealSupabaseBFF/GEE ไม่มีmockAuth/PGlite/admin/serviceRole ไม่applySQLหรือสร้างAuthaccountจากserverเอง GateXEDO_LIVE_QA_AUTHORIZED=1 เปิดloopback5193เพราะ5194listenEACCESจริง Oldfixture5193หยุดแล้ว FixedHost/Origin/CSRF/staticpath/8KBbody/onecredentialhelperparallelguard ใช้scripts/local-ai-account-connect.pyรับemail/passwordผ่านstdinไม่ใช่argv/env/disk OfficialGoTruepasswordgrant+getuserverifyUID/emailก่อนเก็บsessionWindowscurrentuserDPAPIใต้ignoredlocal-data/live-ai-qualification stdout/responseมีmetadataเท่านั้น Primaryเชื่อมแล้วserverลงชื่อผ่านBFFจริงเพื่อให้browserรับHttpOnlycookie ผู้ใช้ไม่ต้องส่งรหัสแชท หน้าsetupแยก3roles/clearpassword/loadingและปรับqueueclientให้3ฟอร์มไม่ชนกัน
+
+**ผู้ใช้/รอคำตอบ:** ผู้ใช้เลือกใช้Inspectorเดิม+สร้างInspectorทดสอบและCPUเพิ่ม ทีมสร้างAuthusersตามเดิม อธิบายแล้วว่าบัญชีทดสอบใช้ชื่อรูปแบบอีเมลexample.invalidได้เมื่อAdduser+AutoConfirm ไม่ใช้ช่องทางsignupส่งอีเมล ผู้ใช้แจ้งว่าเชื่อม3บัญชีแล้วแต่ตรวจbrowserจริงพบLOGIN_FAILEDสองช่อง/CONNECT_BUSYอีกช่อง ไม่มีDPAPIreceipt ตรวจAuthusersล่าสุดยังมีเพียงเดิมemailconfirmed/notbanned จึงไม่bindregistryหรืออ้างAuthacceptance รอสร้าง2usersในprojectนี้และconnect3rolesสำเร็จ;รหัสXEDOต้องผู้ใช้กรอกในlocalpageเอง ไม่ขอหรือเปลี่ยนpassword
+
+**ทดสอบสดรอบนี้:** Node606pass/0fail/0skip;Python45passรวมpipeline13/worker17/failurequalification6/protectedhelper9 FreshGEE+CPUnear197.5274กม²ผ่าน pipeline34.979632s/runner4.097603s/nativepeak725.34MiB/valid1918260/0candidate;เป็นdirectlocalpipelineไม่ผ่านhostedjobเพราะยังไม่มีAuthmachine กรณีSARstart=end1900-01-01จริงได้NO_SAR_SCENEและไม่โหลดmodel Unitpartial50%/NoData/geometrybytecapsเป็นsyntheticไม่ใช่ข้อมูลGEEจริง Syntaxผ่าน ไม่รันbuildใหม่เพราะไม่เปลี่ยนproductionfrontend ใช้bundleverifiedรอบก่อน ไม่ใช้606เก่าแทนfreshรอบนี้
+
+**สถานะเหลือ/เผยแพร่:** ยังต้องrealInspector/machineAuth+registrybinding, signed-inBFF→concurrentqueue/claim/publish/cancel/ownedresult→CPU→Inspector/planner/history/ownerisolationบนPostgRESTจริงและmobile/extendedqualification ปุ่มAnalyzeใหม่ยังไม่ขึ้นProduction NoBilling/subscription/CloudRun/GCS/IAM/plan/APIupgrade/commit/push/deploy เก็บหลักฐานpreflight/functionbackup/migration/postflight/advisors/catalogvalidationและtestsที่outputs/XEDO_Local_AI_Phase6_2026-10-30 Localsetupserverคงเปิดไว้รับการกรอกบัญชี ขั้น6ยังไม่complete
+
+
+**บันทึกเพิ่มเติมหลังรับบัญชีจริง:** **อัปเดตบัญชีขั้น6:** ทีมสร้างInspectorTestTEST_INSPECTOR_LOCALและmachineCPU_WORKER_LOCALในxedoแล้ว ทั้งสองconfirmed/มีpassword/identityครบ RootเปิดInspectorTestและผูกmachineกับInspectorเดิมPRIMARY_INSPECTOR_LOCAL ตรวจenabledInspectors2/registeredWorkers1/machineInInspectorRoster0 RealAuthGetUserและRPC7checksผ่าน: secondaryInspectorใช้งานได้/machinepresenceownerถูก/สองroleใช้สิทธิ์สลับกันไม่ได้ ตอนนี้มีDPAPIsessionสองroleแล้ว เหลือprimary ผู้ใช้แจ้งลืมรหัสและเลือกลองรหัสที่Chromeบันทึกก่อน ไม่ได้ส่งrecoveryemail/เปลี่ยนรหัส/ลบสร้างuserใหม่ RootเปิดเฉพาะSupabaseUserDetailsพบปุ่มSendpasswordrecovery(ส่งemailเท่านั้น) ไม่อ่านPasswordManager/clipboard รอprimaryconnectสำเร็จ หลักฐานpartial-real-auth.json/qa-gates.json(root12checks)/account-binding.jsonอยู่outputs/XEDO_Local_AI_Phase6_2026-10-30 ส่วนrootสร้างscripts/qualify-real-ai.pyไว้พร้อม --run-real guard/Missingprimary→pending/network0 ไม่ได้รันสามjobจนกว่าจะมีprimaryจริง BrowserlistTabsChromeถูกauto-reviewปฏิเสธเพื่อปกป้องแท็บอื่น จึงเปิดเฉพาะSupabaseURLตรงได้สำเร็จ ไม่ข้ามข้อจำกัดหรือขอสิทธิ์อ่านแท็บอื่น ไม่มีBilling/subscription/push/deploy ขั้น6ยังinprogress
+
+
+**ส่งต่อสถานะรอบนี้ — primaryช่องเดียว:** ทีมสร้างและเชื่อมInspectorTest/CPUสำเร็จแล้ว ไม่ต้องสร้างหรือเชื่อมสองบัญชีนี้ซ้ำ Rootเปิดสิทธิ์InspectorTest/ผูกmachineกับownerเดิมและตรวจrealAuth7casesผ่าน เหลือรหัสบัญชีเดิม ผู้ใช้เลือกดูChromeSavedPasswordก่อน ไม่ได้ส่งrecoveryemail/เปลี่ยนรหัส Rootคงlocalrealbackendserver127.0.0.1:5193/qa/setupและแท็บhandoffไว้ รอคำตอบว่าช่องprimaryขึ้นเชื่อมแล้วหรือไม่พบรหัส เมื่อprimaryDPAPIพร้อมให้รันscripts/qualify-real-ai.py --run-realแล้วทำbrowserInspectorreview/plannerต่อก่อนmarkขั้น6complete Source/receipts/metricsอยู่outputs/XEDO_Local_AI_Phase6_2026-10-30/REPORT.md ไม่มีcommit/push/deployเว็บไซต์หรือBilling/subscription
+
+
+### 3.47 ปิดการทดสอบขั้น6กับ Supabaseจริงและ CPU ในเครื่อง — 30 ตุลาคม 2026
+
+**ขอบเขตและบัญชี:** ผู้ใช้แจ้ง primary เชื่อมแล้วแต่รอบแรก root ตรวจทั้งไฟล์ metadata และ /qa/accounts พบเพียง secondary/machine จึงเปิดหน้า setup ใหม่และขอเฉพาะช่องแรก ผู้ใช้เชื่อมอีกครั้งสำเร็จจริงเวลา09:54:47UTC UIDเดิมPRIMARY_INSPECTOR_LOCAL ครบ3DPAPIrolesและบัญชีแยกกัน ไม่มีรหัสผ่าน/tokenในบันทึกหรือGit ไม่อ่านPasswordManager/clipboard ไม่ส่งrecoveryemail/เปลี่ยนpassword/ลบสร้างuserใหม่
+
+**คิวและผลจริง:** scripts/qualify-real-ai.py --run-real ใช้ real BFF/PostgREST/GoTrue sessions และ Worker.process จริง ผ่าน3casesในรายงาน qualification-20261030T095749Z_3c412eae.json ทุกงานส่ง create ซ้ำ3connections→jobเดียว, claim3connections→claimเดียว, publishซ้ำ3connections→receiptเดียว ตรวจ owner A/B ทั้ง BFF/directRPC และ private draft/reopen/history ไม่สร้าง image/confirmation สมมติ เป็น same-session/multi-connection concurrency ไม่อ้าง different-machine-session global-race
+
+| กรณีสดผ่าน hosted queue | เวลารวม Worker.process | pipeline / inference | native peak RAM | ผล |
+| --- | ---: | ---: | ---: | --- |
+| ภาพอ้างอิง9ต.ค. grid176.478กม² | 37.031s | 33.571 / 2.188s | 723.973MiB | 14candidate /15,248pixels; valid60.168%,footprint61.697%; candidate/valid/NoData roundtripต่าง0 |
+| พื้นที่ใหม่ใกล้limit grid197.5274กม² | 39.813s | 36.608 /3.132s | 710.082MiB | 0candidate; valid1,918,260pixels; แยกNoDataตามจริง |
+| noSAR start=end1900-01-01 | 6.813s | 5.819s /ไม่รันโมเดล | 90.469MiB | failed/input_invalid และไม่มีresult |
+
+**การแก้ตัวทดสอบ:** รอบแรกเลือกช่วง1–10ต.ค.จึงได้ภาพ8ต.ค.ที่coverageครบกว่าและ17candidate เป็นงานที่ succeeded จริง แต่ qualification assertion14ผิดบริบท ไม่ใช่โมเดลเสีย Rootจำกัดวัน9ต.ค.และตรวจexactassetIdก่อนassert14 โดยเก็บรายงาน failed เดิมไว้ ไม่แก้เกณฑ์เป็น17หรือใช้ผลเก่าแทน inference ใหม่ ผล score/maskจากคิวจริงเทียบ original baseline ทุกpixelต่าง0และTIFFSHA256ตรงทั้ง2ไฟล์ ดู real-baseline-pixel-comparison.json
+
+**ทดสอบ protocol จริงเพิ่ม:** scripts/qualify-real-ai-post.py ผ่าน foreignanalysisRef save422/foreigncancel404, cancel-vs-publishคนละsession(รอบนี้cancelชนะ ไม่มีresultใหม่), naturalquiet183s→Offline/newcreate503WORKER_OFFLINE/ไม่เพิ่มjob/ผลเก่าและhistoryยังเปิดได้, naturallease120s→reclaimfenceใหม่/oldheartbeat-progress-publish409LEASE_LOST แล้วcancelงานQAด้วยbindingปัจจุบัน เป็น2logicaljobsและ replayผลจริงเดิมเพื่อทดสอบprotocolเท่านั้น ไม่มีGEE/inferenceใหม่ ไม่revokeบัญชีหรือปรับtimestampSQL ดู post-run-20261030T100321Z_eb106ca8.json
+
+**พบและแก้ปัญหาจริง:** Browser confirmพื้นที่ editedcandidate80จุดล้มเหลว503; Postgreslog10:04:59UTCยืนยันSQLSTATE57014ที่ risk_on_segment→risk_point_ring→risk_geometry_covers เพราะเกิน authenticatedtimeout8s Rootเพิ่ม db/inspector-risk-performance.sql cacheedgefloats/inlinecrossเดิม และข้ามholebboxที่disjointอย่างเคร่งครัดพร้อมตรวจtargetcentroidก่อนholecentroid คงintersections/holes/epsilon1e-13กับ1e-11/no-round/no-simplify ไม่มีPostGIS/เพิ่มtimeout/ขยายสิทธิ์ Draftแรกมีชื่อตัวแปรbyชนคำสงวน ตรวจในPGliteแล้วแก้next_x/next_yก่อนapplyจริง Migration xedo_risk_geometry_performanceสำเร็จหลังbackup+exactpredecessorMD5guardในtransaction อัลกอริทึมผ่าน959point comparisons/18coverage cases/8invalid SQLSTATEequivalence NativeEXPLAINของ80point candidate/validcoverageจริงใช้1.371837s และactualbrowserconfirmสำเร็จ ไม่รับรองworst-case8192verticesทุกกรณี
+
+**Browserจริง:** ใช้session primaryที่เชื่อมไว้แล้วผ่านlocal-only /qa/session→POST/qa/browser-session FixedHost/Origin/JSON{}; PythonDPAPIhelperตรวจGetUser+InspectorRPCและNodeตรวจBFFsessionซ้ำ ก่อนส่งHttpOnlycookie ไม่มีpasswordgrantใหม่/tokenในpageJS ภาพอ้างอิง14candidate→เลือกcandidate00002(80จุด)→ย้าย→edited_candidate→Sentinel-2วันที่22ต.ค.cloud14.1%+pixelvalidation→confirmv1/complete→planner5.92km→Savev2→Historyv1/v2→openv2จริง ผลrawcandidategeometryยังตรงproducer
+
+จากนั้นเริ่มQAmissionใหม่ผ่านUI นำเข้าพื้นที่ระยองใหม่4.83กม²(grid5.0172กม²) กดAnalyzeจริง ได้job86b1b8c6-98c4-442e-ae40-a654fcfc536a/resultXEDO_LOCAL_RESULT_a45765ce2cf2410bb6967866b7982eba อัปเดตprogressและเปิดผลอัตโนมัติ CPUpipeline17.853s/inference0.446s/peak510.398MiB/SAR26ต.ค./0candidate ข้อความไม่อ้างว่าไม่มีน้ำมัน Inspectorวาดmanual4จุด/UndoRedo/ตรวจSentinel-2/confirmcomplete→planner1.75km→Saveและยืนยันซ้ำเก็บhistoryถึงv4 ตรวจAPIของสองQAmissionพร้อมforeignowner404รวม10cases (อ่าน6ครั้ง/พยายามแก้4ครั้งผ่านBFFและdirectRPC โดยhash/revisionเจ้าของไม่เปลี่ยน)และrawgeometryตรงproducer ดู browser-acceptance.json/screenshots ไม่ปลดล็อกดาวน์โหลดถ้าHome/flight/airspaceยังไม่ครบตามscopeเดิม
+
+**Verificationรอบสุดท้าย:** Node611pass/0fail/0skip; Python57pass; accountportal12และsessionbridge11HTTPguardchecks; buildweb/workspace/standaloneผ่านทั้ง3 ไม่มีfrontendproductsourceใหม่ในรอบนี้ แก้QAhelpers/tests/SQLและdocs FinalDB12privateRLS/noClientCRUD/helpersInvoker+emptysearchpath+noanon/authenticatedexecute/machineไม่อยู่Inspectorroster PreparedcatalogSHA256ยัง24476c493413b461b6f43a92e7bfa057f79d46376fee32f90b869b10be560f1c งาน7logical: succeeded4(includesรอบ17candidateที่qualificationผิด),expectedfailed1/noSAR,cancelled2 ไม่มีqueued/running DB12367539bytesเป็นphysicalobservation ไม่ใช่Dashboardquotausage
+
+**ไฟล์เปลี่ยนรอบนี้:** db/inspector-risk-performance.sql; scripts/qualify-real-ai.py(วันที่+sourceassert); scripts/qualify-real-ai-post.py; scripts/local-ai-browser-session.py; scripts/preview-live-ai.mjs(localbridge); tests/inspector-risk-performance.test.mjs; tests/inspector-ai-database.test.mjs; tests/inspector-local-jobs.test.mjs; workers/local-ai/tests/test_browser_session.py; workers/local-ai/README.md; canonicalสองMD/queue/LOCAL_CPU_AI_INTEGRATION_PLAN.md หลักฐานและhelperชั่วคราวอยู่outputsและignoredoutput/local-data ไม่เพิ่มsecretเข้าGit ไม่overwriteงานdirtyจากขั้นก่อน
+
+**สถานะเผยแพร่/งานถัดไป:** ขั้น6pilot real-backend qualificationจบแล้ว ขั้น7website releaseยังไม่อนุญาต ไม่มีcommit/push/deploy/Billing/subscription/paidresource Workerทดสอบหยุดแล้วหลังjobสำเร็จ ผลcatalog/confirmation/historyอ่านได้จากSupabaseโดยไม่ต้องเปิดCPU Serverlocal5193คงไว้เพื่อให้ตรวจผลงาน ไม่มีคำถามรอคำตอบ งานqualificationsแยกที่ยังไม่รัน: 100jobs/monthlongsoak,คนละmachine-sessionglobalclaimrace,รอharddeadline30นาทีจริง,worst-casegeometry8192vertsและphysicaltouch/trackpad/heap/listener เดิม Pi/รายงานก่อน–หลังยังพักไว้ตามคำสั่ง
+
+
+### 3.48 ขั้น7 — รับคำสั่งเผยแพร่และตรวจชุด release 30 ตุลาคม2026
+
+**ขั้น7กำลังเผยแพร่ — 30 ตุลาคม2026:** ผู้ใช้อนุญาต commit/push/deploy เว็บจริงและตรวจหลังเผยแพร่แล้ว โดยไม่เปิด Billing/subscription Targetเดิม xedo/prj_x35WcipWxA767cYwv3f0CXcdyea3/team_CV1O0uIz6BcarAQAOb8soV0I → xedo-eight.vercel.app Rootใช้GitintegrationเดิมหลังตรวจCIและdeployment identity; Supabase schema/registry/สามบัญชีติดตั้งและผ่านขั้น6แล้ว ไม่สร้างบัญชีหรือapplySQLซ้ำ AIยังรันบนCPUในเครื่อง ไม่รันPython/GPUบนVercel
+
+ก่อนแก้ตรวจHEAD09b5e4911675afb9c2889e71bc447588e3474e14/featurebranchcodex/xedo-hardware-profile;fetchoriginแล้วmainและfeatureยังSHAเดียวกัน ไม่ทับงานภายนอก Productionเดิมdpl_6UroUi1UMA9E8uXetDdEsaTphuNXREADY/main09b5e49/node24.x Vercelconnectorยืนยันtargetโดยไม่อ่านenvsecrets BrowserproductionเปิดInspectorเดิมได้โดยไม่ขอรหัสผ่านใหม่ กำลังตรวจeligibleuploadและตัดworkers/tests/docs/db/localQAhelpersจากVercel source upload เพิ่มignoreสำหรับDPAPI/TIFF/model ไม่ใส่privateconfigลงGit ก่อนcommitต้องทดสอบซอฟต์แวร์/buildและบันทึกผลจริง หลังpushจะตรวจCI/ProductionSHA/HTMLhash/realAPI/browser/CPUroundtrip ไม่ใช้ผลขั้น6แทนpostdeployproof
+
+
+**Pre-pushตรวจแล้ว:** Node611pass/0fail/0skip, Python69passหลังเพิ่มidentityconfigและproductionacceptanceofflinecontracts6cases, syntaxและbuildweb/workspace/standaloneผ่านทั้ง3 HTML6207848bytes/SHA2566db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc ไม่รันโมเดล/realjobซ้ำในpreflightนี้ ใช้ผลขั้น6เป็นbaselineแยกจากpostdeployที่จะรันใหม่ .vercelignoreเพิ่มworkers/tests/db/docs/localQAtools; .gitignoreเพิ่มDPAPI/TIFF/model ผู้ใช้ยังไม่ต้องตอบอะไรเพิ่ม บัญชีproductionเดิมเปิดได้ RootจะpushfeatureตรวจCIก่อนfast-forwardmainให้Gitintegrationเดิมdeploy ห้ามforcepush/เปลี่ยนแพ็กเกจ
+
+**ค่าบัญชีเฉพาะเครื่อง:** QAhelpersอ่านignoredlocal-data/live-ai-qualification/account-identities.jsonเพียงprimaryUserId/primaryEmail (ไม่เกิน4KB/validateUUIDและemail/missingfailclosed) ตัวอย่างทดสอบใช้fixtureบัญชีสมมติ ExactAuthUUIDในpublicdocsใช้aliasPRIMARY_INSPECTOR_LOCAL/TEST_INSPECTOR_LOCAL/CPU_WORKER_LOCAL รายละเอียดจริงอยู่privateignoredreceipts ไม่ใช่JWT/ไม่ใช้aliasเรียกAPI Productionไม่มีQAbridgeและไม่ติดตั้งPython/โมเดลเพิ่ม
