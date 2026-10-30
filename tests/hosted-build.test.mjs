@@ -6,7 +6,7 @@ import {pathToFileURL} from 'node:url';
 import {createHash} from 'node:crypto';
 import {runPlannerBoot} from '../src/planner-boot.js';
 import {buildHosted,projectRoot} from '../scripts/hosted-build.mjs';
-import {hostedCacheControl,immutableAssetPath} from '../scripts/static-cache.mjs';
+import {hostedCacheControl,immutableAssetPath,productionAssetCacheSource} from '../scripts/static-cache.mjs';
 
 const parent=resolve(projectRoot,'output');await mkdir(parent,{recursive:true});
 const scratch=await mkdtemp(join(parent,'hosted-build-test-'));
@@ -66,7 +66,7 @@ test('Split browser calculator still computes all four results without a workspa
   assert.equal(result.oil.volumeLowL,10);assert.equal(result.hardwareControl,false);
 });
 
-test('Only content-versioned assets get immutable caching; HTML and APIs revalidate',async()=>{
+test('Only emitted assets get production immutable caching; missing hashed URLs, HTML and APIs revalidate',async()=>{
   assert.match(hostedCacheControl(report.entry),/immutable/);
   for(const path of ['/','/index.html','/assets/logo.png','/api/v1/inspector/me','/assets/../../index.html'])assert.equal(hostedCacheControl(path),'no-cache');
   const config=JSON.parse(await readFile(resolve(projectRoot,'vercel.json'),'utf8'));
@@ -74,8 +74,10 @@ test('Only content-versioned assets get immutable caching; HTML and APIs revalid
   assert.equal(config.headers.find(x=>x.source==='/index.html').headers[0].value,'no-cache');
   const assetRule=config.headers.find(x=>x.source.startsWith('/assets/'));
   assert.equal(assetRule.headers[0].value,hostedCacheControl(report.entry));
+  const all=new Set([...report.emitted,...report.copiedAssets].map(file=>file.url));
+  assert.equal(assetRule.source,productionAssetCacheSource([...all]));
   const productionMatcher=new RegExp('^'+assetRule.source.replace(':file','')+'$');
-  for(const path of [report.entry,report.stylesheet,...report.copiedAssets.map(x=>x.url),'/assets/logo.png','/assets/test-ABCD1234.txt','/assets/nested/image-ABCD1234.png','/api/inspector','/index.html'])assert.equal(productionMatcher.test(path),immutableAssetPath(path),path);
+  for(const path of [...all,'/assets/phase6-nonexistent-123456789abc.js','/assets/chunk-UNKNOWN1.js','/assets/logo.png','/assets/test-ABCD1234.txt','/assets/nested/image-ABCD1234.png','/api/inspector','/index.html'])assert.equal(productionMatcher.test(path),all.has(path),path);
   assert.ok(!config.headers.some(x=>x.source.startsWith('/api')));
 });
 

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedOn": "2026-10-30",
+  "updatedOn": "2026-10-31",
   "timezone": "Asia/Bangkok",
   "numbering": {
     "effectiveOn": "2026-10-27",
@@ -295,7 +295,7 @@
   },
   "currentImplementationScope": {
     "id": "gee-performance-v1-1-phase-6-2026-10-30",
-    "status": "in_progress_prepublication_review",
+    "status": "published_initial_revision_fixing_postdeploy_404_cache",
     "authorizedPhases": [
       6
     ],
@@ -306,7 +306,12 @@
     "schemaChangesPlanned": false,
     "accountChangesPlanned": false,
     "proof": "outputs/XEDO_Performance_Phase6_2026-10-30/primary",
-    "pendingUserInput": "Action-time confirmation for existing Supabase server key in Vercel Production Secret; browser permission policy"
+    "pendingUserInput": null,
+    "cacheSecretApprovedByUser": true,
+    "productionCacheEnvironmentConfigured": true,
+    "initialCommit": "fb484bc28076b5a5d49d407e7377143cf25fbdee",
+    "initialConfiguredDeployment": "dpl_D2aTXfcNyXFAmuBiRsZtB4an2Rhz",
+    "postdeployFinding": "404_missing_hashed_asset_inherited_immutable_header"
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
