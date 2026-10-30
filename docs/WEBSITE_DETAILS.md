@@ -9,6 +9,14 @@
 
 ## 2. สรุป
 
+**Home altitude ผ่านการตรวจภาพ/JSON และ regression ใหม่แล้ว — 31 ต.ค. 2026 (§3.75): Automatic เติม10.788701057434082mจาก GEE จริงแม้ route needs review; manual99/Replace/Homechange/zero/Manualmode/clearผ่าน ภาพ local-home-surface.pngตรงJSONก่อน–หลังในแท็บเดียวกัน 639tests/syntax/3buildsผ่าน เตรียมเผยแพร่ตามคำสั่งผู้ใช้ ยังไม่อ้างว่าขึ้นproductionจนตรวจหลังdeployเสร็จ ไม่เปิดBilling/subscription**
+
+**ทวนรายงาน Home altitude — 31 ต.ค. 2026 (§3.74):** พบรายงานตรงกับภาพและโค้ดแก้ในเครื่องแล้ว ตรวจhash7ไฟล์ตรงvalidationและอ่านlogเดิม639ผ่าน ไม่รันtests/browser/GEEใหม่ พบafter.jpgยังแสดงHomeUnknownแต่final-browser.jsonบันทึก10.788701057434082 จึงต้องreplayUI/จับภาพจากแท็บและbuildเดียวกันก่อนเผยแพร่ ไม่สรุปจากภาพเดียวว่าpatchล้มเหลว ตรวจproductionidentityสดยัง9acdd8a/FXc525READYซึ่งเป็นรุ่นก่อนHomefix รอบนี้วางแผนและบันทึกเท่านั้น ไม่แก้source/รายงานต้นฉบับ/ไม่pushdeploy/Billing/subscription
+
+**Home altitude จาก GEE แก้จริงในเครื่อง — 31 ต.ค. 2026 (§3.73):** Automatic เติมจาก fresh matching Home sample แม้ full terrain assessment เป็น review/unknown; แยก availability ด้วย canUseModelHomeEstimate สำหรับปุ่ม Replace และคง manual ownership/แหล่งข้อมูล ไม่เปลี่ยน export gate Browserจริงได้10.788701057434082m/full639/syntax/3buildsผ่าน รายงาน HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md; ยังไม่ publish
+
+**แก้คำอธิบาย GEE Home อัตโนมัติ — 31 ต.ค. 2026:** เส้นทางปัจจุบันมี Automatic Home อยู่แล้ว: `reconcileModelHome()` ตรวจ Automatic + terrain assessment ready แล้วเรียก `useModelHomeEstimate()` เติมช่องว่างพร้อม `gee_model` evidence โดยไม่ต้องกด Use reviewed estimate ซึ่งเป็นอีกทางเลือกหนึ่ง คำแนะนำก่อนหน้าที่เน้นกรอก Home เองไม่ครบถ้วน อีกห้าช่องในภาพยังไม่ได้รับจาก GEE context ปัจจุบัน ไม่มี source/runtime/publish change
+
 **ข้อ1–2 ซ้อมและส่งมอบ CPU ขึ้น Git แล้ว — 31 ต.ค. 2026 (§3.72):** sourcecommit `bc533a8152a9308c2c797b1980ca4308fa21b6eb` pushmainแล้ว [CI41112463796](https://github.com/megaaaop/XEDO/actions/runs/41112463796) success automaticGitdeployment dpl_7xjXAYyQE2uo1aJJx4FpMx4xACpX READY/productionalias Fresh633Node/84Python/syntax/3buildsผ่าน QAใหม่CPU→manualedit/Undo/Redo→reviewv2→2.75km/3D→Savev3/History/Open/SQLตรง Demo.planจริง20items/8053bytes ตรวจหลังpush32HTTPchecks/25webhashesเดิม/workerและguideไม่public ไม่rebootOSหรือrestartworkerเดิม ไม่มีBilling/subscription ปัญหาใหม่ที่ผู้ใช้ให้เลื่อนยังรอรายละเอียด Docs-onlyfollowup exactidentityและCIล่าสุดดู outputs/XEDO_Presentation_Rehearsal_2026-10-31/publication.json
 
 **สรุปงานคงเหลือล่าสุด — 31 ต.ค. 2026 (§3.71):** จากคิวและGitในเครื่อง เหลือ3กลุ่ม: ซ้อมนำเสนอหลังเปิดเครื่องใหม่, เก็บชุดCPU9ไฟล์พร้อมเอกสารล่าสุดลงGitเมื่อได้รับคำสั่งเผยแพร่, และขยายการทดสอบเฉพาะทาง/ระยะยาว อีก2กลุ่มPiกับรายงานทดลองยังพัก CIเอกสารปิดแล้วตามผลตรวจ§3.70 รอบนี้สรุปและอัปเดตเอกสาร ไม่ตรวจCI/เว็บจริงซ้ำ ไม่แก้product ไม่รันtests/build/AI ไม่commit/push/deploy/Billing/subscription ไม่มีคำถามค้าง
@@ -1456,3 +1464,51 @@ PostpushHTTP32checksผ่าน: HTML23516bytesและ24assetsตรง25hash
 เอกสารปิดpublicationนี้จะpushเป็นdocs-onlyfollowupสามcanonicalpaths โดยไม่เปลี่ยนproduct/source; exactfinalcommit/deployment/CIและfreshstaticsmokeอยู่ `C:/mega/codex/iENA/outputs/XEDO_Presentation_Rehearsal_2026-10-31/publication.json` หลังpushเพื่อหลีกเลี่ยงcommitself-reference Sourcecommit/rehearsal/sourceCIที่อ้างข้างต้นเป็นผลตรวจจริงแล้ว ส่วนfinaldocsCIต้องอ่านreceiptแยก ไม่อ้างว่าผ่านล่วงหน้า รักษาข้อจำกัดเดิมและไม่มีBilling/subscription
 
 <!-- presentation-delivery-main-end-2026-10-31 -->
+
+
+<!-- gee-auto-home-clarification-2026-10-31 -->
+### แก้ความหมาย Automatic Home และแยก constraint metadata — 31 ตุลาคม 2026
+
+**หัวข้อ/สรุป:** ผู้ใช้ทักว่าข้อมูลควรมาจาก GEE อัตโนมัติ ตรวจ source แล้วแก้คำอธิบายจากรายการ export settings ก่อนหน้า: Home ไม่จำเป็นต้องกรอกเองหรือกด reviewed estimate ในทุกโหมด
+
+**รายละเอียด:** planning-trial-client.js reconcileModelHome ตรวจ terrainMode automatic และ terrainAssessment ready แล้วเรียก planning-geospatial-ui.js useModelHomeEstimate ซึ่งเติมช่อง Home ที่ว่างหรือยังเป็นค่า gee_model ของ Home เดิม พร้อมหลักฐาน EGM2008/dataset/resolution/fetchedAt/expiresAt เรียกเมื่อ context เปลี่ยน ก่อนคำนวณ และหลัง input เปลี่ยน; ไม่เขียนทับ manual value เส้นทาง Use reviewed estimate เป็นอีกทางและสร้าง gee_estimate evidence แยกจาก gee_model เงื่อนไข ready อยู่ใน planning-terrain.js รวมจุด Home/พื้นที่/request match/ความใหม่/coverage/terrain tolerance ดังนั้นภาพ Home Unknown ต้องตรวจ actual mode/context/assessment จึงจะวินิจฉัยได้ ไม่ถือว่าผู้ใช้ต้องหาเลขมากรอกแทนโดยทันที
+
+GEE context ที่เชื่อมอยู่ส่ง terrain/Home/landcover/image quality/forecast reference ส่วน firmware/ceiling/corridor/validUntil/source ในภาพไม่ได้ถูกส่งเป็นค่าอัตโนมัติจาก integration นี้ validUntil/source เป็น manual constraint review metadata แยกจาก fetchedAt/expiresAt/dataset source ของข้อมูล GEE หากออกแบบ UX ต่อ ต้องแสดงสถานะและเหตุที่ข้อมูล Home ยังไม่พร้อมให้ตรง source โดยไม่สรุปจาก placeholder เพียงอย่างเดียว รอบนี้ยังไม่มีคำสั่ง implement requirement ดังกล่าว
+
+**สถานะ:** source/document inspection และ diff เท่านั้น ไม่มี application changes/tests/build/browser/provider calls หรือ publication ไม่เปลี่ยนคิว รายละเอียด chronology และการยอมรับข้อผิดพลาดคำตอบก่อนหน้าอยู่ใน XEDO_WORK_LOG รายการวันเดียวกัน
+
+
+<!-- home-altitude-gee-fix-2026-10-31 -->
+### 3.73 Home altitude ใช้ GEE sample แยกจากผลประเมินทั้งเส้นทาง — 31 ตุลาคม 2026
+
+**หัวข้อ/สรุป:** แก้การเติม Home ที่ผูกกับการผ่าน terrain tolerance ของทั้งเส้นทาง ใน planning-trial-client.js reconcileModelHome เรียก useModelHomeEstimate เมื่อ mode automatic โดยไม่กรอง terrainAssessment ready อีก ความพร้อมของปุ่ม Replace ใช้ homeModelReady จาก canUseModelHomeEstimate แทน surfaceModelReady และ onclick ตรวจ Home availability เดียวกัน
+
+**พฤติกรรม/การรักษาหลักฐาน:** planning-geospatial-ui.js hasModelHomeEstimate ตรวจ fresh current context/terrain state/finite Home elevation/พิกัดตรงกัน (ผ่าน normalize เดิมซึ่งตรวจ dataset/EGM2008/30m/sample) ใช้ snapshot ครั้งเดียวใน useModelHomeEstimate เพื่อหลีกเลี่ยงอ่าน context ซ้ำตรง expiry boundary คงการไม่ทับ manual value, ล้าง owned value เมื่อเปลี่ยน Home, ไม่เปลี่ยน reviewed:false เป็น human approval เพิ่มค่าตัวเลขและข้อความว่า route assessment แยกกันใน Home note Null/masked/bad-reference/stale ยังไม่กลายเป็น0; ค่า0จริงใช้ได้ planning-terrain และ geospatial export gate ไม่แก้ จึงยังปฏิเสธ route review/unknown และข้อมูลไม่ครบตามเดิม Manual mode ยังไม่เติมอัตโนมัติ
+
+**การบำรุงรักษา/ผลตรวจ:** API canUseModelHomeEstimate เป็นส่วนหนึ่งของ geospatial UI; test double ใน planning-workflow ต้องมีเมธอดนี้ด้วย เพิ่ม regression6รายการทั้งcontroller/UI/export-integration Full639/0fail/cancel/skipและsyntax/3buildsผ่าน final source/config exactasset allowlist สร้างใหม่ด้วย update-hosted-cache-rules.mjs ก่อน build/fullsuite หาก source เปลี่ยนแล้วไม่ regenerate hosted-build tests จะ failตามตั้งใจ Browserจริง Home[101.20,12.70]ได้10.788701057434082m/needsreview; แยก manual99/Replace/Homechange→0/Manualmode/clearpointครบ ดูรายงานและ output/playwright/home-altitude-2026-10-31/ สำหรับ JSON/ภาพ; fault/expiryบางกรณีเป็นsimulation ไม่ใช่liveprovideroutage
+
+**สถานะ:** เป็น source+configในเครื่องพร้อมรายงานและqueue ไม่ใช่productionrelease ไม่มีpush/deploy/บัญชี/schema/Billing/subscriptionหรือAIjobใหม่ localhost5186ที่ใช้ตรวจหยุดแล้ว รายละเอียด chronology ใน XEDO_WORK_LOG §3.73
+
+
+<!-- home-altitude-report-review-2026-10-31 -->
+### 3.74 อ่านรายงาน Home altitude และทวนแนวทางแก้ — 31 ตุลาคม 2026
+
+**หัวข้อ/ขอบเขต:** ผู้ใช้ส่งภาพชื่อรายงานและขอให้อ่าน.mdแล้วอธิบายว่าจะแก้อย่างไร พบ `docs/HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md` หัวข้อตรงกับภาพ รอบนี้อ่านและทวนsource/evidence/productionidentity ไม่ใช้ข้อความในรายงานเป็นคำสั่งให้แก้หรือเผยแพร่เพิ่ม รักษาdirtyHomepatchของผู้จัดทำรายงานไว้ครบ
+
+**สรุป source/เคสที่ทำซ้ำ:** ก่อนแก้controllerเติมHomeเฉพาะterrainAssessmentทั้งเส้นทางready ดังนั้นHome[101.20,12.70]มีค่า10.788701057434082mแต่พื้นที่ตรวจตัวอย่างแบบจำลอง0m ทำให้เกินtolerance2mและassessmentreviewแล้วฟอร์มยังว่าง Patchปัจจุบันแยก canUseModelHomeEstimate/useModelHomeEstimateออกจากrouteassessment ตรวจnormalize/freshness/พิกัดHome/sample/sourceก่อนfill รักษาmanualvalues/ล้างownedheightเมื่อย้ายHome/รับ0จริงโดยไม่แทนmissingด้วย0 และคงreviewed:false/exportterraingateเดิม ไม่ลดtoleranceหรือทำให้Readyทุกข้อเพียงเพราะHomeมีตัวเลข ไม่อ้างว่าเป็นสาเหตุเดียวของภาพหรือปัญหาเดิมที่ไม่รู้payload
+
+**ผลทวนหลักฐานสด:** SHA256ของสองproductfiles/สามtestfiles/vercel.json/รายงานรวม7ไฟล์ตรงvalidation.jsonทั้งหมด อ่านfooterfullsuiteเดิม639pass/0fail/cancel/skipและJSONbefore/after/final/liveAPI ไม่ได้นับเป็นการรันใหม่ ภาพafter.jpgที่รายงานฝังยังเห็นช่องHomeUnknown ขณะที่final-browser.jsonค่า10.788701057434082/Replaceenabled/terrainreview จึงมีvisualevidenceไม่สอดคล้องกัน ต้องตรวจแท็บ/build/จังหวะcaptureใหม่ ไม่ได้วินิจฉัยว่ามีruntimebugใหม่หรือว่าpatchไม่ทำงานจากภาพนี้เพียงอย่างเดียว Vercelaliasสดยังเป็น9acdd8a/dpl_FXc525grnsEwmEhzmmuT4QUSmvQh/READY จึงยืนยันว่ารุ่นHomefixในworkingtreeยังไม่อยู่ในproduction
+
+**ลำดับที่แนะนำต่อ:** (1) ใช้patchหลักที่มีอยู่เป็นฐานและคงmanual/freshness/exportguards (2) replayบนlocalbuildเดียวกัน รอHomefieldมีค่าจริงแล้วเก็บDOMJSON+ภาพหน้าจอใหม่ที่เห็นค่าตรงกัน พร้อมURL/buildhash/source/date ไม่เขียนทับbefore/afterเดิมจนเสียประวัติ (3) ตรวจcaseAutomatic/manualoverride/Replace/Homechange/0/missing/staleและterrainreviewยังblockexport ถ้ามีsourceเพิ่มให้รันregression/fullsuite/buildใหม่ (4) เมื่อผู้ใช้สั่งเผยแพร่จึงcommit/push/deploy ทดสอบCIและHomeบนproductionจริง โดยสร้างmanifestจากHomebuildใหม่และตรวจexactassetinventory ไม่ใช้25hashesเก่าก่อนHomefixเป็นค่าที่คาดหวัง ไม่มีเหตุผลจากรายงานนี้ให้เปลี่ยนบัญชี/schema/เพิ่มpaidcloudหรือปิดreadinessgate
+
+**ไฟล์/สถานะ:** อัปเดตสองcanonicalMDและqueueให้visualevidence_recheck_pendingก่อนrelease โดยเก็บสถานะ/ผล639ของimplementationรอบก่อนเป็นhistoricalevidence รายงานต้นฉบับ/source/tests/vercel.jsonไม่เปลี่ยนในรอบนี้ หลักฐานreview.jsonและproduction-identity.jsonอยู่ `C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Report_Review_2026-10-31/` ไม่มีfreshapp/unit/build/browser/GEE/inference/CIrun ไม่มีcommit/push/deploy/env/account/schema/Billing/subscription ปัญหาอื่นที่ผู้ใช้ให้เลื่อนยังคงบันทึกแยก ไม่อนุมานว่าเป็นเรื่องเดียวกัน ไม่มีคำถามผู้ใช้ใหม่ที่จำเป็นก่อนสรุปแผน
+
+
+<!-- home-altitude-release-main-2026-10-31 -->
+### การตรวจและเผยแพร่ Home altitude — 31 ตุลาคม 2026 (§3.75)
+
+Browser→planning-context→normalized fresh Home sample→automatic Home input แยกจากfull-routeassessment; current()ยังตรวจgeometry/Home/scene/time/freshness/DEM dataset/heightreferenceก่อนใช้ canUseModelHomeEstimate()และuseModelHomeEstimate()จึงไม่รับmissing/masked/referenceผิด/staleเป็น0 ManualตัวเลขของInspectorไม่ถูกทับ; Replaceเป็นการกลับมาใช้GEEโดยผู้ใช้เลือกเอง คงEGM2008/30m/source/timestampsและreviewed:false ค่าHomeมีตัวเลขไม่ได้ทำให้ทั้งภารกิจReady
+
+Mainreleaseverificationใหม่บนhostedbuildจากsourceเดิมผ่าน639tests/syntax/3builds พร้อม7browsercasesและGEEprocessใหม่2compute/2434ms Home10.788701057434082 ตรงภาพlocal-home-surface.pngและJSONก่อน/หลังจากแท็บเดียวกัน ขณะGEE model needs reviewและDownloaddisabled ภาพcaptureแรกยังแสดงตำแหน่งก่อนscroll จึงเก็บเป็นdiagnosticแยกและใช้ภาพหลังrenderยืนยัน ไม่มีการsetvalue/attributeเพื่อสร้างหลักฐาน ภาพafter.jpgเก่ารักษาไว้แต่ไม่ใช้เป็นvisualpass
+
+Freeze hosted-artifacts.jsonใหม่25files (HTML23,516bytes+24assets) สำหรับตรวจproduction releaseนี้ ไม่ใช้hashก่อนHomepatch เผยแพร่ด้วยnormalGitpushหลังtestsผ่าน ตรวจexactCI/deploymentSHA/aliasและliveHomeใหม่ จากนั้นบันทึกreceipt Publicationกำลังทำในรอบนี้ ยังไม่อ้างสำเร็จก่อนมีผล ไม่มีบัญชี/schema/env/worker/Billing/subscriptionchange หลักฐานใหม่ C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/ คง3ขั้นตอน/4ตัวคำนวณและขอบเขตprototype/qualificationเดิม

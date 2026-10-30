@@ -154,7 +154,9 @@ function syncScheduleFields(patch){
 function terrainMode(){return $('#trial-terrain-mode').value==='manual'?'manual':'automatic';}
 function terrainAssessment(){return geospatialUI?.getTerrainAssessment({toleranceM:Number($('#trial-terrain-tolerance').value)})||{mode:'gee_model',state:'unknown',label:'GEE samples unavailable',reasons:['GEE surface samples are not available.']};}
 function reconcileModelHome(){
-  if(terrainMode()==='automatic'&&terrainAssessment().state==='ready')geospatialUI?.useModelHomeEstimate();
+  // A known Home elevation does not depend on the whole route being level.
+  // The separate terrain assessment still gates the export.
+  if(terrainMode()==='automatic')geospatialUI?.useModelHomeEstimate();
 }
 function readinessState(){
   const f=read('flight'),hasHome=Number.isFinite(f.homeLongitude)&&Number.isFinite(f.homeLatitude),selected=hasHome&&$('#export-home-confirmed').checked&&!selectHome;
@@ -176,7 +178,7 @@ function readinessState(){
     if(checks.length>3)blockers.push((checks.length-3)+' more checks in Calculation details.');
   }
   if(riskUI?.blocked())blockers.push('Confirm the current Inspector risk area before planning or downloading.');
-  return {rows,canExport:!riskUI?.blocked()&&!!result?.exportCheck?.pass&&rows.every(row=>row.state==='ready'),blockingReasons:[...new Set(blockers)],working,surfaceModelReady:assessment.state==='ready'};
+  return {rows,canExport:!riskUI?.blocked()&&!!result?.exportCheck?.pass&&rows.every(row=>row.state==='ready'),blockingReasons:[...new Set(blockers)],working,homeModelReady:geospatialUI?.canUseModelHomeEstimate()===true};
 }
 const readinessNodes=Object.create(null);
 const readinessNode=id=>readinessNodes[id]??=(document.querySelector('#'+id));
@@ -191,7 +193,7 @@ function renderReadiness(){
   const automatic=terrainMode()==='automatic';
   set('trial-flat-manual','hidden',automatic);set('trial-terrain-tolerance-label','hidden',!automatic);
   set('trial-terrain-use-model','hidden',!automatic);
-  set('trial-terrain-use-model','disabled',working||!state.surfaceModelReady);
+  set('trial-terrain-use-model','disabled',working||!state.homeModelReady);
   text('trial-terrain-status',state.rows[2].detail);
   const timing=schedule.getState();
   text('trial-schedule-summary',timing.mode==='automatic'&&!timing.pending?'Takeoff: analysis + 1 hour · '+number(timing.windowDurationS/60,1)+' min mission window':'');
@@ -438,7 +440,7 @@ function chooseHome(){
 $('#trial-home').onclick=chooseHome;$('#trial-home-pick').onclick=chooseHome;
 $('#trial-home-cancel').onclick=()=>{selectHome=false;renderReadiness();announce('Point selection cancelled.');};
 $('#trial-terrain-use-model').onclick=()=>{
-  if(working||terrainMode()!=='automatic'||terrainAssessment().state!=='ready')return;
+  if(working||terrainMode()!=='automatic'||!geospatialUI?.canUseModelHomeEstimate())return;
   geospatialUI?.revokeHomeEstimate();field('export','homeAmslM').value='';
   geospatialUI?.useModelHomeEstimate();resetReview();invalidate();
 };

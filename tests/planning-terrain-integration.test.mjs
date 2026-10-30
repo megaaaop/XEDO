@@ -81,6 +81,18 @@ function assertIndependentEngines(result){
   assert.equal(result.releaseControl,false);
 }
 
+test('Filling a known Home altitude above the inspection surface does not approve an uneven model export',async()=>{
+ const {input,report,now}=await fixture();
+ const homeSample=report.terrain.samples.find(s=>samePoint([s.longitude,s.latitude],input.flight.home));
+ assert.ok(homeSample);homeSample.elevationM=27;report.terrain.homeElevationM=27;
+ bindModel(input,report,now);
+ assert.equal(input.export.homeAmslM,27);assert.equal(input.export.terrainAssessment.state,'review');
+ const result=await calculate(input);assert.equal(result.flight.plan.status,'generated');
+ assert.equal(result.exportCheck.pass,false);assert.equal(result.exportCheck.canExport,false);
+ assert.ok(result.exportCheck.checks.some(check=>check.id==='terrain-model-evidence'&&check.state==='incomplete'));
+ await assert.rejects(file(input),error=>error.code==='TRIAL_CHECKS_INCOMPLETE');
+});
+
 test('Estimated-demo coordinator composes all four engines with real route samples and downloads a matching model-based QGC file',async()=>{
   const {input,report}=await fixture(),before=clone(input),result=await calculate(input);
   assert.deepEqual(input,before);

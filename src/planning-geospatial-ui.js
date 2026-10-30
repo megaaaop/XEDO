@@ -155,7 +155,7 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
     const homeReady=terrain?.state==='ready'&&elevation(terrain.homeElevationM)&&same(report.request.home,context.payload.home)&&pair(context.payload.home)&&Date.parse(state.expiresAt)>now();
     review.disabled=!homeReady;accept.disabled=!homeReady||!review.checked;refresh.disabled=state.status==='loading'||!!context.blocked;
     refresh.textContent=state.status==='loading'?'Loading GEE data…':'Refresh GEE data';refresh.dataset.actionBusy=String(state.status==='loading');
-    hint.textContent=accepted?.mode==='gee_model'?'GEE model estimate retained for this Home · EGM2008. Actual launch level and flight clearance are not verified.':accepted?'Reviewed estimate retained for this Home position. Other export checks still require review.':'30 m DSM · EGM2008 estimate. Confirm the actual launch level and compatible height reference.';
+    hint.textContent=accepted?.mode==='gee_model'?'GEE model estimate retained for this Home: '+format(accepted.valueM,' m')+' · EGM2008. Route terrain assessment remains separate; actual launch level and flight clearance are not verified.':accepted?'Reviewed estimate retained for this Home position. Other export checks still require review.':'30 m DSM · EGM2008 estimate. Confirm the actual launch level and compatible height reference.';
     const lines=[];
     if(report){lines.push('Checked: '+displayTime(report.fetchedAt),'Context expires: '+displayTime(report.expiresAt),'GEE model sample completeness: '+assessment.coverage.known+'/'+assessment.coverage.total+'; this is not continuous area coverage.',...assessment.reasons);
       if(terrain)lines.push('Surface model: '+(terrain.datasetId||'Unknown')+' · '+format(terrain.resolutionM,' m')+' · '+(terrain.verticalDatum||'Height reference unknown'));
@@ -212,9 +212,14 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
   }
   function getContext(){const data=current();if(data?.terrain?.state!=='ready')return null;return {state:'connected',provider:'Google Earth Engine',samples:clone(data.terrain.samples),datasets:[{id:data.terrain.datasetId,label:'Copernicus surface elevation estimate',resolutionM:data.terrain.resolutionM,verticalDatum:data.terrain.verticalDatum}],sampledAt:data.fetchedAt,expiresAt:data.expiresAt,geometry:clone(data.request.geometry),warnings:warningList(data.terrain.warnings)};}
   function getTerrainAssessment({toleranceM=2}={}){const data=current(),context=mission();return terrainAssessment(data,context,toleranceM);}
+  function hasModelHomeEstimate(data,home){
+    const t=data?.terrain;
+    return t?.state==='ready'&&elevation(t.homeElevationM)&&pair(home)&&same(home,data.request.home);
+  }
+  function canUseModelHomeEstimate(){return hasModelHomeEstimate(current(),mission().payload.home);}
   function useModelHomeEstimate(){
     const data=current(),home=mission().payload.home,t=data?.terrain;reconcileHome();
-    if(t?.state!=='ready'||!elevation(t.homeElevationM)||!pair(home)||!same(home,data.request.home))return false;
+    if(!hasModelHomeEstimate(data,home))return false;
     if(homeField.value!==''&&!(accepted?.mode==='gee_model'&&homeField.value===accepted.fieldValue&&same(home,accepted.home)))return false;
     if(accepted?.mode==='gee_model'&&accepted.valueM===t.homeElevationM&&accepted.fetchedAt===data.fetchedAt)return true;
     homeField.value=String(t.homeElevationM);accepted={mode:'gee_model',reviewed:false,home:clone(home),valueM:t.homeElevationM,verticalDatum:'EGM2008',datasetId:DEM,resolutionM:30,acceptedAt:new Date(now()).toISOString(),fetchedAt:data.fetchedAt,expiresAt:data.expiresAt,fieldValue:homeField.value};review.checked=false;render();notify('home-model');return true;
@@ -233,5 +238,5 @@ export function initializePlanningGeospatialUI({root=document,localFile=false,ge
   opener.onclick=()=>{$('#trial-settings-dialog').showModal();panel.scrollIntoView({block:'start'});};
   const visibility=()=>changed(),connectivity=()=>changed();root.addEventListener('visibilitychange',visibility);globalThis.addEventListener('online',connectivity);globalThis.addEventListener('offline',connectivity);
   changed();
-  return {changed,getContext,getPatch,getTerrainAssessment,useModelHomeEstimate,revokeHomeEstimate,getStatus(){current();return state.status;},getState(){current();return {...clone(state),progress:clone(requestProgress),response:clone(response)};},refresh:refreshContext,dispose(){if(disposed)return;disposed=true;cancel();response=null;cache.clear();root.removeEventListener('visibilitychange',visibility);globalThis.removeEventListener('online',connectivity);globalThis.removeEventListener('offline',connectivity);}};
+  return {changed,getContext,getPatch,getTerrainAssessment,canUseModelHomeEstimate,useModelHomeEstimate,revokeHomeEstimate,getStatus(){current();return state.status;},getState(){current();return {...clone(state),progress:clone(requestProgress),response:clone(response)};},refresh:refreshContext,dispose(){if(disposed)return;disposed=true;cancel();response=null;cache.clear();root.removeEventListener('visibilitychange',visibility);globalThis.removeEventListener('online',connectivity);globalThis.removeEventListener('offline',connectivity);}};
 }

@@ -5,20 +5,28 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **31 ตุลาคม 2026 — กลุ่ม1–2ซ้อม/CPU Gitdeliveryเผยแพร่และCIผ่าน; ปัญหาใหม่รอรายละเอียดตามที่ให้เลื่อน; ไม่เปิดBilling/subscription**
+- อัปเดตล่าสุด: **31 ตุลาคม 2026 — ตรวจ Home altitude ภาพ/JSON ตรงกันและ tests ผ่าน เตรียม release ตามคำสั่งล่าสุด**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
-- จุดประสงค์รอบนี้: ทดสอบflowก่อนนำเสนอและส่งมอบชุดCPU9ไฟล์พร้อมเอกสารในGit/pushตามที่อนุมัติ
-- สถานะเผยแพร่: sourcebc533a8/CI41112463796success/automaticProduction7xjREADY/32HTTPchecksผ่าน; finaldocs-onlyidentityดูpublication.jsonของ§3.72
-- **ขอบเขตคำสั่งล่าสุด:** อนุมัติกลุ่ม1–2/ทดสอบ/เก็บCPUและเอกสารลงGit/push ไม่เปิดBilling/subscription; เลื่อนปัญหาใหม่ไปแก้เมื่อมีรายละเอียด
+- จุดประสงค์รอบนี้: ทำข้อ1–4 ตรวจภาพ/JSON regression เอกสาร และ push/deploy เมื่อผ่าน
+- สถานะเผยแพร่: local verification ผ่านแล้ว; กำลังเตรียมcommit/push และตรวจproductionใหม่ ผลจริงจะบันทึกใน§3.75และpublication.json
+- **ขอบเขตคำสั่งล่าสุด:** อนุญาตHome repairข้อ1–4 ทดสอบ บันทึกสองMD และpush/deployเมื่อผ่าน; ห้ามBilling/subscription
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
 
 **กติกาเพิ่ม 27 ต.ค.:** งานแก้/ตรวจเว็บไซต์ลักษณะนี้ต้องบันทึกสองที่: ไฟล์นี้เก็บประวัติ ผลตรวจ และการเผยแพร่; `docs/WEBSITE_DETAILS.md` เก็บโครงสร้าง พฤติกรรม dependency และรายละเอียดวิธีแก้ อัปเดตทั้งสองก่อนจบรอบ และรักษาคิว JSON ให้ตรงกัน
 
 ## 2. สรุป
+
+**Home altitude ผ่านการตรวจภาพ/JSON และ regression ใหม่แล้ว — 31 ต.ค. 2026 (§3.75): Automatic เติม10.788701057434082mจาก GEE จริงแม้ route needs review; manual99/Replace/Homechange/zero/Manualmode/clearผ่าน ภาพ local-home-surface.pngตรงJSONก่อน–หลังในแท็บเดียวกัน 639tests/syntax/3buildsผ่าน เตรียมเผยแพร่ตามคำสั่งผู้ใช้ ยังไม่อ้างว่าขึ้นproductionจนตรวจหลังdeployเสร็จ ไม่เปิดBilling/subscription**
+
+**ทวนรายงาน Home altitude — 31 ต.ค. 2026 (§3.74):** พบรายงานตรงกับภาพและโค้ดแก้ในเครื่องแล้ว ตรวจhash7ไฟล์ตรงvalidationและอ่านlogเดิม639ผ่าน ไม่รันtests/browser/GEEใหม่ พบafter.jpgยังแสดงHomeUnknownแต่final-browser.jsonบันทึก10.788701057434082 จึงต้องreplayUI/จับภาพจากแท็บและbuildเดียวกันก่อนเผยแพร่ ไม่สรุปจากภาพเดียวว่าpatchล้มเหลว ตรวจproductionidentityสดยัง9acdd8a/FXc525READYซึ่งเป็นรุ่นก่อนHomefix รอบนี้วางแผนและบันทึกเท่านั้น ไม่แก้source/รายงานต้นฉบับ/ไม่pushdeploy/Billing/subscription
+
+**Home altitude แก้และตรวจจริงในเครื่องแล้ว — 31 ต.ค. 2026 (§3.73):** ทำซ้ำ GEE มี Home 10.79m แต่ฟอร์มว่างเพราะผูกการเติมกับ terrain assessment ready แก้แยก Home sample จากความพร้อมทั้งเส้นทางแล้ว Browser build สุดท้ายเติม 10.788701057434082m อัตโนมัติแม้ terrain review; manual99/Replace/ย้าย Home→0/ล้างจุด/Manual mode ผ่าน Full639ผ่าน (0fail/cancel/skip), syntax/3buildsผ่าน รายงาน HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md พร้อมหลักฐาน ไม่เปลี่ยน flight gate/บัญชี/schema/Billing ไม่มีคำถามใหม่รอคำตอบ ยังไม่ commit/push/deploy
+
+**แก้คำอธิบายการเติม Home จาก GEE — 31 ต.ค. 2026:** ผู้ใช้ทักว่าควรดึงอัตโนมัติ ตรวจ source ยืนยัน `reconcileModelHome()` เรียก `useModelHomeEstimate()` ในโหมด Automatic เมื่อ terrain assessment ready จึงไม่ควรแนะนำให้กรอก Home เองเป็นทางหลักตามคำตอบก่อนหน้า ส่วน firmware/ceiling/corridor/constraint validity/source ยังไม่ได้รับจาก GEE context ใน integration ปัจจุบัน ภาพเพียงอย่างเดียวยังไม่บอกเหตุที่ Home เป็น Unknown รอบนี้ตรวจ source/แก้คำอธิบายเอกสารเท่านั้น ไม่แก้เว็บหรือทดสอบ runtime/เผยแพร่ ไม่เปลี่ยนคิว
 
 **ข้อ1–2 ซ้อมและส่งมอบ CPU ขึ้น Git แล้ว — 31 ต.ค. 2026 (§3.72):** sourcecommit `bc533a8152a9308c2c797b1980ca4308fa21b6eb` pushmainแล้ว [CI41112463796](https://github.com/megaaaop/XEDO/actions/runs/41112463796) success automaticGitdeployment dpl_7xjXAYyQE2uo1aJJx4FpMx4xACpX READY/productionalias Fresh633Node/84Python/syntax/3buildsผ่าน QAใหม่CPU→manualedit/Undo/Redo→reviewv2→2.75km/3D→Savev3/History/Open/SQLตรง Demo.planจริง20items/8053bytes ตรวจหลังpush32HTTPchecks/25webhashesเดิม/workerและguideไม่public ไม่rebootOSหรือrestartworkerเดิม ไม่มีBilling/subscription ปัญหาใหม่ที่ผู้ใช้ให้เลื่อนยังรอรายละเอียด Docs-onlyfollowup exactidentityและCIล่าสุดดู outputs/XEDO_Presentation_Rehearsal_2026-10-31/publication.json
 
@@ -2031,3 +2039,59 @@ PostpushHTTP32checksผ่าน: HTML23516bytesและ24assetsตรง25hash
 เอกสารปิดpublicationนี้จะpushเป็นdocs-onlyfollowupสามcanonicalpaths โดยไม่เปลี่ยนproduct/source; exactfinalcommit/deployment/CIและfreshstaticsmokeอยู่ `C:/mega/codex/iENA/outputs/XEDO_Presentation_Rehearsal_2026-10-31/publication.json` หลังpushเพื่อหลีกเลี่ยงcommitself-reference Sourcecommit/rehearsal/sourceCIที่อ้างข้างต้นเป็นผลตรวจจริงแล้ว ส่วนfinaldocsCIต้องอ่านreceiptแยก ไม่อ้างว่าผ่านล่วงหน้า รักษาข้อจำกัดเดิมและไม่มีBilling/subscription
 
 <!-- presentation-delivery-main-end-2026-10-31 -->
+
+
+<!-- gee-auto-home-clarification-2026-10-31 -->
+### แก้คำอธิบาย Home อัตโนมัติหลังผู้ใช้ทัก — 31 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้ถามว่าข้อมูลควรถูกดึงอัตโนมัติจาก Google Earth Engine หรือไม่ เป็นการชี้แจงพฤติกรรมเดิม ยังไม่ได้สั่งเปลี่ยน implementation
+
+**สรุป:** คำตอบก่อนหน้าอ่านเฉพาะทาง manual reviewed estimate และอธิบายกว้างเกินไป ต้องแก้ว่า Home altitude มีทางเติมจาก GEE อัตโนมัติอยู่แล้ว ตรวจ checkout HEAD 9acdd8a/Git clean ก่อนแก้เอกสาร ไม่ใช้ HEAD a767faf จากรอบก่อนเป็นสถานะปัจจุบัน
+
+**รายละเอียด/หลักฐาน:** src/planning-trial-client.js:154–158 นิยาม Automatic mode และ reconcileModelHome; เรียกก่อนคำนวณ ที่ semantic input change และ onChange ของ geospatialUI (ประมาณ 284/413/748) เมื่อ terrain assessment ready จะเรียก useModelHomeEstimate โดยอัตโนมัติ src/planning-geospatial-ui.js:215–220 เติม homeField จาก terrain.homeElevationM และแนบ mode gee_model/fetchedAt/expiresAt/reference โดยไม่เขียนทับค่าที่ผู้ใช้กรอกเอง ฟังก์ชัน accept.onclick/Use reviewed estimate เป็นทางแยก ไม่ใช่ข้อบังคับของ automatic model path src/planning-terrain.js ประเมิน Home/พื้นที่/ความใหม่/coverage/terrain tolerance ก่อน ready หากเลือก Home แล้วแต่ยัง Unknown ต้องดู state ของ context/assessment และโหมดก่อนสรุปสาเหตุ ภาพเดิมไม่พิสูจน์ว่าเป็นบั๊กหรือ GEE outage
+
+**ขอบเขตข้อมูล:** integration ปัจจุบันให้ terrain/Home, landcover, image quality และ forecast reference; firmware เป็น aircraft target, ceiling/corridor เป็น manual planning constraints และ validUntil/source ในภาพเป็น constraint review metadata ยังไม่ถูกเติมจาก GEE การหมดอายุของ GEE context/home model evidence เป็นอีกข้อมูลหนึ่ง ไม่ควรนำมาแทน validUntil ของ manual constraints โดยอัตโนมัติ ไม่มีการยืนยันข้อจำกัดการบินจากการได้ข้อมูลดาวเทียม
+
+**ไฟล์/ผลตรวจ/สถานะ:** แก้เฉพาะ docs/XEDO_WORK_LOG.md และ docs/WEBSITE_DETAILS.md เพื่อแก้ความเข้าใจเดิม ไม่แก้ queue เพราะไม่มี requirement/status ใหม่และ unansweredDecisions ยังว่าง รักษาปัญหาอื่นที่ผู้ใช้เลื่อนไว้ในบันทึกก่อนหน้า รอบนี้ source inspection/document diff เท่านั้น ไม่มี app tests/build/browser/provider/runtime/flight หรือ commit/push/deploy ใหม่ ไม่อ้างผลเก่าเป็น fresh result
+
+
+<!-- home-altitude-gee-fix-2026-10-31 -->
+### 3.73 แก้ Home altitude อัตโนมัติและรายงานผล — 31 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้สั่งตรวจและแก้ Home altitude ที่ยัง Unknown ให้ดึง GEE อัตโนมัติได้จริง พร้อมรายงาน .md งานนี้เป็นการอนุมัติ repair ในเครื่อง ไม่ใช้สิทธิ์ publish จากการส่งมอบ CPU รอบก่อน
+
+**สรุป:** ยืนยันบั๊กใน Chrome ก่อนแก้: พื้นที่ทะเล [101.220–101.222,12.620–12.621], Home [101.20,12.70], GEE panel10.79m/terrain review แต่ export Home ว่าง สาเหตุ reconcileModelHome ผูกกับ assessment ready แก้ให้เลือก Home sample ที่มีข้อมูลได้แยกจาก flatness/coverage ของทั้งเส้นทาง ปุ่ม Replace ใช้ความพร้อม Home โดยเฉพาะ เก็บ reviewed:false/manual ownership/แหล่งข้อมูลเดิม สร้าง docs/HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md แล้ว
+
+**ไฟล์ที่แก้:** src/planning-trial-client.js, src/planning-geospatial-ui.js, tests/planning-workflow.test.mjs, tests/planning-geospatial-ui.test.mjs, tests/planning-terrain-integration.test.mjs, vercel.json (regenerated exact asset inventory), canonical MD สองไฟล์, queue JSON และรายงาน ไม่แก้ planning-terrain.js หรือ planning-geospatial-gate.js; เก็บการแก้เอกสารจาก turn ก่อนหน้าที่มีอยู่ก่อนรอบนี้ไว้ครบ ฐาน source9acdd8a
+
+**หลักฐาน/ผลรันใหม่:** Full suite639ผ่าน/0fail/cancel/skip, npm run check/hosted/workspace/portable build ผ่าน Focused92ผ่านก่อน helper cleanup และ full สุดท้ายครอบคลุม source ล่าสุด Negative regression ที่จำลอง gate เดิมไม่ผ่านตามคาด (copies0แทน1) เก็บ initial fullfail จาก test-double API และ stale asset inventory ไว้แยก ไม่อ้างเป็นผลผ่าน Nodeprocessใหม่อ่าน GEE จริง2compute/1521ms/Home10.788701057434082/assessmentreview Browserหลัง reload build สุดท้ายใส่ค่าเดียวกันโดยไม่กรอก altitude และปุ่ม Replace ใช้ได้ พร้อมคง terrain needs review/Download disabled ทดสอบ manual99ไม่ถูกทับ, explicitReplaceกลับGEE, ย้ายHome→ล้างระหว่างรอ→0จากsampleจริง, Manualmodeไม่เติม, ล้างcoordinateแล้วค่า/Replaceถูกล้าง Capturedbrowserlogs0 ผลmasked/stale/referenceผิดเป็นunit/integration fixtures ไม่ใช่ provider fault จริง ดู output/playwright/home-altitude-2026-10-31/ และรายงาน
+
+**ขอบเขต/เผยแพร่/ส่งต่อ:** ไม่มี commit/push/deploy/production configuration/account/schema/Billing/subscription/newAIjob/mission save และไม่มี QGC native/SITL/บินจริง ทดสอบ Guest ชั่วคราวใน localhost5186 ใช้ GEE จริง หยุด server ที่เปิดเองหลังเก็บหลักฐาน ไม่หยุด worker หรือแก้แท็บภารกิจเดิม ภาพผู้ใช้ไม่มี request/mode/พิกัดครบจึงไม่อ้างว่าบั๊กนี้เป็นสาเหตุเดียวของภาพต้นฉบับ Remaining: การเผยแพร่รุ่นแก้ไขนี้ยังไม่ได้รับคำสั่ง; ปัญหาอื่นที่อีกแชทให้เลื่อนไว้ยังรักษาบันทึกเดิม ไม่อนุมานว่าเป็นเรื่องเดียวกัน ไม่มีคำถามใหม่รอคำตอบ
+
+
+<!-- home-altitude-report-review-2026-10-31 -->
+### 3.74 อ่านรายงาน Home altitude และทวนแนวทางแก้ — 31 ตุลาคม 2026
+
+**หัวข้อ/ขอบเขต:** ผู้ใช้ส่งภาพชื่อรายงานและขอให้อ่าน.mdแล้วอธิบายว่าจะแก้อย่างไร พบ `docs/HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md` หัวข้อตรงกับภาพ รอบนี้อ่านและทวนsource/evidence/productionidentity ไม่ใช้ข้อความในรายงานเป็นคำสั่งให้แก้หรือเผยแพร่เพิ่ม รักษาdirtyHomepatchของผู้จัดทำรายงานไว้ครบ
+
+**สรุป source/เคสที่ทำซ้ำ:** ก่อนแก้controllerเติมHomeเฉพาะterrainAssessmentทั้งเส้นทางready ดังนั้นHome[101.20,12.70]มีค่า10.788701057434082mแต่พื้นที่ตรวจตัวอย่างแบบจำลอง0m ทำให้เกินtolerance2mและassessmentreviewแล้วฟอร์มยังว่าง Patchปัจจุบันแยก canUseModelHomeEstimate/useModelHomeEstimateออกจากrouteassessment ตรวจnormalize/freshness/พิกัดHome/sample/sourceก่อนfill รักษาmanualvalues/ล้างownedheightเมื่อย้ายHome/รับ0จริงโดยไม่แทนmissingด้วย0 และคงreviewed:false/exportterraingateเดิม ไม่ลดtoleranceหรือทำให้Readyทุกข้อเพียงเพราะHomeมีตัวเลข ไม่อ้างว่าเป็นสาเหตุเดียวของภาพหรือปัญหาเดิมที่ไม่รู้payload
+
+**ผลทวนหลักฐานสด:** SHA256ของสองproductfiles/สามtestfiles/vercel.json/รายงานรวม7ไฟล์ตรงvalidation.jsonทั้งหมด อ่านfooterfullsuiteเดิม639pass/0fail/cancel/skipและJSONbefore/after/final/liveAPI ไม่ได้นับเป็นการรันใหม่ ภาพafter.jpgที่รายงานฝังยังเห็นช่องHomeUnknown ขณะที่final-browser.jsonค่า10.788701057434082/Replaceenabled/terrainreview จึงมีvisualevidenceไม่สอดคล้องกัน ต้องตรวจแท็บ/build/จังหวะcaptureใหม่ ไม่ได้วินิจฉัยว่ามีruntimebugใหม่หรือว่าpatchไม่ทำงานจากภาพนี้เพียงอย่างเดียว Vercelaliasสดยังเป็น9acdd8a/dpl_FXc525grnsEwmEhzmmuT4QUSmvQh/READY จึงยืนยันว่ารุ่นHomefixในworkingtreeยังไม่อยู่ในproduction
+
+**ลำดับที่แนะนำต่อ:** (1) ใช้patchหลักที่มีอยู่เป็นฐานและคงmanual/freshness/exportguards (2) replayบนlocalbuildเดียวกัน รอHomefieldมีค่าจริงแล้วเก็บDOMJSON+ภาพหน้าจอใหม่ที่เห็นค่าตรงกัน พร้อมURL/buildhash/source/date ไม่เขียนทับbefore/afterเดิมจนเสียประวัติ (3) ตรวจcaseAutomatic/manualoverride/Replace/Homechange/0/missing/staleและterrainreviewยังblockexport ถ้ามีsourceเพิ่มให้รันregression/fullsuite/buildใหม่ (4) เมื่อผู้ใช้สั่งเผยแพร่จึงcommit/push/deploy ทดสอบCIและHomeบนproductionจริง โดยสร้างmanifestจากHomebuildใหม่และตรวจexactassetinventory ไม่ใช้25hashesเก่าก่อนHomefixเป็นค่าที่คาดหวัง ไม่มีเหตุผลจากรายงานนี้ให้เปลี่ยนบัญชี/schema/เพิ่มpaidcloudหรือปิดreadinessgate
+
+**ไฟล์/สถานะ:** อัปเดตสองcanonicalMDและqueueให้visualevidence_recheck_pendingก่อนrelease โดยเก็บสถานะ/ผล639ของimplementationรอบก่อนเป็นhistoricalevidence รายงานต้นฉบับ/source/tests/vercel.jsonไม่เปลี่ยนในรอบนี้ หลักฐานreview.jsonและproduction-identity.jsonอยู่ `C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Report_Review_2026-10-31/` ไม่มีfreshapp/unit/build/browser/GEE/inference/CIrun ไม่มีcommit/push/deploy/env/account/schema/Billing/subscription ปัญหาอื่นที่ผู้ใช้ให้เลื่อนยังคงบันทึกแยก ไม่อนุมานว่าเป็นเรื่องเดียวกัน ไม่มีคำถามผู้ใช้ใหม่ที่จำเป็นก่อนสรุปแผน
+
+
+<!-- home-altitude-release-main-2026-10-31 -->
+### 3.75 ตรวจ Home altitude ให้ภาพ/JSON ตรงกันและเผยแพร่รุ่นแก้ — 31 ตุลาคม 2026
+
+**หัวข้อ/ขอบเขต:** ผู้ใช้อนุญาตข้อ1–4 ตรวจ Home altitude ทั้งภาพหน้าจอ/JSON ทดสอบครบ บันทึกสองMD และpush/deployได้เมื่อผ่าน ไม่เปิดBillingหรือsubscription รับpatchของรายงานเป็นฐาน ไม่สร้างงานAI/missionใหม่ ไม่แตะบัญชี/schema/env/workerหรือปัญหาอื่นที่ให้เลื่อนไว้
+
+**ผลใหม่ในรอบนี้:** npm test -- --test-concurrency=4 ผ่าน639/0fail/cancel/skip (15.684s); npm run check และ hosted/workspace/portable builds ผ่านทั้งสาม เรียก GEE จากprocessใหม่ด้วยenvironmentเดิม ไม่ใช้context cache ได้Home[101.20,12.70]=10.788701057434082m,2compute/2434ms,assessmentreview Chrome Guest buildใหม่ที่127.0.0.1:5187 พื้นที่[101.220–101.222,12.620–12.621]มีค่าHomeตรงกันในDOM/nativeAX/ภาพใหม่ local-home-surface.png โดยอ่านJSONก่อน/หลังcaptureค่าคงเดิม; reviewedfalse,needsreview,Downloadmissiondisabled ทดสอบmanual99→Refreshคง99,explicitReplaceกลับGEE,เปลี่ยนHome12.65→ล้างระหว่างรอ→0จากGEEจริง,Manualmodeemptyrefreshคงempty,ล้างlongitude→empty/Replaceปิด ได้capturedwarn/error0 กรณีmasked/stale/referenceผิด/negativeheightเป็นfixtureในsuite ไม่อ้างเป็นprovideroutageจริง
+
+**การตรวจภาพที่เคยขัดกัน:** จับภาพทันทีหลังfocus/scrollครั้งแรกพบภาพก่อนตำแหน่งปัจจุบันแม้AX/DOMเป็นค่าใหม่; เมื่อcaptureถัดไปหลังหน้าเว็บวาดเสร็จเห็น10.788701057434082ตรงกัน เก็บทั้งภาพแรกและภาพยืนยัน ไม่แก้DOM/attributeเพื่อทำภาพ ไม่ยืนยันว่าความหน่วงcaptureนี้เป็นสาเหตุเดียวของafter.jpgเก่า ภาพเก่าอยู่เป็นhistoricaldiscrepancy ห้ามใช้เป็นvisualpass
+
+**การแก้/คงพฤติกรรม:** source2ไฟล์แยกHomeavailabilityจากrouteassessment ปุ่มReplaceใช้Home-onlyavailability; test3ไฟล์เพิ่ม6regressions และvercel.jsonexactassetinventoryสอดคล้องbuild ไม่ลดtolerance2m/ไม่เปลี่ยนplanning-terrain.jsหรือplanning-geospatial-gate.js คง3ขั้นตอน/4ตัวคำนวณ/manualownership/freshness/dataset/EGM2008/30m/reviewedfalse ไม่มีsourcefixเพิ่มในmainturnเพราะpatchเดิมผ่านการreplayแล้ว
+
+**หลักฐาน/ข้อจำกัด/สถานะ:** หลักฐานใหม่อยู่ C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/ มีtests.log,syntax.log,build3logs,hosted-artifacts.jsonใหม่25files,local-browser-cases.json,local-matched-proof.json,live-gee.json และภาพจริง เก็บlive-gee-missing-env.jsonแยกจากhelperครั้งแรกที่ลืมโหลด.env (not_configured/0compute) แล้วแก้คำสั่งรันด้วย--env-file-if-exists=.env ไม่แก้productหรือcredentials ไม่มีnewCPU/AI/privateaccountqualification/QGCnative/SITL/บินจริงรอบนี้ ไม่มีคำถามรอคำตอบ Pending publication: commit/push/CI/deploy/liveHome acceptanceกำลังทำและจะเติมผลจริงก่อนปิดงาน

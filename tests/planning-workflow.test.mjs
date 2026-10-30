@@ -61,6 +61,7 @@ function harness() {
   const geospatialUI={
     changed(){calls.geo++;},
     getTerrainAssessment(){return structuredClone(assessment);},
+    canUseModelHomeEstimate(){return Number.isFinite(assessment.homeElevationM)||assessment.state==='ready';},
     getPatch(){return {flight:{},export:{homeElevationEvidence:evidence&&structuredClone(evidence)}};},
     useModelHomeEstimate(){return false;},
     revokeHomeEstimate(){calls.revoke++;if(ownedHome){document.querySelector('#f-export-homeAmslM').value='';ownedHome=false;}evidence=null;},
@@ -122,6 +123,22 @@ function harness() {
     holdExport(){let resolve;heldExport=new Promise(yes=>{resolve=yes;});return data=>resolve(data);},
   };
 }
+
+test('Automatic Home filling and explicit replacement use the Home sample even when route terrain is review or unknown',()=>{
+ for(const state of ['review','unknown']){
+  const h=harness();let copies=0;
+  h.field('export','homeAmslM').value='';h.node('trial-terrain-mode').value='automatic';
+  h.setTerrain({state,label:'Route terrain needs review',reasons:['Incomplete or uneven route'],homeElevationM:10.79});
+  h.context.geospatialUI.useModelHomeEstimate=()=>{copies++;h.field('export','homeAmslM').value='10.79';return true;};
+  vm.runInContext('reconcileModelHome()',h.context);
+  assert.equal(copies,1);assert.equal(h.field('export','homeAmslM').value,'10.79');
+  h.context.renderReadiness();assert.equal(h.readiness().rows[2].state,state);
+  assert.equal(h.node('trial-terrain-use-model').disabled,false);
+  h.node('trial-terrain-use-model').onclick();assert.equal(copies,2);
+  h.node('trial-terrain-mode').value='manual';vm.runInContext('reconcileModelHome()',h.context);
+  assert.equal(copies,2,'Manual surface mode must not auto-fill Home.');
+ }
+});
 
 test('Visible map picker selects launch/return, clears old reviews and model-owned height, and resets route samples', () => {
   const h=harness();h.confirm();h.ownModelHome('3.4');h.context.routePoints=[[101,12]];

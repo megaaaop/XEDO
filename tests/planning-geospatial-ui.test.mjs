@@ -133,6 +133,56 @@ test('A concave AOI excludes samples inside its bounding box but outside its act
 test('The labelled model Home estimate copies only an empty field and never fabricates human review',async()=>{
  const h=harness();try{await h.ui.refresh();h.home.value='17';assert.equal(h.ui.useModelHomeEstimate(),false);assert.equal(h.home.value,'17');h.home.value='';assert.equal(h.ui.useModelHomeEstimate(),true);assert.equal(h.home.value,'0');const patch=h.ui.getPatch();assert.equal(patch.export.homeElevationEvidence.mode,'gee_model');assert.equal(patch.export.homeElevationEvidence.reviewed,false);assert.equal(patch.export.homeElevationEvidence.resolutionM,30);assert.equal(Object.hasOwn(patch.export.homeElevationEvidence,'fieldValue'),false);assert.match(h.node('trial-geospatial-home-note').textContent,/model estimate/);assert.equal(h.ui.getTerrainAssessment().state,'ready');assert.equal(h.ui.useModelHomeEstimate(),true);assert.equal(h.changes.filter(x=>x==='home-model').length,1);h.home.value='18';h.ui.changed();assert.equal(h.ui.getPatch().export.homeElevationEvidence,null);assert.equal(h.ui.useModelHomeEstimate(),false);assert.equal(h.home.value,'18');}finally{h.ui.dispose();}
 });
+test('A known GEE Home elevation can fill while the full route terrain requires review',async()=>{
+ const h=harness({transform:data=>{data.terrain.samples[0].elevationM=10.79;data.terrain.homeElevationM=10.79;data.terrain.samples[1].elevationM=0;return data;}});
+ try{
+  await h.ui.refresh();assert.equal(h.ui.getTerrainAssessment().state,'review');
+  assert.equal(h.ui.canUseModelHomeEstimate(),true);assert.equal(h.ui.useModelHomeEstimate(),true);
+  assert.equal(h.home.value,'10.79');assert.equal(h.ui.getTerrainAssessment().state,'review');
+  const evidence=h.ui.getPatch().export.homeElevationEvidence;
+  assert.equal(evidence.valueM,10.79);assert.equal(evidence.mode,'gee_model');assert.equal(evidence.reviewed,false);
+  assert.match(h.node('trial-geospatial-home-note').textContent,/10\.79 m.*Route terrain assessment remains separate/);
+ }finally{h.ui.dispose();}
+});
+test('Missing route or area samples and an unavailable independent provider do not hide a known Home elevation',async()=>{
+ for(const transform of [
+  data=>{data.terrain.samples=data.terrain.samples.filter(s=>s.role!=='route');return data;},
+  data=>{data.terrain.samples[1].elevationM=null;return data;},
+  data=>{data.landcover={state:'unavailable'};return data;}
+ ]){
+  const h=harness({transform});try{
+   h.mission.home=[101.19,12.59];h.mission.routePoints=[[101.195,12.595]];
+   await h.ui.refresh();assert.equal(h.ui.getState().status,'partial');
+   assert.equal(h.ui.canUseModelHomeEstimate(),true);assert.equal(h.ui.useModelHomeEstimate(),true);
+   assert.equal(h.home.value,'0');assert.equal(h.ui.getPatch().export.homeElevationEvidence.reviewed,false);
+  }finally{h.ui.dispose();}
+ }
+});
+test('Home availability rejects missing or invalid Home data, stale reports and a changed Home',async()=>{
+ for(const transform of [
+  data=>{data.terrain.homeElevationM=null;return data;},
+  data=>{data.terrain.verticalDatum='ellipsoid';return data;},
+  data=>{data.terrain.samples[0].elevationM=null;return data;}
+ ]){
+  const h=harness({transform});try{await h.ui.refresh();assert.equal(h.ui.canUseModelHomeEstimate(),false);assert.equal(h.ui.useModelHomeEstimate(),false);assert.equal(h.home.value,'');}finally{h.ui.dispose();}
+ }
+ const h=harness();try{
+  await h.ui.refresh();assert.equal(h.ui.canUseModelHomeEstimate(),true);
+  h.mission.home=[101.205,12.605];assert.equal(h.ui.canUseModelHomeEstimate(),false);
+  await h.ui.refresh();assert.equal(h.ui.canUseModelHomeEstimate(),true);
+  h.setTime(EPOCH+600001);assert.equal(h.ui.canUseModelHomeEstimate(),false);
+ }finally{h.ui.dispose();}
+});
+test('Known zero and below-sea-level Home values are copied without overwriting a manual altitude',async()=>{
+ for(const value of [0,-3.25]){
+  const h=harness({transform:data=>{data.terrain.samples[0].elevationM=value;data.terrain.homeElevationM=value;return data;}});
+  try{
+   await h.ui.refresh();assert.equal(h.ui.canUseModelHomeEstimate(),true);
+   h.home.value='23.5';assert.equal(h.ui.useModelHomeEstimate(),false);assert.equal(h.home.value,'23.5');
+   h.home.value='';assert.equal(h.ui.useModelHomeEstimate(),true);assert.equal(h.home.value,String(value));
+  }finally{h.ui.dispose();}
+ }
+});
 test('Changing Home invalidates an owned model elevation and a fresh context is required before replacing it',async()=>{
  const h=harness();try{await h.ui.refresh();h.ui.useModelHomeEstimate();h.mission.home=[101.205,12.605];h.ui.changed();assert.equal(h.home.value,'');assert.equal(h.ui.useModelHomeEstimate(),false);assert.equal(h.ui.getTerrainAssessment().state,'unknown');await h.ui.refresh();assert.equal(h.ui.useModelHomeEstimate(),true);assert.deepEqual(h.ui.getPatch().export.homeElevationEvidence.home,h.mission.home);h.setTime(EPOCH+600001);assert.equal(h.ui.getTerrainAssessment().state,'unknown');}finally{h.ui.dispose();}
 });

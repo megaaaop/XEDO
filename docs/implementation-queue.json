@@ -294,42 +294,21 @@
     "latestPlanPath": "docs/AI_INTEGRATION_PLAN.md"
   },
   "currentImplementationScope": {
-    "id": "presentation-rehearsal-cpu-git-delivery-2026-10-31",
-    "status": "published_source_and_rehearsal_verified",
-    "authorizedRemainingGroups": [
-      1,
-      2
-    ],
+    "id": "home-altitude-gee-autofill-2026-10-31",
+    "status": "verified_local_release_in_progress",
+    "applicationFeatureRepairAuthorized": true,
+    "reportRequested": true,
     "pushAuthorized": true,
-    "manualDeployRequested": false,
+    "deployAuthorized": true,
     "billingAuthorized": false,
     "subscriptionAuthorized": false,
-    "applicationFeatureRepairAuthorized": false,
-    "deferredUserIssue": "User reported a minor usage problem but explicitly requested fixing it later; details not yet supplied.",
-    "proofDirectory": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31",
+    "baseSourceHead": "9acdd8a",
+    "report": "docs/HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md",
     "pendingUserInput": null,
-    "localVerification": {
-      "nodeTestsPassed": 633,
-      "pythonTestsPassed": 84,
-      "syntaxPassed": true,
-      "builds": [
-        "hosted",
-        "workspace",
-        "portable"
-      ],
-      "duplicateCmd": "ALREADY OPEN",
-      "actualOsReboot": false
-    },
-    "browserRehearsalComplete": true,
-    "actualOsReboot": false,
-    "workerRestarted": false,
-    "publicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31\\publication.json",
-    "sourceCommit": "bc533a8152a9308c2c797b1980ca4308fa21b6eb",
-    "sourceCiRunId": 41112463796,
-    "sourceCiConclusion": "success",
-    "sourceDeploymentId": "dpl_7xjXAYyQE2uo1aJJx4FpMx4xACpX",
-    "postpushHttpChecks": 32,
-    "workerAndGuideNotPublic": true
+    "latestActionScope": "User authorized steps1–4: matched screenshot/DOM evidence, regression, canonical docs, push/deploy if verified; no Billing/subscription",
+    "visualEvidenceRecheckRequired": false,
+    "reviewEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Home_Altitude_Report_Review_2026-10-31\\review.json",
+    "releaseEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Home_Altitude_Release_2026-10-31"
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
@@ -838,6 +817,16 @@
       "pendingDecisionIds": [],
       "previousRemainingWorkNumber": 1,
       "currentCloseoutStatus": "GEE diagnostics published; broader legacy3 work removed by user"
+    },
+    {
+      "id": "home-altitude-gee-autofill-2026-10-31",
+      "reportedOn": "2026-10-31",
+      "status": "fixed_verified_local_not_published",
+      "reportedSymptom": "Home altitude remains Unknown despite an available GEE Home sample.",
+      "confirmedRootCause": "Automatic Home copy and Replace button were gated on full-route terrain readiness rather than Home sample availability.",
+      "originalUserMissionCauseProven": false,
+      "report": "docs/HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md",
+      "remaining": "Publish this local fix only when requested; retain separate terrain/export review checks."
     }
   ],
   "unansweredDecisions": [],
@@ -2794,6 +2783,44 @@
       "documentationCiRunId": 41100815452,
       "documentationCiConclusion": "success",
       "documentationCiVerifiedAtUtc": "2026-10-30T18:44:02.364Z"
+    },
+    {
+      "id": "presentation-rehearsal-cpu-git-delivery-2026-10-31",
+      "status": "published_source_and_rehearsal_verified",
+      "authorizedRemainingGroups": [
+        1,
+        2
+      ],
+      "pushAuthorized": true,
+      "manualDeployRequested": false,
+      "billingAuthorized": false,
+      "subscriptionAuthorized": false,
+      "applicationFeatureRepairAuthorized": false,
+      "deferredUserIssue": "User reported a minor usage problem but explicitly requested fixing it later; details not yet supplied.",
+      "proofDirectory": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31",
+      "pendingUserInput": null,
+      "localVerification": {
+        "nodeTestsPassed": 633,
+        "pythonTestsPassed": 84,
+        "syntaxPassed": true,
+        "builds": [
+          "hosted",
+          "workspace",
+          "portable"
+        ],
+        "duplicateCmd": "ALREADY OPEN",
+        "actualOsReboot": false
+      },
+      "browserRehearsalComplete": true,
+      "actualOsReboot": false,
+      "workerRestarted": false,
+      "publicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31\\publication.json",
+      "sourceCommit": "bc533a8152a9308c2c797b1980ca4308fa21b6eb",
+      "sourceCiRunId": 41112463796,
+      "sourceCiConclusion": "success",
+      "sourceDeploymentId": "dpl_7xjXAYyQE2uo1aJJx4FpMx4xACpX",
+      "postpushHttpChecks": 32,
+      "workerAndGuideNotPublic": true
     }
   ],
   "localCpuWebIntegrationExecution": {
@@ -3861,8 +3888,8 @@
   },
   "latestRemainingWorkAudit": {
     "date": "2026-10-31",
-    "kind": "presentation_rehearsal_and_cpu_delivery",
-    "sourceSection": "3.72",
+    "kind": "home_altitude_report_review",
+    "sourceSection": "3.74",
     "corePrototypeFeatureFlow": "complete_with_prior_browser_api_evidence",
     "priorRuntimeProof": "outputs/XEDO_Post_Reset_Check_2026-10-30",
     "followups": [
@@ -3887,6 +3914,11 @@
         "status": "published_verified",
         "description": "Nine local CPU paths and canonical documentation committed/pushed; local config/session/weights remain excluded; worker stays local.",
         "publishedCommit": "bc533a8152a9308c2c797b1980ca4308fa21b6eb"
+      },
+      {
+        "id": "home-altitude-gee-autofill-2026-10-31",
+        "status": "local_patch_visual_evidence_recheck_before_publication",
+        "description": "Home-only availability patch and retained639testlog reviewed;7hashes match. after.jpg showsUnknown whileDOMJSONhas10.7887. Replay matched-build UI/capture before authorized publication. Production still9acdd8a."
       }
     ],
     "deferredLegacyStages": [
@@ -3896,12 +3928,10 @@
     "excludedLegacyStages": [
       3
     ],
-    "pendingUserAnswers": [
-      "Usage issue details deferred by the user; not required for the authorized release."
-    ],
+    "pendingUserAnswers": [],
     "applicationChangedThisTurn": false,
-    "runtimeTestsRunThisTurn": true,
-    "publishedThisTurn": true,
+    "runtimeTestsRunThisTurn": false,
+    "publishedThisTurn": false,
     "billingOrSubscriptionOpened": false,
     "canonicalNumberingUnchanged": true,
     "ciReadFreshThisTurn": false,
@@ -4125,5 +4155,147 @@
     "workerAndGuideNotPublic": true,
     "sourcePublished": true,
     "documentationFollowupReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31\\publication.json"
+  },
+  "homeAltitudeGeeRepair": {
+    "id": "home-altitude-gee-autofill-2026-10-31",
+    "recordedOn": "2026-10-31",
+    "status": "verified_local_release_in_progress",
+    "confirmedRootCause": "Automatic Home copy and Replace button were gated on full-route terrain readiness rather than Home sample availability.",
+    "originalUserMissionCauseProven": false,
+    "realGeeHomeElevationM": 10.788701057434082,
+    "realGeeHome": [
+      101.2,
+      12.7
+    ],
+    "terrainReviewPreserved": true,
+    "manualValuesPreserved": true,
+    "freshKnownZeroVerified": true,
+    "modeManualNoAutofillVerified": true,
+    "finalTests": {
+      "passed": 639,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "newRegressionTests": 6,
+    "syntaxCheck": "passed",
+    "builds": [
+      "hosted",
+      "workspace",
+      "portable"
+    ],
+    "browserReloadedFinalBuild": true,
+    "browserCapturedWarningErrors": 0,
+    "realGeeFreshProcessComputeCalls": 2,
+    "unitFaultCasesNotLiveProviderOutage": true,
+    "report": "docs/HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md",
+    "evidence": "output/playwright/home-altitude-2026-10-31",
+    "schemaOrAccountChanges": false,
+    "newAiJobCreated": false,
+    "commit": false,
+    "push": false,
+    "deploy": false,
+    "pendingUserAnswers": [],
+    "visualEvidenceMatched": true
+  },
+  "homeAltitudeReportReviewExecution": {
+    "atUtc": "2026-10-30T19:37:32.718958+00:00",
+    "report": "docs/HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md",
+    "reportTitleMatchesScreenshot": true,
+    "sourceAndReportHashesMatch": 7,
+    "hashes": [
+      {
+        "path": "src/planning-trial-client.js",
+        "expected": "393acf9e8650d400c0eca4837f63b2b09eaaa2ff7f322ae6b6dbe9ac66f4d8e5",
+        "actual": "393acf9e8650d400c0eca4837f63b2b09eaaa2ff7f322ae6b6dbe9ac66f4d8e5"
+      },
+      {
+        "path": "src/planning-geospatial-ui.js",
+        "expected": "240e46f2bbd00115776ebd18917308c896a4a28527a0704d18f151fb15273b15",
+        "actual": "240e46f2bbd00115776ebd18917308c896a4a28527a0704d18f151fb15273b15"
+      },
+      {
+        "path": "tests/planning-workflow.test.mjs",
+        "expected": "3c5223ee1932cd6350b60361076244ad499a7e78e221ee37247d1e545c8cfd54",
+        "actual": "3c5223ee1932cd6350b60361076244ad499a7e78e221ee37247d1e545c8cfd54"
+      },
+      {
+        "path": "tests/planning-geospatial-ui.test.mjs",
+        "expected": "a8aab6760664f013bfc13c4a57fb0bb456ab9a287b41120bb2b709e7c632a3d5",
+        "actual": "a8aab6760664f013bfc13c4a57fb0bb456ab9a287b41120bb2b709e7c632a3d5"
+      },
+      {
+        "path": "tests/planning-terrain-integration.test.mjs",
+        "expected": "465791229a51cc0a0fd5348f78bf95ae9715acfa63e362a0222b094fc52e7ec7",
+        "actual": "465791229a51cc0a0fd5348f78bf95ae9715acfa63e362a0222b094fc52e7ec7"
+      },
+      {
+        "path": "vercel.json",
+        "expected": "2f1c0648418609b776d93b70229263b10b9e7c954e6c76502eb28f3e5ac5d7f6",
+        "actual": "2f1c0648418609b776d93b70229263b10b9e7c954e6c76502eb28f3e5ac5d7f6"
+      },
+      {
+        "path": "docs/HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md",
+        "expected": "70bc9bd53582b7cddf3ddeab618887b2b928d4cb73f14f5e1b8db0d08e16d434",
+        "actual": "70bc9bd53582b7cddf3ddeab618887b2b928d4cb73f14f5e1b8db0d08e16d434"
+      }
+    ],
+    "reportedPriorTests": {
+      "passed": 639,
+      "failed": 0,
+      "cancelled": 0,
+      "skipped": 0
+    },
+    "freshTestsRun": false,
+    "freshBrowserOrGeeRun": false,
+    "codeChanged": false,
+    "productionCommit": "9acdd8a6ca8261bb7925cde18bdb2f01f1192baa",
+    "productionDeploymentId": "dpl_FXc525grnsEwmEhzmmuT4QUSmvQh",
+    "productionReady": true,
+    "homeFixPublished": false,
+    "visualFinding": {
+      "file": "C:\\mega\\codex\\iENA\\github-publish\\XEDO-hardware-release\\output\\playwright\\home-altitude-2026-10-31\\after.jpg",
+      "observedHomeField": "Unknown",
+      "jsonFile": "C:\\mega\\codex\\iENA\\github-publish\\XEDO-hardware-release\\output\\playwright\\home-altitude-2026-10-31\\final-browser.json",
+      "jsonHomeValue": "10.788701057434082",
+      "assessment": "Screenshot and DOM JSON do not visibly agree; needs fresh matched-tab/build capture. This alone does not prove the patch failed.",
+      "causeEstablished": false
+    },
+    "nextActions": [
+      "Retain reviewed existing Home-only availability patch",
+      "Replay local UI on the same final build and align screenshot with DOM evidence",
+      "Recheck invalidation/manual/zero/stale/export gates before release",
+      "Commit/push/deploy and live acceptance only when requested"
+    ],
+    "pushOrDeploy": false,
+    "billingOrSubscription": false
+  },
+  "homeAltitudeReleaseExecution": {
+    "atUtc": "2026-10-30T19:55:40.388Z",
+    "freshTests": {
+      "pass": 639,
+      "fail": 0,
+      "cancel": 0,
+      "skip": 0
+    },
+    "syntax": "passed",
+    "builds": [
+      "hosted",
+      "workspace",
+      "portable"
+    ],
+    "browserCases": 7,
+    "localHome": 10.788701057434082,
+    "localVisualJsonMatched": true,
+    "reviewedFalse": true,
+    "terrainReviewPreserved": true,
+    "downloadBlocked": true,
+    "liveGeeComputeCalls": 2,
+    "liveGeeElapsedMs": 2434,
+    "mainTurnAdditionalProductChanges": false,
+    "pendingUserAnswers": [],
+    "billingOrSubscription": false,
+    "evidence": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31",
+    "publication": "in_progress"
   }
 }
