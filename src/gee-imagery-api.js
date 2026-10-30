@@ -1,4 +1,6 @@
 import {searchGEEImagery,createGEEImageryMap,getGEEImageryTile,createGEEBasemap} from './gee-imagery.js';
+import {imageryTiming} from './gee-imagery-timing.js';
+import {createMapCache} from './gee-map-cache.js';
 
 const prefix='/api/v1/gee/imagery/';
 const json=(data,status=200)=>new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json;charset=utf-8','Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
@@ -15,7 +17,7 @@ async function inputs(req,allowed){
 }
 
 /** Fixed public-imagery operations. No database, device or arbitrary EE execution. */
-export async function geeImageryAPI(req,env,{persistScene,services={searchGEEImagery,createGEEImageryMap,getGEEImageryTile,createGEEBasemap}}={}){
+async function imageryOperation(req,env,{persistScene,services={searchGEEImagery,createGEEImageryMap,getGEEImageryTile,createGEEBasemap},timing,cache}){
   const url=new URL(req.url);
   if(!url.pathname.startsWith(prefix))return null;
   const route=url.pathname.slice(prefix.length);
@@ -26,14 +28,15 @@ export async function geeImageryAPI(req,env,{persistScene,services={searchGEEIma
   const method=tile?'GET':'POST';
   if(req.method!==method)return new Response(null,{status:405,headers:{Allow:method,'Cache-Control':'no-store'}});
   try{
-    if(tile)return await services.getGEEImageryTile(env,{sessionId:tile[1],z:Number(tile[2]),x:Number(tile[3]),y:Number(tile[4])});
-    if(route==='basemap')return json(await services.createGEEBasemap(env,await inputs(req,['geometry'])));
+    const options={onTiming:timing.record,cache,signal:req.signal};
+    if(tile)return await services.getGEEImageryTile(env,{sessionId:tile[1],z:Number(tile[2]),x:Number(tile[3]),y:Number(tile[4])},options);
+    if(route==='basemap')return json(await services.createGEEBasemap(env,await inputs(req,['geometry']),options));
     if(route==='search'){
-      const result=await services.searchGEEImagery(env,await inputs(req,['geometry','start','end','maxCloud']));
+      const result=await services.searchGEEImagery(env,await inputs(req,['geometry','start','end','maxCloud']),options);
       return json(result);
     }
     const value=await inputs(req,['sceneId','geometry']);
-    const result=await services.createGEEImageryMap(env,value);
+    const result=await services.createGEEImageryMap(env,value,options);
     if(persistScene)await persistScene(result.scene);
     return json({...result,geometry:structuredClone(value.geometry),tileUrl:prefix+'tiles/'+result.sessionId+'/{z}/{x}/{y}'});
   }catch(error){
@@ -42,4 +45,10 @@ export async function geeImageryAPI(req,env,{persistScene,services={searchGEEIma
     const status=Number.isInteger(error.status)&&error.status>=400&&error.status<=599?error.status:502;
     return json({code:safe?error.code:'GEE_IMAGERY_UNAVAILABLE',message:safe?error.message:'Satellite imagery is temporarily unavailable. Retry shortly.'},safe?status:502);
   }
+}
+
+export async function geeImageryAPI(req,env,options={}) {
+  const timing=imageryTiming();
+  const cache=options.cache??createMapCache(env,{...options.cacheContext,onTiming:timing.record});
+  return timing.finish(await imageryOperation(req,env,{...options,timing,cache}));
 }

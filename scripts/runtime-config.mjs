@@ -14,7 +14,7 @@ function validServiceAccount(raw) {
 }
 
 /** Resolve private local credentials without returning file paths or error details. */
-export async function runtimeConfig(source=process.env,{root=process.cwd()}={}) {
+async function geeRuntimeConfig(source=process.env,{root=process.cwd()}={}) {
   const config={GEE_PROJECT_ID:source.GEE_PROJECT_ID,GEE_SERVICE_ACCOUNT_JSON:source.GEE_SERVICE_ACCOUNT_JSON,GEE_PROBE_ASSET:source.GEE_PROBE_ASSET};
   // Preserve the existing inline-secret flow and its probe validation exactly.
   if(config.GEE_SERVICE_ACCOUNT_JSON)return {...config,GEE_CONFIGURATION:{state:'configured',source:'inline'}};
@@ -38,4 +38,15 @@ export async function runtimeConfig(source=process.env,{root=process.cwd()}={}) 
   } catch(error) {
     return {...config,GEE_CONFIGURATION:error?.code==='ENOENT'?fileProblem('not_configured','GEE_CREDENTIAL_FILE_MISSING','The configured GEE credential file is missing.'):fileProblem('error','GEE_CREDENTIAL_FILE_UNREADABLE','The GEE credential file could not be read.')};
   } finally {if(handle)await handle.close().catch(()=>{});}
+}
+
+export async function runtimeConfig(source=process.env,options={}) {
+  const result=await geeRuntimeConfig(source,options);
+  if(source.GEE_CACHE_ENABLED!=='1')return result;
+  let key=source.GEE_CACHE_SERVER_KEY;
+  if(!key&&process.platform==='win32')try{
+    const {readCacheKey}=await import('./map-cache-secrets.mjs');
+    key=await readCacheKey(path.resolve(options.root||process.cwd(),'data/gee-cache-server.dpapi'));
+  }catch{}
+  return {...result,GEE_CACHE_ENABLED:'1',GEE_CACHE_URL:'https://tstmjnlhwidwtzetqxbu.supabase.co',...(key?{GEE_CACHE_SERVER_KEY:key}:{})};
 }

@@ -5,20 +5,58 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **30 ตุลาคม2026 — ขั้น7เผยแพร่และตรวจproductioncore/Historyreopenครบ ไม่มีคำถามรอคำตอบ/Billing/subscription**
+- อัปเดตล่าสุด: **30 ตุลาคม2026 — ข้อ6กำลังเตรียมproductionrelease;รอยืนยันcacheSecret;633app+84localCPUtestsผ่าน ไม่มีBilling/subscription**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
-- จุดประสงค์รอบนี้: เผยแพร่ local CPU AI integration ที่ผ่านขั้น6แล้ว ตรวจGit/CI/Production/browser/API/CPU roundtripและอัปเดตหลักฐานจริง
-- Productionล่าสุด: application 6a1c626cda0cf6dad22b603d6647f41b325598ff / dpl_6G8DzTyKUYskvxza8Fb5KUYEoByE READY/CI2branches success/HTML6207852bytes SHA2566db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc; เอกสารfollowupอ้างrelease-receipt.json
-- **ขอบเขตคำสั่งล่าสุด:** อนุญาตขั้น7 commit/push/deploy และตรวจหลังเผยแพร่ตามข้อความผู้ใช้30ต.ค. ไม่เปิดBilling/subscription ไม่สร้างบริการเสียเงินหรือเปลี่ยนบัญชีเดิม
+- จุดประสงค์รอบนี้: ตรวจข้อ5 matched performance/repeated-use/cancellation/fallbackกับsourceหลังphase4 ใช้ผู้ช่วยเดิมทวนหลักฐานก่อนบันทึกปิด
+- สถานะเผยแพร่: รอบนี้ไม่เปลี่ยน production code/env; identity ที่บันทึกจากรอบก่อนคือ a5612696a80470733da4155bd953d01d7b553bd4 / dpl_EG7VyQiMMZpdXuSxmeSLep3KcsGm ไม่ถือเป็นการตรวจ deployment สดรอบนี้
+- **ขอบเขตคำสั่งล่าสุด:** อนุมัติข้อ6push/deployproduction+postdeployและผู้ช่วยเดิม ห้ามBilling/subscription;ไม่applyschema/accountsใหม่
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
 
 **กติกาเพิ่ม 27 ต.ค.:** งานแก้/ตรวจเว็บไซต์ลักษณะนี้ต้องบันทึกสองที่: ไฟล์นี้เก็บประวัติ ผลตรวจ และการเผยแพร่; `docs/WEBSITE_DETAILS.md` เก็บโครงสร้าง พฤติกรรม dependency และรายละเอียดวิธีแก้ อัปเดตทั้งสองก่อนจบรอบ และรักษาคิว JSON ให้ตรงกัน
 
 ## 2. สรุป
+
+**GEE v1.1 ข้อ6เริ่มเตรียมเผยแพร่ — 30 ต.ค.2026 (§3.69):** ผู้ใช้อนุมัติpush/deployproduction/postdeployและผู้ช่วยเดิม ตรวจใหม่633apptests+syntax/hostedbuildผ่าน;84CPUtestsเป็นlocalfollowupแยก ตรึงpayload31ไฟล์cache/assets/docs ไม่รวม9ไฟล์launcher/workerเดิม ยังไม่commit/push/deployขณะบันทึกนี้ รอaction-timeconfirmationสำหรับคีย์Supabaseเดิมเป็นVercelProductionSecretตามbrowserpolicy ไม่เปิดBilling/subscriptionหรือapplyschemaซ้ำ
+
+**GEE v1.1 ข้อ 5 ตรวจ performance/resilience ในเครื่องเสร็จ — 30 ต.ค. 2026 (§3.68):** แชทหลักรันใหม่633testsผ่าน/3builds/syntaxผ่าน source20ไฟล์ไม่เปลี่ยน ผู้ช่วยเดิมทวนวิธีวัดและหลักฐาน LocalUIready median388.3→228.3ms แต่FCP140→204ms; persistenthitลดGEEpixelsได้แต่ช้ากว่าoff3/5คู่ ไม่อ้างเร็วขึ้นทุกกรณี Foreground11m35s/Settings32คู่/2D–3D20รอบ/A→B→Aผ่าน pageexceptions0 และ44proxyAbortErrorแยกเป็นการยกเลิกที่สังเกตได้ ไม่มีcommit/push/deploy/Billing/subscriptionหรือschema/accounts change ข้อ6ยังรอคำสั่ง ไม่มีคำถามค้าง
+
+**GEE v1.1 ข้อ 4 ลดหน้าเว็บเริ่มต้นเสร็จในเครื่อง — 30 ต.ค. 2026 (§3.67):** แยก hosted build เป็น HTML/ES modules/CSS/รูปที่มีชื่ออ้างอิงเนื้อหา พร้อมโหลด 3D/COG/ตัวคำนวณเมื่อใช้ HTML ลด 6,207,852 → 23,516 bytes; static body ผ่าน local HTTP gzip จาก browser ลด 3,732,249 → 355,284 bytes (90.48%, ไม่รวม API/GEE/headers และไม่ใช่อัตราเร็ว) เปิดซ้ำใช้แคชไฟล์เดิม คง portable/workspace/3 ขั้นตอน/4 ตัวคำนวณ Full suite ล่าสุด 633 ผ่าน/syntax/build ทั้งสามผ่าน ผู้ช่วยปิดสองข้อพบแล้ว ยังไม่ push/deploy/Billing/subscription ไม่มีคำถามค้าง ข้อ 5–6 ยังไม่เริ่ม
+
+**GEE แผน v1.1 ข้อ 3 เสร็จในเครื่องและทดสอบ Supabase จริง — 30 ต.ค. 2026 (§3.66):** เพิ่ม persistent PNG cache เพดาน 200,000,000 bytes ติดตั้ง private schema/RPC/bucket ใน xedo แล้ว ทดสอบโปรแกรมใหม่อ่านภาพเดิมได้โดยไม่เรียก GEE pixels ซ้ำ; 192 คำขอจองพื้นที่ผ่าน 8 ชุดพร้อมกันรับ 190/ปฏิเสธ 2 ไม่เกินเพดาน และล้าง QA ได้ตรงยอดจริง ชุดทดสอบล่าสุด 626 ผ่าน/syntax/build ผ่าน ผู้ช่วยปิดชุด B แล้ว โค้ดยังไม่ push/deploy เว็บจริงยังไม่ใช้แคชรุ่นนี้ ไม่เปิด Billing/subscription ไม่มีคำถามผู้ใช้ค้าง ข้อ 4–6 ยังไม่เริ่ม
+
+**GEE แผน v1.1 ข้อ 1–2 เสร็จ — 30 ต.ค. 2026 (§3.65):** เก็บ baseline/โควต้าสด เพิ่ม timing diagnostics ในเครื่อง และตรึงแบบแคชหลังรับชุด A จากแชทผู้ช่วยเดิมแล้ว; 615 tests ผ่าน/syntax/build ผ่าน PNG และ built HTML ตัวอย่าง hash ตรง Production ไม่มี bucket/schema/RPC/cache จริง ไม่มี push/deploy/Billing/subscription ข้อ 3–6 ยังไม่เริ่ม ไม่มีคำถามค้าง
+
+
+**แผน GEE ใช้แชทผู้ช่วยเดิม — 30 ต.ค. 2026 (§3.64):** แผน v1.1 แบ่งงานหกระยะ: แชทหลักแก้เว็บไซต์ ผู้ช่วยเดิมตรวจ contract/ออกแบบทดสอบ/ตรวจหลักฐานคู่ขนาน มีจุดรับผล A/B/C และกติกา hashes/ไฟล์ร่วม ใช้การตั้งค่าปัจจุบันได้ รอบนี้ปรับเอกสารเท่านั้น ยังไม่ส่งเริ่มงานหรือ implement/publish ไม่มีคำถามค้าง
+
+
+**ค้นไฟล์แผน GEE จากอีกแชท — 30 ต.ค. 2026 (§3.63):** พบและเปิดตรวจ `docs/GEE_MAP_CACHE_PERFORMANCE_PLAN.md` v1.0 แล้ว เป็นแผน cache/performance ที่ยังไม่ implement; รอบนี้ค้นหาและบันทึกผลเท่านั้น ไม่มีคำถามค้าง
+
+
+**แผนGEE/Supabaseฉบับรวม — 30 ต.ค.2026 (§3.62):** สร้าง[GEE_MAP_CACHE_PERFORMANCE_PLAN.md](GEE_MAP_CACHE_PERFORMANCE_PLAN.md)v1.0จากแชทล่าสุด ยึดcache200MB/500MBทางเลือกภายหลัง รวมbaselineจริง+snapshotUsage+architecture/ขั้นตอน/เกณฑ์ตรวจรับ ยังไม่implement/สร้างbucketหรือdeploy ไม่มีคำถามรอคำตอบ
+
+**คำแนะนำ reasoning effort — 30 ต.ค. 2026 (§3.61):** เสนอ Extra High สำหรับการแก้เว็บทีละประเด็นและเชื่อม flow; พิจารณา Ultra เมื่อตรวจ GEE/performance, AI/worker, persistence และ regression แยกกันได้ ให้ผู้แก้ source หลักคนเดียวรวบรวมผล ยังไม่มี benchmark คุณภาพ/ต้นทุนของสองระดับบน XEDO ไม่รับรองเปอร์เซ็นต์หรือตัวคูณความคุ้มค่า ไม่เปลี่ยน model/config/คิว ไม่มีคำตอบรอคำตอบ
+
+**สถานะงานคงเหลือ 30 ต.ค. 2026 (§3.60):** core prototype/บัญชี/AI พื้นที่ใหม่และ CPU ผ่านแล้ว; งานติดตามคือความเร็ว GEE/แคช (ข้อเสนอ), extended qualification และเก็บ launcher/คู่มือเข้า Git; Pi กับรายงานผลทดลองยังพักไว้ ไม่มีคำตอบผู้ใช้ค้าง รอบนี้สรุปสถานะและอัปเดตเอกสารเท่านั้น
+
+
+**ตรวจเว็บหลัง reset ผ่าน — 30 ตุลาคม2026:** ผู้ใช้Sign inInspectorเดิมแล้ว Chromeproductionเห็นCPUReady เปิดHistoryเดิมv3ได้ ทำQAใหม่หนึ่งงานผ่านAnalyze→GEE/SAR→CPUจริง→manual4จุด/แก้พิกัด→S2review→confirmv2complete→planner2.21km→Savev3→History3/2/1→เปิดv3กลับมาพิกัด/reviewตรงกัน APIยืนยันjobใหม่Succeeded/ภารกิจเดิมไม่เปลี่ยน CPUกลับREADY ไม่มีคำถามรอคำตอบ ไม่มีแก้application/push/deploy/Billing/subscription ดู§3.58
+
+**Supabase usageจริง — 30 ตุลาคม2026:** ตรวจFree/AllprojectsUsageแล้วStorage0/1GBและSQLXEDO0buckets/0objects/0bytes;DB0.028/0.5GBเหลือประมาณ0.472GB แนะนำcacheเริ่ม200MB/เผื่อไฟล์อื่น800MBและพิจารณาเพดาน500MBภายหลัง เป็นข้อเสนอที่ยังไม่implement ไม่สร้างbucket/deploy/Billing ไม่มีคำถามรอคำตอบ ดู§3.56
+
+**ยืนยันปิด–เปิดเครื่อง — 30 ตุลาคม2026:** ตรวจworkerprocessยังทำงาน/stateREADYและไม่มีactive.jsonแล้ว ผู้ใช้ปิดเครื่องได้หลังSaveงานบนเว็บและปิดworkerขณะว่าง เปิดเครื่องด้วยWindowsuserเดิม→ต่อinternet→ดับเบิลคลิกDesktopXEDO CPU Worker→รอREADY→เปิดเว็บไซต์/Sign inInspectorหากถูกขอ ไม่มีการshutdownเครื่องโดยagentหรือเปลี่ยนระบบ ดู§3.55
+
+**Supabase cache design — 30 ตุลาคม2026:** ภาพแผนที่เก็บในStorageและrecipe/indexในDBเพื่อกลับมาใช้ซ้ำได้ ต้องแก้keyไม่ผูกrandomsessionและรักษาassetversion/clipbounds เดิมมีmemorycacheบางส่วนจึงไม่ใช่คำนวณใหม่ทุกครั้ง รอบนี้อธิบาย/บันทึกเท่านั้น ยังไม่สร้างbucket/แก้โค้ด/deploy/เปิดsubscription ไม่มีคำถามรอคำตอบ ดู§3.54
+
+**Desktop Shortcut — 30 ตุลาคม2026:** สร้างXEDO CPU Worker.lnkบนDesktopที่Windowsใช้อยู่จริง(OneDrive) ชี้Start-XEDO-CPU.cmdเดิม/WorkingDirectoryrelease/ไม่มีarguments/ไม่Runasadmin ทดสอบเปิดผ่านShortcutจริงหลังหยุดหน้าต่างเดิมขณะว่าง ตรวจprocessใหม่และREADYtimestampหลังactivationแล้ว เปิดworkerทิ้งไว้ให้ ไม่มีsourcechange/OSreboot/newAIjob/push/deploy/Billing/subscription ดู§3.53
+
+**CPU worker แบบคลิกเดียว — 30 ตุลาคม2026:** เพิ่มStart-XEDO-CPU.cmd/ไฟล์Reconnectและคู่มือหลังเปิดเครื่อง ทดสอบไฟล์/dependencyแบบoffline,Python84testsผ่าน,ต่อSupabaseจริงด้วยCPUsessionเดิม/หยุด–เปิดโปรแกรมและกันเปิดซ้ำผ่าน เปิดหน้าต่างworkerให้แล้ว;ใช้Windowsuserเดิม/เปิดPCและinternetสำหรับAnalyzeใหม่ ไม่มีOSrebootจริงหรือinferenceพื้นที่ใหม่ในรอบนี้ ไม่มีBilling/subscription/SQL/websitepush/deploy ดู§3.52และCPU_WORKER_START_GUIDE.md
+
+**GEE map audit — 30 ตุลาคม2026:** ตรวจProductionล่าสุด a561269/dpl_EG7VyQiMMZpdXuSxmeSLep3KcsGm และวัดimageryAPIจริง พบbackgroundcomputePixelsต่อtile/mosaicหลายscene/cacheใช้ซ้ำจำกัดกับHTMLเริ่มต้น6.2MB ตัวอย่าง8tilesครั้งละ4ใช้5.019s ไม่ใช่fullpagetiming;รายละเอียด§3.51 รอบนี้ตรวจและบันทึกเท่านั้น ยังไม่แก้applicationหรือpush/deploy ไม่มีคำถามรอคำตอบ
 
 ### สถานะล่าสุดที่มีหลักฐาน
 
@@ -1366,3 +1404,486 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 
 
 **ปรับดัชนีคิวหลังปิดขั้น7:** remainingWorkOrderเลข6/เดิม9เป็นpublished_production_qualified_pilotและcompletedLegacyStageIdsเพิ่ม9;activeRemainingCount1/deferred2/total3หมายถึงqualificationUXแยกหนึ่งกลุ่มกับPi/รายงานที่พักสองรายการ ไม่ใช่ฟังก์ชันAIยังรอเผยแพร่ ไม่มีimplementation/SQL/Auth/testใหม่ในการแก้ดัชนีเอกสารนี้ รักษาผล611Node/69Pythonและproductionproofข้างบนเป็นหลักฐานreleaseเดียวกัน Finaldocs-onlycommit/deployment/CI/HTMLรับจริงบันทึกในphase7release-receipt.json
+
+<!-- gee-map-latency-audit-2026-10-30 -->
+### 3.51 ตรวจการทำงาน GEE และความช้าของแผนที่ Production — 30 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้ขอสอบสวนว่าเว็บไซต์ Vercel ล่าสุดใช้ Google Earth Engine อย่างไร และเหตุใดแผนที่จึงหน่วง ขอบเขตรอบนี้เป็นการตรวจ source/Production/เอกสาร ไม่ใช่คำสั่งแก้ application หรือ publish ผลปรับปรุง
+
+**สรุป:** ก่อนทำอ่าน canonical log/queue และตรวจ Git; HEAD a5612696a80470733da4155bd953d01d7b553bd4/branch codex/xedo-hardware-profile สะอาด Vercel connector ยืนยัน Production dpl_EG7VyQiMMZpdXuSxmeSLep3KcsGm READY/main SHA เดียวกัน/alias xedo-eight.vercel.app/region iad1 สาเหตุเชิงโครงสร้างที่พบคือ basemap ทำ computePixels ต่อ tile โดย mosaic หลาย Sentinel-2 scenes, tile session/แคชใช้ซ้ำจำกัด และหน้า HTML เริ่มต้นขนาด6,207,852bytes มีภาพฝังหลายรูป หลักฐานยังไม่แยกเวลาคำนวณ GEE ออกจากเครือข่าย/เซิร์ฟเวอร์แบบเต็ม
+
+**รายละเอียด/ผลสด:** Browser guest เปิดแผนที่จริงและขึ้น Ready เห็น20images/2–27ต.ค. ไม่มี warning/error ที่จับได้; viewport ตัวอย่างที่จับเวลาแยกต่างหากได้12images/mode pixels ทั้ง basemap และ selected scene คำขอผ่านcurl17ครั้งสำเร็จ HTTP200: manifest0.887s→repeat0.336s,8tilesครั้งละ4รวม5.019s/แต่ละtile0.851–3.257s, tileเดิม3.257→0.732s; scene search1.393→0.330s,map0.598→0.331s,tile1.162→0.826s นี่คือ first-observed/repeat ไม่ใช่ยืนยันcold-start/P95 หรือเวลาจบทั้งหน้าจอ
+
+**ข้อค้นพบ:** บนเว็บปัจจุบัน metadata→session→tile เป็น waterfall; basemap always pixels/mosaicได้ถึง31scenes/256pxต่อtile/max4parallel ฝั่งclient bypassHTTPcacheและเก็บblobเฉพาะsession; serverแคชmemoryต่อinstance/ไม่ใช้sharedCDNและtilekeyรวมrandomsession; panเกินpaddingขอบละประมาณ10%อาจสร้างsessionใหม่ Abortไม่ส่งถึงupstream imageryservice; confirmtargetยังมีsequentialtilecheckและ3Dแยกโหลดatlas ส่วน contextDEM/landcover/cloud/forecastเป็นอีกเส้นทางและAI SARใช้CPUlocalคนละflow ดูข้อเสนอ/อ้างsourceใน WEBSITE_DETAILS§3.51
+
+**ข้อจำกัดการวัด:** Nodefetchเชื่อมต่อไม่สำเร็จ ใช้curlHEAD/APIได้จริง; GETdocumentแบบrawและgzipดาวน์โหลดไม่ครบใน40sบนnetworkpathนี้ ไม่ใช้เป็นเวลาจบหน้าเว็บหรือโทษGEE ทั้งหมด HEADยืนยันขนาดและCDNHIT; gzipสังเกตจริงแต่ตัวเลข3,732,249bytesเป็นlocalcompressionestimate ไม่ใช่wirebytesProductionที่วัดครบ Currentbodyhashไม่ได้วัดซ้ำ Vercelruntimequery1hติดretention แล้วแก้10mได้noevents ไม่อ้างไร้errorทั้งระบบ ไม่มีServer-TimingและhostedadapterตัดX-XEDO-Cacheจึงแยกcorehit/upstreamsecondsไม่ได้
+
+**ไฟล์/งานเหลือ/เผยแพร่:** แก้เฉพาะ docs/XEDO_WORK_LOG.md,docs/WEBSITE_DETAILS.md,docs/implementation-queue.json พร้อมprobeและreceiptsในignored output/gee-latency-audit-2026-10-30 ไม่เปลี่ยนapplication/SQL/Auth/IAM/env/APIsettings/Billing/subscription ไม่สร้างAIjob/รันCPU ไม่รันapplicationtests/build/CI ไม่commit/push/deploy ไม่มีคำถามผู้ใช้รอคำตอบ ข้อเสนอปรับcache/session/HTMLweight/mapendpointเป็นremediation_not_started;ไม่เพิ่มacceptedimplementationstageหรือเปลี่ยนสถานะreleasecoreที่ผ่านแล้ว
+
+**ตรวจปิดรอบ:** ตรวจ JSON/evidence ได้17HTTP200 และ git diff --check เฉพาะสามเอกสารผ่าน Helpersanitycheckข้อเท็จจริง/ตัวเลขไม่พบข้อแก้ ก่อนปิดพบงานอีกแชทเพิ่ม/แก้ workers/local-ai/remote_worker.py,launch_worker.py,worker_guard.py,test_launcher.py และ Start-XEDO-CPU.cmd/Reconnect-XEDO-CPU.cmd หลังbaselineสะอาด เก็บไว้ทั้งหมด ไม่แก้/revert/stageหรืออ้างทดสอบงานเหล่านั้น ผลauditGEEและProductionidentityยังอ้างแหล่งที่ตรวจในรอบนี้ ไม่มีpush/deployจากแชทนี้
+
+
+### 3.52 ตัวเปิด CPU worker แบบคลิกเดียวและการเปิดเครื่องใหม่ — 30 ตุลาคม2026
+
+**หัวข้อ/ขอบเขต:** ผู้ใช้ขอไฟล์เปิดCPUworkerแบบคลิกเดียว/คู่มือหลังปิด–เปิดเครื่องสำหรับงานนำเสนอและบันทึกสองMD ห้ามBilling/subscription Rootอ่านcanonical/queue/AGENTS/Gitก่อนลงมือ HEADa5612696a80470733da4155bd953d01d7b553bd4 ไม่มีการอนุญาตpush/deployใหม่ในคำสั่งนี้ ระหว่างทำอีกแชทเพิ่มauditGEE§3.51/geeMapLatencyAuditแล้ว Rootอ่านใหม่และmergeรักษาบันทึกนั้นทั้งหมด ไม่แก้GEEremediationหรือfrontendflow
+
+**ผลที่ทำ:** เพิ่มStart-XEDO-CPU.cmdที่release-root ใช้workingdirectoryจากตำแหน่งไฟล์และPythonvenvเดิมโดยไม่ต้องพิมพ์คำสั่ง เปลี่ยนconsolecodepageเฉพาะหน้าต่างเป็นUTF8 ไม่เปลี่ยนExecutionPolicy/ไม่Runasadmin/ไม่ติดตั้งโปรแกรมหรือWindowsstartup task มีReconnect-XEDO-CPU.cmdสำหรับกรณีต้องเชื่อมบัญชีCPUใหม่ worker/launch_worker.pyแสดงCONNECTING/READY/WORKING/SAVED/RECONNECTING/STOPPEDและtilesจริง เก็บเฉพาะstate/time/codeในignoredlocal-data/local-ai-worker/launcher-status.json ไม่เก็บรหัส/JWT/providerresponseลงconsole/statusfile
+
+**การป้องกันเปิดซ้ำ:** worker_guard.pyถือWindowsbyte-lockทั้งsessionFile+.worker.lockและworkRoot/.worker.lockก่อนอ่าน/refreshsession/RPC/recovercheckpoint ใช้ร่วมทั้งlauncherและdirectCLIrun/login/status/logout ตรวจdaemonเก่าที่ไม่มีlockจากเฉพาะPythonและexactXEDOscript/configโดยไม่echoargv/ข้อมูลบัญชี ไม่killตัวเดิมอัตโนมัติ SkipvenvredirectorparentเฉพาะกรณีPIDเป็นparentและargvตรงselfinvocation เพื่อไม่มองโปรแกรมตัวเองเป็นอีกworker เมื่อOSปิดprocessจะปล่อยlockเอง ไม่ต้องลบmarkerfileหลังreboot
+
+**Session/reconnect:** ปกติเปิดWindowsuserเดิมและเก็บenvironment/model/config/DPAPIไว้แล้วStartใหม่ได้ โปรแกรมrefreshaccessตามวิธีเดิม CPUaccountแยกInspectorwebsitecookie ถ้าrefreshendpointตอบ400/401/403จะแปลงเฉพาะกรณีrefreshเป็นMACHINE_SIGN_IN_REQUIRED ไม่เหมารวมRPC400ทุกชนิด ExplicitReconnect/loginข้ามloadoldDPAPIที่เสียและเก็บciphertextเดิมไว้จนpasswordgrant+machineregistrypresenceผ่าน จึงไม่ลบsessionเดิมเมื่อรหัสผิดหรือเผลอใช้Inspector ไม่อ่านpasswordmanager/clipboardและไม่ให้ผู้ใช้ส่งpasswordในแชท ไม่มีการเปลี่ยนAuthconfig/role/user/schema
+
+**ทดสอบจริง:** offlinecheck-onlyผ่านและไม่อ่านsession/เรียกnetwork;Pythonunittest84pass/0fail/0skipรวม15casesใหม่ GuardWindowsข้ามprocessจริงตรวจsession/workRootexclusiveและlockreleasedหลังterminatefixture/stalefile;CLIผ่านWindowsvenvbootstrap;legacyprocesspathมีspace/&;duplicateไม่แตะsession/statusเดิม;refresh400/401/403และcorruptsession/wrongaccountไม่รั่วsecretหรือทับsessionเดิม ผลfocusedlauncher10และremote19รอบก่อนเป็นsubsetไม่บวกนับซ้ำ รอบแรกfull81มีWinError5replacefileในfixturecorruptsessionหนึ่งครั้ง เก็บfailureไว้;focused19/full81/82ผ่านเมื่อรันซ้ำ และfinal84ผ่านหลังเก็บedgecasesสุดท้าย ไม่อ้างรอบแรกผ่าน ไม่มีการแก้atomicreplaceเพราะไม่เกิดซ้ำ
+
+**Startupกับระบบจริง:** launcherตรวจdaemonเดิมพบALREADYOPENและไม่เปิดซ้ำ Rootยืนยันไม่มีactive.json/งานกำลังประมวลผลก่อนหยุดexecworkerเดิมด้วยCtrl+C จากนั้นใช้launch_worker.py --onceเชื่อมprotectedCPUsessionเดิมสำเร็จ→READY→waiting→STOPPED ไม่มีnewjob/inferenceหรือpasswordgrant RootเปิดStart-XEDO-CPU.cmdจริงผ่านWindowsในหน้าต่างปกติจากworkingdirectoryอีกที่(C:/mega/codex/iENA) ได้READY แล้วเปิดซ้ำพบALREADYOPEN/ไม่เกิดworkerตัวที่สอง ปล่อยหน้าต่างนี้ไว้ให้ผู้ใช้ ไม่มีการshutdown/rebootWindowsจริง การทดสอบจำลองหยุด–เริ่มโปรแกรม+filelockcrashไม่ใช่หลักฐานfullOSreboot
+
+**วิธีหลังปิดเครื่อง:** Saveบนเว็บและรอSAVED/READYก่อนปิดworker/เครื่อง;เปิดเครื่องด้วยWindowsuserเดิม→ต่อinternet→ดับเบิลคลิกStart-XEDO-CPU.cmd→รอREADY→เปิดxedo-eight.vercel.appและSign inInspectorหากcookieหมดอายุ ไม่ต้องเปิดCodex/localQAserver/ติดตั้งหรือสร้างบัญชีซ้ำ งานที่บันทึกสำเร็จอยู่Supabaseเปิดย้อนหลังได้เมื่อCPUปิด แต่Analyzeใหม่ต้องPC/worker/internetและGEEพร้อม ถ้าปิดระหว่างประมวลผลไม่รับรองต่อtile/%เดิม ให้ตรวจjob/lease/recovery ไม่ลบactive.jsonเอง CPUจะretryconnectionแบบจำกัดแล้วอาจหยุด ให้แก้internetและStartใหม่ ย้ายไปคนละคอม/Windowsuserต้องเตรียมenvironmentและเชื่อมCPUใหม่ตามDPAPI ไม่คัดลอกsessionไปใช้ตรง ๆ
+
+**ไฟล์และการเผยแพร่:** เพิ่มStart-XEDO-CPU.cmd,Reconnect-XEDO-CPU.cmd,workers/local-ai/{launch_worker.py,worker_guard.py,tests/test_launcher.py},docs/CPU_WORKER_START_GUIDE.md;แก้remote_worker.py/tests/test_remote_worker.py/README.md/.vercelignoreและcanonicalสองMD/queue .vercelignoreกันสองcmdเพิ่ม;workersเดิมถูกexcludeแล้ว ไม่มีweights/DPAPI/envเข้าGit Evidenceอยู่outputs/XEDO_CPU_Launcher_2026-10-30และignoredoutput/local-ai-launcher-tests*.txt ผลNode611/build3/Productionreleaseใน§3.49–3.50เป็นรอบก่อน ไม่รันเว็บtests/build/CI/ใหม่ในรอบนี้ ไม่commit/push/deploy/Billing/subscription/paidresource/SQL/IAM/APIsettingsหรือpowerplan ไม่มีคำถามผู้ใช้รอคำตอบ
+
+**ที่มา/ข้อจำกัด:** Supportอ่านsourceและreviewข้อ2refresh/reconnectซึ่งRootแก้พร้อมtests ไม่แก้application/canonical DocsSupabasechangelog.mdอ่านผ่านwebไม่ได้เพราะcontenttype จึงใช้หน้าofficialchangelogHTMLและUser sessions ตรวจหลักการrefresh ไม่ได้เปลี่ยนนโยบายsessionในDashboard Windowsworkerยังผูกเครื่องนี้/บัญชีเดิม การปิดหน้าต่าง/PCอาจทำให้webReadyค้างจนpresenceหมดอายุประมาณ180s;launcher-statusบนdiskเป็นsnapshot ไม่ใช่livehealthถ้าprocessถูกฆ่า ผลทดสอบและข้อจำกัดอยู่REPORT.md ไม่รับรอง100jobs/monthlongsoak/ทุกเครือข่ายหรือphysicalrebootที่ยังไม่ได้รัน
+
+
+**ปิดตรวจรุ่นตัวเปิดสุดท้าย:** รับprocessingeventแล้วเปลี่ยนWORKINGทันทีก่อนprogressแรก ไม่คงREADYระหว่างbootstrap;ก่อนวนคิวใช้CONNECTINGแทนREADYจนได้รับwaitingจริง ทดสอบrefreshสั้น/401ไม่ให้persistก่อนmachineregistryผ่านด้วยdirectpresence-requestในlogin ไม่มีautorefreshบนloginที่ยังไม่verify Pythonfinal84pass/0fail/0skip และอัปเดตsourcehashesแล้ว Rootตรวจidle/ไม่มีactive.jsonและidentityหน้าต่างทดสอบเฉพาะที่สร้างไว้ก่อนหยุดแล้วเปิดStart.cmdใหม่ให้โหลดsourceสุดท้าย เก็บstartup-receipt.json/READYsnapshot ไม่มีnewjob/OSreboot/เปลี่ยนบัญชีหรือpublishเพิ่ม
+
+
+### 3.53 Desktop Shortcut สำหรับเปิด CPU worker และตรวจ READY — 30 ตุลาคม2026
+
+**หัวข้อ/ขอบเขต:** ผู้ใช้อนุญาตสร้างShortcutของStart-XEDO-CPU.cmdบนDesktopและทดสอบเปิดแล้วREADY พร้อมบันทึกสองMD ไม่เปิดBilling/subscription Rootอ่านcanonical/queue/Gitและรักษาdirtylauncher/คู่มือ/otherchatGEEauditที่มีอยู่จากรอบก่อน HEADยังa5612696a80470733da4155bd953d01d7b553bd4 ไม่มีคำสั่งpush/deployหรือแก้applicationใหม่
+
+**ผลสร้างไฟล์:** ใช้WindowsknownDesktopพบว่าDesktopอยู่OneDrive สร้างXEDO CPU Worker.lnkในตำแหน่งDesktopของWindowsuserนี้ผ่านWScript.Shell ไม่ย้ายตัวStart.cmd/model/config/DPAPI ตั้งTargetPathเป็นrelease/Start-XEDO-CPU.cmdเดิม,WorkingDirectoryเป็นrelease-root,Argumentsว่าง,WindowStyle1,Iconcmd.exe0 ตรวจCreateShortcutreadbackและbinaryLinkFlagsRunAsUser0x2000=false ไม่ใช้admin/ไม่เพิ่มWindowsStartupหรือเปลี่ยนExecutionPolicy/PowerPlan หากชื่อเดิมชี้คนละที่โค้ดสร้างจะรักษาไฟล์เดิมและใช้ชื่อPresentation ไม่overwriteของอื่น รอบนี้ใช้ชื่อXEDO CPU Worker.lnkตามปกติ
+
+**ทดสอบใหม่จริง:** ก่อนเปิดShortcutตรวจlauncher-statusเป็นREADY/ไม่มีworkRootactive.jsonและยืนยันexactscriptในหน้าต่างทดสอบเดิมที่สร้างใน§3.52 จึงหยุดเฉพาะprocess/windowนั้นขณะidle ไม่killโปรแกรมอื่น จากนั้นShellExecuteผ่านStart-Processที่Targetเป็นDesktop.lnkโดยตรง ไม่ใช่เรียกStart.cmdข้ามShortcut พบconsoleใหม่และchildlaunch_worker.pyที่เริ่มหลังactivation พร้อมREADYsnapshotที่timestampใหม่กว่าactivation ตรวจreadbackREADYและprocesslivenessควบคู่ ไม่ใช้ALREADYOPENexit0หรือREADYเก่าเป็นproof ไม่ต้องกรอกรหัสCPUใหม่และไม่มีการอ่าน/ใส่passwordโดยagent
+
+**วิธีใช้งาน:** หลังเปิดเครื่องด้วยWindowsuserเดิมและต่อinternet ดับเบิลคลิกไอคอนXEDO CPU WorkerบนDesktop→รอREADY→เปิดเว็บxedo-eight.vercel.appและSign inInspectorหากถูกขอ เปิดหน้าต่างworkerค้างไว้สำหรับAnalyzeใหม่ ใช้กับเครื่องเดิมที่เตรียมenvironment/model/configไว้ ShortcutในOneDriveไม่ได้ทำให้โมเดล/โปรแกรมติดตั้งพร้อมใช้บนเครื่องอื่น ก่อนปิดเครื่องSaveภารกิจและรอSAVED/READYตามCPU_WORKER_START_GUIDE.md
+
+**ไฟล์/หลักฐาน:** ไฟล์ใหม่อยู่นอกcheckoutเฉพาะDesktop.lnkตามที่ผู้ใช้อนุญาต ที่อยู่จริง/target/workingDirectory/flags/readback/activation/process/READYtimestampsเก็บในoutputs/XEDO_CPU_Desktop_Shortcut_2026-10-30/{shortcut-receipt,prior-window-stop,activation,ready-receipt}.jsonและREPORT.md อัปเดตcanonicalสองMD/queue/คู่มือเท่านั้น ไม่แก้launcher/source/website และไม่ย้าย/ลบไฟล์งานเก่าหรือเก็บsessiondataในShortcut
+
+**Verification/publication:** รอบนี้ตรวจShortcutmetadata+WindowsShellactivationจริง+existingmachineconnection+freshREADY/processlivenessและMarkdown/JSON/diffchecks ไม่รันPython84/Node/build/CIใหม่เพราะไม่ได้แก้source ผล84เป็นรอบ§3.52 ไม่ใช่รันซ้ำในรอบนี้ ไม่มีnewAIjob/inference/DBschema/Authsettings/IAM/Billing/subscription/paidresource/commit/push/deployหรือOSreboot เปิดหน้าต่างworkerใหม่ไว้ในสถานะREADY ไม่มีคำถามผู้ใช้รอคำตอบ
+
+<!-- gee-supabase-persistent-cache-design-2026-10-30 -->
+### 3.54 Supabase persistent map-tile cache: ความเป็นไปได้และข้อกำหนด — 30 ตุลาคม2026
+
+**หัวข้อ:** ผู้ใช้ถามว่าต้องโหลด/ประมวลผลแผนที่ใหม่ทุกครั้งหรือไม่ และเก็บพื้นที่ที่เคยเปิดในSupabaseเพื่อเลื่อนกลับมาใช้ซ้ำได้หรือไม่ รอบนี้อธิบายความเป็นไปได้/แนวทาง ไม่อนุมานเป็นคำสั่งสร้างbucket/schema/implementation/deploy
+
+**สรุป:** ทำpersistenttilecacheด้วยSupabaseได้ ควรเก็บไฟล์PNGในSupabaseStorageและindex/recipe/size/อายุในPostgres แก้ความเข้าใจว่าเว็บเดิมไม่ได้คำนวณใหม่ทุกครั้ง: currentmanifest/blobภายใต้sessionเดิมและwarmservermemoryช่วยreuseได้ แต่หลุดเมื่อsession/viewport/processเปลี่ยนหรือหมดcache จึงมีโอกาสประมวลผลซ้ำเมื่อกลับพื้นที่เดิม Cachehitยังอาจต้องดาวน์โหลดไฟล์ ยกเว้นbrowserมีภาพอยู่แล้ว ไม่รับประกันinstantหรือเวลาที่ลดได้ก่อนทดสอบ
+
+**รายละเอียดพฤติกรรมที่เสนอ:** เข้าareaAครั้งแรก→หาtileที่ตรงrecipeในcache→missเรียกGEE/validatePNG→saveStorageพร้อมindex→แสดง;เลื่อนไปBแล้วกลับA→hitโหลดPNGที่เก็บไว้โดยไม่คำนวณpixelsของtileเดิมซ้ำ ทำเฉพาะtileที่ใช้งานจริง ไม่preloadทุกพื้นที่/ทุกระดับzoomและไม่โหลดTIFFต้นฉบับทั้งหมดเข้าDB Metadataค้นหาlatestrecipeยังอาจต้องrefreshGEEตามนโยบาย แยกความสดของsourceออกจากอายุsession30minและอายุเก็บPNG ภาพที่เก็บแล้วต้องระบุacquisition/versionเดิม ไม่ยกreadiness/confirmationเก่ากลับมาถูกต้องอัตโนมัติ
+
+**ข้อกำหนดcacheidentity:** keyต้องเป็นimmutablecollection+orderedassetIDs+mosaicorder+renderrecipeversion/RGB/gamma/range+projection/grid+z/x/y+clipping/coverageidentity ไม่ใช้randomsessionURLหรือพิกัดz/x/yอย่างเดียว ปัจจุบันgee-imagery.js:176–202เลือกsceneตามviewportและclipตามsession.bbox;tileเดียวกันคนละviewportอาจต่างscene/ขอบโปร่งใส หากต้องreuseข้ามviewportให้เปลี่ยนเป็นboundedcanonicalregion/recipeที่เสถียรและrenderfulltile หรือรวมexactbboxในkeyโดยยอมรับhitต่ำลง ต้องคงvalidation/ขอบเขตการเข้าถึงตามเดิม รับหลายrequesttileเดียวกันต้องdedup/claimเพื่อไม่compute/uploadซ้ำและpublishเฉพาะไฟล์ที่validateแล้ว ไม่cacheerrorเป็นimage
+
+**การจัดเก็บ/สิทธิ์/ขนาด:** Storageเก็บไฟล์;DBเก็บrecipehash,objectpath,tilecoords,acquisitions,size/hash,createdAt/lastAccess/retentionและstate รูปพื้นหลังกับmission/owner/AOI/history/confirmationแยกกัน การเป็นpublicSentineldataไม่อนุญาตเผยแพร่privateAOIหรือประวัติเปิดพื้นที่ Publicbucket/sharedindexไม่ถูกอนุมานเป็นค่าเริ่มต้น แนวทางเริ่มprivatebucketผ่านsame-origingatewayเดิมและตรวจsession;sharedcanonicalpublicrasterพิจารณาแยกอย่างชัดเจน ห้ามservice_rolesecretลงbrowser ให้browser/HTTPcacheช่วยชั้นแรกและStorageช่วยข้ามreload/serverinstances บังคับเพดานcacheและcleanupเก่าผ่านStorageAPIตามงบพื้นที่/egressจริง ตัวอย่างสมมติ1,000tiles×100KB≈100MBไม่ใช่ประมาณการพื้นที่ใช้งานจริงของบัญชี
+
+**ข้อมูลofficialที่ตรวจใหม่:** SupabaseStorageมีCDNสำหรับassets;SmartCDNแยกเป็นProขึ้นไป จึงไม่ควรวางdesignFreeให้ต้องพึ่งSmartCDN เอกสารปัจจุบันระบุStorageFree1GBแต่ยังไม่ได้อ่านquotausage/remaining/egressจริงของprojectนี้ ห้ามอ้างfreeแน่นอน/มี1GBว่างทั้งหมด หรือเปิดsubscriptionโดยอัตโนมัติ Changelog.mdfetchถูกwebปฏิเสธcontenttypeจึงอ่านHTMLchangelogและdocsหัวข้อStorage/CDN/downloads/usageแทน: [StorageCDN](https://supabase.com/docs/guides/storage/cdn/fundamentals),[SmartCDN](https://supabase.com/docs/guides/storage/cdn/smart-cdn),[servingassets/privatebuckets](https://supabase.com/docs/guides/storage/serving/downloads),[storageusage](https://supabase.com/docs/guides/platform/manage-your-usage/storage-size)
+
+**Verification/งานเหลือ/เผยแพร่:** อ่านAGENTS/currentlog/queue/Gitและsourcecacheที่เป็นเจ้าของ Helpersอ่านตรวจidentity/clippingตรงกัน อัปเดตcanonicalสองMDกับqueuefollowupเท่านั้น ไม่แก้application/worker/SQL/Auth/RLS/env/IAM ไม่สร้างStoragebucket/objectsหรืออ่านaccountusageจริง ไม่รันapplicationtests/build/GEEcompute/AIjob/inference/APIbenchmarkใหม่ ผล17requests/เวลา§3.51เป็นรอบก่อน ไม่อ้างเป็นfreshรอบนี้ ไม่มีcommit/push/deploy/Billing/subscription/paidresource รักษาdirtyfilesจากlauncher/Desktopและauditก่อนหน้า ไม่มีคำถามผู้ใช้รอคำตอบ การเลือกretention/งบcache/permissionmodelยังเป็นข้อเสนอทางimplementationไม่ใช่pendinganswerที่ไปถามผู้ใช้แล้ว
+
+<!-- supabase-free-storage-capacity-answer-2026-10-30 -->
+### 3.55 โควต้าเก็บข้อมูล Supabase Free — 30 ตุลาคม2026
+
+**หัวข้อ:** ผู้ใช้ถามว่าSupabaseแบบฟรีเก็บได้กี่GB ในบริบทการเก็บภาพแผนที่GEEไว้ใช้ซ้ำ
+
+**สรุป:** ตรวจofficialpricingใหม่30ต.ค.2026 ยืนยันFileStorage1GBและDatabase500MBเป็นคนละส่วน ภาพPNGcacheใช้โควต้าStorage1GB ส่วนrecipe/index/missionใช้DB500MB ไม่ใช่นำมารวมเป็นพื้นที่ไฟล์1.5GB และStorage1GBเป็นเพดานความจุไม่ใช่เพิ่มความจุให้สะสม1GBทุกเดือน นี่เป็นโควต้าแพ็กเกจไม่ใช่พื้นที่เหลือจริงของบัญชีซึ่งรอบนี้ไม่ได้อ่าน
+
+**รายละเอียด/ตัวอย่าง:** สมมติtileละ100KB ถ้าใช้Storage1GBทั้งหมดจะอยู่ราว10,000tilesก่อนหักไฟล์อื่น/รายละเอียดการนับหน่วย เป็นตัวอย่างเลขคณิตไม่ใช่ขนาดเฉลี่ยจริงหรือรับรองพื้นที่ครอบคลุมกี่km² Officialpricingและegressdocsยังระบุuncachedegress5GB/monthกับcachedegress5GB/monthแยกกัน ไม่ใช่ความจุเก็บไฟล์ และไม่ใช่pool10GBที่ใช้แทนกันได้ ไม่ยืนยันaccountremaining/freeguaranteeหรืออ้างตัวเลขbillingของผู้ใช้
+
+**หลักฐาน/ขอบเขต:** [Supabasepricing](https://supabase.com/pricing),[Storageusage](https://supabase.com/docs/guides/platform/manage-your-usage/storage-size),[Egressusage](https://supabase.com/docs/guides/platform/manage-your-usage/egress) อ่านlog/queue/Gitล่าสุดและรักษาdirtyงานlauncher/auditก่อนหน้า รอบนี้source-documentlookup/เลขคณิตและบันทึกสองMDเท่านั้น ไม่อ่านDB/Storageusageจริง ไม่เปลี่ยนapplication/schema/bucket/Auth/RLS/env/IAM/Billing/subscription ไม่รันtest/build/GEE/AIjob/inferenceหรือวัดperformanceใหม่ ไม่commit/push/deploy คิวสถานะและrequirementไม่เปลี่ยน ไม่มีคำถามรอคำตอบ
+
+
+### 3.55 ยืนยันขั้นตอนปิดเครื่องและกลับมาใช้งานจาก Desktop Shortcut — 30 ตุลาคม2026
+
+**หัวข้อ:** ผู้ใช้ถามยืนยันว่าปิดคอมได้ แล้วเปิดใหม่ดับเบิลคลิกXEDO CPU WorkerรอREADYและใช้เว็บไซต์ได้หรือไม่ เป็นคำถามวิธีใช้งาน ไม่ใช่คำสั่งให้agentปิดเครื่อง
+
+**สรุป/คำตอบ:** ใช่ ให้Saveภารกิจ/รอบันทึกสำเร็จบนเว็บและไม่มีงานAnalyzeกำลังทำก่อน ปิดหน้าต่างworkerแล้วShutdownตามปกติ หลังเปิดเครื่องใช้Windowsuserเดิม/ต่อinternet→ดับเบิลคลิกShortcut→รอREADYและเปิดหน้าต่างค้างไว้→เปิดxedo-eight.vercel.app/Sign inInspectorหากsessionหมดอายุ→AnalyzeหรือเปิดMy missions/historyได้ ปกติไม่ต้องติดตั้ง/ตั้งระบบหรือกรอกรหัสCPUใหม่หากprotectedsessionเดิมยังใช้ได้;ถ้าCPUขึ้นSTOPPED/ขอเชื่อมใหม่ให้ทำตามคู่มือReconnect ไม่รับรองเน็ตทุกสถานที่หรือsessionไม่ถูกยกเลิกตลอดไป
+
+**ผลตรวจสด/ขอบเขต:** อ่านcurrentlog/queue/Gitและlocalstatus ตรวจเฉพาะprocessลูกlaunch_worker.pyของหน้าต่างShortcutที่เปิดไว้จริง พบprocessalive/stateREADY/ไม่มีactive.json ตามshutdown-guidance-check.json ยังไม่ได้ตรวจunsavedbrowserchanges จึงกำชับSaveก่อนปิด ไม่หยุดโปรแกรมหรือShutdown/rebootเครื่อง ไม่แก้source/บัญชี/SQL/Billing/subscription ไม่สร้างjob/รันinference/ชุดทดสอบ/build/CI/push/deployใหม่ อัปเดตcanonicalสองMDและqueueเพื่อเก็บคำตอบ รักษาotherchatcache-design§3.54และdirtyfilesเดิม ไม่มีคำถามผู้ใช้รอคำตอบ
+
+<!-- supabase-live-usage-cache-budget-2026-10-30 -->
+### 3.56 ตรวจ Supabase ใช้พื้นที่จริงและงบแคชภาพ — 30 ตุลาคม2026
+
+**หัวข้อ:** ผู้ใช้สั่งตรวจSupabaseปัจจุบันใช้/เหลือพื้นที่เท่าไรและแบ่งเก็บmapcacheได้เท่าไร รอบนี้อนุญาตตรวจบัญชีและประเมินเท่านั้น ไม่สร้างcache/bucketหรือแก้เว็บ
+
+**สรุปผลสด 19:14–19:17น. Asia/Bangkok:** Supabaseconnectorยืนยันxedo/tstmjnlhwidwtzetqxbu ACTIVE_HEALTHY/eu-west-1 อยู่organization rphjcbkprrafgiregduu แพ็กเกจFreeจริง Chromeที่sign-inอยู่เปิดorganizationUsageได้/Allprojects/รอบ21ต.ค.–21พ.ย.2026 แสดงStorage0/1GB,Database0.028/0.5GB(6%),Egress0.003/5GB,CachedEgress0/5GBและไม่เกินquota ดังนั้นStorageเหลือประมาณ1GB,DBเหลือประมาณ0.472GBตามsummary และegressเหลือประมาณ4.997GB/cached5GB คนละpool
+
+**SQLอ่านอย่างเดียว:** เวลา12:14:01UTCตรวจStoragebucket0/object0/size0bytes/missingmetadata0 จึงยืนยันXEDOไม่มีไฟล์ในStorageจริง ไม่ใช่แค่dashboardปัดเศษ Mainpostgres12,416,691bytes;template1 7,755,443/template0 7,520,783 รวม27,692,917bytes≈27.69decimalMB≈26.41MiBตรงcurrentXEDOที่dashboardแสดง26.41MB อย่าใช้mainpostgres12.4MBเป็นdatabaseทั้งหมดหรือใช้physicaldisk2GBเป็นFileStorage DBschemaaggregateพบxedo_private917,504bytesแต่ไม่อ่านmissioncontent/credential/authrecords ไม่มีserverfilesystemquery Projectอื่นในorganization1รายการINACTIVE ไม่unpauseหรือqueryDBของprojectนั้น ใช้AllprojectsUsageสำหรับยอดรวม
+
+**ข้อเสนอจัดสรร:** เริ่มcachePNG200MB(decimal)และเผื่อไฟล์อื่นประมาณ800MB ถ้าใช้จริงแล้วต้องเพิ่มให้พิจารณาเพดาน500MB/เหลือสำรองประมาณ500MB ไม่ใช้Storageเต็ม1GB จำนวนประมาณเมื่อสมมติ100–150KB/tile:200MBได้1,333–2,000tiles;500MBได้3,333–5,000tiles ข้อมูลวัดเก่า8distincttilesจาก§3.51รวม537,195bytes/mean67,149.375/median48,075.5/min6,231/max164,156 ถ้าเฉลี่ยเท่าชุดนั้นจะได้2,978/7,446tilesตามลำดับ แต่8ภาพที่zoom/recipeเดียวไม่รับรองmeanทั้งระบบหรือพื้นที่km² ไม่รันGEEใหม่ในรอบนี้ ให้บังคับbytebudget/cleanupไฟล์เก่าที่ไม่ใช้/ป้องกันงานซ้ำและรักษาrecipe/clip/expiryตาม§3.54 IndexในDBแยกจากPNGStorage
+
+**ข้อจำกัดตัวเลข:** DashboardUsageระบุrefreshอาจช้าถึง1ชั่วโมงและpanelรายวันอาจถึง24ชั่วโมง ตัวเลข0.028/0.5GBและ26.41MBมีฐานหน่วย/roundingต่างกัน จึงใช้summaryหน่วยเดียวกันคำนวณremainingโดยประมาณ ไม่เรียกSQLsnapshotว่าbillingremainingแบบexact การลดGEEcomputeยังต้องดาวน์โหลดไฟล์ซึ่งใช้egressและquotaอื่นของเว็บร่วมกัน Egress5GBและcached5GBไม่ใช่pool10GBที่ใช้แทนกันได้ ข้อเสนอ200/500MBยังไม่ได้จอง/เปิดbucket/เขียนภาพหรืออนุมัติimplementationใหม่
+
+**หลักฐาน/verification/publication:** เก็บsanitizedusage-receipt.json/connector-receipts.jsonและrecord-usage.mjsในignoredoutput/supabase-usage-2026-10-30 แหล่งหน้า[Usage](https://supabase.com/dashboard/org/rphjcbkprrafgiregduu/usage)และofficial[storageusage](https://supabase.com/docs/guides/platform/manage-your-usage/storage-size)/[database-size](https://supabase.com/docs/guides/platform/database-size)/[egress](https://supabase.com/docs/guides/platform/manage-your-usage/egress) Connectorมีmetadata/SQLแต่ไม่มีbillingusageendpointจึงใช้ChromeUIอ่านmetric;IABไม่ได้sign-inจึงไม่กรอกcredentialหรือเริ่มlogin ใช้Chromeexistingauthโดยไม่อ่านpassword/token/sessiondata Helpersคำนวณจากreceiptเก่า/อ่านofficialdocsเท่านั้น อัปเดตcanonicalสองMDและqueue.liveQuotaRead/measurement/recommendedbudget รักษาdirtylauncher/shortcut/auditและทั้งสองหัวข้อ3.55ที่แชทอื่นเขียนไว้ ไม่แก้application/worker/SQLschema/Auth/RLS/IAM/env ไม่สร้างbucket/object/AIjob/GEEcompute/CPUinference ไม่รันtests/build/CI ไม่commit/push/deploy ไม่เปิดBilling/subscription/paidresource ไม่มีคำถามผู้ใช้รอคำตอบ
+
+<!-- supabase-cache-speed-expectation-2026-10-30 -->
+### 3.57 เปรียบเทียบความเร็วที่คาดจาก Supabase map cache — 30 ตุลาคม2026
+
+**หัวข้อ:** ผู้ใช้ถามความเห็นว่าวิธีเก็บmaptileในSupabaseเร็วกว่าวิธีเดิมหรือไม่ รอบนี้ตอบการเปรียบเทียบ ไม่ใช่คำสั่งลงมือ
+
+**สรุป:** คาดว่าจะลดเวลารอในกรณีกลับมาดูtile/zoom/sourceversionเดิมที่persistentcacheมีอยู่แล้ว โดยเฉพาะข้ามsession/reloadหรือเมื่อmemorycacheเดิมหาย เพราะไม่ต้องให้GEEคำนวณpixelsของช่องนั้นใหม่ แต่ยังไม่มีSupabasecacheimplementation/benchmarkจึงไม่รับรองseconds/percentage/กี่เท่า Currentbrowsermemoryhitควรใช้ก่อนเพราะไม่ต้องnetwork;ไม่ควรอ้างpersistentcacheเร็วกว่าRAMcacheเดิมทุกครั้ง
+
+**รายละเอียด:** cachemiss/พื้นที่ใหม่ยังต้องGEEและเพิ่มlookup/upload หากรอuploadก่อนแสดงอาจช้าลง ควรวางsaveให้ไม่เพิ่มเวลารอผู้ใช้โดยยังใช้durable/reliablecompletionที่runtimeรองรับ ไม่ปล่อยunawaitedtaskในserverlessแล้วอ้างว่าเก็บสำเร็จ แคชhitให้directlookupด้วยimmutablekeyโดยไม่listทั้งbucketหรือserialDBqueryต่อtile คงboundedparallel/browsercacheก่อนStorage/sourcefreshnessและidentity/clip/ownerguardsจาก§3.54 การเปลี่ยนzoom/วันที่หรือrecipeอาจmiss วิธีนี้ไม่ลดHTMLเริ่มต้น6.2MBโดยตัวมันเอง ผลเก่าtile3.257→0.732sและ8tiles5.019sที่§3.51เป็นGEEgatewayเดิม ไม่ใช่Supabasecachedeliverybenchmark
+
+**หลักฐาน/verification/publication:** อ่านcurrentlog/queue/Gitและreceiptเดิม พร้อมตรวจofficial[StorageCDN](https://supabase.com/docs/guides/storage/cdn/fundamentals)และ[Storageoptimizations](https://supabase.com/docs/guides/storage/production/scaling) ยืนยันหลักการCDN/browsercache ไม่ใช้เอกสารแทนmeasuredperformanceของแอป Helperตรวจขอบเขตคำกล่าวอ้างตรงกัน อัปเดตcanonicalสองMDเท่านั้น คิวrequirement/statusไม่เปลี่ยน ยังคงproposal/cache200MBเริ่มต้น/ยังไม่implement ไม่ตรวจaccountusageหรือรันGEE/API/benchmark/tests/buildใหม่ ไม่แก้application/worker/schema/bucket/Auth/RLS/IAM/env ไม่commit/push/deploy/Billing/subscription รักษาdirtyงานแชทอื่นทั้งหมด ไม่มีคำถามผู้ใช้รอคำตอบ
+
+
+<!-- post-reset-website-check-2026-10-30 -->
+### 3.58 ตรวจเว็บไซต์ใหม่หลังผู้ใช้แจ้ง reset — 30 ตุลาคม2026
+
+**หัวข้อ/ขอบเขต:** ผู้ใช้แนบภาพCPUworkerREADYและให้ตรวจwebsiteใหม่หลังreset Rootอ่านcanonical/queue/Gitและภาพจริง รักษางานdirtylauncher/shortcut/GEEaudit/cache-design/usage/estimateของอีกแชท ไม่resetDB/บัญชี/ไฟล์missionหรือปิดworker ไม่ถือภาพREADYอย่างเดียวเป็นproofwholeflow รอบนี้ตรวจเว็บไซต์/CPUจริงและเก็บQAmissionใหม่หนึ่งรายการ ไม่แก้productsourceหรือpublish
+
+**Production/แผนที่สด:** เปิดhttps://xedo-eight.vercel.app/ใหม่ในChrome ไม่ใช้ambientlocalauditreportเป็นเว็บที่ทดสอบ เห็นสามขั้นตอนและSentinel-2basemap20images/2–27ต.ค.โหลดได้ Vercelhostnamealiasยืนยันdpl_EG7VyQiMMZpdXuSxmeSLep3KcsGmREADY/maina5612696a80470733da4155bd953d01d7b553bd4 การlookupURLมีschemeครั้งแรกไม่คืนidentity จึงแก้เป็นhostnameและใช้ผลที่ตรวจแล้ว ไม่วัดHTMLfullbodyhash/CIใหม่ในรอบนี้
+
+**Login/ข้อมูลเดิม:** Browserใหม่เริ่มGuestตามsession จึงเปิดLoginและขอให้ผู้ใช้Sign inInspectorเดิม ผู้ใช้ตอบเข้าแล้วและRootเห็นSigned inจริง ไม่อ่าน/กรอกpassword/tokenเอง SignedAPIผ่านexistingInspectorDPAPIsessionเดิมแยกตรวจworkerOnline=trueและmissions9รายการ (APIproofไม่ใช้แทนbrowser) จากนั้นUIเปิดHistoryเดิมVersions3/2/1→เปิดv3 สำเร็จ manualtarget4จุด/Confirmedreviewv2completeกลับมาครบ รายการรอSign inจากช่วงตรวจแรกปิดแล้ว ไม่ต้องถามซ้ำ ข้อความรอในประวัติ§3.59เป็นsnapshotก่อนผู้ใช้ตอบ ไม่ใช่currentpending
+
+**งานใหม่จริงผ่านUI:** สร้างQA Post-reset — CPU check 2026-10-30 แยกภารกิจเดิม นำเข้าRayongAOI4.83กม²(grid5.0172กม²) กดAnalyzeและยืนยันเพียงหนึ่งงาน เห็นSearchingSentinel-1→DownloadingSAR→SucceededและNew AI result loadedอัตโนมัติ job2eaf0ef1-3402-4d80-97dc-30f3f59aec49/created2026-10-30T12:45:02.857258+00:00/resultXEDO_LOCAL_RESULT_2014433eff08423c85684c51b63ad985 เป็นjobใหม่ต่างจากphase7 ไม่รันqualify-production-ai.pyซ้ำเพราะharnessนั้นใช้checkpointตามHTMLhashและอาจreuseงานเก่า
+
+**ผล CPU สด:** pipeline34.867s/inference0.399s/nativepeak510.684MiB ใช้SAR26ต.ค.23:00:37UTC/analysis30ต.ค.12:45:44UTC/checkpoint41a2bd4b5b23/threshold0.3 Valid48679/total50172pixels/NoData1493 ได้0candidateและcandidate/valid/NoDataroundtripต่าง0 เป็นหนึ่งงานเล็กและเวลาเฉพาะpipeline ไม่ใช่end-to-endSLA/P95/200กม²/100jobsเดือน ZeroCandidateไม่ยืนยันว่าไม่มีน้ำมัน
+
+**Editor/ภาพ/planner/Save:** วาดmanual4จุดในแผนที่จริงด้วยmouseและdoubleclickfinish แก้หนึ่งvertexผ่านช่องGeoJSON/Apply โหลดS2วันที่22ต.ค.cloud14.1%จนImageReadyและpixelsvalidated ยืนยันพื้นที่→Confirmedreviewv2/manual/completeและsaved จากนั้นPrepare→route2.21km→Savev3 UIแสดงMission saved privately as version3 APIreadbackยืนยันmission67479507-8eb3-4b7d-b9c7-28bc10379afd/revision3/savedanalysisRefผูกresultใหม่ HistoryของQAใหม่มีVersions3/2/1 เปิดv3กลับมา SavedAIreviewrestored/Confirmedv2complete/ทุกcoordinateตรงdraftที่แก้แล้ว การเทียบgeometryใช้typeและorderedcoordinatearrays ไม่เปรียบJSONstringที่ลำดับobjectkeysต่างกัน Newmissionreadonlyreopenให้reloadcontextimageก่อนPrepareตามเดิม ไม่มีการSaveแก้ภารกิจเดิม QA Production browser — area analysisยังrevision3
+
+**Flight readinessที่คงไว้:** Routepreviewสำเร็จ แต่ดาวน์โหลดflightfileยังล็อกเมื่อHome/airspace/dronebatteryinputsไม่ครบตามเกณฑ์เดิม ไม่ปลดล็อกเพื่อให้QAผ่านและไม่อ้างทดสอบQGC/SITL/บินจริง 3D/mobile/เครื่องสัมผัส/longsoakไม่ทดสอบซ้ำในรอบนี้ ไม่แปลงnormalprofileงานที่ผู้ใช้พักเป็นfeatureค้างใหม่
+
+**ความหน่วง/console/ขอบเขตproof:** บางautomationclick/waitชนCDPRuntime.evaluate3000msก่อนstateปรับเสร็จ Rootอ่านUIใหม่แล้วทำขั้นต่อจากผลจริง ไม่กดAnalyzeซ้ำ ไม่ใช้automationtimeoutเป็นหลักฐานว่าAPI/CPUล้มเหลว Consolewarn/errorท้ายflowจับได้0 ไม่ใช่รับรองerrorทุกระบบ ไฟล์READYท้ายflowมีtimestampใหม่และไม่มีactive.json ข้อมูลOSresetเป็นuser-reported;agentไม่ได้rebootWindowsเอง ทดสอบSignedUIและหนึ่งfreshjobจริง ไม่reuseรายงาน/84testsเก่าเป็นfreshcase
+
+**ไฟล์/หลักฐาน/เผยแพร่:** เก็บproduction-identity.json/public-ui.json/signed-api-readiness.json/history-restored.json/running-ui.json/new-job-api-receipt.json/new-mission-restored.json/browser-console.json/acceptance.json/REPORT.mdและscreenshotsในoutputs/XEDO_Post_Reset_Check_2026-10-30 Helpersชั่วคราวอยู่ignoredoutput ไม่copyAuthUUID/credentialsลงpublicdocs Rootแก้canonicalสองMDและqueueเท่านั้น ไม่แก้website/worker/SQLschema/Authpolicy/IAM ไม่รันunittests/build/CIใหม่ ไม่commit/push/deploy/Billing/subscription/paidresource ไม่ปิดworker ตอนจบCPUREADYพร้อมรับงาน ไม่มีคำถามผู้ใช้รอคำตอบ
+
+<!-- map-cache-200mb-image-estimate-2026-10-30 -->
+### 3.59 ประเมินจำนวนช่องภาพในแคช 200 MB — 30 ตุลาคม2026
+
+**หัวข้อ:** ผู้ใช้ถามประเมินSupabaseเก็บภาพได้กี่ภาพถ้าแบ่ง200MB ไม่ใช่คำสั่งimplementation
+
+**สรุป:** คำนวณ200MBแบบdecimal=200,000,000bytes ถ้าช่องPNG256×256เฉลี่ย50KB→4,000ภาพ,100KB→2,000,150KB→1,333,200KB→1,000 ตัวอย่างเดิม8distinctbasemaptilesรวม537,195bytes/mean67,149.375bytesทำให้เก็บได้2,978ภาพที่ค่าเฉลี่ยนั้น แนะนำใช้1,300–2,000ช่องเป็นplanningrangeก่อน ไม่ใช่รับประกันจำนวนหรือเพดานขนาดtile
+
+**รายละเอียด/หลักฐาน:** อ่านproduction-timings.jsonที่output/gee-latency-audit-2026-10-30และรันเลขคณิตใหม่ ไม่มีGEE/APIหรือภาพใหม่ รูปที่นับคือtileเล็กสำหรับต่อแผนที่ ไม่ใช่ภาพดาวเทียมเต็มscene/เต็มหน้าจอ แต่ละzoom/sourceversionเป็นคนละcachekey ภาพตรงkeyเดิมใช้ซ้ำโดยไม่ต้องเพิ่มไฟล์ใหม่ ต้องจำกัดbytesจริงไม่ใช่นับภาพอย่างเดียว
+
+**Verification/สถานะ:** อ่านcurrentcanonical/queue/Gitและรักษางานdirtyก่อนหน้า อัปเดตสองMDเท่านั้น คิวstatus/requirementไม่เปลี่ยน ไม่ตรวจquotaบัญชีใหม่ ไม่แก้source/worker/SQL/bucket/Auth/IAM ไม่รันapplicationtests/build/AI/GEEbenchmarkหรือcommit/push/deploy/Billing/subscription คำถามประมาณภาพไม่มีคำถามใหม่ แต่คงรอคำตอบจากงานอีกแชทpostResetWebsiteVerificationเรื่องSign inInspectorบนChromeตาม§3.58 ไม่เริ่มหรืออ้างปิดการตรวจเว็บนั้นจากรอบนี้
+
+
+<!-- remaining-work-status-2026-10-30 -->
+### 3.60 สรุปงานที่เหลือหลังตรวจเว็บไซต์หลัง reset — 30 ตุลาคม 2026
+
+**หัวข้อ:** สรุปงานที่เหลือจาก canonical log/queue และ Git ปัจจุบันตามคำถามผู้ใช้ รอบนี้เป็นการรายงานสถานะ ไม่ใช่คำสั่งเริ่มแก้หรือเผยแพร่
+
+**สรุป:** ฟังก์ชันหลักสำหรับ prototype และเส้นทางเว็บไซต์ → Supabase → CPU ในเครื่อง → ผล AI → Inspector แก้/ยืนยันพื้นที่ → planner → Save/History ทำแล้ว หลักฐาน browser/API หลัง reset อยู่ §3.58 ซึ่งปิดการรอ Sign in แล้ว ข้อความรอในประวัติ §3.59 ถูกแทนที่ด้วยผลสำเร็จดังกล่าว ไม่มีคำตอบผู้ใช้ค้าง
+
+**รายละเอียดงานติดตาม:**
+
+1. **ปรับความเร็วแผนที่/GEE — ออกแบบแล้ว ยังไม่ลงมือ:** ลดขนาดหน้าเว็บที่มี asset ฝังอยู่มาก ลดคำขอภาพซ้ำ และพิจารณา persistent map-tile cache ใน Supabase ตาม §§3.51/3.54/3.56/3.57/3.59 งบแคชเริ่มต้น 200 MB เป็นข้อเสนอ ต้องมี key อิงภาพ/สูตร/zoom/พื้นที่และสิทธิ์ที่ถูกต้อง จำกัดขนาดจริงและล้างภาพเก่า ยังไม่ได้สร้าง bucket/schema หรือรับรองผลความเร็ว
+2. **ตรวจความลื่นและความทนทานเพิ่มเติม — qualification คงเหลือ:** ทดสอบเลื่อน/สัมผัสบนมือถือและ trackpad จริง เปิดใช้งานนานและตรวจการใช้หน่วยความจำ รวมถึงกรณีงาน AI ต่อเนื่อง/ขาดการเชื่อมต่อ/หลาย session ตามขอบเขตที่ยังไม่ qualify ครบ การตรวจ core และงาน AI จริงที่เคยผ่านยังคงเป็นหลักฐานเดิม ไม่ได้หมายความว่าไม่มีการทดสอบพื้นที่ใหญ่หรือการเชื่อมต่อมาก่อน รายการนี้อยู่กลุ่มใหม่ 1/เดิม 4 และส่วน qualification ของใหม่ 6/เดิม 9 ไม่เปิดงาน normal drone profile เดิม 3 ที่ผู้ใช้ตัดออก
+3. **เก็บชุดเปิด CPU และคู่มือเข้า Git — งานส่งมอบในเครื่อง:** Start-XEDO-CPU.cmd, Reconnect-XEDO-CPU.cmd, launcher/worker guard และคู่มือทำงานในเครื่องและผ่านการตรวจตามบันทึกก่อนหน้าแล้ว แต่ Git ปัจจุบันยังมีไฟล์ modified/untracked ต้อง review/commit/push เมื่อได้รับคำสั่งเผยแพร่ชุดนี้ Worker ยังรันบน PC ไม่ต้อง deploy ตัว worker ไป Vercel เพื่อใช้งานปัจจุบัน
+
+**งานพักไว้ 2 รายการ:** ใหม่ 4/เดิม 7 เชื่อม Raspberry Pi รูปและ telemetry; ใหม่ 5/เดิม 8 เชื่อมผลทดลองและรายงานก่อน–หลัง ทั้งสองไม่เป็นเงื่อนไขของการ Analyze พื้นที่ใหม่และวางแผนปัจจุบัน Cloud AI แบบเสียเงิน/Billing/subscription ไม่อยู่ในงานที่อนุมัติ
+
+**ความหมายของจำนวน:** คิวฟังก์ชันเดิมยังเหลือ 1 กลุ่ม extended qualification และ 2 กลุ่ม deferred ตาม numbering เดิม รายการติดตาม 3 ข้อข้างบนรวมข้อเสนอปรับประสิทธิภาพกับงานเก็บ Git จึงไม่ใช่การเพิ่ม 3 ฟังก์ชันหลักที่ยังทำไม่เสร็จ และไม่เปลี่ยนเลขคิวเดิม
+
+**ไฟล์/การตรวจ/การเผยแพร่รอบนี้:** อ่าน canonical สอง MD, implementation-queue.json และ Git status/HEAD ปัจจุบัน; อัปเดตสอง MD และเพิ่ม latestRemainingWorkAudit ใน queue โดยรักษาข้อมูลแชทอื่นและสถานะขั้นเดิม ไม่แก้ source/worker/schema/Auth ไม่รัน app tests/build/browser/API/AI job/benchmark ใหม่ ไม่ commit/push/deploy ไม่เปิด Billing/subscription หรือบริการเสียเงิน ผลทดสอบ runtime ที่กล่าวถึงมาจากรอบ §3.58 ไม่ใช่ผลรันใหม่ในรอบนี้
+
+<!-- model-effort-advice-xedo-2026-10-30 -->
+### 3.61 เลือก Extra High หรือ Ultra สำหรับพัฒนาเว็บไซต์ XEDO — 30 ตุลาคม 2026
+
+**หัวข้อ/ขอบเขต:** ผู้ใช้ถามว่าระดับใดเหมาะและคุ้มกว่าสำหรับ XEDO รอบนี้ให้คำแนะนำจาก canonical log/queue, WEBSITE_DETAILS, AGENTS.md, package.json และ Git ปัจจุบันเท่านั้น ไม่ใช่คำสั่งดำเนินงานคิวหรือเปลี่ยนการตั้งค่าโมเดล
+
+**สรุปคำแนะนำ:** ใช้ GPT-6.1 Sol Extra High เป็นหลักสำหรับแก้ UI/bug/flow เฉพาะเรื่องและรวมงานที่มี dependency ต่อกัน พิจารณา Ultra สำหรับตรวจภาพรวม/วางแผนงานใหญ่ที่แยกตรวจ GEE/performance, AI/local worker, persistence/สิทธิ์ และ regression ได้อย่างอิสระ แล้วให้แชทหลักรวบรวมและแก้ source หลักเพียงผู้เดียวตาม ownership เดิม นี่เป็นข้อประเมินเชิงงาน ยังไม่ใช่ผลทดลองหรือการตัดสินใจที่ผู้ใช้ยืนยัน
+
+**เหตุผลตามสถาปัตยกรรม:** WEBSITE_DETAILS §3.1 และ §§3.43–3.60 บันทึก flow แผนที่/ภาพดาวเทียม → owned AI job/CPU → Inspector edit/confirm → planner → Save/History จึงต้องรักษา state/revision และตรวจทั้ง flow งานประสิทธิภาพที่เหลือมีทั้งลด asset, ลดคำขอซ้ำ และ cache proposal; แยกงานสำรวจและหลักฐานทดสอบได้ แต่การเขียนไฟล์/แก้ integration พร้อมกันเพิ่มภาระรวมงาน
+
+**เอกสารทางการที่ตรวจ:** [Models](https://learn.chatgpt.com/docs/models) อธิบาย Extra High และ Ultra; [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents) ระบุว่า subagents ใช้โทเคนมากกว่างาน single-agent ที่เทียบกันได้ และ Codex ใช้เมื่อผู้ใช้หรือ AGENTS/skill ขอให้แบ่งงาน; Extra High จึงใช้ subagents แบบสั่งตรงได้ด้วย [Pricing](https://learn.chatgpt.com/docs/pricing) ระบุว่า context/reasoning/tools/retrieval/cache มีผลต่อ usage ไม่ใช้ตัวคูณ Fast/Ultrafast มาคิดเป็นตัวคูณ Ultra ไม่มีผล benchmark XEDO หรือข้อมูล usage จริงของผู้ใช้ให้ระบุว่าคุณภาพ/ความคุ้มค่าต่างกี่เปอร์เซ็นต์
+
+**ไฟล์/verification/publication:** เปลี่ยนเฉพาะ XEDO_WORK_LOG.md และ WEBSITE_DETAILS.md; ไม่เปลี่ยน implementation-queue.json เพราะ requirement/status ของผลิตภัณฑ์ไม่เปลี่ยนและรักษา latestRemainingWorkAudit ของอีกแชท อ่าน Git branch codex/xedo-hardware-profile/HEAD a5612696a80470733da4155bd953d01d7b553bd4 และรายการ dirty ก่อนแก้ ไม่แก้ application/worker/schema ไม่ใช้ subagents ไม่รัน app tests/build/browser/API/AI job/benchmark ใหม่ ไม่ commit/push/deploy หรือเปลี่ยน Billing/subscription/model/config ไม่มีคำถามผู้ใช้รอคำตอบ
+
+<!-- consolidated-gee-supabase-cache-plan-2026-10-30 -->
+### 3.62 รวบรวมแผนล่าสุดในแชทเป็นไฟล์ Markdown — 30 ตุลาคม2026
+
+**หัวข้อ/ขอบเขต:** ผู้ใช้ขอรวบรวมแผนล่าสุดในแชทนี้เป็น.md จัดทำdocs/GEE_MAP_CACHE_PERFORMANCE_PLAN.md v1.0 เน้นความเร็วGEEและSupabasepersistenttilecache ไม่ถือเป็นคำสั่งimplementationหรือเผยแพร่ ไม่รวมงานCPUlauncher/การเลือกmodelจากอีกแชทเป็นrequirementของแผนนี้
+
+**สรุปแผน:** Browsercache→SupabaseStoragePNG+DBindex→GEEเฉพาะmiss;เพดานเริ่ม200,000,000bytes/วางแผน1,300–2,000tiles/samplemeanเดิม2,978 ขยาย500MBเป็นทางเลือกภายหลัง รวมimmutableasset/recipe/order/zoom/grid/clipidentity,reuseboundedregions,sourcefreshnessแยกsessionexpiry,privatebucketgatewayที่คงguestbackground,concurrency/reservation/cleanup/failurefallback,ลดhostedHTML6.2MBและใช้ภาพร่วมในInspector/3Dเมื่อidentityตรง พร้อม6ระยะงาน/acceptance/ไฟล์ที่เกี่ยวข้อง/officiallinks/หลักฐานตัวเลขในเอกสารเพื่ออ่านส่งต่อได้
+
+**ความถูกต้องของหลักฐาน:** ตัวเลขGEE0.887/5.019sและtile3.257→0.732sมาจากaudit§3.51 ไม่ใช่Supabasebenchmark ตัวเลขUsageStorage0/1GBและDB0.028/0.5GBเป็นsnapshot30ต.ค.19:14–19:17ต้องตรวจซ้ำก่อนลงมือ ไม่อ้างพื้นที่ว่างหรือProductionidentityสดในรอบเขียนเอกสาร Currentqueue§3.58ปิดSignIn/History/freshjobแล้ว จึงไม่คงคำถามSignInเดิมเป็นpendingของแผน ไม่มีคำถามผู้ใช้รอคำตอบ
+
+**ไฟล์/verification/publication:** เพิ่มแผน1ไฟล์ อัปเดตcanonicalสองMDและqueue.geeMapLatencyAudit.persistentCacheFollowup.consolidatedPlanโดยรักษาdirtyงานแชทอื่น อ่านAGENTS/log/queue/Gitและreceiptsเดิม ตรวจMarkdownfences/localdoclinks/ขอบเขต200MB/JSON/เลขคณิตเดิมและgitdiff ไม่แก้application/worker/SQL/Auth/RLS/IAM/env ไม่สร้างbucket/เขียนStorage ไม่รันGEE/API/AIinference/applicationtests/build/benchmarkใหม่ ไม่ใช้subagents ไม่commit/push/deploy/Billing/subscription/paidresource แผนยังplanned_not_implemented;publish/implementationauthorizationยังfalse
+
+
+<!-- locate-parallel-gee-plan-2026-10-30 -->
+### 3.63 ค้นหา Markdown แผนแก้ GEE ดีเลย์จากแชทคู่ขนาน — 30 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้แจ้งว่าอีกแชททำ Markdown อธิบายความช้า Google Earth Engine และให้ค้นหาในโฟลเดอร์แล้วแจ้งว่าพบหรือไม่
+
+**สรุป:** พบไฟล์ `docs/GEE_MAP_CACHE_PERFORMANCE_PLAN.md` จริงใน active release checkout ชื่อเอกสาร “XEDO — แผนปรับความเร็วแผนที่ GEE และเก็บแคชด้วย Supabase” เวอร์ชัน 1.0 วันที่ 30 ตุลาคม 2026 ขนาด 43,796 bytes เปิดตรวจส่วนต้น สาเหตุ การทำงาน และลำดับลงมือแล้ว ตรงกับบันทึกการจัดทำจากอีกแชทใน §3.62 ไม่ใช่เอกสาร GEE รุ่นเก่าใน checkout อื่น
+
+**รายละเอียด:** เนื้อหาครอบคลุม metadata→tiles waterfall, การสร้าง pixels/mosaic, ข้อจำกัดแคชข้าม session และการยกเลิกคำขอ, hosted HTML ประมาณ 6.2 MB จากหลักฐานเดิม พร้อมข้อเสนอ browser cache→Supabase cache→GEE เฉพาะ miss เพดานเริ่ม 200 MB และงาน 6 ระยะ/เกณฑ์ตรวจรับ เอกสารระบุชัดว่า planned_not_implemented ยังไม่มี cache implementation หรือ release จากแผนนี้ ตัวเลขเวลา/usage เป็นหลักฐานรอบก่อน ไม่ใช่ผลวัดใหม่ในรอบค้นหา
+
+**ไฟล์/การตรวจ/การเผยแพร่:** ค้นชื่อ Markdown ใน workspace เปิดไฟล์จริง อ่าน canonical log/queue และตรวจ Git; ไฟล์แผนยัง untracked ตาม Git ปัจจุบัน รักษาเนื้อหาแผนและ dirty งานแชทอื่น อัปเดตเฉพาะ canonical สอง MD ในรอบนี้ คิว/requirement/status เดิมไม่เปลี่ยน ไม่แก้เว็บไซต์/worker/schema/bucket/Auth ไม่รัน app tests/build/browser/GEE/API/CPU job/benchmark ไม่ commit/push/deploy/Billing/subscription ไม่มีคำถามผู้ใช้รอคำตอบ
+
+<!-- subagents-versus-separate-chats-2026-10-30 -->
+### 3.64A เปรียบเทียบเอเจนต์ย่อยกับการเปิดอีกแชต — 30 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้ถามความต่างเชิงการทำงานต่อจากคำแนะนำ Extra High/Ultra ไม่ได้สั่งให้สร้างเอเจนต์หรือแชตเพิ่ม
+
+**สรุป:** เอเจนต์ย่อยมีแชตหลักเป็นผู้แจกงาน ส่งบริบท ติดตาม/ส่งคำสั่งต่อ รับผล และรวบรวมคำตอบ การเปิดหลายแชตเองทั่วไปมีบทสนทนาแยกและผู้ใช้เป็นผู้จัดการการส่งต่องานเป็นหลัก ทั้งสองทำงานคู่ขนานได้ ความแตกต่างนี้ไม่ได้รับประกันความฉลาด คุณภาพ หรือต้นทุนต่อชิ้นงาน
+
+**รายละเอียด:** แต่ละเอเจนต์มีบริบทของตนเอง ไม่ใช่ทุกตัวเห็นทุกข้อความ/การเปลี่ยนแปลงแบบสดเสมอ แชตใน project อาจใช้ไฟล์/คำสั่ง/บริบทร่วมได้ แต่ไม่ควรถือว่าบทสนทนาทั้งหมดซิงก์กัน การอ่านหรือเขียน local files ขึ้นกับ client/workspace/สิทธิ์; หากใช้ checkout เดียวกันทั้งหลายแชตและ subagents ต้องประสานการแก้ไฟล์ ไม่ได้แยก worktree ให้อัตโนมัติจากคำว่า subagent กรณีอีกแชตสร้าง GEE_MAP_CACHE_PERFORMANCE_PLAN.md แล้วแชตหลักค้นพบใน §3.63 เป็นตัวอย่าง handoff ผ่านไฟล์กลาง สำหรับ XEDO คงผู้รวม source/config หลักคนเดียวและให้ผู้ช่วยส่งผลตรวจ/หลักฐานกลับตาม ownership เดิม
+
+**แหล่งอ้างอิง:** [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents), [Projects and chats](https://learn.chatgpt.com/docs/projects), [Multi-agent](https://developers.openai.com/api/docs/guides/agents-api/multi-agent) ของ OpenAI ตรวจหน้าเนื้อหาจริงแล้ว; markdown endpoint ใช้กับ web fetch ไม่ได้ จึงเปิดหน้า HTML ต้นทาง ไม่มีการใช้ search snippet เพียงอย่างเดียวเป็นหลักฐาน
+
+**ไฟล์/verification/publication:** อ่าน canonical log/queue/WEBSITE_DETAILS และ Git ปัจจุบันก่อนแก้ รักษารอบ §3.62–3.63 และ dirty งานอื่น เพิ่มเฉพาะบันทึกใน canonical สอง MD ไม่เปลี่ยนสรุป/ownership/คิวหรือแผน GEE ไม่มีคำถามรอคำตอบ ไม่มี subagent หรือ user-owned chat ใหม่ ไม่ส่งข้อความให้แชตอื่น ไม่แก้ product/config ไม่รัน application tests/build/browser/GEE/API/AI job/benchmark ไม่ commit/push/deploy/Billing/subscription
+
+
+<!-- gee-performance-existing-support-plan-v1-1-2026-10-30 -->
+### 3.64 ปรับแผน GEE ให้ทำงานกับแชทผู้ช่วยเดิม — 30 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้ให้ปรับแผน GEE โดยใช้แชทผู้ช่วยเดิมช่วยงานที่แยกตรวจได้ เนื่องจากผู้ใช้รายงานว่า Ultra ใช้ไม่ได้ช่วงนี้ คำสั่งรอบนี้ให้ปรับแผนก่อน ไม่เริ่ม implementation หรือเผยแพร่
+
+**สรุป:** ปรับ `docs/GEE_MAP_CACHE_PERFORMANCE_PLAN.md` เป็น v1.1 แชทหลักยังเป็นผู้แก้เว็บไซต์/API/schema/config/packages/tests และดำเนินการบริการจริงเพียงแชทเดียว ผู้ช่วยตรวจ source/contract ออกแบบทดสอบ ตรวจ diff และตรวจหลักฐานคู่ขนาน ใช้การตั้งค่าที่มีอยู่ ไม่รอ Ultra ไม่อ้างว่าแบ่งงานแล้วคุณภาพ/เวลาเท่า Ultra หรือเร็วขึ้นเป็นตัวคูณ ไม่มีการตรวจสาเหตุ Ultra unavailable จากผู้ให้บริการ
+
+**แชทผู้ช่วยที่ตรวจพบจริง:** ใช้ app list_threads และอ่านประวัติแชทเดิม `02-chat ขนาน project หลัก` / `01a17cf8-a060-7fd0-bed4-d7920a297d20` / host local ยืนยันขอบเขต read-only website และ output-only artifacts เดิม ไม่สับสนกับแชท `ตรวจสอบดีเลย์ Google Earth Engine` ที่รวบรวมรายงาน ยังไม่ส่งข้อความปลุกงาน ไม่สร้างแชทหรือ spawn subagent รอบนี้
+
+**รายละเอียดแผน:** ตาราง 6 ระยะเพิ่มเจ้าของงานหลัก/ผู้ช่วยและจุดรับผล A ก่อนตรึง recipe/key/clip/freshness/สิทธิ์/200 MB, B เมื่อมี candidate cache/build, C ก่อนสรุป benchmark/release ผู้ช่วยส่ง HANDOFF.md, SOURCE_REVIEW.md, TEST_MATRIX.md, SOURCE_MANIFEST.json และ EVIDENCE_REVIEW.md ใน `C:/mega/codex/iENA/outputs/XEDO_GEE_Performance_Parallel_2026-10-30/support/` (เป็นทางส่งมอบที่เสนอ ยังไม่สร้างหรือรันงานนั้น) ระบุ measured/source finding/hypothesis และ designed_not_run/null actual เมื่อไม่มีผลรัน แชทหลักควบคุม browser/API/GEE benchmark เพื่อไม่แย่ง session/สร้างคำขอซ้ำ ทั้งสองอิง HEAD+working-tree file hashes+build/input/cache/network เดียวกัน ทวนใหม่เมื่อ source เปลี่ยน
+
+**กติกาไฟล์ร่วม:** แชทหลักดูแลภาพรวม/คิว ผู้ช่วยเขียนเฉพาะโฟลเดอร์ support ยกเว้น append บันทึกสั้นใน canonical สอง MD ตาม AGENTS ช่วงส่งมอบที่ประสานให้เขียนทีละแชท ต้องอ่านเวอร์ชันล่าสุดและไม่เขียนทับจากสำเนาเก่า ไม่ให้ผู้ช่วยแก้ source/tests/schema/config/Git/accounts หรือสร้าง bucket จุดรับผลระหว่างแชทไม่เพิ่มขั้นถามอนุมัติผู้ใช้ทุกช่วง เป้าข้อพบแรก 20–30 นาทีหลังเริ่มเป็นเป้าหมาย ไม่ใช่รับประกันเวลารวม
+
+**สิ่งที่คงเดิม:** ข้อเสนอแคชเริ่ม 200,000,000 bytes, 500 MB เป็นทางเลือกภายหลัง, สามขั้นตอน/สี่ตัวคำนวณ/Inspector ส่วนตัว/CPU ในเครื่อง/Pi และรายงานผลทดลองที่พักไว้ ไม่เปิด Billing/subscription ไม่แก้ขอบเขตที่ผู้ใช้ตัดออก การให้ใช้ผู้ช่วยไม่ใช่คำสั่งเริ่ม cache implementation/push/deploy
+
+**ไฟล์/หลักฐาน/การตรวจ/สถานะ:** เปลี่ยนแผน v1.1, canonical สอง MD และ queue.consolidatedPlan/parallelChatPolicy.geePerformanceFollowup; อ่าน AGENTS, memory, canonical, queue, plan, Git branch/HEAD/status และประวัติผู้ช่วยจริง ใช้ skill supabase:supabase ประกอบขอบเขตสิทธิ์เดิม ไม่แก้เทคนิค provider API/schema ในรอบจัดงาน ไม่ทดสอบ app/build/browser/API/GEE/CPU/usage หรือ benchmark ใหม่ ตรวจเฉพาะโครงสร้าง Markdown, links, JSON และ diff ภายหลังแก้เอกสาร ไม่ commit/push/deploy/migration/bucket/Auth/model/config/Billing/subscription ไม่มีคำถามผู้ใช้รอคำตอบ
+
+<!-- user-clarifies-main-controlled-parallel-chats-2026-10-30 -->
+### 3.64B ผู้ใช้ชี้แจงว่าแชทหลักควบคุมแชทรองเอง — 30 ตุลาคม 2026
+
+**หัวข้อ/สรุป:** ผู้ใช้ยืนยันรูปแบบงานของตนว่าใช้ Extra High มีแชทหลักหนึ่งแชทสั่งและตรวจงานแชทรองหนึ่งแชท ทำงานคู่ขนานและส่งผลเป็น .md จึงมีโครงสร้างผู้ประสานงาน/ผู้ช่วย/ส่งผล/ตรวจรวมคล้าย multi-agent ที่ใช้กับ Ultra คำอธิบายก่อนหน้าว่าผู้ใช้ต้องประสานหลายแชทเองเป็นคำอธิบายกรณีทั่วไป ไม่ตรงกับรูปแบบนี้ ต้องปรับคำตอบตามคำชี้แจง
+
+**รายละเอียด/ขอบเขตหลักฐาน:** ความคล้ายของ pipeline ไม่ยืนยัน reasoning effort, implementation ภายใน, context delivery, จำนวนเอเจนต์, คุณภาพ เวลา หรือ usage เท่ากับ Ultra และการเพิ่มแชท Extra High ไม่เปลี่ยน effort เป็น Ultra อัตโนมัติ เอกสาร [Subagents](https://learn.chatgpt.com/docs/agent-configuration/subagents) อธิบาย Ultra ใน ChatGPT Work ว่าใช้ maximum reasoning และ proactive delegation; [Models](https://learn.chatgpt.com/docs/models) แนะนำ Ultra เมื่องานแบ่งทำอิสระได้ รูปแบบของผู้ใช้เป็นการทำ orchestration ผ่านหลายแชทและไฟล์ ไม่ใช่การเปิดแชทที่แยกกันโดยไม่มีผู้รวมผล ข้อความนี้รับรูปแบบที่ผู้ใช้อธิบาย ไม่อ้างว่าทุกงานในแผน GEE v1.1 เริ่มแล้ว: queue ยัง planned_not_dispatched และไม่เปลี่ยนสถานะนั้น
+
+**ไฟล์/verification/publication:** อ่าน canonical log/queue/WEBSITE_DETAILS และ Git ปัจจุบันพร้อมเปิด OpenAI Docs ใหม่ เพิ่มบันทึกเฉพาะสอง MD รักษาแผนและ ownership ของอีกแชท ไม่เปลี่ยน queue เพราะไม่มี requirement/execution status ใหม่ ไม่สร้าง/สั่งเอเจนต์หรือแชท ไม่ส่งงาน/เปลี่ยน model/config ไม่แก้ product ไม่รัน application tests/build/browser/API/GEE/CPU job/benchmark ไม่ commit/push/deploy/Billing/subscription ไม่มีคำถามรอคำตอบ
+
+<!-- gee-performance-support-a-handoff-2026-10-30 -->
+### 3.64C Support A ส่ง source/contract review ของแผน GEE v1.1 ข้อ 1–2 — 30 ตุลาคม 2026
+
+**หัวข้อ:** แชทสนับสนุนส่งชุด A ให้แชทหลักตรวจรับ ตามงานที่มอบหมายล่าสุด โดยแชทหลักยังเป็นผู้แก้เว็บไซต์/API/tests/schema/config และใช้บริการจริงเพียงแชทเดียว
+
+**สรุป:** พร้อมที่ `C:/mega/codex/iENA/outputs/XEDO_GEE_Performance_Parallel_2026-10-30/support/HANDOFF.md` พร้อม SOURCE_REVIEW.md (14 findings), SOURCE_MANIFEST.json, CONTRACT_REVIEW.md และ TEST_MATRIX.md (C01–C44 ทั้งหมด designed_not_run/actual:null) ตรวจโครงสร้างรายงานและ hash 12 ข้อผ่าน/0 ไม่ผ่านใน REPORT_VALIDATION.json ไม่ใช่ผลทดสอบเว็บไซต์หรือ persistent cache
+
+**รายละเอียด:** อ่าน HEAD a5612696a80470733da4155bd953d01d7b553bd4 และ baseline/candidate hashes พบ source drift ของ diagnostics main ใน api/gee.mjs, src/gee-imagery-api.js, src/gee-imagery.js และโมดูล timing ใหม่ ทวน contract ล่าสุดรวม sourceEpoch/600ms lookup-first/no speculation/5s writer headroom ซึ่งเป็นนโยบายเสนอไม่ใช่ SLA ข้อ F01/F02 ใน CONTRACT_REVIEW ขอเติม actual-renderer fallback key/claim และ backend RPC transport/explicit privilege matrix ก่อนตรึงข้อ2 ส่วน uncertain/deleting bytes, generation path ไม่ upsert, guest/private separation และ durable intent/lifecycle ครอบคลุมหลักการแล้ว ยังต้องพิสูจน์เมื่อ implement
+
+**การตรวจ/ไฟล์/สถานะ:** support อ่าน source/docs/Git/diff และ public official documentation เท่านั้น ไม่มี app tests/build/browser/Auth/GEE/Storage/SQL/account/benchmark ใหม่ ไม่มี package/service/Billing/subscription/Git mutation/commit/push/deploy ไม่สร้างหรือส่งงานให้แชท/เอเจนต์เพิ่ม ผล615 tests/buildและproduction/local timingsที่ main รายงานไม่ใช่ผลรันของ support เขียนเฉพาะ support artifacts และ append สั้นใน canonical สอง MD หลัง re-read ตามช่วงที่ประสาน ไม่แก้ overview/queue หรือทับงาน CPU ของแชทอื่น ไม่มีคำถามผู้ใช้รอคำตอบ แชทหลักเป็นผู้รวมสถานะข้อ1–2/คิวภายหลังรับผล
+
+<!-- gee-performance-support-a-final-review-2026-10-30 -->
+**ผลทวนสุดท้ายก่อนส่งชุด A:** main แก้ F01/F02 แล้ว support อ่านยืนยัน contract จริง §3.4 (actual-renderer fallback derive pixels key/claim ใหม่หรือ bypass ไม่ publish ใต้ map key) และ §3.8 (public.xedo_cache_*_v1 SECURITY INVOKER, private xedo_map_cache ไม่ expose, explicit server USAGE/table-DML/EXECUTE และ revoke PUBLIC/anon/authenticated, UUID ไม่ใช้ sequence) จึงไม่เหลือ source/design P0 ที่ support พบในร่างล่าสุด พร้อมให้ main รับผลข้อ1–2 การ addressed นี้เป็นผลตรวจเอกสารเท่านั้น ไม่ใช่ผลทดสอบ DB/permissions/Storage/byte-cap/runtime; C01–C44 ยังคง designed_not_run/actual:null ไม่ต้องรอคำตอบจากผู้ใช้ก่อน main รวม overview/queue
+
+
+<!-- gee-performance-phase-1-2-complete-2026-10-30 -->
+### 3.65 ทำ GEE performance ข้อ1–2 พร้อมรับผลแชทผู้ช่วย — 30 ตุลาคม 2026
+
+**หัวข้อ/คำสั่ง:** ผู้ใช้ให้เริ่มข้อ 1–2 ตามแผน GEE v1.1 ส่งงานให้แชทผู้ช่วยเดิมทำคู่ขนาน และบันทึกสอง MD โดยยังไม่เปิด Billing/subscription/push/deploy รอบนี้ทำ baseline/diagnostics/contract เท่านั้น ไม่ตีความว่าทำ persistent cache ข้อ 3 หรือเผยแพร่ได้
+
+**สรุป:** ข้อ 1 เก็บ baseline/โควต้าปัจจุบันและเพิ่ม diagnostics ใน source รุ่นในเครื่องพร้อมทดสอบแล้ว ข้อ 2 สร้าง docs/GEE_MAP_CACHE_CONTRACT.md และรับผลทวนชุด A ก่อนตรึงแบบ แชทผู้ช่วยไม่มี P0 ด้าน source/design ที่พบในร่างสุดท้าย ผลนี้ไม่ใช่รับรอง transaction/RLS/Storage/cache runtime ที่ยังไม่ implement
+
+**แชทคู่ขนาน:** ส่ง brief และ follow-up จริงผ่าน send_message_to_thread ไปยัง `02-chat ขนาน project หลัก` / 01a17cf8-a060-7fd0-bed4-d7920a297d20 / local โดยคง model/thinking เดิม ไม่สร้างแชทหรือ subagent ใหม่ ผู้ช่วยส่ง HANDOFF/SOURCE_REVIEW/CONTRACT_REVIEW/SOURCE_MANIFEST/TEST_MATRIX/REPORT_VALIDATION/CANONICAL_APPEND_RECEIPT ใน outputs/XEDO_GEE_Performance_Parallel_2026-10-30/support; source findings14ข้อ/โครงสร้างรายงาน12ผ่าน; C01–C44 designed_not_run และ actual:null ทั้งหมด ไม่มี live provider/browser/app tests โดยผู้ช่วย Rootรอ turn completed แล้วอ่านผล ตรวจ HEAD/file hashes และรักษา append §3.64C รวมบันทึกจากแชทอื่น §3.64A/B ก่อนปรับ overview/queue
+
+**Baseline สดของ main:** Vercel aliasยืนยัน dpl_EG7VyQiMMZpdXuSxmeSLep3KcsGm/READY/main a5612696a80470733da4155bd953d01d7b553bd4 HTTPอ่าน Production14ครั้งสำเร็จ (1document+13imagery; ไม่มี mission/AI write) HTML6,207,852bytes decoded/gzip3,772,548bytes/TTFB410.47ms/รับครบ65,570.74ms เป็น curl/network observation ไม่ใช่ FCP/LCP/SLA หรือ pureGEE เวลาbasemapmanifest844.14/861.51ms,4tilesพร้อมกัน1,528.96ms;รายช่อง891.20–1,424.97ms ถอดPNG7ไฟล์สำเร็จ CRC/256px/visible alpha ไม่ถือHTTP200อย่างเดียวว่ามีภาพ Blackopaqueไม่ถูกตีเป็นNoData รอบnetworkrestrictedแรกDNSไม่ผ่านและรอบ40sรับHTMLไม่ครบ ไม่นับสองครั้งนั้นเป็นbaselineสำเร็จ เพิ่มdeadlineเพื่อรับไฟล์เดิมได้ครบและยังจำกัดจำนวนrequests ไม่มีการขอAI/CPUjob
+
+**Diagnostics/หลักฐานจริงในเครื่อง:** เพิ่มfixed-name Server-Timing xedo_core/gee_auth/gee_metadata/gee_pixels/gee_map/gee_tiles/gee_upstream และsafe allowlistส่งผ่าน hostedadapter พร้อม X-XEDO-Cache เดิม(hit/miss/outside-aoi) ชื่อ/ตัวเลขเท่านั้น ไม่สะท้อนURL/token/พิกัด/error Observerล้มไม่เปลี่ยนผลภาพ ใช้localAPIกับGEEจริงหนึ่งmetadata/หนึ่งtileและRAMhit ได้ auth461.07ms/metadata870.02ms/pixels861.65ms/RAMwall2.41ms เป็นcacheRAMเดิม ไม่ใช่Supabasebenchmark Production/localfirst/localhit PNGตัวอย่างhashตรง eeb216d48bdd6a8f3b9049285a1f05a3872e2cfae7b1062a3518f52456046420; localbuiltHTMLhashตรงProduction 6db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc Timingซ้อนกัน ห้ามรวมmetricทั้งหมดหรืออ้างว่าแยกpurecomputeของGEEได้ ไม่วัดStorage/clientdecodeที่ยังไม่มีruntimeเป็นศูนย์ Browserเห็นเว็บจริงแต่read-onlytoolไม่เปิดperformance จึงไม่อ้างbrowserpaintmeasurement
+
+**Quota สด:** SQLread-only xedo 13:25:39UTC ได้0bucket/0object/0bytes,pg_database_size12,457,651bytes; ChromeUsage megaphijak/Allprojects FreeแสดงStorage0/1GB,DBsummary0.028/0.5GB/detailxedo26.45MB,Egress0.004/5GB,CachedEgress0/5GB มีnoticeข้อมูลหน่วง/ปัดเศษ แยกSQLphysicalmetricออกจากUsage ไม่เปิดBillingsettingsหรือเปลี่ยนplan snapshotนี้ไม่รับรองโควต้าคงเหลือตลอดไป
+
+**แบบข้อ 2:** server-derivedorderedassets/grid/clip/renderpipeline/sourceEpochUTCday+manualinvalidation/reuse<=24h;lookup-firstdeadline600msไม่มีspeculativeGEE;maxreservation1,048,576bytes→exactsizeก่อนPUT;atomiccap200,000,000bytesนับuncertain/deleting/orphans;generation/fencing/no-upsert;fallbackactualpipelineต้องderivepixelskeyใหม่;private xedo_map_cache tables + public backend-only RPC SECURITYINVOKER/explicitUSAGE+DML+EXECUTE/revokePUBLIC/anon/authenticated;guestbackgroundคงได้/privateInspectorไม่เพิ่มสิทธิ์;durableintent+runtime-supportedcompletion/5sheadroomเป็นinitialpolicyต้องพิสูจน์ในข้อ3 TTL/lease/404เดี่ยวไม่คืนreservationของPUTที่ไม่รู้ผล ปิดF01/F02ตามข้อทวนผู้ช่วย ไม่ต้องถามผู้ใช้เลือก technical contract ซ้ำ
+
+**ไฟล์เปลี่ยนของ main:** api/gee.mjs;src/gee-imagery-api.js;src/gee-imagery.js;เพิ่มsrc/gee-imagery-timing.js;tests/gee-imagery.test.mjs;เพิ่มtests/gee-imagery-timing.test.mjs;docs/GEE_MAP_CACHE_PERFORMANCE_PLAN.md;เพิ่มdocs/GEE_MAP_CACHE_CONTRACT.md;canonicalสองMD;implementation-queue.json รักษาdirty CPUlauncher/worker/README/.vercelignoreของก่อนรอบนี้ ไม่แก้หรือถือเป็นงานเผยแพร่ของรอบนี้
+
+**ผลตรวจรอบนี้:** focused34ผ่าน;full `npm test -- --test-concurrency=4` 615ผ่าน/0fail/0skip;`npm run check`ผ่าน;`npm run build`ผ่าน;real publicAPI/localGEE/PNG/hash/UsageและJSON/Markdownlinks/fences/diffตรวจแล้ว ไม่มีQGC/SITL/บินจริง/longsoak/mobileหรือprivate-accountacceptanceใหม่ ไม่มีpersistentcachebenchmark/DBDDL/bucket/RPC/RLS/grant/Storagewrite/delete แหล่งdocsทางการSupabase/GEE/Vercelตรวจใหม่โดยใช้skillSupabaseและแนวทางverification;changelogmarkdownผ่านwebไม่รองรับจึงอ่านofficialrawด้วยcurl ไม่แก้providerconfig
+
+**หลักฐาน/คิว/เผยแพร่:** outputs/XEDO_GEE_Performance_Parallel_2026-10-30/primary มีbaseline/candidate manifest,phase1-production-timings,local-timing-receipt,quota-readonly-receipt,usage-ui-receipt,verification-summary,support-acceptanceและlogs คิวระบุข้อ1–2complete/localdiagnostics+designreviewed/ข้อ3–6notstarted ไม่มีcommit/push/deploy/Billing/subscription/paidresource ไม่มีคำถามผู้ใช้รอคำตอบ รายการplanned_not_dispatchedในบันทึกแชทอื่นก่อนหน้าถูกแทนที่ด้วยการส่งและรับชุดAรอบนี้
+
+<!-- gee-cache-phase3-support-b-2026-10-30 -->
+### 3.65B Support B ตรวจ source/SQL/tests แคช GEE ข้อ3 — 30 ตุลาคม 2026
+
+**หัวข้อ:** แชทหลักมอบหมายให้ support ตรวจ implementation ข้อ3ตามคำสั่งผู้ใช้ล่าสุด โดย main เป็นผู้เขียนและดำเนินบริการจริงคนเดียว support ไม่ส่งข้อความ/สร้างแชทหรือเอเจนต์เพิ่ม และไม่แก้ overview/queue
+
+**สรุป:** ชุด B source-reviewed ready ที่ `C:/mega/codex/iENA/outputs/XEDO_GEE_Cache_Phase3_2026-10-30/support/HANDOFF.md` พร้อม IMPLEMENTATION_REVIEW.md, TEST_REVIEW.md, SOURCE_MANIFEST.json พบ8ประเด็นระหว่างตรวจ (P0หนึ่ง/P1เจ็ด) mainแก้แล้วและsupportอ่านยืนยัน B-F01–08 ในsource/SQL ไม่เหลือP0/P1ที่supportพบในcritical pathsที่ตรวจ ณ snapshotสุดท้าย ผลนี้ไม่ใช่runtime/DB/Storage/security acceptance และไม่ใช่การอนุญาตใหม่ให้เผยแพร่
+
+**รายละเอียด:** ทวนactualpipeline/orderedassets/clip/epoch,global200000000byte allocator,lease/fence/generation/no-upsert,HTTP504latePUTretention,globalexpired-buildingrecovery,prePUTheadroom/cancel_unstarted,boundedfollowerwait,producererror/cancellation/retiredentry,missing-corruptvsoutageและpost-lockclock ตรวจbackend-onlyRPCgrants/guest-privateboundaryและlocalsetupsourceโดยไม่อ่านsecret เพิ่มfaultdesign21กรณีB01–B21 designed_not_run/actual:null และmapC01–C44 เก็บsource hashหลายobservationจากHEAD a5612696a80470733da4155bd953d01d7b553bd4 พร้อมdirtyงานmain/CPUเดิม โครงสร้างรายงาน/hash10ข้อผ่าน0ไม่ผ่าน ไม่ใช่app tests
+
+**ผลรัน/ข้อจำกัด/งานต่อ:** supportรันwebsite/tests/SQL/provider/browser/benchmark0ครั้ง Mainรายงานfocused44ผ่านแต่supportไม่ได้รันหรือยืนยันcommandreceipt Fullsuiteครั้งหนึ่งmainหยุดแล้วกำลังรันใหม่หลังabortguard ไม่อ้างผ่านจากการหยุดหรือ615เก่า Mainยังต้องmatchsource/testsและตรวจcredential/additivemigration/roles/privateStorage/physicalbytes+ledger/miss-persist-hit/lifecycleและfaultconcurrencyจริง ไม่ต้องรอkeyเพื่อรับsource review แต่key/liveacceptanceเป็นmaingate ไม่มีcommit/push/deploy/Billing/subscription/hostedbuildsplitโดยsupport AppendเฉพาะcanonicalสองMDหลังอ่านล่าสุดและรักษาprefixเดิม ไม่เปลี่ยนคิว ไม่มีคำถามผู้ใช้รอคำตอบในงานsupport
+
+<!-- gee-cache-phase3-support-b-postlive-checkpoint-2026-10-30 -->
+### 3.65B2 Support B ทวน source และ receipts หลังติดตั้ง live — 30 ตุลาคม 2026
+
+**หัวข้อ:** รับงาน follow-up จาก main เพื่อตรวจ source checkpoint ล่าสุดและอ่าน artifacts โดยไม่ยิงบริการซ้ำ Mainแจ้งติดตั้งadditiveSQL/bucketและkeysetupแล้ว;supportไม่ดำเนินการเหล่านั้นเอง
+
+**สรุป:** HANDOFF เดิมที่ `C:/mega/codex/iENA/outputs/XEDO_GEE_Cache_Phase3_2026-10-30/support/HANDOFF.md` อัปเดตแล้ว B-F01–08ยังaddressed/no new sourceP0/P1ที่พบ อ่านonEventdiagnosticsและlookupcalibration600→1200msแบบbounded/no speculation รวมsetuphelpersและQA sourceล่าสุด เก็บsource hashes/dirtyHEAD a5612696a80470733da4155bd953d01d7b553bd4 ไม่อ้างว่าsourcepublish
+
+**รายละเอียดหลักฐาน:** CHECKPOINT_EVIDENCE_REVIEW.jsonตรวจreceipt/text/hash/arithmetic7ผ่าน0fail แยกจากreportstructural10ผ่าน Missล่าสุด14:43UTCหลังreseed147321bytes/pixels1/ready1; freshhit14:39pixels0; injected-cacheclient-outage14:40pixels1 ทั้งสามPNGdigestตรงกัน เก็บfailed600ms hit-timeout/pixels1ไว้ ไม่เรียกว่าhitผ่านหรือP95benchmark ControlRPC192claims/8workers190leaders2bypass/peakcharged199376761<=200000000/releaseกลับ147321/cleanupledger0ที่14:41 ก่อนreseedใหม่ ไม่uploadraster190MiB ภาพSQLeditorquerysuccessถูกอ่านและsavedSQLreviewtokenตรงsource แต่ไม่แทนcatalog/roledefsครบชุด
+
+**ข้อจำกัด/งานmainต่อ:** URLkind authenticatedในcontrolใช้publishable/anonheaders ไม่ใช่logged-inInspectorJWT จึงไม่อ้างaccountroleacceptance; physicalcleanupflagมาจากStorageAPIhelper+ledger ไม่ใช่independentpostdeleteinventory Localdeferที่QAawaitไม่พิสูจน์hostedVercellifecycle Mainต้องsynccontract/testvectors600→1200msตามsourceล่าสุด แนบcatalog/role/Storage-policyและผลfocused/fulltestsที่ตรงcandidate ไม่ใช้ผลfullที่หยุดหรือ615เก่า Supportไม่รันwebsite/SQL/provider/browser/benchmarkเองทุกcaseB01–B21ยังdesigned_not_run/actual:null ไม่แก้source/tests/schema/config/packages/env/services/Git/overview/queue ไม่มีpush/deploy/Billing/subscription/แชทหรือเอเจนต์เพิ่ม Appendนี้รักษาprefixเดิมหลังอ่านล่าสุด ไม่มีคำถามผู้ใช้รอคำตอบจากsupport
+
+<!-- gee-cache-phase3-support-b-source-freeze-final-2026-10-30 -->
+### 3.65B3 Support B ปิด source-freeze checkpoint — 30 ตุลาคม 2026
+
+**หัวข้อ/สรุป:** อ่านAGENTS/canonicalสองMD/queue/HEAD/Gitล่าสุด แล้วทวนbindClaimที่mainเพิ่มให้ใช้ร่วมinitial/followerพร้อมtestwrongkey/path (testassertStorageอ่าน0และproducerถูกต้อง1) ปิดnonblockinghardeningnoteเดิมครบ B-F01–08ยังaddressed ไม่พบP0/P1ใหม่ในcriticalsourceที่ตรวจ ชุดBready/ปิดsource reviewที่ `C:/mega/codex/iENA/outputs/XEDO_GEE_Cache_Phase3_2026-10-30/support/HANDOFF.md` Mainเป็นผู้รับผลและรวมoverview/queueต่อ
+
+**รายละเอียด/หลักฐาน:** SourcecacheSHA3bbcb8b783592632a8294444c77e8cf81ba96d467053620f0e24f92226eabe18/testSHA16eb563acb1300db2f159452849a6f552d2f9b6c5ceb3529a73710a407599d9a เก็บmanifest11observations อ่านmainfull-tests-final.logมีfooter626tests/626pass/0fail/0cancelled/0skip ไม่ใช่supportรันเอง Reportstructure10ผ่าน/receipt-logconsistency8ผ่าน แยกจากapp/providercasesของsupport0 MainรายงานindependentSQLinventoryหลังcleanup0objects/0bytesตรงledger (queryนอกcontrolscript;supportยังไม่มีartifactแยก) และreseedภายหลัง147321bytes ไม่อ้างDBปัจจุบัน0 MainเลือกRAMgrace<=5min/ไม่เกินsessionexpiryแยกpersistentUTCepochและจะระบุheaders-onlycache-read/backgroundwriteใช้receipt ต้องsynccontract1200ms/นโยบายRAM/metricsช่วงcloseoutโดยmain
+
+**สถานะ/ข้อจำกัด:** Browserlocal/hostedlifecycle/logged-inInspectorStorageเป็นหลักฐานแยก ไม่ถือผ่านจากการเริ่มรันหรือrouteชื่อauthenticatedที่ใช้anonheaders B01–B21ยังdesigned_not_run/actual:nullในsupport ไม่รันwebsite/SQL/provider/browser/benchmark ไม่แก้source/tests/schema/config/packages/env/accounts/services/Git/overview/queue ไม่อ่านkey ไม่push/deploy/Billing/subscription/สร้างแชทหรือagentเพิ่ม Appendหลังอ่านล่าสุดพร้อมprefixreceipt ไม่มีคำถามผู้ใช้รอคำตอบจากsupport
+
+<!-- gee-cache-phase3-support-b-contract-closed-2026-10-30 -->
+### 3.65B4 Support B ปิดข้อทวน contract — 30 ตุลาคม 2026
+
+**หัวข้อ/สรุป:** อ่านcontract§3.10และ§3.3/3.4ล่าสุดยืนยัน1200ms/RAMgrace<=5minไม่เกินsessionexpiry/headers-onlyread/backgroundwriteproof/local-vs-Vercel/SQLUIไม่มีmigrationhistoryแล้ว Criticalsource/testไม่เปลี่ยนจากfreeze ปิดข้อทวนsourceและcontractของsupportครบ ไม่มีP0/P1หรือข้อแก้เอกสารค้างจากsupport ชุดBfinalพร้อมให้mainรวมoverview/queueที่ outputs/XEDO_GEE_Cache_Phase3_2026-10-30/support/HANDOFF.md
+
+**รายละเอียด/หลักฐาน/สถานะ:** ดูภาพGuestที่mainบันทึกเห็นSentinel-2backgroundพร้อมNo area selected/readiness0/4 ไม่ได้เปิดbrowserเอง Mainรายงานsweepexpired-buildingก่อนPUT1รายการแล้วready12/charged1177006ตรงphysical12/1177006 แยกชัดจากunknownPUTที่ห้ามคืนchargeด้วยTTL เก็บmanifest12observations/reportchecks10ผ่าน/evidenceconsistency8ผ่าน/mainlog626ผ่าน ทั้งหมดแยกactorและข้อจำกัดไว้ Supportไม่มีapp/provider/SQL/browser/benchmarkexecutionใหม่ ไม่มีsource/tests/schema/config/packages/env/Git/serviceหรือoverview/queuechanges ไม่มีpush/deploy/Billing/subscriptionหรือแชท/agentเพิ่ม Appendหลังอ่านล่าสุดรักษาprefixเดิม ไม่มีคำถามรอคำตอบและไม่มีงานsupportที่ต้องรอก่อนmainปิดเอกสาร
+
+<!-- gee-cache-phase3-primary-closeout-2026-10-30 -->
+### 3.66 เชื่อมแคช Supabase 200 MB และตรวจจริง — 30 ตุลาคม 2026
+
+**หัวข้อ:** ทำข้อ 3 ของแผน GEE v1.1 ตามคำสั่งผู้ใช้ โดยใช้แชทผู้ช่วยเดิมตรวจคู่ขนาน เก็บผลทดสอบและอัปเดตบันทึกสองไฟล์ ยังไม่เผยแพร่โค้ดหรือเปิดบริการเสียเงิน
+
+**สรุป:** ส่วนแคชใน working tree และ Supabase จริงเสร็จแล้ว ภาพที่บันทึกไว้ถูกอ่านคืนจาก Node process ใหม่ได้พร้อม SHA-256 เดิมและ GEE pixel calls เป็น 0 ติดตั้งฐานข้อมูลเฉพาะ cache/bucket ใหม่โดยไม่แก้ตาราง Auth/Inspector/ภารกิจ/CPU งานหน้าเว็บในเครื่องโหลด Sentinel-2 จริงได้ Full suite ล่าสุด 626 ผ่าน/0 fail/0 cancelled/0 skipped ไม่มีคำถามผู้ใช้รอคำตอบ สถานะนี้เป็น local code + live Supabase integration ไม่ใช่ production release หรือผล P95 benchmark
+
+**การแก้และไฟล์:**
+
+| ไฟล์ | หน้าที่/สิ่งที่แก้ |
+|---|---|
+| `db/gee-map-cache.sql` | private schema `xedo_map_cache`, budget/entries/RLS, backend-only `xedo_cache_v1`, private PNG bucket, ตัวจองพื้นที่และ generation fencing |
+| `src/gee-map-cache.js` | key จากข้อมูลภาพจริง, lookup/follower, ตรวจ PNG/hash, จอง/เขียน/อ่านกลับ/publish, cleanup และเก็บ charge ของ PUT ที่ยังไม่รู้ผล |
+| `src/gee-imagery.js`, `src/gee-imagery-api.js` | เชื่อม RAM → persistent → GEE, แยก actual render pipeline และแก้ shared-producer cancellation/retired task |
+| `src/gee-imagery-timing.js`, `api/gee.mjs`, `server.mjs` | timing ที่ไม่รั่วข้อมูล และการติดตามงานบันทึกภาพหลังตอบกลับตามเวลาที่ runtime อนุญาต |
+| `scripts/runtime-config.mjs`, `scripts/map-cache-secrets.mjs`, `scripts/preview-map-cache.mjs` | ค่าฝั่ง server, หน้าตั้งค่าในเครื่อง และ Windows DPAPI เก็บ key เฉพาะผู้ใช้เครื่องเดิม |
+| `scripts/check-map-cache-live.mjs`, `scripts/check-map-cache-control-live.mjs` | ตรวจ GEE/Supabase จริง, hit ข้าม process, cap/cleanup และการปฏิเสธ anonymous |
+| `tests/gee-map-cache.test.mjs`, `tests/gee-imagery.test.mjs` | regression ของ cap/transaction/late PUT/corrupt PNG/cancellation/follower binding และ fallback |
+| `package.json`, `package-lock.json` | ล็อก `@vercel/functions` 3.10.5 และ override `@vercel/cli-config` → zod 4.6.7 เพื่อแก้ high advisory ที่เพิ่มจาก dependency ใหม่ |
+| เอกสารแผน/contract/canonical สอง MD/queue | ระบุ implementation, หลักฐาน, ข้อจำกัด และงานถัดไป |
+
+เก็บ dirty CPU launcher/worker/README/.vercelignore ที่มีอยู่ก่อนรอบนี้ไว้ ไม่รวมเป็น source change ของงานแคช และไม่ commit รวมงานเหล่านั้น
+
+**สิทธิ์และการติดตั้งจริง:** โปรเจกต์ `tstmjnlhwidwtzetqxbu` / xedo มี schema `xedo_map_cache` และ bucket `xedo-gee-map-cache-v1` ใหม่จริง ตาราง budget/entries เปิด RLS, anon/authenticated ไม่มี USAGE ของ schema และไม่มี EXECUTE ของ RPC; service_role มี EXECUTE และ function เป็น SECURITY INVOKER Bucket private, รับ PNG สูงสุด 1,048,576 bytes ต่อไฟล์ แคชนี้ไม่มีข้อมูลภารกิจส่วนตัวใน recipe/key
+
+apply_migration ของ connector หมดเวลายืนยันสองครั้ง ตรวจแล้วไม่มี partial object จึงรันไฟล์ที่ทดสอบแล้วผ่าน SQL Editor เป็น transaction เดียว เทียบ normalized SQL SHA-256 `941e6b24566d541c18e8d481d6905b956a30d5fa0884a390c098aea5fb436d37` ก่อนรัน UI แสดง Success และตรวจ catalogs/RPC/Storage กลับแล้ว การติดตั้งด้วยวิธีนี้ **ไม่มีรายการใน Supabase migration history** ห้ามรัน foundation script ซ้ำโดยไม่ตรวจ schema/version ปัจจุบัน ดู screenshot และ security-catalog-receipt ในโฟลเดอร์หลักฐาน
+
+**คีย์ในเครื่อง:** ผู้ใช้กรอกคีย์ในหน้า localhost เอง ครั้งแรกตัว DPAPI ไม่สำเร็จ แก้การโหลด System.Security และทดสอบ round trip แล้ว ผู้ใช้กรอกซ้ำจนขึ้น “เชื่อมแล้ว” และ live RPC ใช้งานได้ เก็บที่ `data/gee-cache-server.dpapi` แบบเข้ารหัสของ Windows user เดิม ไฟล์ถูก ignore และไม่แสดงคีย์ในแชท/log/bundle หลังตรวจเสร็จหยุด setup server แล้ว เวอร์ชัน Vercel ภายหลังต้องตั้ง server environment แยก ไม่ส่งไฟล์ DPAPI ขึ้นเว็บ
+
+**ผลตรวจที่รันใหม่โดยแชทหลัก:**
+
+| การตรวจ | ผล/หลักฐาน |
+|---|---|
+| Full suite `npm test -- --test-concurrency=4` | 626 ผ่าน / 0 fail / 0 cancelled / 0 skipped, `full-tests-final.log` |
+| Syntax และ hosted build | ผ่าน `npm run check`, `npm run build` และตรวจ helper syntax; log เก็บไว้ |
+| GEE จริง → miss → บันทึก PNG จริง | 147,321 bytes, ready ใน ledger, `miss-receipt.json` |
+| Node process ใหม่อ่าน persistent hit | PNG hash ตรงเดิม, GEE pixels 0 ครั้ง/metadata 1 ครั้ง, `hit-receipt.json` |
+| Cache-client failure ที่จำลอง + GEE จริง | bypass → pixels 1 ครั้ง ได้ PNG เดิม, `outage-receipt.json`; ไม่ใช่ provider outage จริง |
+| 192 QA reservations ผ่าน 8 HTTP clients พร้อมกัน | รับ 190/ปฏิเสธ 2, สูงสุด 199,376,761 bytes ≤ 200,000,000; ไม่ได้อัปโหลด raster 190 MiB |
+| คืน QA และล้างภาพ QA | คืน generation ครบ; ledger/Storage objects/physical bytes กลับ 0 ตรวจ SQL อิสระแล้ว |
+| เปิดเว็บในเครื่องหลัง build | `http://127.0.0.1:5180/` โหลด Sentinel-2 ใน Guest flow จริง เก็บ `local-website-cache.jpg` ไม่มี mission/AI write |
+| Inventory หลังหน้าเว็บสร้างแคชใหม่ | 14:51:17 UTC: ready 12/objects 12/charged 1,177,006/entry charges 1,177,006/physical bytes 1,177,006; ไม่อ้างว่ายังว่าง 0 |
+| สิทธิ์ | anonymous RPC 401; catalog ยืนยัน grants/RLS/private bucket; public/authenticated Storage routes ใช้ anon headers ได้ 400 ทั้งคู่ ไม่ใช่ Inspector JWT acceptance |
+| Dependency audit | 0 high/0 critical; เหลือ moderate 4 ของ dev tooling ไม่ force-fix toolchain |
+
+Full suite รอบแรกที่ติด deadline/abort ถูกหยุด ไม่อ้างว่าผ่าน แก้ abort guard ระหว่าง token signing แล้วรัน suite สุดท้ายจนมี footer ครบ ข้อทดสอบใหม่รวม unknown PUT/HTTP504 late commit, lock/fence/lease, การคืนพื้นที่เฉพาะก่อนเริ่ม PUT, PNG CRC/visible pixels/hash/readback, no-lifecycle fallback ที่ไม่เรียก GEE ซ้ำ, map→pixels key ต่างกัน, shared consumer cancellation, ไม่ join retired producer และ follower key/path ผิดไม่อ่านภาพอื่น
+
+**สิ่งที่เรียนรู้/ขอบเขตหลักฐาน:** lookup 600 ms ทำให้ hit จริงกลายเป็น bypass สองครั้ง เก็บผลเดิม `hit-timeout-600ms.json` และปรับเป็น 1,200 ms แล้ว hit ผ่าน ไม่อ้างว่าเร็วขึ้นเป็นเปอร์เซ็นต์หรือ P95 จากคนละรอบทดสอบ Cache-read timing ในรุ่นนี้จบที่ headers; เวลา body อยู่ใน xedo_core และ background write ใช้ ledger/physical receipt ยืนยัน ไม่ใช้ response timing อย่างเดียว Persistent epoch เป็น UTC day/ไม่เกิน 24h ส่วน RAM อาจมี grace ไม่เกิน 5 นาทีและ session expiry ข้ามเที่ยงคืน UTC ระบุใน contract แล้ว Unknown PUT ยังคง charge ไว้ แม้ TTL หมดหรืออ่านได้ 404 ครั้งเดียว
+
+**ผู้ช่วย:** ส่ง/รับชุด B จากแชทเดิม `02-chat ขนาน project หลัก` ภายใต้ขอบเขตอ่าน source/SQL/tests/contract และออกแบบ fault cases พบ 8 ประเด็นระหว่างทาง main แก้ครบ ผู้ช่วยอ่านยืนยันไม่เหลือ P0/P1 ที่พบในส่วนที่ตรวจ พร้อมทวน follower binding รายงานตรวจโครงสร้าง 10 ผ่าน/receipt consistency 8 ผ่าน มี 21 fault schedules B01–B21 ที่ยัง `designed_not_run`/actual:null โดยผู้ช่วยไม่ได้รัน app/provider/SQL/browser ซ้ำ Main เป็นผู้รันหลักฐานจริงตามตาราง ไม่แทน case coverage ทั้งหมดด้วย report checks
+
+**หลักฐาน/สถานะเผยแพร่/งานถัดไป:** ดู `C:/mega/codex/iENA/outputs/XEDO_GEE_Cache_Phase3_2026-10-30/primary/REPORT.md`, `verification-summary.json`, `SOURCE_MANIFEST.json` และ `../support/HANDOFF.md` HEAD ยัง `a5612696a80470733da4155bd953d01d7b553bd4` ไม่มี commit/push/deploy หรือเปลี่ยน production env/Billing/subscription ภาพเว็บออนไลน์ยังเป็น release ก่อนหน้า สิทธิ์ที่เปลี่ยนมีเฉพาะ namespace/cache ใหม่ตามคำสั่ง ข้อ 4 ลด hosted assets, ข้อ 5 matched performance/extended qualification และข้อ 6 เผยแพร่+ตรวจ Vercel lifecycle จริงยังไม่เริ่ม ต้องยึดคำสั่งผู้ใช้ถัดไป ไม่ขยายเป็นงาน Pi/ผลทดลอง/CPU/cloud ใหม่ ไม่มีคำถามรอคำตอบ
+
+
+<!-- hosted-assets-phase4-support-closeout-2026-10-30 -->
+### 3.66B Support ข้อ4 ตรวจ hosted assets และส่ง final source review — 30 ตุลาคม 2026
+
+**หัวข้อ/สรุป:** ชุด support พร้อมให้ main รวมผลที่ `C:/mega/codex/iENA/outputs/XEDO_Hosted_Assets_Phase4_2026-10-30/support/HANDOFF.md` พร้อม source/candidate/routing/evidence reviews, manifests และ H01–H36 ทั้งหมด designed_not_run/actual:null พบ C-F01 immutable matcher กว้างเกิน contract และ C-F02 ใช้ปุ่ม Inspector ที่สร้างก่อนเริ่มระบบครบเป็น ready marker; main แก้ทั้งสองแล้ว support อ่านยืนยันไม่พบ P0/P1 ค้างในส่วนที่ตรวจ โดย C-F02 ใช้ awaited entry import/evaluation ก่อนปลด inert
+
+**รายละเอียด/หลักฐาน:** HEAD a5612696a80470733da4155bd953d01d7b553bd4 กับ working-tree hashes จริง; support ตรวจ artifact/source16ผ่าน, report structure10ผ่าน, final freeze/evidence consistency8ผ่าน/0ไม่ผ่าน รวม20main source hashes ตรงปัจจุบัน HTML23,516bytes/gzip5,799, initialJS795,360, CSS62,807,25files และ original Sentinel/brand/favicon hashes คงเดิม Main full-suite footer633ผ่าน/0fail/cancel/skip; final matched local HTTP static-body cold355,284bytes เทียบ baseline3,732,249 และ warmHTML304/body0/no static asset request เป็นผลของ main ไม่ใช่ support run หรือ GEE/FCP/LCP/SLA Support ดูภาพ late-init fault ที่ยังมี Inspector control พร้อม Reload; lockedShells2 และ404/reload→ready มาจาก main observation Lazy3D503/clean-server closeout อยู่ในงาน main ณส่งมอบ
+
+**ขอบเขต/ไฟล์/เผยแพร่:** support อ่าน source/diff/artifacts/public official docs และรัน Python static/report consistency เท่านั้น ไม่มี app tests/build/JS import/browser/provider/SQL/account/AI job/benchmark ใหม่ ไม่แก้ source/tests/API/schema/config/package/env/services/overview/queue/Git ไม่ commit/push/deploy/Billing/subscription ไม่สร้างchat/agentหรือส่งข้อความข้ามchatเอง อ่าน canonical ล่าสุดก่อน append สอง MD และเก็บ prefix/hash receipt ใน support/CANONICAL_APPEND_RECEIPT.json รักษางาน phase3/CPU ของแชทอื่น Private Inspector acceptance, portable file:// offline, stale-tab/full fault coverage และ production Vercel lifecycle ยังไม่ถูกแทนด้วย checks เหล่านี้ ไม่มีคำถามผู้ใช้รอคำตอบ Main รวม overview/queue และหลักฐานที่เหลือต่อได้
+
+
+<!-- hosted-assets-phase4-support-qa-supplement-2026-10-30 -->
+**Support ข้อ4 — รับ QA เพิ่มและ idle:** main ส่ง fault-http-receipt/clean-server-headers/preserved-boundaries/demo-http-receipt และภาพ clean desktop/mobile เพิ่มแล้ว Support อ่านหลักฐานและเก็บ hashes ใน `outputs/XEDO_Hosted_Assets_Phase4_2026-10-30/support/QA_SUPPLEMENT.json` ตรวจ20source freeze ไม่พบ drift และเทียบ7cache/backend source กับ phase3 hashes ตรงทั้งหมด Fault receipt มี injected lazy3D503; mainรายงานข้อความ Reload/กลับ2Dได้ พร้อม404→Reload→ready และ late-initยังlocked2 Mainรายงานnormalconsole0/viewport390(actualcontent375) โดย support ไม่รัน browser/app/provider ใหม่ Headerreceipt ยืนยัน HTMLno-cache, JS/CSS/PNGimmutable/MIMEตรง; missing404 มี cacheControl:null จึงไม่อ้างว่าได้รับ explicit no-cache directive Demoเก่ายังแยก boot wrapper รุ่นก่อน ไม่แทน final cold receipt ไม่มี P0/P1ค้างในส่วน source ที่ตรวจ ไม่มีคำถามผู้ใช้รอคำตอบ ไม่มี implementation/test/build/บริการ/Git/publish ใหม่จากsupport Appendหลังอ่านล่าสุดรักษาprefixเดิม ไม่แก้overview/queue Supportปิด append และ idle ให้mainรวม canonical/queueต่อได้
+
+<!-- hosted-assets-phase4-primary-closeout-2026-10-30 -->
+### 3.67 ลดขนาดหน้าเว็บเริ่มต้น แยก hosted assets และตรวจข้อผิดพลาด — 30 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้สั่งทำข้อ 4 ของ GEE v1.1 ใช้แชทผู้ช่วยเดิมตรวจคู่ขนาน ทดสอบและบันทึกสอง MD โดยไม่เปิด Billing/subscription หรือ push/deploy
+
+**สรุป:** ทำเสร็จใน working tree แล้ว สาเหตุหลักคือ hosted build เรียก portable builder และฝัง JavaScript/CSS/รูปแบบ base64 ทั้งหมดไว้ใน HTML ประมาณ 6.2 MB โลโก้เดิมถูกฝังสองครั้งและ favicon SVG ฝัง PNG เดียวกันอีกหนึ่งชุด แยก hosted builder แล้วเก็บไฟล์พกพาแบบเดิมไว้ ภาพ GEE จริงใน Guest flow, ภาพตัวอย่าง, ตัวคำนวณและ 3D ยังทำงาน ตรวจ failure/recovery และหน้าจอ desktop/mobile แล้ว Full suite ล่าสุด 633 ผ่าน/0 fail/0 cancelled/0 skipped ไม่มีคำถามรอคำตอบ โค้ดยังไม่เผยแพร่
+
+**สิ่งที่แก้และไฟล์:**
+
+| ไฟล์ | การเปลี่ยนแปลง |
+|---|---|
+| `scripts/build.mjs`, `scripts/hosted-build.mjs` | hosted HTML ขนาดเล็ก + ES modules/CSS/รูปแยกชื่อที่มี content hash; preload เฉพาะ entry กับ static imports; ออก build report ไว้นอก dist |
+| `src/planner-boot.js` | inline module bootstrap รอ DOM และ await import(entry) จนประเมิน module ครบก่อนปลด inert; แสดง Loading/ข้อผิดพลาด/Reload |
+| `scripts/static-cache.mjs`, `server.mjs`, `vercel.json` | HTML revalidate; immutable เฉพาะไฟล์ versioned ที่ตรง matcher; ไม่เพิ่มกฎ cache ให้ API |
+| `public/assets/xedo-brand-mangrove-web.png` | derivative PNG RGBA 384×384 ขนาด 80,465 bytes จากต้นฉบับ 1254×1254/735,936 bytes ใช้ URL เดียวกันทั้งสองชั้นโลโก้ |
+| `public/favicon-xedo-planning.png` | derivative 96×96/10,150 bytes จาก crop เดียวกับ favicon SVG เดิม 981,423 bytes |
+| `tests/hosted-build.test.mjs`, `package.json` | integration checks ของ emitted graph/flags/สี่ผลคำนวณ/asset identity/cache matcher/bootstrap failure และเพิ่ม syntax checks ของ helper ใหม่ |
+| canonical สอง MD, แผน GEE, queue | อัปเดตสถานะ/หลักฐาน/ขอบเขตและงานถัดไป |
+
+ต้นฉบับโลโก้/favicon/Sentinel evidence ไม่เปลี่ยน ภาพ Sentinel ไม่ resize/re-encode ไฟล์ portable ยังเป็น inline IIFE และ workspace ยัง build ตามเดิม Hosted คง STANDALONE=true/GEE_HOSTED=true เพื่อคำนวณใน browser โดย localFile=false ทำให้ Inspector/AI ทำงานได้ ไม่เปลี่ยน planning-trial-client/runtime หรือ API บัญชีเพื่อแก้ขนาดไฟล์ รักษา dirty cache/CPU launcher/worker/.vercelignore ของก่อนรอบนี้ไว้ ไม่รวมเป็นงานเผยแพร่
+
+**วิธีทำ/ข้อพบที่แก้ระหว่างทาง:** esbuild splitting ทำให้ import boundaries ของ deployment-3d, raster-cog/TIFF decoders และ planning-file-api ถูกโหลดเมื่อเรียกใช้งาน archived preview เปลี่ยนจาก string รูปใหญ่ใน JS เป็น URL ของไฟล์ต้นฉบับที่มี hash CSS background ที่ไม่ใช้ใน planner ไม่ถูกส่งเป็น base64 มาด้วยทั้งก้อน ใช้ modulepreload ช่วย static dependency graph โดยไม่ preload feature chunks
+
+ผู้ช่วยพบ C-F01 ว่า Vercel matcher เริ่มต้นกว้างกว่า local helper จึงจำกัด named regex ให้ตรงกันและเพิ่ม positive/negative test ต่อมา C-F02 ชี้ว่าการมีปุ่ม Inspector ไม่พิสูจน์ว่า bootstrap ครบ เปลี่ยนเป็น inline type=module ที่ defer จน parse body เสร็จ แล้ว await import(entry) ซึ่ง reject เมื่อเกิด fetch/parse/evaluation error ก่อนปลดล็อก header/main การทดสอบ late throw หลังปุ่ม Inspector ถูกสร้างแล้ว ยืนยันว่า shell ยัง inert 2 แห่งและมี Reload ไม่แสดงความพร้อมเท็จ Source review ของผู้ช่วยปิดสองข้อพบและไม่พบ P0/P1 ค้างในส่วนที่ตรวจ
+
+**ผลตรวจที่รันใหม่โดย main:**
+
+| รายการ | ผล |
+|---|---|
+| `npm test -- --test-concurrency=4` | **633 ผ่าน / 0 fail / 0 cancelled / 0 skipped**, footer ครบใน full-tests-final.log |
+| Focused hosted build tests | 7 ผ่าน รวม compiled split calculator ที่ให้ผลครบ Drift/Flight/Export/Oil และการคงล็อกเมื่อ module initialization ไม่ครบ |
+| Syntax | npm run check ผ่าน รวมสามไฟล์ JS ใหม่ |
+| Build | hosted ผ่าน; build:file และ build:workspace ผ่านในรอบนี้ builders/entry ของสองโหมดหลังไม่เปลี่ยนจากรอบที่รัน |
+| Browser ปกติ | GEE Sentinel-2 จริง 20 acquisitions พร้อม; demo → archived image → คำนวณ 1.86 km/1 sortie/น้ำมัน 10–30 L → 3D diagram 16 waypoints ผ่าน ไฟล์ JS หลัก/feature chunks ตรง hash freeze สุดท้าย |
+| โหลดใหม่โดยใช้แคช | final warm HTTP มีเฉพาะ HTML 304/body0 ไม่มีคำขอ static asset ใหม่; API/GEE อยู่นอกขอบเขตนี้ |
+| ไฟล์หลัก 404 | แสดงข้อความพร้อม Reload; กดแล้วกลับ ready/lockedShells0 |
+| ประเมิน module ล้มเหลวหลัง partial init | Inspector DOM มีอยู่จริง แต่ shell ยัง inert2 และแสดง alert/Reload |
+| 3D chunk 503 ที่จำลอง | ข้อความ Reload page/ให้เก็บ snapshot ก่อน; กลับ 2D และดู route ได้ ไม่ทำให้ทั้งหน้าใช้งานไม่ได้ |
+| Clean local server 5182 | HTML no-cache; hashed JS/CSS/PNG immutable และ MIME ถูก; missing file404 โดยไม่มี explicit Cache-Control header ไม่อ้างว่าได้รับ no-cache |
+| Sign in | ตรวจเปิด/ปิด Inspector panel ได้ ไม่กรอกรหัสหรือรัน private login/save/history ใหม่ |
+| หน้าจอ | desktop content1265px; mobile viewport override390×844/content375px ไม่ล้นแนวนอน คืน viewport แล้ว; normal console warning/error0 |
+
+**ผลด้านขนาด:** baseline HTML 6,207,852 bytes → final HTML 23,516 bytes (gzip5,799) Initial JS static closure795,360 bytes/CSS62,807 bytes ภาพโลโก้และ favicon รวม90,615 bytes เป็นไฟล์แคชแยก Final browser-requested static bodiesผ่าน gzip serverเดียวกันและ fresh local origin: **3,732,249 → 355,284 bytes ลด90.4807%** รวมเอกสาร/JS/CSS/โลโก้/favicon ไม่รวม response headers/API/GEE tiles ไม่ใช้เปอร์เซ็นต์นี้อ้างว่าเวลาโหลดเร็วขึ้น90% ไม่ได้วัด FCP/LCP/P95/SLA หรือ extended soak ในรอบนี้ ผลก่อน source freeze เก็บแยกเป็น historical ไม่แทน final receipt
+
+**การตรวจขนาน/หลักฐาน:** ผู้ช่วยเดิม `02-chat ขนาน project หลัก` อ่าน source/official Vercel docs ออกแบบ H cases `designed_not_run` และทวน artifacts/hash โดยไม่รัน app/browser/provider/SQL ซ้ำ มี source/artifact16ผ่าน, report structure10ผ่าน, freeze/evidence8ผ่าน แยกจาก633app testsของmain Source manifest20ไฟล์ตรง snapshot และเทียบ7ไฟล์ cache/backend กับ phase3 hashไม่เปลี่ยน หลักฐานหลัก `C:/mega/codex/iENA/outputs/XEDO_Hosted_Assets_Phase4_2026-10-30/primary/REPORT.md`, SOURCE_MANIFEST.json, build-report.json, final-http-browser-receipt.json, demo-http-receipt.json, fault-http-receipt.json, clean-server-headers.json, ภาพ desktop/mobile และ support/HANDOFF.md
+
+**การเผยแพร่/ข้อจำกัด/งานต่อ:** HEAD ยัง a5612696a80470733da4155bd953d01d7b553bd4 ไม่มี commit/push/deploy/production env หรือ Billing/subscription ไม่ทำ live migration/เปลี่ยนบัญชี/สิทธิ์/worker/model และไม่สร้าง AI job ใหม่ การอ่าน GEE อาจเติมภาพผ่านแคชเดิมตามปกติ ไม่ใช่ schema change ค่ากฎ Vercel ตรวจ source/official docs/regex cases แล้ว แต่ runtime CDN/route compiler/retention ของ assets หลังสลับ deployment และ stale-tab จริงต้องตรวจตอน deploy ภายหลัง; stale feature chunk ที่หายมีคำแนะนำ Reload/เก็บ snapshot แล้ว การทดสอบ portable รอบนี้เป็น build ไม่ใช่ fresh file:// offline browser acceptance ไม่มี QGC/SITL/บินจริง/private ownership/long-soak ใหม่ ข้อ5 performance/extended qualification และข้อ6publish/postdeployยังไม่เริ่ม ส่วน Pi/รายงานผลทดลองยังพักตามเดิม ไม่มีคำถามผู้ใช้ค้าง
+
+
+<!-- performance-phase5-support-final-2026-10-30 -->
+### 3.67B Support C ส่งผลตรวจข้อ5 performance/resilience ในเครื่อง — 30 ตุลาคม 2026
+
+**หัวข้อ/สรุป:** ส่ง final support ที่ `C:/mega/codex/iENA/outputs/XEDO_Performance_Phase5_2026-10-30/support/HANDOFF.md` พร้อม METHOD/TOOL/BROWSER_TOOL/FINAL_REPORT/EVIDENCE reviews, SOURCE_MANIFEST และ P01–P32 design ทั้งหมด designed_not_run/actual:null เมื่อยังไม่ครบเงื่อนไขที่ออกแบบ ไม่ใช้ผลย่อยของ main แทนทั้งmatrix Mainแก้harness session/path/expiry replay, resourcebuffer/overflow และprecompressionก่อนวัด พร้อมแก้ REPORT wording/absolute utility pathแล้ว ไม่มี P0/P1 source/report ค้างที่ support พบใน bounded local subset
+
+**รายละเอียด/หลักฐาน:** HEAD a5612696a80470733da4155bd953d01d7b553bd4 กับ20product source hashes ตรง initial/final/current; rebuiltHTML23,516bytes SHA5baaaa8f51b84d810d4861c78868f0511c278550e2f7b04304fdc4b111b0354f Mainfreshsuite633ผ่าน/0fail/cancel/skip และ syntax/hosted/workspace/portablebuildsผ่าน Supportรันเฉพาะfile/source/receipt arithmetic: cache12, principalstartupsummary10, supplementaryoriginaltrace8, cancellation/fallback8, soak10, finalfreeze8, reportstructure10ผ่าน/0ไม่ผ่าน ไม่รวมเป็นapplicationtests และไม่มี support app/build/JSimport/browser/provider/benchmark execution
+
+**ผลและขอบเขตตัวเลข:** maincache5pairs hit5/5/pixels0แต่ช้ากว่าoff3/5คู่ medianpairedsaving−44.50ms ไม่อ้างเร็วสม่ำเสมอ Mainprincipalstartupcomplete-case B1R/B2/B3 vsC1/C2/C3 DOMmedian388.3→228.3ms แต่FCP140→204msช้าลง64ms เฉพาะlocalprecompressed/recordedimagefixture/actual1280×720DPR2; B1Roriginเดิม/no-store/unresetbrowserstateและoriginalB1paintnull/incompleteแยกชัด Mainlive/replayoff visible695.0021s (~11m35s) pageexceptions0/overflow0 terminalDOM815/canvas2/dialog0/trackedRAF0/Blob0 มีproxy44AbortError recordsในlivewindow แยกจากpageexceptionsและไม่อ้างว่าทุกrequestสำเร็จ Mainmanual30modalpairs+2geometryimport/20manual3Dcycles/10same-boundarypresetresets+GeoJSONA→B→A; AXยืนยันroute1.19→1.86kmและdownloadยังblocked ส่วนareaเป็นmainCUAobservations Heap/scrollเป็นค่าประมาณและcontextual ไม่ใช่leak-free/60FPS/P95/SLA
+
+**ไฟล์/ข้อจำกัด/เผยแพร่:** ดู main primary/REPORT.md และ support auditJSONs/hashes ไม่ใช้imageryready statusแทนprecisefirsttile/required-set/AOIcompletepaint Cancellationเป็นdirectcore+localhold และoutageเป็นcache-clientinjection ไม่ทำให้providerจริงล่ม Capacity/privacyphase3/assetphase4ยังเป็นหลักฐานเดิมตามsourcehash ไม่ใช่freshphase5รับรองprivateInspector/nearcapphysicalcleanup/real31minUTCexpiry/offline/AIinference/flight/VercelCDN งานที่ไม่รันยังระบุชัด SupportเขียนเฉพาะoutputและappendสองMDหลังre-read รักษาprefix ไม่แก้overview/queue/source/tests/config/schema/package/keys/services/Git ไม่สร้างchat/agent/ส่งข้อความข้ามchatเอง ไม่มีcommit/push/deploy/Billing/subscription ไม่มีคำถามผู้ใช้รอคำตอบ Mainรวมoverview/queueและข้อ6ตามคำสั่งผู้ใช้ถัดไป Supportส่งมอบแล้วและidle
+
+### 3.68 GEE v1.1 ข้อ 5 — main/support วัด performance และ repeated-use ในเครื่อง (30 ต.ค. 2026)
+
+**คำสั่ง/เจ้าของงาน:** ผู้ใช้สั่ง “ok เริ่มได้เลยทั้ง chat ขนาน เเละ chat หลัก” หลังข้อ4 จึงเริ่มข้อ5ตามแผนเดิม แชทหลักรันapp/build/browser/providerและเขียนรายงาน แชทเดิม `02-chat ขนาน project หลัก` ตรวจsource/วิธีวัด/คำนวณ/หลักฐาน ไม่แก้เว็บไซต์และไม่รันwebsite/provider benchmark ไม่มีคำสั่งให้เผยแพร่ข้อ6 เปิดBilling/subscription หรือเปลี่ยนschema/accounts/config จึงคงขอบเขตดังกล่าว
+
+**สิ่งที่ทำ/ไฟล์:** ไม่แก้product sourceเพิ่ม เก็บdirtyงานcache/hostedassets/launcherของรอบก่อนครบ GitHEADยังa5612696a80470733da4155bd953d01d7b553bd4 Frozen20sourcefilesตรงก่อนเริ่ม สร้างdiagnosticharness/receipts/reportใน `C:/mega/codex/iENA/outputs/XEDO_Performance_Phase5_2026-10-30/primary/` และsupportโฟลเดอร์ข้างกัน อัปเดตบันทึกนี้/WEBSITE_DETAILS§3.68/แผนGEE§18/คิวJSON คง3ขั้นตอน/4ตัวคำนวณ/privateInspector/localCPU ไม่มีAIjobใหม่
+
+**ผลรันใหม่:** `npm test -- --test-concurrency=4`633ผ่าน/0fail/0cancel/0skip; syntax/hosted/workspace/portablebuildผ่าน HTMLhosted23,516bytes/hashในverification-summary ส่วนportableเป็นbuildไม่ใช่freshfile://offlineacceptance Source/receiptchecksของผู้ช่วยแยกจาก633apptests ไม่อ้างผลเก่าเป็นผลรอบนี้
+
+**แคช/GEEจริง:** freshNodeprocess13receipts มี5คู่off/onสลับลำดับ; full-bodytilewallmedian off1012.37/on891.31ms แต่pairedsaving−77.85,+226.36,−44.50,−75.60,+861.68ms จึงhitช้ากว่าoff3/5คู่/medianpairedsaving−44.50ms ไม่ใช่universal speedup Hitทั้ง5pixels0/PNGhashAตรงoff/RAM RAMn13median2.10ms A→B→A/Bได้Bmiss/pixels1แล้วกลับhit/pixels0/hashแยกพื้นที่ถูก จำลองclock+31minได้410/pixels0ทั้ง13 ไม่ใช่รอ31minจริง Chargedตามreceiptsไม่เกินcap200MB ไม่ใช่near-capstress/physicalinventoryใหม่ GEEinternalcacheปิดไม่ได้
+
+**Browserstartup:** localprecompressedstatic/commonQA/recordedrealGEEfixtureผูกgeometry/session/expiry; actual1280×720/DPR2/visible/3completesamplesต่อvariant UIreadyobservedboundmedian388.3→228.3ms(41.205%เฉพาะlocal) FCP140→204ms(แย่ลง64ms) Firstimagery-readyapplicationstatus569.4→373.5ms ไม่ใช่precisepaintหรือAOI/required-setcompleteness B1paintไม่ครบเก็บnullแล้วแทนB1Rที่ประกาศใช้baselineoriginเดิม/no-store ไม่ใช่freshbrowserprocess Pilotก่อนmethodfixตัดทั้ง2variant ไม่เติมค่าขาด/ไม่อ้างP95หรือproduction4G/SLA Warmn1แยกต่างหาก
+
+**Repeated-useจริง:** foreground695.002s(11m35s), settings32คู่=regimen30+geometryimports2,2D→3D→2D20รอบ,presetexit/restore/review/prepare10รอบไม่ใช่10AOIต่างกัน เพิ่มGeoJSONA24131→B15444→A24131m²/route1.86→1.19→1.86kmพร้อมreviewใหม่และinvalidateผลเก่า Scrollsettings6คู่/หน้าหลัก5คู่ TerminalDOM815/canvas2/dialog0/appRAF0/BlobURL0 pageexceptions0/bufferfull0 มี44AbortErrorrecordsที่proxyระหว่างเปลี่ยนบริบท แยกจากpageerrors;ไม่มีotherproxyerrorname/recordedcompletedHTTP20เป็น200 แต่errorไม่มีrequestID/pathจึงไม่อ้างว่าตามrootcauseทุกabort Scroll1751samples/max66.7ms/over50=4/over100=0ไม่ใช่ทุกเฟรม60FPS ApproxJSheapmin9.92/max18.91/final14.22MBไม่ใช่processRAM/leakfree/หลายชั่วโมง
+
+**Cancellation/fallback:** mainรันsharedconsumerAabort499แต่B200/hashตรง/claim1,retiredproducerพร้อมlocalhold150msแล้วreplacement200/claims2ก่อนholdเก่าจบ;cacheclientinjectedfailurefallbackไปGEEจริง200/hashA/pixels1/anonymousRPC401 ไม่ทำSupabaseจริงล่มหรือcorrupt/deleteobjects FirstdiagnosticassertionเคยคาดAbortErrornameผิด แก้ให้ตรงnormalizedcode499แล้วรันใหม่เป็นfinalreceipt ไม่แก้productเพื่อassertion ห้ามยกunitcoverageหรือsupportP01–P32designed_not_runเป็นlivefaultmatrixผ่านทั้งหมด
+
+**หลักฐาน/ปิดรอบ:** primary/REPORT.md,verification-summary.json,SOURCE_MANIFEST.initial/final.json,cache-benchmark-summary.json,cache-paired-interpretation.json,startup-summary.json,startup-all-receipts.json,soak-final/summary.json,browser-metrics-closeout.json,cancellation/outage-receipt.json และsupport/HANDOFF.md Cleanpreview5182โหลดGEEจริง/zoomเข้าออกกลับได้/consolewarn-error0 เก็บclean-preview.jpg/AX;ปิดQAproxy/soaktabและคืนviewportแล้ว ไม่มีprivateLogin/Save/history/ownership/AI/CPUinferenceใหม่ในphase5 ไม่มีcommit/push/deploy/productionenv/Billing/subscription
+
+**งานถัดไป/ข้อจำกัด:** ข้อ5จบเฉพาะboundedlocalqualificationที่รายงาน ข้อ6release/postdeployยังไม่อนุมัติ ต้องตรวจserver-onlycacheconfig/Vercelrouting/MIME/CDN/functionlifecycle/backgroundwrites/assetretention/CI+deploymentidentity+aliasและprivateInspector/AI/CPUflowตอนเผยแพร่ Physicalmobile/trackpad,hours-long/OSreboot/extendedCPU/multi-session,portableoffline,SITL/flightและmatrixที่ยังไม่รันเป็นfollowups ไม่เพิ่มPiหรือรายงานผลทดลองกลับเข้ารอบ ไม่มีคำถามรอคำตอบ
+
+<!-- phase6-main-start -->
+### 3.69 GEE v1.1 ข้อ6 — เตรียมpush/deployและproductionqualification (30 ต.ค.2026)
+
+ผู้ใช้อนุมัติข้อ6ในรอบนี้อย่างชัดเจน จึงส่งงานให้supportเดิมทำsource/scope/releaseidentity/evidencereview Mainเป็นผู้แก้และดำเนินGit/provider/browserเท่านั้น ยืนยันGitmain/codexเดิมa5612696a80470733da4155bd953d01d7b553bd4และVercelxedo/projectprj_x35WcipWxA767cYwv3f0CXcdyea3/team_CV1O0uIz6BcarAQAOb8soV0I/Hobby/aliasxedo-eight.vercel.app Productionก่อนเริ่มdpl_EG7VyQiMMZpdXuSxmeSLep3KcsGmตรงรุ่นเดิม ไม่เปลี่ยนplan
+
+ตรวจใหม่npmtest633pass/0fail/cancel/skip,npmruncheck/hostedbuildผ่าน HTML23516bytesตรงphase5 Workerunittest84ผ่านเป็นข้อมูลlocalแยก ไม่รวมเป็นapptestsและไม่ส่ง9dirtyCPUlauncher/worker/guidepathsขึ้นGitในGEEreleaseนี้ Payload31ไฟล์ตามoutputs/XEDO_Performance_Phase6_2026-10-30/primary/release-file-manifest.json รวมcachebackend/hostedassets/tests/docsและSQLsourceที่ติดตั้งแล้วในphase3 ไม่applySQLซ้ำ คง3ขั้นตอน/4ตัวคำนวณ/Inspectorprivate/AI/localCPU
+
+Preflightscan31sourcefiles+clientartifactsรวม56ไฟล์เปรียบเทียบrealcredentialneedlesในเครื่อง พบ0matches/clientservermarkers0 ไม่บันทึกค่าkeyลงoutput MCPอ่านenvVercel403และlocalauthAPI403จึงใช้ChromeDashboardที่มีsessionเดิม อ่านชื่อ4varsเดิมได้ เตรียมGEE_CACHE_SERVER_KEYเป็นSecret/Productionแต่ยังไม่กรอกหรือSave Browserpolicyต้องยืนยันaction-timeก่อนเพิ่มsecurity-sensitiveaccessจึงถามผู้ใช้แล้ว รอคำตอบนี้ ไม่เปิดBilling/subscription ไม่เปลี่ยนschema/accounts/permissions
+
+เป้าหมายpostdeployคือexactcommitCI+READY+alias/hash/MIME/cacheheaders/anonymousguards/GEEimagery/persistentmiss→deferredwrite→readbackhit+budget/privateLogin-history/AI-CPUflow ภาพเก่าในbrowserมีexpiredGEEsessionและprivateauthอาจต้องrefresh ต้องรักษาdraft/snapshotก่อนreload ยังไม่ถือเป็นผลpostdeploy รอบเตรียมนี้ยังไม่commit/push/deploy/applyschemaหรือสร้างAIjobใหม่ หลักฐานและสถานะล่าสุดจะเติมในownedsectionนี้หลังดำเนินการจริง
+<!-- phase6-main-end -->

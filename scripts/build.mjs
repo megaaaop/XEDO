@@ -1,18 +1,10 @@
-import {mkdir, readFile, writeFile, rm, unlink} from 'node:fs/promises';
-import {resolve, dirname} from 'node:path';
-import {fileURLToPath} from 'node:url';
-import {execFileSync} from 'node:child_process';
+import {resolve} from 'node:path';
+import {mkdir,writeFile} from 'node:fs/promises';
+import {buildHosted,projectRoot} from './hosted-build.mjs';
 
-const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-if (resolve(process.cwd()) !== root) throw new Error('Run the build from the project root.');
-const output = resolve(root, 'dist');
-if (dirname(output) !== root || output !== resolve(root, 'dist')) throw new Error('Unexpected output path.');
-await rm(output, {recursive: true, force: true});
-await mkdir(output, {recursive: true});
-const page = resolve(output, 'index.html');
-execFileSync(process.execPath, [resolve(root, 'scripts/build-planning-file.mjs'), page,'--gee-hosted'], {cwd: root, stdio: 'inherit'});
-let html = await readFile(page, 'utf8');
-html = html.replace('<title>XEDO · Local planning</title>', '<title>XEDO · Coastal inspection</title>');
-await writeFile(page, html);
-await unlink(resolve(output, 'README.txt'));
-console.log('Built GEE-ready browser application: dist/index.html. Imagery API source: api/gee.mjs; credentials stay in server runtime configuration.');
+if(resolve(process.cwd())!==projectRoot)throw new Error('Run the build from the project root.');
+const report=await buildHosted();
+await mkdir(resolve(projectRoot,'output'),{recursive:true});
+await writeFile(resolve(projectRoot,'output/hosted-build-report.json'),JSON.stringify(report,null,2)+'\n');
+console.log(`Built hosted planner: ${report.html.bytes} byte HTML, ${report.initialJsBytes} byte initial JS; deferred modules and artwork are versioned files in dist/assets/.`);
+console.log('Portable file remains available through npm run build:file. Credentials stay in server runtime configuration.');

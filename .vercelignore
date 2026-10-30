@@ -47,6 +47,8 @@ local-data/
 # Local CPU inference and qualification tools are distributed through Git only.
 # Vercel builds the browser and existing Node API; it never runs this worker.
 workers/
+Start-XEDO-CPU.cmd
+Reconnect-XEDO-CPU.cmd
 tests/
 db/
 docs/

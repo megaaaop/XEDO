@@ -1,6 +1,7 @@
 import {accessToken,invalidateGEEToken,publicGEEError} from './gee-connection.js';
 import {validateGeometry,pointWithin} from './domain.js';
 import {satelliteDisplayContext,SATELLITE_CONTEXT_BUFFER_M} from './satellite-context.js';
+import {tileDescriptor} from './gee-map-cache.js';
 
 const COLLECTION='COPERNICUS/S2_SR_HARMONIZED';
 const API='https://earthengine.googleapis.com/v1/';
@@ -18,7 +19,7 @@ const rectangle=([w,s,e,n])=>({type:'Polygon',coordinates:[[[w,s],[e,s],[e,n],[w
 const failure=(code,message,status=422)=>{const error=Object.assign(new Error(message),{code,status,retryable:[429,502,503,504].includes(status)});problems.add(error);return error;};
 const base64=bytes=>btoa(String.fromCharCode(...bytes)).replaceAll('+','-').replaceAll('/','_').replace(/=+$/,'');
 const unbase64=s=>Uint8Array.from(atob(s.replaceAll('-','+').replaceAll('_','/')),v=>v.charCodeAt(0));
-const contextOptions=opts=>({fetchImpl:opts.fetchImpl||fetch,timeoutMs:Math.max(1,Math.min(30000,opts.timeoutMs??25000)),now:opts.now||Date.now});
+const contextOptions=opts=>({fetchImpl:opts.fetchImpl||fetch,timeoutMs:Math.max(1,Math.min(30000,opts.timeoutMs??25000)),now:opts.now||Date.now,onTiming:typeof opts.onTiming==='function'?opts.onTiming:null,cache:opts.cache,signal:opts.signal});
 const trim=(map,maximum)=>{while(map.size>maximum)map.delete(map.keys().next().value);};
 
 function checkedGeometry(geometry) {
@@ -76,13 +77,28 @@ async function limitedBytes(response,maximum) {
   const bytes=new Uint8Array(size);let offset=0;for(const chunk of chunks){bytes.set(chunk,offset);offset+=chunk.byteLength;}return bytes;
 }
 
+function reportTiming(opts,name,started) {
+  // Diagnostics must never change imagery success/failure behavior.
+  try {opts.onTiming?.(name,Math.max(0,performance.now()-started));}catch {}
+}
+
 async function authenticated(env,route,body,opts,read) {
-  const controller=new AbortController(),deadline=setTimeout(()=>controller.abort(),opts.timeoutMs);
+  const started=performance.now(),controller=new AbortController(),deadline=setTimeout(()=>controller.abort(),opts.timeoutMs);
+  const cancel=()=>controller.abort();
+  if(opts.signal?.aborted)controller.abort();else opts.signal?.addEventListener('abort',cancel,{once:true});
   try {
-    const token=await accessToken(env.GEE_SERVICE_ACCOUNT_JSON,opts.fetchImpl,controller.signal);
-    const response=await opts.fetchImpl(API+route,{method:body===undefined?'GET':'POST',redirect:'error',cache:'no-store',signal:controller.signal,headers:{Authorization:'Bearer '+token,'X-Goog-User-Project':env.GEE_PROJECT_ID,...(body===undefined?{}:{'Content-Type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)})});
-    return await read(response);
-  }catch(error){throw safeError(error,controller.signal);}finally{clearTimeout(deadline);}
+    const authStarted=performance.now();let token;
+    try {token=await accessToken(env.GEE_SERVICE_ACCOUNT_JSON,opts.fetchImpl,controller.signal);}
+    finally {reportTiming(opts,'gee_auth',authStarted);}
+    if(controller.signal.aborted)throw safeError(new Error('cancelled'),controller.signal);
+    const requestStarted=performance.now(),stage=route.endsWith('/value:compute')?'gee_metadata':route.endsWith('/image:computePixels')?'gee_pixels':route.endsWith('/maps')?'gee_map':'gee_tiles';
+    try {
+      const response=await opts.fetchImpl(API+route,{method:body===undefined?'GET':'POST',redirect:'error',cache:'no-store',signal:controller.signal,headers:{Authorization:'Bearer '+token,'X-Goog-User-Project':env.GEE_PROJECT_ID,...(body===undefined?{}:{'Content-Type':'application/json'})},...(body===undefined?{}:{body:JSON.stringify(body)})});
+      const result=await read(response);
+      if(controller.signal.aborted)throw safeError(new Error('cancelled'),controller.signal);
+      return result;
+    }finally {reportTiming(opts,stage,requestStarted);}
+  }catch(error){throw opts.signal?.aborted?failure('GEE_REQUEST_CANCELLED','Satellite imagery request was cancelled.',499):safeError(error,controller.signal);}finally{clearTimeout(deadline);opts.signal?.removeEventListener('abort',cancel);reportTiming(opts,'gee_upstream',started);}
 }
 
 async function jsonCall(env,route,body,opts) {
@@ -94,12 +110,27 @@ async function jsonCall(env,route,body,opts) {
   });
 }
 
-async function once(scope,key,maximum,run) {
-  if(scope.pending.has(key))return scope.pending.get(key);
-  const kind=key.slice(0,key.indexOf(':')+1);
-  if([...scope.pending.keys()].filter(pendingKey=>pendingKey.startsWith(kind)).length>=maximum)throw failure('GEE_BUSY','GEE imagery is busy. Retry shortly.',429);
-  const task=Promise.resolve().then(run);scope.pending.set(key,task);
-  try{return await task;}finally{if(scope.pending.get(key)===task)scope.pending.delete(key);}
+async function once(scope,key,maximum,run,signal) {
+  const cancelled=()=>failure('GEE_REQUEST_CANCELLED','Satellite imagery request was cancelled.',499);
+  if(signal?.aborted)throw cancelled();
+  scope.retired??=new Set();
+  let entry=scope.pending.get(key);
+  if(entry?.controller.signal.aborted){scope.pending.delete(key);scope.retired.add(entry);entry=null;}
+  if(!entry){
+    const kind=key.slice(0,key.indexOf(':')+1);
+    if([...scope.pending.keys()].filter(pendingKey=>pendingKey.startsWith(kind)).length+[...scope.retired].filter(e=>e.key.startsWith(kind)).length>=maximum)throw failure('GEE_BUSY','GEE imagery is busy. Retry shortly.',429);
+    entry={key,controller:new AbortController(),users:0,settled:false};
+    entry.promise=Promise.resolve().then(()=>run(entry.controller.signal)).finally(()=>{entry.settled=true;scope.retired.delete(entry);if(scope.pending.get(key)===entry)scope.pending.delete(key);});
+    entry.promise.catch(()=>{});scope.pending.set(key,entry);
+  }
+  entry.users++;
+  return new Promise((resolve,reject)=>{
+    let finished=false;
+    const finish=(ok,value)=>{if(finished)return;finished=true;signal?.removeEventListener('abort',abort);entry.users--;if(!entry.users&&!entry.settled)entry.controller.abort();ok?resolve(value):reject(value);};
+    const abort=()=>finish(false,cancelled());signal?.addEventListener('abort',abort,{once:true});
+    if(signal?.aborted)abort();
+    entry.promise.then(value=>finish(true,value),error=>finish(false,error));
+  });
 }
 
 function metadataFeature(image,geometry) {
@@ -140,8 +171,8 @@ function sceneFrom(feature,geometry) {
 export async function searchGEEImagery(env,input,options={}) {
   const opts=contextOptions(options),search=checkedSearch(input,opts.now),scope=await scopeFor(env),key=JSON.stringify(search),cached=scope.searches.get(key);
   if(cached&&cached.until>opts.now())return {...structuredClone(cached.result),cache:true};
-  return structuredClone(await once(scope,'search:'+key,4,async()=>{
-    const data=await jsonCall(env,'projects/'+env.GEE_PROJECT_ID+'/value:compute',{expression:searchExpression(search),workloadTag:'xedo-sentinel-search'},opts);
+  return structuredClone(await once(scope,'search:'+key,4,async signal=>{
+    const data=await jsonCall(env,'projects/'+env.GEE_PROJECT_ID+'/value:compute',{expression:searchExpression(search),workloadTag:'xedo-sentinel-search'},{...opts,signal});
     if(!Array.isArray(data?.result)||data.result.length>MAX_CANDIDATES)throw failure('GEE_RESPONSE_INVALID','GEE returned an invalid satellite search response.',502);
     const scenes=[],ids=new Set();
     for(const feature of data.result){const scene=sceneFrom(feature,search.geometry);if(scene&&scene.cloudCover<=search.maxCloud&&scene.acquiredAt.slice(0,10)>=search.start&&scene.acquiredAt.slice(0,10)<=search.end&&!ids.has(scene.id)){ids.add(scene.id);scenes.push(scene);}}
@@ -150,7 +181,7 @@ export async function searchGEEImagery(env,input,options={}) {
     for(const scene of result.scenes)scope.scenes.set(scene.id+'\0'+JSON.stringify(search.geometry),{scene,until:opts.now()+SESSION_MS});trim(scope.scenes,128);
     scope.searches.set(key,{result,until:opts.now()+SEARCH_MS});trim(scope.searches,16);
     return result;
-  }));
+  },opts.signal));
 }
 
 function checkedMapName(name,project) {
@@ -175,8 +206,8 @@ export async function createGEEBasemap(env,input,options={}) {
   if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(key=>key!=='geometry'))throw failure('GEE_INPUT_INVALID','Supply only the viewport geometry.');
   const geometry=checkedGeometry(input.geometry),opts=contextOptions(options),scope=await scopeFor(env),end=new Date(opts.now()).toISOString().slice(0,10),start=new Date(Date.parse(end)-29*DAY).toISOString().slice(0,10),key=JSON.stringify({geometry,start,end}),cached=scope.basemaps.get(key);
   if(cached&&cached.until>opts.now())return structuredClone(cached.result);
-  return structuredClone(await once(scope,'basemap:'+key,4,async()=>{
-    const data=await jsonCall(env,'projects/'+env.GEE_PROJECT_ID+'/value:compute',{expression:basemapExpression({geometry,start,end}),workloadTag:'xedo-basemap-search'},opts);
+  return structuredClone(await once(scope,'basemap:'+key,4,async signal=>{
+    const data=await jsonCall(env,'projects/'+env.GEE_PROJECT_ID+'/value:compute',{expression:basemapExpression({geometry,start,end}),workloadTag:'xedo-basemap-search'},{...opts,signal});
     if(!Array.isArray(data?.result)||data.result.length>MAX_CANDIDATES)throw failure('GEE_RESPONSE_INVALID','GEE returned invalid basemap metadata.',502);
     const selected=[],ids=new Set();
     for(const feature of data.result){
@@ -193,7 +224,7 @@ export async function createGEEBasemap(env,input,options={}) {
     const result={kind:'gee_basemap',provider:'gee',collection:COLLECTION,sessionId,tileUrl:'/api/v1/gee/imagery/tiles/'+sessionId+'/{z}/{x}/{y}',expiresAt:new Date(expires).toISOString(),geometry,start,end,imageCount:selected.length,acquiredFrom:new Date(selected[0].time).toISOString(),acquiredTo:new Date(selected.at(-1).time).toISOString(),renderMode:'pixels'};
     scope.basemaps.set(key,{result,until:opts.now()+SEARCH_MS});trim(scope.basemaps,16);
     return result;
-  }));
+  },opts.signal));
 }
 
 function basemapRGBRequest(session) {
@@ -205,10 +236,10 @@ function basemapRGBRequest(session) {
 async function mapFor(env,scope,sceneId,bbox,opts,force=false) {
   const key=sceneId+'\0'+JSON.stringify(bbox),cached=scope.maps.get(key);
   if(!force&&cached&&cached.until>opts.now())return cached.name;
-  return once(scope,'map:'+key,8,async()=>{
-    const data=await jsonCall(env,'projects/'+env.GEE_PROJECT_ID+'/maps',rgbRequest(sceneId,bbox),opts);
+  return once(scope,'map:'+key,8,async signal=>{
+    const data=await jsonCall(env,'projects/'+env.GEE_PROJECT_ID+'/maps',rgbRequest(sceneId,bbox),{...opts,signal});
     const name=checkedMapName(data?.name,env.GEE_PROJECT_ID);scope.maps.set(key,{name,until:opts.now()+SESSION_MS});trim(scope.maps,32);return name;
-  });
+  },opts.signal);
 }
 
 async function encodeSession(scope,payload) {
@@ -248,14 +279,15 @@ async function decodeSession(scope,sessionId,project,now) {
 export async function createGEEImageryMap(env,input,options={}) {
   if(!input||typeof input!=='object'||Array.isArray(input)||Object.keys(input).some(k=>!['sceneId','geometry'].includes(k)))throw failure('GEE_INPUT_INVALID','Invalid satellite map fields.');
   canonicalScene(input.sceneId);const geometry=checkedGeometry(input.geometry),opts=contextOptions(options),scope=await scopeFor(env),key=input.sceneId+'\0'+JSON.stringify(geometry);
-  return structuredClone(await once(scope,'session:'+key,8,async()=>{
+  return structuredClone(await once(scope,'session:'+key,8,async signal=>{
+    const upstreamOpts={...opts,signal};
     let scene=scope.scenes.get(key);scene=scene?.until>opts.now()?scene.scene:null;
-    if(!scene){const data=await jsonCall(env,'projects/'+env.GEE_PROJECT_ID+'/value:compute',{expression:{result:'result',values:{result:metadataFeature(f('Image.load',{id:c(canonicalScene(input.sceneId))}),geometry)}},workloadTag:'xedo-sentinel-scene'},opts);scene=sceneFrom(data?.result,geometry);if(!scene||scene.id!==input.sceneId)throw failure('GEE_SCENE_COVERAGE','The selected satellite image does not cover the whole inspection area.');scope.scenes.set(key,{scene,until:opts.now()+SESSION_MS});trim(scope.scenes,128);}
+    if(!scene){const data=await jsonCall(env,'projects/'+env.GEE_PROJECT_ID+'/value:compute',{expression:{result:'result',values:{result:metadataFeature(f('Image.load',{id:c(canonicalScene(input.sceneId))}),geometry)}},workloadTag:'xedo-sentinel-scene'},upstreamOpts);scene=sceneFrom(data?.result,geometry);if(!scene||scene.id!==input.sceneId)throw failure('GEE_SCENE_COVERAGE','The selected satellite image does not cover the whole inspection area.');scope.scenes.set(key,{scene,until:opts.now()+SESSION_MS});trim(scope.scenes,128);}
     const displayGeometry=satelliteDisplayContext(geometry),bbox=bounds(displayGeometry),expires=opts.now()+SESSION_MS;let mode='map',mapName;
     if(scope.pixelModeUntil>opts.now())mode='pixels';
-    else try{mapName=await mapFor(env,scope,scene.id,bbox,opts);}catch(error){if(problems.has(error)&&error.code==='GEE_ACCESS_DENIED'&&error.status===403){mode='pixels';scope.pixelModeUntil=expires;}else throw error;}
+    else try{mapName=await mapFor(env,scope,scene.id,bbox,upstreamOpts);}catch(error){if(problems.has(error)&&error.code==='GEE_ACCESS_DENIED'&&error.status===403){mode='pixels';scope.pixelModeUntil=expires;}else throw error;}
     return {sessionId:await encodeSession(scope,{v:1,purpose:'scene',mode,...(mapName?{mapName}:{}),sceneId:scene.id,bbox,expires}),expiresAt:new Date(expires).toISOString(),scene,geometry:structuredClone(geometry),displayGeometry,contextBufferM:SATELLITE_CONTEXT_BUFFER_M,renderMode:mode};
-  }));
+  },opts.signal));
 }
 
 function pngResponse(bytes,cache='miss') {
@@ -285,20 +317,28 @@ export async function getGEEImageryTile(env,input,options={}) {
   if(tile[2]<session.bbox[0]||tile[0]>session.bbox[2]||tile[3]<session.bbox[1]||tile[1]>session.bbox[3])return transparent();
   const key=input.sessionId+'/'+z+'/'+x+'/'+y,cached=scope.tiles.get(key);
   if(cached&&cached.until>opts.now())return pngResponse(cached.bytes,'hit');
-  const bytes=await once(scope,'tile:'+key,24,async()=>{
+  const bytes=await once(scope,'tile:'+key,24,async signal=>{
+    const upstreamOpts={...opts,signal};
     const mapKey=session.sceneId+'\0'+JSON.stringify(session.bbox),current=scope.maps.get(mapKey),name=current?.until>opts.now()?current.name:session.mapName;
-    const fetchTile=mapName=>authenticated(env,mapName+'/tiles/'+z+'/'+x+'/'+y,undefined,opts,async response=>{
+    const fetchTile=mapName=>authenticated(env,mapName+'/tiles/'+z+'/'+x+'/'+y,undefined,upstreamOpts,async response=>{
       if(response.status===404||response.status===410)return null;
       return readPNG(response);
     });
-    let bytes;
-    if(session.mode==='pixels'||scope.pixelModeUntil>opts.now())bytes=await computeTile(env,session,z,x,y,opts);
-    else {bytes=await fetchTile(name);if(!bytes)try{bytes=await fetchTile(await mapFor(env,scope,session.sceneId,session.bbox,opts,true));}catch(error){if(problems.has(error)&&error.code==='GEE_ACCESS_DENIED'&&error.status===403){scope.pixelModeUntil=session.expires;bytes=await computeTile(env,session,z,x,y,opts);}else throw error;}}
+    const resolve=async(pipeline,produce)=>opts.cache?opts.cache.tile(await tileDescriptor(session,{z,x,y},pipeline,env.GEE_PROJECT_ID,opts.now()),produce,{signal}):{bytes:await produce(),status:'disabled'};
+    const pixels=()=>resolve('pixels',()=>computeTile(env,session,z,x,y,upstreamOpts));
+    const fallback=Symbol('pixel-fallback');let result;
+    if(session.mode==='pixels'||scope.pixelModeUntil>opts.now())result=await pixels();
+    else try{
+      result=await resolve('map',async()=>{let data=await fetchTile(name);if(!data)try{data=await fetchTile(await mapFor(env,scope,session.sceneId,session.bbox,upstreamOpts,true));}catch(error){if(problems.has(error)&&error.code==='GEE_ACCESS_DENIED'&&error.status===403)throw fallback;throw error;}return data;});
+    }catch(error){if(error!==fallback)throw error;scope.pixelModeUntil=session.expires;result=await pixels();}
+    const bytes=result.bytes;
     if(!bytes)throw failure('GEE_SESSION_EXPIRED','The satellite image session expired. Select the image again.',410);
     if(scope.tiles.has(key))scope.tileBytes-=scope.tiles.get(key).bytes.length;
     scope.tiles.set(key,{bytes,until:Math.min(session.expires,opts.now()+SEARCH_MS)});scope.tileBytes+=bytes.length;
     while(scope.tiles.size>128||scope.tileBytes>16*1024*1024){const first=scope.tiles.keys().next().value;scope.tileBytes-=scope.tiles.get(first).bytes.length;scope.tiles.delete(first);}
-    return bytes;
-  });
-  return pngResponse(bytes);
+    return {bytes,persistentStatus:result.status};
+  },opts.signal);
+  const response=pngResponse(bytes.bytes);
+  response.headers.set('X-XEDO-Persistent-Cache',bytes.persistentStatus);
+  return response;
 }

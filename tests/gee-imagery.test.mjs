@@ -72,6 +72,48 @@ test('fixed Sentinel-2 metadata search filters full AOI coverage, preserves prov
   const other=fixture();await searchGEEImagery(other.env,search,{fetchImpl:other.fetchImpl});assert.equal(other.calls.compute,1);
 });
 
+test('upstream diagnostics distinguish metadata/pixels from a memory hit without exposing inputs',async()=>{
+  const v=fixture(),observed=[];
+  const onTiming=(name,duration)=>{assert.ok(Number.isFinite(duration)&&duration>=0);observed.push(name);};
+  await searchGEEImagery(v.env,search,{fetchImpl:v.fetchImpl,onTiming});
+  assert.ok(observed.includes('gee_auth'));assert.ok(observed.includes('gee_metadata'));assert.ok(observed.includes('gee_upstream'));
+  v.state.mapDenied=true;
+  const map=await createGEEImageryMap(v.env,{sceneId:id,geometry},{fetchImpl:v.fetchImpl,onTiming});
+  observed.length=0;
+  const first=await getGEEImageryTile(v.env,{sessionId:map.sessionId,...pointTile()},{fetchImpl:v.fetchImpl,onTiming});
+  assert.equal(first.headers.get('x-xedo-cache'),'miss');assert.ok(observed.includes('gee_pixels'));
+  observed.length=0;
+  const cached=await getGEEImageryTile(v.env,{sessionId:map.sessionId,...pointTile()},{fetchImpl:v.fetchImpl,onTiming});
+  assert.equal(cached.headers.get('x-xedo-cache'),'hit');assert.deepEqual(observed,[]);
+  const other=fixture();
+  const result=await searchGEEImagery(other.env,search,{fetchImpl:other.fetchImpl,onTiming(){throw new Error('observer failed');}});
+  assert.equal(result.scenes.length,1);
+});
+
+test('map-to-pixels fallback derives a different persistent key before producing pixels',async()=>{
+  const v=fixture(),map=await createGEEImageryMap(v.env,{sceneId:id,geometry},{fetchImpl:v.fetchImpl});v.state.expiredOnce=true;v.state.mapDenied=true;
+  const descriptors=[],cache={async tile(d,produce){descriptors.push(d);return {bytes:await produce(),status:'miss'};}};
+  const response=await getGEEImageryTile(v.env,{sessionId:map.sessionId,...pointTile()},{fetchImpl:v.fetchImpl,cache});
+  assert.equal(response.status,200);assert.equal(descriptors.length,2);assert.notEqual(descriptors[0].key,descriptors[1].key);
+  assert.equal(descriptors[0].recipe.pipeline,'map-rgb-v1');assert.equal(descriptors[1].recipe.pipeline,'pixels-rgb-v1');assert.equal(v.calls.pixels,1);
+});
+
+test('shared GEE producer survives one cancelled consumer and new callers never join a retired producer',async()=>{
+  const v=fixture();v.state.mapDenied=true;const map=await createGEEImageryMap(v.env,{sceneId:id,geometry},{fetchImpl:v.fetchImpl});
+  let start,release,upstreamSignal;const started=new Promise(r=>start=r),gate=new Promise(r=>release=r);
+  const fetchImpl=async(url,options)=>{if(url.endsWith('/image:computePixels')){upstreamSignal=options.signal;start();await gate;}return v.fetchImpl(url,options);};
+  const a=new AbortController(),b=new AbortController();
+  const first=getGEEImageryTile(v.env,{sessionId:map.sessionId,...pointTile()},{fetchImpl,signal:a.signal});
+  const second=getGEEImageryTile(v.env,{sessionId:map.sessionId,...pointTile()},{fetchImpl,signal:b.signal});
+  await started;await new Promise(r=>setTimeout(r,20));a.abort();await assert.rejects(first,e=>e.code==='GEE_REQUEST_CANCELLED');assert.equal(upstreamSignal.aborted,false);release();assert.equal((await second).status,200);
+  const other=fixture();other.state.mapDenied=true;const m=await createGEEImageryMap(other.env,{sceneId:id,geometry},{fetchImpl:other.fetchImpl});
+  let began,finish;const ready=new Promise(r=>began=r),oldGate=new Promise(r=>finish=r);let calls=0;
+  const delayed=async(url,options)=>{if(url.endsWith('/image:computePixels')&&calls++===0){began();await oldGate;}return other.fetchImpl(url,options);};
+  const oldController=new AbortController(),old=getGEEImageryTile(other.env,{sessionId:m.sessionId,...pointTile()},{fetchImpl:delayed,signal:oldController.signal});await ready;
+  oldController.abort();await assert.rejects(old,e=>e.code==='GEE_REQUEST_CANCELLED');
+  const fresh=await getGEEImageryTile(other.env,{sessionId:m.sessionId,...pointTile()},{fetchImpl:delayed});assert.equal(fresh.status,200);finish();
+});
+
 test('map creation validates canonical scene metadata after restart and renders fixed RGB with an encrypted session',async()=>{
   const v=fixture();
   const map=await createGEEImageryMap(v.env,{sceneId:id,geometry},{fetchImpl:v.fetchImpl});

@@ -1,4 +1,6 @@
 // Public, read-only imagery gateway. Keep all other workspace APIs private.
+import {safeImageryTimingHeader} from '../src/gee-imagery-timing.js';
+import {waitUntil,getDeadline} from '@vercel/functions';
 const PREFIX = '/api/v1/gee/imagery/';
 const MAX_BODY_BYTES = 64 * 1024;
 const MAX_EXPENSIVE_REQUESTS = 2;
@@ -69,7 +71,7 @@ async function limitedBody(request) {
 
 function runtimeEnvironment(source) {
   // Deliberately exclude local credential paths, database credentials and other APIs.
-  return {GEE_PROJECT_ID: source.GEE_PROJECT_ID, GEE_SERVICE_ACCOUNT_JSON: source.GEE_SERVICE_ACCOUNT_JSON};
+  return {GEE_PROJECT_ID: source.GEE_PROJECT_ID, GEE_SERVICE_ACCOUNT_JSON: source.GEE_SERVICE_ACCOUNT_JSON,...(source.GEE_CACHE_ENABLED==='1'?{GEE_CACHE_ENABLED:'1',GEE_CACHE_URL:source.GEE_CACHE_URL,GEE_CACHE_SERVER_KEY:source.GEE_CACHE_SERVER_KEY}:{})};
 }
 
 function safeResponse(response) {
@@ -78,10 +80,16 @@ function safeResponse(response) {
     const value = response.headers.get(name);
     if (value) headers.set(name, value);
   }
+  const timing = safeImageryTimingHeader(response.headers.get('server-timing'));
+  if (timing) headers.set('Server-Timing', timing);
+  const cache = response.headers.get('x-xedo-cache');
+  if (['hit', 'miss', 'outside-aoi'].includes(cache)) headers.set('X-XEDO-Cache', cache);
+  const persistent=response.headers.get('x-xedo-persistent-cache');
+  if(['hit','miss','bypass','follower','disabled'].includes(persistent))headers.set('X-XEDO-Persistent-Cache',persistent);
   return new Response(response.body, {status: response.status, headers});
 }
 
-export async function hostedGEEFetch(request, {handler, env = process.env} = {}) {
+export async function hostedGEEFetch(request, {handler, env = process.env,cacheContext} = {}) {
   try {
     const url = new URL(request.url), route = selectedRoute(url);
     if (!route) return problem(404, 'NOT_FOUND', 'Imagery endpoint not found.');
@@ -116,7 +124,7 @@ export async function hostedGEEFetch(request, {handler, env = process.env} = {})
     if (expensive) activeExpensiveRequests++;
     try {
       const run = handler || (await import('../src/gee-imagery-api.js')).geeImageryAPI;
-      const response = await run(coreRequest, runtimeEnv);
+      const response = await run(coreRequest, runtimeEnv,{cacheContext:cacheContext??{defer:waitUntil,deadline:()=>getDeadline()?.getTime()??0}});
       return response instanceof Response ? safeResponse(response) : problem(404, 'NOT_FOUND', 'Imagery endpoint not found.');
     } finally { if (expensive) activeExpensiveRequests--; }
   } catch {
@@ -128,6 +136,8 @@ export async function hostedGEEFetch(request, {handler, env = process.env} = {})
 
 // Also usable by Node's HTTP server when exercising the deployed adapter locally.
 export async function handleHostedGEE(req, res, options) {
+  const disconnect=new AbortController(),abort=()=>disconnect.abort(),close=()=>{if(!res.writableEnded)abort();};
+  req.once?.('aborted',abort);res.once?.('close',close);
   let response;
   try {
     const host = req.headers.host;
@@ -146,7 +156,7 @@ export async function handleHostedGEE(req, res, options) {
       if (typeof value === 'string') headers.set(name, value);
       else if (value !== undefined) throw new Error('Invalid header');
     }
-    const method = req.method || 'GET', init = {method, headers};
+    const method = req.method || 'GET', init = {method, headers,signal:disconnect.signal};
     if (method !== 'GET' && method !== 'HEAD') {
       if (req.body !== undefined) {
         init.body = typeof req.body === 'string' || Buffer.isBuffer(req.body) ? req.body : JSON.stringify(req.body);
@@ -160,6 +170,7 @@ export async function handleHostedGEE(req, res, options) {
   res.statusCode = response.status;
   for (const [name, value] of response.headers) res.setHeader(name, value);
   res.end(Buffer.from(await response.arrayBuffer()));
+  req.removeListener?.('aborted',abort);res.removeListener?.('close',close);
 }
 
 // Vercel's Node runtime supports this Web Standard entry point for api/*.mjs.
