@@ -5,13 +5,13 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **31 ตุลาคม 2026 — ซ้อมflow/633Node/84Python/3buildsผ่าน เตรียมpushCPUและเอกสาร; ปัญหาใหม่รอรายละเอียดตามที่ให้เลื่อน; ไม่เปิดBilling/subscription**
+- อัปเดตล่าสุด: **31 ตุลาคม 2026 — กลุ่ม1–2ซ้อม/CPU Gitdeliveryเผยแพร่และCIผ่าน; ปัญหาใหม่รอรายละเอียดตามที่ให้เลื่อน; ไม่เปิดBilling/subscription**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
 - จุดประสงค์รอบนี้: ทดสอบflowก่อนนำเสนอและส่งมอบชุดCPU9ไฟล์พร้อมเอกสารในGit/pushตามที่อนุมัติ
-- สถานะเผยแพร่: ยืนยันล่าสุดใน§3.70 activeProduction a767faf / dpl_DYMmXXi5Qsm2oMNM2APy5CXwv7DS READY/CI41100815452success; รอบสรุปนี้ไม่ตรวจสดซ้ำ เอกสารล่าสุดยังอยู่ในเครื่อง
+- สถานะเผยแพร่: sourcebc533a8/CI41112463796success/automaticProduction7xjREADY/32HTTPchecksผ่าน; finaldocs-onlyidentityดูpublication.jsonของ§3.72
 - **ขอบเขตคำสั่งล่าสุด:** อนุมัติกลุ่ม1–2/ทดสอบ/เก็บCPUและเอกสารลงGit/push ไม่เปิดBilling/subscription; เลื่อนปัญหาใหม่ไปแก้เมื่อมีรายละเอียด
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
@@ -20,7 +20,7 @@
 
 ## 2. สรุป
 
-**ซ้อมนำเสนอและเตรียมส่งมอบ CPU — 31 ต.ค. 2026 (§3.72):** ผู้ใช้อนุมัติข้อ1–2/ทดสอบ/เก็บCPUกับเอกสารลงGitและpush Fresh633Node/84Python/syntax/3buildsผ่าน BrowserจริงSign inโดยผู้ใช้→พื้นที่ใหม่482535m²→CPUสำเร็จ56.67s→manualedit/Undo/Redo→reviewv2→route2.75km/22waypoints/3Dsatellite→Savev3/History/Open/SQLพิกัดตรง Estimateddemoแยกdownload.planจริง20items/8053bytes ได้ตรวจ4calculatorpanels; driftไม่ได้เลือกscenario Start.cmdจากcwdอื่นป้องกันเปิดซ้ำ/shortcutชี้ถูก/workerเดิมยังREADY ไม่rebootOSหรือหยุดworkerเดิม เก็บ12ไฟล์ในscopeก่อนpush ไม่มีBilling/subscription ปัญหาใหม่ที่ผู้ใช้ให้เลื่อนไปแก้ยังรอรายละเอียดโดยไม่บล็อกscopeนี้ สถานะpushสุดท้ายในownedsection/receipt
+**ข้อ1–2 ซ้อมและส่งมอบ CPU ขึ้น Git แล้ว — 31 ต.ค. 2026 (§3.72):** sourcecommit `bc533a8152a9308c2c797b1980ca4308fa21b6eb` pushmainแล้ว [CI41112463796](https://github.com/megaaaop/XEDO/actions/runs/41112463796) success automaticGitdeployment dpl_7xjXAYyQE2uo1aJJx4FpMx4xACpX READY/productionalias Fresh633Node/84Python/syntax/3buildsผ่าน QAใหม่CPU→manualedit/Undo/Redo→reviewv2→2.75km/3D→Savev3/History/Open/SQLตรง Demo.planจริง20items/8053bytes ตรวจหลังpush32HTTPchecks/25webhashesเดิม/workerและguideไม่public ไม่rebootOSหรือrestartworkerเดิม ไม่มีBilling/subscription ปัญหาใหม่ที่ผู้ใช้ให้เลื่อนยังรอรายละเอียด Docs-onlyfollowup exactidentityและCIล่าสุดดู outputs/XEDO_Presentation_Rehearsal_2026-10-31/publication.json
 
 **สรุปงานคงเหลือล่าสุด — 31 ต.ค. 2026 (§3.71):** จากคิวและGitในเครื่อง เหลือ3กลุ่ม: ซ้อมนำเสนอหลังเปิดเครื่องใหม่, เก็บชุดCPU9ไฟล์พร้อมเอกสารล่าสุดลงGitเมื่อได้รับคำสั่งเผยแพร่, และขยายการทดสอบเฉพาะทาง/ระยะยาว อีก2กลุ่มPiกับรายงานทดลองยังพัก CIเอกสารปิดแล้วตามผลตรวจ§3.70 รอบนี้สรุปและอัปเดตเอกสาร ไม่ตรวจCI/เว็บจริงซ้ำ ไม่แก้product ไม่รันtests/build/AI ไม่commit/push/deploy/Billing/subscription ไม่มีคำถามค้าง
 
@@ -2020,4 +2020,14 @@ Vercelอ่านผ่านalias `xedo-eight.vercel.app` ใหม่ ได�
 **ข้อจำกัด/งานต่อ:** ทดสอบกับworkerเดิมที่เปิดอยู่ ไม่rebootWindows/ไม่restartdaemon/ไม่ทำproductionreconnect/ไม่ใช้รหัสผ่านแทนผู้ใช้ CPUยังต้องเปิดเครื่อง/online/READY ผล0candidatesไม่รับรองไม่มีน้ำมัน และmanualcaseไม่แทนpositivecandidateหรือfulltwo-account/fault/longsoakmatrix NormalflightexportของQAจริงยังgated ไม่tickphysical/airspaceapprovalให้ภารกิจจริง QGCnativeimport/SITL/บินจริง/physicalmobileยังไม่รัน ปัญหาเล็กน้อยที่ผู้ใช้รายงานยัง**รอรายละเอียดภายหลังตามที่ให้เลื่อน** ไม่บล็อกการเก็บงานที่อนุมัติ Piและรายงานทดลองยังพัก
 
 **หลักฐาน/สถานะ:** `C:/mega/codex/iENA/outputs/XEDO_Presentation_Rehearsal_2026-10-31/` มีREPORT.md, initial/release manifests, local-verification.json, browser-observation.json, job.json, private-persistence.json, download-verification.json/presentation-demo.plan, AX/screenshots/test/buildlogs คง3mainparts/3steps/4calculatorsและบันทึกแชทอื่นครบ ก่อนpushสถานะverified_ready_for_push; publication.jsonจะเก็บexactGit/CI/automaticVerceldeploymentidentityหลังpush ไม่สร้างmanualdeploymentหรือเปิดบริการเสียเงิน ปิดreceipt/สถานะจริงในownedsectionหลังเผยแพร่
+
+
+**ผลเผยแพร่และตรวจหลัง push:** เก็บ12pathsในcommit [bc533a8152a9308c2c797b1980ca4308fa21b6eb](https://github.com/megaaaop/XEDO/commit/bc533a8152a9308c2c797b1980ca4308fa21b6eb) แล้วpushmainแบบfast-forward CI [41112463796](https://github.com/megaaaop/XEDO/actions/runs/41112463796) completed/success Gitintegrationสร้างProductiondeployment `dpl_7xjXAYyQE2uo1aJJx4FpMx4xACpX` READY/iad1/aliasxedo-eight.vercel.app ไม่สร้างmanualdeploymentหรือเปลี่ยนenv/บัญชี/schema/แผนบริการ ไฟล์worker_guardเก็บextraEOFblanklineหนึ่งจุดก่อนcommit ไม่มีfunctionalchangeหลังfresh84tests
+
+PostpushHTTP32checksผ่าน: HTML23516bytesและ24assetsตรง25hashesที่qualifiedเดิม/MIME/cacheถูก Missinghashed404ไม่immutable; Start.cmd/workerPython/CPUguide404ไม่public; guestsessionnull/privatejobs401/APIwrongmethod405/no-storeถูก Runtimeerror/fatalqueryเฉพาะdeploymentใน15minwindowไม่พบmatchingrecords ไม่ใช่alltrafficguarantee Fullprivatebrowser/CPU/Save/Historyทำก่อนpushบนDYM/a767faf และพิสูจน์25webartifactsไม่เปลี่ยนหลังpush ไม่อ้างว่าreplaybrowserครบอีกรอบบน7xjหลังpublish
+
+**ปิดกลุ่ม1–2:** flowปัจจุบันและการส่งมอบCPUcode/คู่มือ/เอกสารทำแล้ว เหลือกลุ่ม3extendedqualificationและงานพักPi/รายงานทดลอง กลุ่ม1ทดสอบบนworkerเดิมพร้อมduplicate-startguard ไม่rebootOS/ไม่restartdaemonจริง ปัญหาใหม่จากผู้ใช้ยัง**รอคำตอบ/รายละเอียดภายหลังตามที่ให้เลื่อน** ไม่เดาrootcauseหรือแก้UIแทน
+
+เอกสารปิดpublicationนี้จะpushเป็นdocs-onlyfollowupสามcanonicalpaths โดยไม่เปลี่ยนproduct/source; exactfinalcommit/deployment/CIและfreshstaticsmokeอยู่ `C:/mega/codex/iENA/outputs/XEDO_Presentation_Rehearsal_2026-10-31/publication.json` หลังpushเพื่อหลีกเลี่ยงcommitself-reference Sourcecommit/rehearsal/sourceCIที่อ้างข้างต้นเป็นผลตรวจจริงแล้ว ส่วนfinaldocsCIต้องอ่านreceiptแยก ไม่อ้างว่าผ่านล่วงหน้า รักษาข้อจำกัดเดิมและไม่มีBilling/subscription
+
 <!-- presentation-delivery-main-end-2026-10-31 -->
