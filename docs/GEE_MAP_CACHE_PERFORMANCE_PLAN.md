@@ -3,13 +3,13 @@
 - เวอร์ชัน: **1.1 — เพิ่มแผนแบ่งงานกับแชทผู้ช่วยเดิม วันที่ 30 ตุลาคม 2026**
 - เวลาอ้างอิง: Asia/Bangkok
 - เว็บไซต์: https://xedo-eight.vercel.app/
-- สถานะ: **ข้อ 1–4 เสร็จในเครื่องพร้อมแคช Supabase จริง: hosted HTML23.5KB/staticgzip355KB; ยังไม่เผยแพร่ ข้อ5–6ยังไม่เริ่ม**
+- สถานะ: **ข้อ1–6เผยแพร่และตรวจหลัง deploy แล้ว 31 ต.ค.2026; application71e8f45/Et READY/CI success; final docs-only identity ดู primary/final-publication.json (§19)**
 - ขอบเขตคำสั่งรอบจัดทำเอกสาร: รวบรวมแผนเป็นไฟล์ Markdown การสร้างไฟล์นี้ไม่ใช่การอนุมัติแก้เว็บไซต์ สร้าง bucket/ตาราง เปลี่ยนสิทธิ์ เปิดบริการเสียเงิน หรือ deploy
 - บันทึกสถานะและประวัติหลัก: [XEDO_WORK_LOG.md](XEDO_WORK_LOG.md)
-- รายละเอียดสถาปัตยกรรม: [WEBSITE_DETAILS.md](WEBSITE_DETAILS.md) ส่วน 3.51–3.59
+- รายละเอียดสถาปัตยกรรม: [WEBSITE_DETAILS.md](WEBSITE_DETAILS.md) ส่วน 3.51–3.69
 - คิวงาน: [implementation-queue.json](implementation-queue.json) → `geeMapLatencyAudit.persistentCacheFollowup`
 - การทำงาน: **แชทหลักแก้เว็บไซต์เพียงแชทเดียว + แชทผู้ช่วยเดิมตรวจ source/ออกแบบกรณีทดสอบ/ตรวจหลักฐานคู่ขนาน** ใช้การตั้งค่าที่มีอยู่ ไม่กำหนดว่าต้องเปิด Ultra จึงจะเริ่มได้
-- ขอบเขตล่าสุด: ผู้ใช้อนุมัติข้อ4ลดhostedassets/ทดสอบและใช้ผู้ช่วยตรวจแล้ว ผลข้อ1–2อยู่ข้อ15/ข้อ3อยู่ข้อ16/ข้อ4อยู่ข้อ17 ไม่อนุมัติBilling/subscription/push/deploy
+- ขอบเขตล่าสุด: ผู้ใช้อนุมัติข้อ6 push/deploy/ตรวจขนาน และอนุมัติ Production server Secret แล้ว คงห้าม Billing/subscription และไม่เปลี่ยน schema/accounts/permissions; ไม่มีคำตอบค้าง
 
 ## 1. สรุปแผนล่าสุด
 
@@ -452,3 +452,17 @@ Mainทดสอบfullsuite633ผ่าน/focused7/syntax/hosted/file/workspac
 - ไม่มีAIjob/CPUinference/privateacceptanceใหม่/physicalmobile/trackpad/OSreboot/SITL/flightหรือhours-longtestรอบนี้ QAproxyปิด/viewportคืนแล้ว Source/config/VercelCDN/lifecycle/assetretentionproductionยังไม่qualified
 
 ข้อ6publish/postdeployยังไม่เริ่ม ต้องได้รับคำสั่งผู้ใช้ก่อน และต้องตรวจserver-onlycacheconfiguration/Vercelrouting-MIME-CDN-lifecycle-backgroundwrite/CI+deploymentidentity+alias+privateInspector/AI/localCPUflow ไม่มีcommit/push/deploy/productionconfig/Billing/subscription/schema/accountchangeในข้อ5 ไม่มีคำถามรอคำตอบ
+
+
+## 19. ผลข้อ 6: เผยแพร่ Production และตรวจหลัง deploy — 31 ตุลาคม 2026
+
+ผู้ใช้อนุมัติ push/deploy/ผู้ช่วยตรวจขนาน และอนุมัติบันทึก server-key เดิมเป็น Production Secret โดยไม่เปิด Billing/subscription ทำครบแล้ว Application commit `71e8f45053f7b38fefe6ce382f96619e5d682297`, deployment `dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG` READY/alias [XEDO](https://xedo-eight.vercel.app/), CI [41095720672](https://github.com/megaaaop/XEDO/actions/runs/41095720672) success รายละเอียด WORK_LOG/WEBSITE_DETAILS§3.69 และ `C:/mega/codex/iENA/outputs/XEDO_Performance_Phase6_2026-10-30/primary/REPORT.md` ส่วน final documentation commit/deployment/CI/static smoke หลัง push อยู่ primary/final-publication.json และพิสูจน์ว่า appinputs/HTML/assetsไม่เปลี่ยนจาก application revision ที่ตรวจ privateUI
+
+- Production `GEE_CACHE_SERVER_KEY` Secret และ URL/enabled Config ตั้งเฉพาะ Production ไม่ส่งค่าเข้า Git/client/report ลบ temporary ignored/current-user-only fileแล้ว ไม่เปลี่ยน extensions/accounts/permissions/schema หรือแผนบริการ
+- พบ missing hashed asset404มีimmutable1ปีจริง แก้ Vercelheaderเป็นexact24emittednamesและbuildstaleinventorygate พร้อมutility `node scripts/update-hosted-cache-rules.mjs` ให้รันก่อนcommitเมื่อclientgraphเปลี่ยน แก้แล้ว404revalidate/actualassetsimmutable/HTMLno-cache/privateAPIno-store ถูกต้องทั้ง29HTTPchecks HTML23,516bytes/hashตรงและ24assetsตรงbuild
+- Cache newPNG151,574bytes miss→ready/write_settled/physicalhashตรงหลังclientresponseจริง ผ่านVercelwaitUntil จากnewdeployment/newsignedsessionได้persistenthit/RAMmiss/hashเดิม cap200MB/privilegesยังอยู่ในขอบเขต ไม่มีnear-capstressใหม่ ไม่อ้างว่าทุกhitเร็วกว่าGEE
+- Freshfull633/focused7/syntax/hostedbuildผ่าน CIรันทั้ง3builds Localworker84ผ่านแต่เก้าไฟล์dirtyCPUยังไม่เผยแพร่ Sourceที่เปลี่ยนหลังinitialrelease5ไฟล์แก้S03 ไม่เปลี่ยนbrowserbodies
+- ผู้ใช้Sign inเอง เปิดประวัติเดิม แล้วnewQAmission→AnalyzeCPU succeeded→manual4corner/แก้GeoJSON/Undo/Redo→Sentinel2reviewv2→route2.03km22waypoints→4calculators→3Dsatellite73samples→Savev3/history/reopen/SQLgeometry+provenanceตรง WorkerกลับREADY ผลAI0candidatesไม่ยืนยันไม่มีคราบ Normalflightexportยังล็อกเงื่อนไขที่ขาด ไม่ยืนยันแทนผู้ใช้
+- Desktop/mobileemulationไม่ล้น คืนviewportแล้ว Console0capturedwarning/errorและscopedruntimeerror/fatalqueryไม่มีmatchingrecords ผู้ช่วยทวนsource/artifact/receiptsเท่านั้น R01–R24คงdesigned_not_run/actual:null ไม่รวมเป็นruntimeผ่าน ไม่มีคำตอบผู้ใช้ค้าง
+
+ข้อ1–6จบตามขอบเขตที่รัน ไม่เปลี่ยนผลphase5เป็นproductionlatencySLA (persistenthitเคยช้ากว่าoff3/5คู่และlocalFCPช้าลง64ms) Broaderphysicalmobile/hours-long/reboot/privatecross-accountmatrix/flight/SITL/futuresplitassetskewยังเป็นfollowup ปิดงานGEEนี้ไม่ได้ทำCPUเครื่องนี้ให้always-on ต้องเปิดเครื่อง/ออนไลน์/READYสำหรับAnalyzeใหม่ Pi/telemetry/ผลทดลองก่อน–หลังยังพัก เก้าไฟล์launcher/guard/guideแยกGitdelivery ไม่มีBilling/subscriptionเปิดเพิ่ม

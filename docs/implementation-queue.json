@@ -295,7 +295,7 @@
   },
   "currentImplementationScope": {
     "id": "gee-performance-v1-1-phase-6-2026-10-30",
-    "status": "published_initial_revision_fixing_postdeploy_404_cache",
+    "status": "published_and_postdeploy_verified",
     "authorizedPhases": [
       6
     ],
@@ -311,7 +311,14 @@
     "productionCacheEnvironmentConfigured": true,
     "initialCommit": "fb484bc28076b5a5d49d407e7377143cf25fbdee",
     "initialConfiguredDeployment": "dpl_D2aTXfcNyXFAmuBiRsZtB4an2Rhz",
-    "postdeployFinding": "404_missing_hashed_asset_inherited_immutable_header"
+    "postdeployFinding": "404_missing_hashed_asset_inherited_immutable_header",
+    "qualifiedApplicationCommit": "71e8f45053f7b38fefe6ce382f96619e5d682297",
+    "qualifiedApplicationDeployment": "dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG",
+    "ciRunId": 41095720672,
+    "ciConclusion": "success",
+    "postdeployFindingResolved": true,
+    "privateUiVerified": true,
+    "finalDocumentationPublicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\final-publication.json"
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
@@ -985,31 +992,25 @@
     }
   ],
   "latestPublishedRelease": {
-    "commit": "6a1c626cda0cf6dad22b603d6647f41b325598ff",
-    "productionDeploymentId": "dpl_6G8DzTyKUYskvxza8Fb5KUYEoByE",
+    "commit": "71e8f45053f7b38fefe6ce382f96619e5d682297",
+    "productionDeploymentId": "dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG",
     "url": "https://xedo-eight.vercel.app/",
     "sourceBranch": "main",
     "ciRunIds": [
-      41042450911,
-      41042599241
+      41095720672
     ],
     "ciConclusion": "success",
-    "publishedOn": "2026-10-30",
+    "publishedOn": "2026-10-31",
     "timezone": "Asia/Bangkok",
-    "scopeId": "local-cpu-phase7-production-release-2026-10-30",
-    "htmlSha256": "6db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc",
-    "htmlBytes": 6207852,
-    "verificationRecord": "Application deployment verified. Documentation-only follow-up commit/deployment tracked in ignored phase7 release-receipt.json.",
-    "browserHistoryReopen": "passed_after_user_reauthentication",
+    "scopeId": "gee-performance-v1-1-phase-6-2026-10-30",
+    "htmlSha256": "5baaaa8f51b84d810d4861c78868f0511c278550e2f7b04304fdc4b111b0354f",
+    "htmlBytes": 23516,
+    "verificationRecord": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\REPORT.md",
+    "browserHistoryReopen": "passed_with_existing_inspector_new_mission_v3",
     "documentationFollowup": {
-      "commit": "ad1359ec2389043572c43dbee7638e0eb4d25917",
-      "deploymentId": "dpl_2bhptbByMBJwi6KxSnk7a1pdEWjC",
-      "state": "READY",
-      "ciRunIds": [
-        41045330460,
-        41045535830
-      ],
-      "note": "Final history-resolution documentation commit follows; latest identity in ignored release-receipt.json."
+      "receipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\final-publication.json",
+      "productSourceChange": false,
+      "note": "Qualified application revision above; exact final documentation commit/deployment/CI and unchanged artifact smoke recorded after push to avoid commit self-reference. Private UI was not replayed on the documentation-only deployment."
     }
   },
   "removedFromCurrentCloseout": [
@@ -3097,13 +3098,13 @@
     }
   },
   "geeMapLatencyAudit": {
-    "recordedOn": "2026-10-30",
-    "status": "phase_4_complete_local_hosted_assets_not_published",
-    "scope": "hosted_assets_phase4_only",
+    "recordedOn": "2026-10-31",
+    "status": "phase_1_through_6_published_and_postdeploy_verified",
+    "scope": "GEE_v1_1_phase6_production_release_postdeploy",
     "implementationAuthorized": true,
-    "publishAuthorized": false,
-    "deploymentId": "dpl_EG7VyQiMMZpdXuSxmeSLep3KcsGm",
-    "deploymentCommit": "a5612696a80470733da4155bd953d01d7b553bd4",
+    "publishAuthorized": true,
+    "deploymentId": "dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG",
+    "deploymentCommit": "71e8f45053f7b38fefe6ce382f96619e5d682297",
     "region": "iad1",
     "observedRenderModes": {
       "basemap": "pixels",
@@ -3137,15 +3138,15 @@
     "pendingUserAnswers": [],
     "applicationChanged": true,
     "testsOrBuildRun": true,
-    "push": false,
-    "deploy": false,
+    "push": true,
+    "deploy": true,
     "billingOrSubscriptionChanged": false,
     "evidence": "output/gee-latency-audit-2026-10-30/audit-summary.json",
-    "detailsSection": "3.67",
+    "detailsSection": "3.69",
     "persistentCacheFollowup": {
-      "recordedOn": "2026-10-30",
-      "status": "phase_1_2_3_4_5_complete_local_not_published",
-      "scope": "persistent_cache_and_hosted_assets_local",
+      "recordedOn": "2026-10-31",
+      "status": "phase_1_through_6_published_and_postdeploy_verified",
+      "scope": "persistent_cache_and_hosted_assets_production",
       "provider": "existing_Supabase",
       "filesIn": "Storage",
       "metadataIn": "Postgres",
@@ -3161,20 +3162,20 @@
       "revisitMatchingTilesAvoidsPixelRecompute": true,
       "sourceFreshnessRecheckSeparate": true,
       "privateMissionDataExcludedFromSharedCache": true,
-      "bucketAccessDecision": "private_gateway_start_proposal_no_publication_authorized",
-      "cacheSizeAndRetention": "Recommend200MBinitialPNGcache, consider500MBmaximum after observedusage; boundedcleanup and reservedheadroom. Proposalonly.",
+      "bucketAccessDecision": "private_bucket_server_gateway_verified",
+      "cacheSizeAndRetention": "Implemented hard cap200000000bytes with conservative reservations and bounded cleanup; no automatic increase.",
       "liveQuotaRead": true,
       "smartCdnNotRequired": true,
       "implementationAuthorized": true,
-      "publishAuthorized": false,
+      "publishAuthorized": true,
       "pendingUserAnswers": [],
       "applicationOrDbChanged": true,
       "testsOrBuildRun": true,
       "newGeeCompute": true,
-      "push": false,
-      "deploy": false,
+      "push": true,
+      "deploy": true,
       "billingOrSubscriptionChanged": false,
-      "detailsSection": "3.67",
+      "detailsSection": "3.69",
       "usageAssessment": {
         "recordedOn": "2026-10-30",
         "checkedAtUtc": "2026-10-30T12:16:46.280Z",
@@ -3213,11 +3214,11 @@
         "detailsSection": "WEBSITE_DETAILS.md#356"
       },
       "consolidatedPlan": {
-        "recordedOn": "2026-10-30",
+        "recordedOn": "2026-10-31",
         "version": "1.1",
         "path": "docs/GEE_MAP_CACHE_PERFORMANCE_PLAN.md",
-        "status": "phase_1_2_3_4_5_complete_local_not_published",
-        "scope": "GEE_v1_1_phase5_bounded_local_performance_resilience",
+        "status": "phase_1_through_6_published_and_postdeploy_verified",
+        "scope": "GEE_v1_1_phase6_production_release_postdeploy",
         "initialCacheBudgetBytes": 200000000,
         "initialPlanningTileCount": [
           1300,
@@ -3230,17 +3231,17 @@
         "pendingUserAnswers": [],
         "newRuntimeVerification": true,
         "sourceOrDatabaseChanged": true,
-        "push": false,
-        "deploy": false,
+        "push": true,
+        "deploy": true,
         "billingOrSubscriptionChanged": false,
-        "detailsSection": "WEBSITE_DETAILS.md#368",
+        "detailsSection": "WEBSITE_DETAILS.md#369",
         "parallelExecutionPlanned": true,
         "supportDispatchedThisTurn": true,
         "parallelCoordination": {
-          "recordedOn": "2026-10-30",
+          "recordedOn": "2026-10-31",
           "planPath": "docs/GEE_MAP_CACHE_PERFORMANCE_PLAN.md",
           "planVersion": "1.1",
-          "status": "phase5_method_source_evidence_delivered",
+          "status": "phase6_source_evidence_review_delivered",
           "primaryWebsiteEditorOnly": true,
           "supportThread": {
             "id": "01a17cf8-a060-7fd0-bed4-d7920a297d20",
@@ -3254,13 +3255,11 @@
             "B_test_design_and_diff_review",
             "C_evidence_review"
           ],
-          "handoffDirectory": "C:/mega/codex/iENA/outputs/XEDO_Performance_Phase5_2026-10-30/support",
+          "handoffDirectory": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\support",
           "handoffArtifacts": [
             "HANDOFF.md",
-            "METHOD_REVIEW.md",
-            "TEST_DESIGN.md",
-            "EVIDENCE_REVIEW.md",
-            "FINAL_REPORT_REVIEW.md",
+            "POSTDEPLOY_REVIEW.md",
+            "POSTDEPLOY_RECEIPT_REVIEW.json",
             "SOURCE_MANIFEST.json"
           ],
           "handoffDirectoryCreatedThisTurn": true,
@@ -3273,33 +3272,73 @@
           "subagentSpawned": false,
           "implementationStarted": true,
           "runtimeTestsRun": true,
-          "push": false,
-          "deploy": false,
+          "push": true,
+          "deploy": true,
           "billingOrSubscriptionChanged": false,
           "pendingUserAnswers": [],
-          "implementationScope": "phase5_bounded_local_performance_resilience",
-          "supportCasesDesignedNotRun": 32,
+          "implementationScope": "phase6_production_release_postdeploy",
+          "supportCasesDesignedNotRun": 24,
           "supportWebsiteCasesExecuted": 0,
           "phase12Complete": true,
           "persistentCacheImplemented": true,
           "phase3Complete": true,
           "phase4Complete": true,
-          "phase5Complete": true
+          "phase5Complete": true,
+          "phase6Complete": true
         },
         "authorizedExecutionPhases": [
           1,
           2,
           3,
           4,
-          5
+          5,
+          6
         ],
         "diagnosticsImplementationAuthorized": true,
         "persistentCacheImplementationAuthorized": true,
         "sourceChanged": true,
         "databaseChanged": false,
         "cacheSchemaInstalledInEarlierPhase": true,
-        "sourceChangedThisTurn": false,
-        "databaseSchemaChangedThisTurn": false
+        "sourceChangedThisTurn": true,
+        "databaseSchemaChangedThisTurn": false,
+        "serverEnvironmentChangedThisTurn": true,
+        "productionQualification": {
+          "recordedOn": "2026-10-31",
+          "status": "published_and_postdeploy_verified",
+          "authorized": true,
+          "qualifiedApplicationCommit": "71e8f45053f7b38fefe6ce382f96619e5d682297",
+          "productionDeploymentId": "dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG",
+          "ciRunId": 41095720672,
+          "initialCommit": "fb484bc28076b5a5d49d407e7377143cf25fbdee",
+          "cacheSecretApprovedByUser": true,
+          "productionEnvironmentConfigured": true,
+          "schemaAppliedThisTurn": false,
+          "accountsOrPermissionsChanged": false,
+          "billingOrSubscriptionChanged": false,
+          "applicationTests": 633,
+          "localWorkerTests": 84,
+          "workerFilesPublished": false,
+          "staticChecks": 29,
+          "assetCount": 24,
+          "htmlBytes": 23516,
+          "htmlSha256": "5baaaa8f51b84d810d4861c78868f0511c278550e2f7b04304fdc4b111b0354f",
+          "immutable404FindingResolved": true,
+          "realDeferredWriteVerified": true,
+          "newDeploymentPersistentReturnVerified": true,
+          "privateMissionId": "0438d788-342d-4ced-b7d1-d3687d22d1ca",
+          "newAiJobId": "b31e96e2-6785-4554-ad09-416a479a7acd",
+          "aiJobSucceeded": true,
+          "inspectorEditUndoRedo": true,
+          "saveHistoryReopenRevision": 3,
+          "ownAccountOnlyFreshAcceptance": true,
+          "sourceOrConfigChangedThisTurn": true,
+          "supportWebsiteCasesExecuted": 0,
+          "supportCasesDesignedNotRun": 24,
+          "excludedDirtyLocalCpuFiles": 9,
+          "proofDirectory": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary",
+          "pendingUserAnswers": [],
+          "finalDocumentationPublicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\final-publication.json"
+        }
       },
       "phase12Execution": {
         "recordedOn": "2026-10-30",
@@ -3552,8 +3591,71 @@
         "billingOrSubscriptionChanged": false,
         "pendingUserAnswers": [],
         "detailsSection": "3.68"
+      },
+      "phase6Execution": {
+        "recordedOn": "2026-10-31",
+        "status": "published_and_postdeploy_verified",
+        "authorized": true,
+        "qualifiedApplicationCommit": "71e8f45053f7b38fefe6ce382f96619e5d682297",
+        "productionDeploymentId": "dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG",
+        "ciRunId": 41095720672,
+        "initialCommit": "fb484bc28076b5a5d49d407e7377143cf25fbdee",
+        "cacheSecretApprovedByUser": true,
+        "productionEnvironmentConfigured": true,
+        "schemaAppliedThisTurn": false,
+        "accountsOrPermissionsChanged": false,
+        "billingOrSubscriptionChanged": false,
+        "applicationTests": 633,
+        "localWorkerTests": 84,
+        "workerFilesPublished": false,
+        "staticChecks": 29,
+        "assetCount": 24,
+        "htmlBytes": 23516,
+        "htmlSha256": "5baaaa8f51b84d810d4861c78868f0511c278550e2f7b04304fdc4b111b0354f",
+        "immutable404FindingResolved": true,
+        "realDeferredWriteVerified": true,
+        "newDeploymentPersistentReturnVerified": true,
+        "privateMissionId": "0438d788-342d-4ced-b7d1-d3687d22d1ca",
+        "newAiJobId": "b31e96e2-6785-4554-ad09-416a479a7acd",
+        "aiJobSucceeded": true,
+        "inspectorEditUndoRedo": true,
+        "saveHistoryReopenRevision": 3,
+        "ownAccountOnlyFreshAcceptance": true,
+        "sourceOrConfigChangedThisTurn": true,
+        "supportWebsiteCasesExecuted": 0,
+        "supportCasesDesignedNotRun": 24,
+        "excludedDirtyLocalCpuFiles": 9,
+        "proofDirectory": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary",
+        "pendingUserAnswers": [],
+        "finalDocumentationPublicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\final-publication.json"
       }
-    }
+    },
+    "initialAuditDeploymentSnapshot": {
+      "deploymentId": "dpl_EG7VyQiMMZpdXuSxmeSLep3KcsGm",
+      "deploymentCommit": "a5612696a80470733da4155bd953d01d7b553bd4",
+      "region": "iad1",
+      "measurements": {
+        "sampleSourceImages": 12,
+        "browserInitialSourceImages": 20,
+        "basemapManifestFirstMs": 887.32,
+        "basemapManifestRepeatMs": 335.53,
+        "eightTilesFourConcurrentWallMs": 5019.42,
+        "tileMinMs": 851.1,
+        "tileMaxMs": 3256.77,
+        "firstObservedNotVerifiedColdStart": true,
+        "fullPageNavigationMeasured": false
+      },
+      "findings": [
+        "Per-tile computePixels mosaic and metadata-to-tile waterfall",
+        "Session-bound memory-only caches and browser no-store requests limit reuse",
+        "Client abort does not reach imagery upstream computation",
+        "Hosted portable HTML6,207,852bytes includes large inline images and scripts",
+        "Separate3D/targetvalidation/context paths require later stage-specific profiling"
+      ],
+      "evidence": "output/gee-latency-audit-2026-10-30/audit-summary.json"
+    },
+    "currentEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\REPORT.md",
+    "measurementsContext": "Original pre-implementation audit snapshot retained; not fresh phase6 latency measurements."
   },
   "localCpuLauncherExecution": {
     "recordedOn": "2026-10-30",
@@ -3696,21 +3798,21 @@
     "actualOsRebootPerformedByAgent": false
   },
   "latestRemainingWorkAudit": {
-    "date": "2026-10-30",
-    "kind": "phase5_bounded_local_qualification_closeout",
-    "sourceSection": "3.68",
+    "date": "2026-10-31",
+    "kind": "phase6_production_release_postdeploy_closeout",
+    "sourceSection": "3.69",
     "corePrototypeFeatureFlow": "complete_with_prior_browser_api_evidence",
     "priorRuntimeProof": "outputs/XEDO_Post_Reset_Check_2026-10-30",
     "followups": [
       {
         "id": "gee-map-speed",
-        "status": "phase_1_2_3_4_5_complete_local_not_published",
-        "description": "200MB cache and small hosted shell implemented; phase5 bounded local comparison/repeated-use/cancellation/fallback complete with disclosed startup FCP and paired-cache tradeoffs. Phase6 deployment/postdeploy remains unauthorized."
+        "status": "phase_1_through_6_published_and_postdeploy_verified",
+        "description": "200MB private cache and split hosted shell published; immutable404 repaired; real deferred write/new-deployment reuse and signed-in AI/edit/save/reopen passed. No universal latency guarantee."
       },
       {
         "id": "extended-qualification",
-        "status": "bounded_local_phase5_complete_broader_followups_remaining",
-        "description": "11m35s foreground repeated-use and state invalidation checked locally. Physical mobile/trackpad, hours-long sessions, extended CPU/reboot/private multi-session and unrun provider fault/flight cases remain separate followups."
+        "status": "bounded_local_and_production_subset_complete_broader_followups_remaining",
+        "description": "Phase5 local repeated-use and phase6 own-account production AI/save/reopen and browser-mobile emulation passed. Physical mobile, hours-long/reboot, fresh multi-account/session-conflict/expiry, flight and future asset-graph skew qualification remain followups."
       },
       {
         "id": "local-launcher-git-delivery",
@@ -3726,10 +3828,40 @@
       3
     ],
     "pendingUserAnswers": [],
-    "applicationChangedThisTurn": false,
+    "applicationChangedThisTurn": true,
     "runtimeTestsRunThisTurn": true,
-    "publishedThisTurn": false,
+    "publishedThisTurn": true,
     "billingOrSubscriptionOpened": false,
     "canonicalNumberingUnchanged": true
-  }
+  },
+  "publicationHistory": [
+    {
+      "commit": "6a1c626cda0cf6dad22b603d6647f41b325598ff",
+      "productionDeploymentId": "dpl_6G8DzTyKUYskvxza8Fb5KUYEoByE",
+      "url": "https://xedo-eight.vercel.app/",
+      "sourceBranch": "main",
+      "ciRunIds": [
+        41042450911,
+        41042599241
+      ],
+      "ciConclusion": "success",
+      "publishedOn": "2026-10-30",
+      "timezone": "Asia/Bangkok",
+      "scopeId": "local-cpu-phase7-production-release-2026-10-30",
+      "htmlSha256": "6db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc",
+      "htmlBytes": 6207852,
+      "verificationRecord": "Application deployment verified. Documentation-only follow-up commit/deployment tracked in ignored phase7 release-receipt.json.",
+      "browserHistoryReopen": "passed_after_user_reauthentication",
+      "documentationFollowup": {
+        "commit": "ad1359ec2389043572c43dbee7638e0eb4d25917",
+        "deploymentId": "dpl_2bhptbByMBJwi6KxSnk7a1pdEWjC",
+        "state": "READY",
+        "ciRunIds": [
+          41045330460,
+          41045535830
+        ],
+        "note": "Final history-resolution documentation commit follows; latest identity in ignored release-receipt.json."
+      }
+    }
+  ]
 }

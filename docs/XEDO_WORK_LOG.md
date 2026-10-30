@@ -5,13 +5,13 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **31 ตุลาคม2026 — ข้อ6เผยแพร่แล้วกำลังแก้postdeploy404cacheก่อนปิด;ไม่มีBilling/subscription/คำถามfeatureค้าง**
+- อัปเดตล่าสุด: **31 ตุลาคม 2026 — ข้อ6เผยแพร่/ตรวจเว็บจริงแล้ว; เก็บผลตรวจเอกสารวัสดุของอีกแชทไว้ครบ; ไม่มี Billing/subscription/คำถามค้าง**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
-- จุดประสงค์รอบนี้: ตรวจข้อ5 matched performance/repeated-use/cancellation/fallbackกับsourceหลังphase4 ใช้ผู้ช่วยเดิมทวนหลักฐานก่อนบันทึกปิด
-- สถานะเผยแพร่: รอบนี้ไม่เปลี่ยน production code/env; identity ที่บันทึกจากรอบก่อนคือ a5612696a80470733da4155bd953d01d7b553bd4 / dpl_EG7VyQiMMZpdXuSxmeSLep3KcsGm ไม่ถือเป็นการตรวจ deployment สดรอบนี้
+- จุดประสงค์รอบนี้: เผยแพร่ GEE v1.1 ข้อ6 แก้ข้อพบ runtime และตรวจ production/static/cache/privateInspector/AI/CPU พร้อมผู้ช่วยทวนหลักฐาน
+- สถานะเผยแพร่: application71e8f45 / dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG READY/CI41095720672success; docs-onlyfollow-up identity ล่าสุดที่ primary/final-publication.json (§3.69)
 - **ขอบเขตคำสั่งล่าสุด:** อนุมัติข้อ6push/deployproduction+postdeployและผู้ช่วยเดิม ห้ามBilling/subscription;ไม่applyschema/accountsใหม่
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
@@ -20,7 +20,9 @@
 
 ## 2. สรุป
 
-**GEE v1.1 ข้อ6เผยแพร่และกำลังตรวจรับ — 31 ต.ค.2026 (§3.69):** pushfb484bcแล้ว/CI41094473431success/ProductionD2aTX...READYพร้อมservercacheconfigผู้ใช้อนุญาต อ่านHTML/24assetsตรงbuild แคชnewtilemiss→DBready/write_settled/physicalhashตรงจริง พบmissinghashedasset404ได้immutable1ปีจึงแก้exact-buildassetallowlist+staleinventorybuildgate กำลังรันregressionและเผยแพร่patch ไม่มีBilling/subscription/schema/accountschange รอผลpostdeployชุดแก้ก่อนปิด
+**ตรวจเอกสารอายุแคปซูล — 31 ต.ค. 2026:** พบช่วงทดลองกำจัดน้ำมัน/นับจุลินทรีย์ 28 วัน แต่ไม่พบเวลาที่เปลือกแคปซูลย่อยสลายสมบูรณ์; โปสเตอร์รายงาน TPH removal 84.2 ± 4.8% ณ วันที่ 28 ขณะที่บทพูดกล่าว 91% ยังไม่ตรวจข้อมูลดิบ รอบนี้ตรวจเอกสารและบันทึกเท่านั้น ไม่มีทดลอง/tests/build/publish หรือเปลี่ยนคิว ดูรายการตรวจเอกสารท้ายส่วนรายละเอียด
+
+**GEE v1.1 ข้อ 6 เผยแพร่และตรวจหลัง deploy แล้ว — 31 ต.ค. 2026 (§3.69):** รุ่น application 71e8f45 / dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG READY และ CI41095720672 success ตั้ง cache Secret/Config เฉพาะ Production ตามที่ผู้ใช้อนุญาต แก้ missing-asset404 ที่เคยได้ immutable แล้ว HTML23,516bytes/24assets ตรง build; แคชจริง miss→เขียนเสร็จหลัง response→newdeployment persistent hit/RAM miss/hashตรง Inspector เปิดประวัติเดิม→Analyzeผ่าน CPU→แก้พื้นที่/Undo/Redo→review→planner2.03km→3D satellite→Savev3/เปิดกลับ/SQLตรง คง3ขั้นตอน/4ตัวคำนวณ Fullsuiteใหม่633ผ่าน/CI3buildsผ่าน ผู้ช่วยทวน source/evidence แยกจาก runtime ไม่มี Billing/subscription/schema/accounts change ไม่มีคำถามผู้ใช้ค้าง Docs-only follow-up identity และ smoke ของ alias ล่าสุดอยู่ primary/final-publication.json; private UI ตรวจบน application revision ที่ระบุ
 
 **GEE v1.1 ข้อ 5 ตรวจ performance/resilience ในเครื่องเสร็จ — 30 ต.ค. 2026 (§3.68):** แชทหลักรันใหม่633testsผ่าน/3builds/syntaxผ่าน source20ไฟล์ไม่เปลี่ยน ผู้ช่วยเดิมทวนวิธีวัดและหลักฐาน LocalUIready median388.3→228.3ms แต่FCP140→204ms; persistenthitลดGEEpixelsได้แต่ช้ากว่าoff3/5คู่ ไม่อ้างเร็วขึ้นทุกกรณี Foreground11m35s/Settings32คู่/2D–3D20รอบ/A→B→Aผ่าน pageexceptions0 และ44proxyAbortErrorแยกเป็นการยกเลิกที่สังเกตได้ ไม่มีcommit/push/deploy/Billing/subscriptionหรือschema/accounts change ข้อ6ยังรอคำสั่ง ไม่มีคำถามค้าง
 
@@ -1892,4 +1894,44 @@ Preflightscan31sourcefiles+clientartifactsรวม56ไฟล์เปรีย
 Commit31filesfb484bc28076b5a5d49d407e7377143cf25fbdeeถูกpushmainแล้ว CI41094473431success InitialCakfr...READYจากGit แล้วredeploysamecommitหลังenvครบเป็นdpl_D2aTXfcNyXFAmuBiRsZtB4an2Rhz READY/aliasxedo-eight.vercel.app/iad1/build11s HTML23516และ24assetshashตรงlocalทั้งหมด Public/privateAPIguardsผ่าน แคชnewclipwest101.088076543tile11/1599/951ได้miss151574bytes/hashed55d10c614435468d3a873784e4acc06534198a209af79eb7db3cfb9d58de50 แล้วSQLjoincacheentry/storageยืนยันready/write_settledtrue/content_hashตรง/physical151574bytesหลังresponse เป็นactualVercelwaitUntillifecycle ไม่ใช่localdefer สั่งreturnในinstanceเดิมได้manifestcache/sessionเดิมและRAMhit จึงไม่ใช้เป็นpersistentreturnproof เก็บsame-session-not-proofreceiptและจะตรวจอีกครั้งบนnewdeployment
 
 **ข้อพบS03และวิธีแก้:** missinghashedURLตอบ404แต่headerwildcardให้Cache-Controlimmutable31536000จริง จึงปรับscripts/static-cache.mjsสร้างsourceจากexact24emittedassetnames เพิ่มscripts/update-hosted-cache-rules.mjsสำหรับregeneratevercel.jsonก่อนcommit และscripts/build.mjsให้failหากcacheinventoryไม่ตรงbuildgraph Cloudbuildต้องvalidateก่อนdeployไม่แก้configเงียบๆตอนruntime tests/hosted-build.test.mjsครอบคลุมunknownvalidhash404และallactualassets Focused7/buildผ่าน browserHTML/assethashไม่เปลี่ยน ยังรอfullregression+patchdeployment+postdeploy/privatebrowserqualificationก่อนถือว่าข้อ6จบ หลักฐานprimary/static-production-before-fix.json/cache-miss.json/cache-db-ready.json
+
+
+**ปิดข้อ 6 หลังทดสอบจริง — 31 ต.ค. 2026:** patch `71e8f45053f7b38fefe6ce382f96619e5d682297` ถูก push ไป main, CI [41095720672](https://github.com/megaaaop/XEDO/actions/runs/41095720672) success, Production `dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG` READY/iad1 และ alias https://xedo-eight.vercel.app/ ชุด regression ใหม่ focused7/full633ผ่าน (0 fail/cancel/skip), syntax/hosted buildผ่าน; Linux CI ตรวจ hosted/workspace/portable builds ไม่อ้างว่า buildสามแบบรันใหม่ในเครื่องรอบนี้ Local worker84testsผ่านแต่เก้าไฟล์ CPU dirtyไม่ได้รวม Git release
+
+Production HTTP29 checks: HTML23,516bytes SHA256 `5baaaa8f51b84d810d4861c78868f0511c278550e2f7b04304fdc4b111b0354f`; actual24assets bodyhash/MIME/immutableตรง localdist; missing plausible hashedURL404 `public,max-age=0,must-revalidate`; HTMLno-cache, guest/privateAPI no-store/401/405ตามสัญญา แก้S03ได้จริงโดยไม่เปลี่ยน clientHTML/asset bodies เมื่อ graphเปลี่ยนให้รัน `node scripts/update-hosted-cache-rules.mjs` แล้ว commit vercel.jsonพร้อม source; buildตรวจ staleinventoryและ fail ไม่ rewrite configเงียบๆ
+
+Cache missPNG151,574bytes/hash `ed55d10c614435468d3a873784e4acc06534198a209af79eb7db3cfb9d58de50` เขียน DB/Storageready/write_settledเวลา17:00:53.067958UTC หลัง clientreceipt17:00:50.962UTC ยืนยัน lifecycle Vercel waitUntilจริง ต่อมาบน newdeployment/newsignedsessionอ่าน persistenthit/RAMmiss/hashเดิม ไม่มี gee_pixels timingในคำขอนี้ ไม่อ้างว่า providerlogsทั้งหมดไม่มีcompute งบ snapshot cap200,000,000/charged9,202,276/physical5,007,972bytes/43objects+4buildingreservationsยัง conservative; ไม่ใช่ near-capstressใหม่ Bucketprivate/anonและauthenticated directschema/table/RPCfalse/serverRPCtrue
+
+Private browserผู้ใช้ Sign inเอง ไม่อ่านรหัส และไม่ reload/ปิดแท็บ draftเดิม เปิด history3/2/1/v3เดิมได้ สร้าง QAmission `0438d788-342d-4ced-b7d1-d3687d22d1ca`, Analyzeพื้นที่ใหม่651,427m², job `b31e96e2-6785-4554-ad09-416a479a7acd` succeededattempt1 (~61.37sรวมqueue/imagery/inference/publication ไม่ใช่ inferenceล้วน) ผลSAR26Oct23:00:37UTC/UNet/checkpoint41a2bd4b5b23/threshold0.3/candidates0ไม่ยืนยันไม่มีน้ำมัน Inspectorวาด4มุม/แก้GeoJSON/Undo/Redoตรง; confirmก่อนreviewภาพถูกblockโดยเก็บdraftไว้ จากนั้นโหลดSentinel2จริง27Oct03:54UTC/reviewv2manualcomplete/route2.03km22waypoints/73terrain samples/เปิด4calculators/3D Diagram–Satelliteพร้อมgroundจริง Savev3→history3/2/1→reopenv3และSQLยืนยัน geometry/sourcehash/analysisRef/owner/baseReviewRevision2ตรง ภารกิจเดิมยังv3 WorkerกลับREADYและไม่ถูกหยุด
+
+Desktopcontent1425/scroll1425, mobileoverride390×844 actualcontent375/scroll375; accountdialogไม่ล้น คืนviewportแล้ว Consolecapturedwarning/error0; runtimeerror/fatalqueryของdeploymentในช่วงที่ตรวจไม่พบmatchingrecords ไม่ใช่รับรองทุกtraffic/monitoringใหม่ ไม่มีprivate two-account/session-expiry/conflict matrixใหม่, physicalmobile, hours-longsoak, reboot, offlineportable, QGC/SITL/บินจริง หรือaccuracyqualification Normalflightdownloadยังล็อกตามwind/battery/Home/reviewที่ขาด ไม่กดยืนยันแทนผู้ใช้ SupabaseWARNเดิม leaked-passwordprotectionยังไม่เปิดเพราะ [officialdocsระบุProขึ้นไป](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection); ไม่เปลี่ยนแผนหรือเพิ่มpolicyกว้างเพื่อซ่อนINFOของprivateRLS
+
+**หลักฐาน/ส่งต่อ:** `C:/mega/codex/iENA/outputs/XEDO_Performance_Phase6_2026-10-30/primary/REPORT.md`, static-production-patch.json/cache-return-patch.json/cache-db-ready.json/cache-budget-privileges.json/browser-acceptance.json/private-persistence.json/responsive.json/browser-console.json/production-3d-satellite.jpg และ support/HANDOFF.md ผู้ช่วยตรวจ source/artifact/receiptเท่านั้น R01–R24ยังdesigned_not_run/actual:null ไม่รวมเป็น mainruntimeผลผ่าน สอง canonicalMD/queue/แผน§19รวม final docs-onlyfollow-up; identityสุดท้าย/CI/alias/static+cache smokeและการยืนยัน appinputsไม่เปลี่ยนเก็บ `primary/final-publication.json` หลีกเลี่ยง commit-self-reference ไม่อ้าง privateUI replayบน docs-onlydeployment
+
+**งานคงเหลือ/ขอบเขต:** GEE v1.1ข้อ1–6จบตามsubsetที่บันทึก ไม่รับรองความเร็วทุกครั้ง (phase5hitช้ากว่าoff3/5คู่/FCPlocalช้าลง64msยังคงข้อจำกัดเดิม) เก้าไฟล์ localCPU launcher/guard/guideยัง dirtyและแยกGitdelivery; workerยังใช้CPUเครื่องนี้ ต้องเปิดเครื่อง/ออนไลน์/READYเพื่อAnalyzeใหม่ ส่วนphysicalmobile/extendedqualification/flightและfuture split-to-different-split staleasset recoveryยังเป็นfollowup Pi/telemetryและรายงานทดลองก่อน–หลังพักตามเดิม ไม่มีรอคำตอบผู้ใช้ ไม่มีBilling/subscription/schema/accounts/permissionchange รอบนี้
+
 <!-- phase6-main-end -->
+
+<!-- capsule-degradation-document-check-2026-10-31 -->
+### ตรวจระยะเวลาย่อยสลายแคปซูลจากเอกสาร XEDO — 31 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้ขอให้ตรวจว่าแคปซูลในโครงงานย่อยสลายภายในกี่วันหรือกี่เดือน รอบนี้เป็นการตรวจเอกสารวัสดุ ไม่ใช่คำสั่งพัฒนา/เผยแพร่เว็บไซต์หรือทำผลทดลองใหม่
+
+**สรุป:** ไม่พบระยะเวลาที่ตัวแคปซูล/เปลือกย่อยสลายสมบูรณ์ในเอกสารที่ตรวจ ตัวเลข **28 วัน (4 สัปดาห์)** บนโปสเตอร์เป็นระยะติดตาม TPH removal และจำนวนจุลินทรีย์ ไม่ใช่อายุการย่อยสลายของเปลือก กราฟ 8 รายงานค่า TPH removal ของ Microcapsules ที่วันที่ 28 เท่ากับ **84.2 ± 4.8% (Mean ± SD)** ส่วนบทพูดระบุ up to 91% เป็นค่าต่างกันที่ยังไม่ตรวจสอบกับข้อมูลดิบ จึงไม่ใช้ยืนยันระยะย่อยสลายหรือผลกำจัดน้ำมันใหม่
+
+**รายละเอียด/หลักฐาน:** อ่านไฟล์ใน `C:/Users/ASUS/Downloads/`: `XEDO.pdf` 3 หน้า (หน้า 2 กล่าวถึง sodium alginate outer shell / beeswax powder / bacterial core), `XEDO  poster.pdf` และ `XEDO-poster.pdf` อย่างละ 1 หน้า (render ตรวจทั้งหน้าและขยายกราฟ 8–9), `XEDO-Relevant Document.pdf` 1 หน้า และ `บทพูด-Xedo.docx` (ผู้พูด 3/ทั้งไทยและอังกฤษ) โปสเตอร์แสดงจุดเวลา 0/7/14/21/28 วัน กราฟ 9 วัด viable microbial count ไม่ใช่มวลเปลือกที่เหลือ เอกสารบอกว่าเปลือก biodegradable แต่ไม่ให้ผลวัดการย่อยสลายเปลือกโดยตรง ไม่เปลี่ยนข้อความดังกล่าวเป็นการรับรองย่อยสลายหมดหรือไม่มีสารตกค้าง ตรวจหลักการภายนอกจากหน้า ISO 19679:2020 (https://www.iso.org/standard/78889.html): การประเมิน biodegradation ของวัสดุในบริบทน้ำทะเล/ตะกอนใช้ CO2 evolution; ไม่ได้อ้างว่ามาตรฐานนี้ใช้กับแคปซูลสูตรนี้แล้วหรือมีการรับรอง
+
+เก็บ text/render/crop และ `source-review.json` พร้อม SHA-256 ของเอกสารใน `C:/mega/codex/iENA/tmp/pdfs/capsule-degradation-audit-2026-10-31/` ผลนี้เป็นการอ่านสิ่งที่เอกสารรายงาน ไม่ตรวจสอบความแท้ของข้อมูลทดลองหรือรันทดลองใหม่
+
+**ไฟล์/สถานะ/งานคงเหลือ:** อัปเดต work log นี้และ append ขอบเขตหลักฐานวัสดุใน WEBSITE_DETAILS ตามกติกา checkout ไม่แก้ application/source หรือเอกสารนำเสนอฉบับจริง ไม่รัน tests/build/material experiments ไม่ commit/push/deploy และไม่ตรวจ production สด รักษางาน dirty launcher/worker เดิมไว้ HEAD ที่อ่านในรอบนี้ `71e8f45053f7b38fefe6ce382f96619e5d682297` เป็น local identity เท่านั้น สถานะ GEE ข้อ 6 ของอีกแชทคงเดิม ต้องมีข้อมูลทดลองเปลือกเฉพาะจึงตอบอายุย่อยสลายได้ และต้องตรวจค่ากำจัดน้ำมัน 91% กับ 84.2% กับเจ้าของผล/ข้อมูลดิบก่อนเลือกใช้ ไม่เพิ่ม requirement/เปลี่ยนคิว JSON เพราะเป็นผลตรวจคำถามเอกสาร ไม่มีคำถามหรือการตัดสินใจผู้ใช้ใหม่ที่รอคำตอบในรอบนี้
+
+
+
+<!-- phase6-support-final-2026-10-31 -->
+### 3.69B Support ส่งผลตรวจ source และหลักฐาน phase6 — 31 ตุลาคม 2026
+
+**หัวข้อ/สรุป:** ส่ง final support ที่ `C:/mega/codex/iENA/outputs/XEDO_Performance_Phase6_2026-10-30/support/HANDOFF.md` และ FINAL_REPORT_REVIEW.md สำหรับ application ที่ตรวจจริง commit71e8f45053f7b38fefe6ce382f96619e5d682297 / dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG / CI41095720672success ตรวจ initial31-file commit และ corrective8-file commit แล้ว CPU9pathsถูกเว้น/hashคงเดิม S03missingasset404เคยได้immutable1ปี mainแก้exact24assetallowlist/build-stale gateและผลจริงหลังpatchเป็นmax-age0/must-revalidate HTML23516+24assetshashตรง ไม่พบP0/P1เพิ่มเติมในboundedsubsetที่ตรวจ
+
+**รายละเอียด/หลักฐาน:** supportตรวจเฉพาะsource/Gitblobs/files/PNG/receipts: prepush10, scope4, commit5, patch8, PNG3, postdeploy13, private/procedural/SQL12ผ่าน/0ไม่ผ่าน มีscope-index1not_runและR01–R24ยังdesigned_not_run/actual:nullตามcomplete-flow designs แยกจากmain633applicationtests/focused7/localCPU84 Mainพิสูจน์D2miss→deferredready/storage151574bytes/hashตรงและEtnew-sessionpersistenthit/RAMmiss; snapshotcharged9202276=physical5007972+4MiBreservations<200MB MainรันnewQAjob1งาน/0candidates/manualedit/UndoRedo/S2review/planner2.03km/3D/Savev3/History/Open; supportเทียบgeometrybrowser/AX/SQLตรง, reviewv2/missionv3/analysisreferencesเก็บอยู่ โดยไม่ได้rehashprotectedresultbodiesเอง
+
+**ขอบเขต/งานต่อ:** supportไม่มีapp/build/JSproductimport/browserautomation/project-provider/SQL/Gitmutation/commit/push/deploy และไม่แก้product/schema/config/package/website tests Privatecaseเป็นหนึ่งบัญชี/manualcase ไม่แทนpositiveMLcandidate/สองบัญชี/conflict/expiry/faultmatrix/flight/retention/performance หลังOpenต้องreloadภาพและทบทวนreadiness; UIยังมีSomeGEEdataunavailable/flightinputsneeded ไม่วินิจฉัยสาเหตุจากภาพ Mainรับช่วงรวมoverview/queue/planและdocs-onlypublication พร้อมfinal-publication.jsonยืนยันexactactivealias/CIและunchangedapplicationhashesภายหลัง ไม่ถือว่าขั้นนั้นรันแล้ว ไม่มีคำถามผู้ใช้ค้าง บันทึกนี้appendหลังre-readและรักษาmain§3.69/รายการอื่นทั้งหมด
