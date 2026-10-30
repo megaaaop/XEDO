@@ -5,20 +5,28 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **31 ตุลาคม 2026 — ข้อ6เผยแพร่/ตรวจเว็บจริงแล้ว; เก็บผลตรวจเอกสารวัสดุของอีกแชทไว้ครบ; ไม่มี Billing/subscription/คำถามค้าง**
+- อัปเดตล่าสุด: **31 ตุลาคม 2026 — ซ้อมflow/633Node/84Python/3buildsผ่าน เตรียมpushCPUและเอกสาร; ปัญหาใหม่รอรายละเอียดตามที่ให้เลื่อน; ไม่เปิดBilling/subscription**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
-- จุดประสงค์รอบนี้: เผยแพร่ GEE v1.1 ข้อ6 แก้ข้อพบ runtime และตรวจ production/static/cache/privateInspector/AI/CPU พร้อมผู้ช่วยทวนหลักฐาน
-- สถานะเผยแพร่: application71e8f45 / dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG READY/CI41095720672success; docs-onlyfollow-up identity ล่าสุดที่ primary/final-publication.json (§3.69)
-- **ขอบเขตคำสั่งล่าสุด:** อนุมัติข้อ6push/deployproduction+postdeployและผู้ช่วยเดิม ห้ามBilling/subscription;ไม่applyschema/accountsใหม่
+- จุดประสงค์รอบนี้: ทดสอบflowก่อนนำเสนอและส่งมอบชุดCPU9ไฟล์พร้อมเอกสารในGit/pushตามที่อนุมัติ
+- สถานะเผยแพร่: ยืนยันล่าสุดใน§3.70 activeProduction a767faf / dpl_DYMmXXi5Qsm2oMNM2APy5CXwv7DS READY/CI41100815452success; รอบสรุปนี้ไม่ตรวจสดซ้ำ เอกสารล่าสุดยังอยู่ในเครื่อง
+- **ขอบเขตคำสั่งล่าสุด:** อนุมัติกลุ่ม1–2/ทดสอบ/เก็บCPUและเอกสารลงGit/push ไม่เปิดBilling/subscription; เลื่อนปัญหาใหม่ไปแก้เมื่อมีรายละเอียด
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
 
 **กติกาเพิ่ม 27 ต.ค.:** งานแก้/ตรวจเว็บไซต์ลักษณะนี้ต้องบันทึกสองที่: ไฟล์นี้เก็บประวัติ ผลตรวจ และการเผยแพร่; `docs/WEBSITE_DETAILS.md` เก็บโครงสร้าง พฤติกรรม dependency และรายละเอียดวิธีแก้ อัปเดตทั้งสองก่อนจบรอบ และรักษาคิว JSON ให้ตรงกัน
 
 ## 2. สรุป
+
+**ซ้อมนำเสนอและเตรียมส่งมอบ CPU — 31 ต.ค. 2026 (§3.72):** ผู้ใช้อนุมัติข้อ1–2/ทดสอบ/เก็บCPUกับเอกสารลงGitและpush Fresh633Node/84Python/syntax/3buildsผ่าน BrowserจริงSign inโดยผู้ใช้→พื้นที่ใหม่482535m²→CPUสำเร็จ56.67s→manualedit/Undo/Redo→reviewv2→route2.75km/22waypoints/3Dsatellite→Savev3/History/Open/SQLพิกัดตรง Estimateddemoแยกdownload.planจริง20items/8053bytes ได้ตรวจ4calculatorpanels; driftไม่ได้เลือกscenario Start.cmdจากcwdอื่นป้องกันเปิดซ้ำ/shortcutชี้ถูก/workerเดิมยังREADY ไม่rebootOSหรือหยุดworkerเดิม เก็บ12ไฟล์ในscopeก่อนpush ไม่มีBilling/subscription ปัญหาใหม่ที่ผู้ใช้ให้เลื่อนไปแก้ยังรอรายละเอียดโดยไม่บล็อกscopeนี้ สถานะpushสุดท้ายในownedsection/receipt
+
+**สรุปงานคงเหลือล่าสุด — 31 ต.ค. 2026 (§3.71):** จากคิวและGitในเครื่อง เหลือ3กลุ่ม: ซ้อมนำเสนอหลังเปิดเครื่องใหม่, เก็บชุดCPU9ไฟล์พร้อมเอกสารล่าสุดลงGitเมื่อได้รับคำสั่งเผยแพร่, และขยายการทดสอบเฉพาะทาง/ระยะยาว อีก2กลุ่มPiกับรายงานทดลองยังพัก CIเอกสารปิดแล้วตามผลตรวจ§3.70 รอบนี้สรุปและอัปเดตเอกสาร ไม่ตรวจCI/เว็บจริงซ้ำ ไม่แก้product ไม่รันtests/build/AI ไม่commit/push/deploy/Billing/subscription ไม่มีคำถามค้าง
+
+**ตรวจ CI เอกสารล่าสุดผ่านแล้ว — 31 ต.ค. 2026 (§3.70):** [run41100815452](https://github.com/megaaaop/XEDO/actions/runs/41100815452) ของcommit `a767faf3b67c7248e55a329579dba67a02047532` เป็น completed/success ทุกjobและstep รวมsyntax/tests/build3รูปแบบ ตรวจaliasสดยังเป็นdpl_DYMmXXi5Qsm2oMNM2APy5CXwv7DS/READY/commitเดียวกัน ปิดCIที่ค้างจากรอบเผยแพร่แล้ว เหลืองานเก็บก่อนนำเสนอ/ส่งมอบ/ขยายqualification3กลุ่ม และงานพักPi/รายงานทดลอง2กลุ่ม รอบนี้อ่านCI/deploymentและอัปเดตเอกสารในเครื่อง ไม่แก้product ไม่รันlocaltests/browser/AIใหม่ ไม่commit/push/deploy และไม่เปิดBilling/subscription ไม่มีคำถามรอคำตอบ
+
+**อธิบายช่องข้อมูลส่งออกจากภาพหน้าจอ — 31 ต.ค. 2026:** ตรวจ source ของ firmware/Home AMSL/ceiling/corridor/validity/source แล้ว อธิบายแหล่งข้อมูลและ UTC ให้ผู้ใช้; ยังระบุค่าจริงเฉพาะภารกิจจากภาพไม่ได้ ค่าใน Estimated demo เป็นข้อมูลสมมติ ไม่มี implementation/tests/build/runtime/publish รอบนี้ ไม่เปลี่ยนคิวหรือสถานะ release ดูรายการท้ายรายละเอียด
 
 **ตรวจเอกสารอายุแคปซูล — 31 ต.ค. 2026:** พบช่วงทดลองกำจัดน้ำมัน/นับจุลินทรีย์ 28 วัน แต่ไม่พบเวลาที่เปลือกแคปซูลย่อยสลายสมบูรณ์; โปสเตอร์รายงาน TPH removal 84.2 ± 4.8% ณ วันที่ 28 ขณะที่บทพูดกล่าว 91% ยังไม่ตรวจข้อมูลดิบ รอบนี้ตรวจเอกสารและบันทึกเท่านั้น ไม่มีทดลอง/tests/build/publish หรือเปลี่ยนคิว ดูรายการตรวจเอกสารท้ายส่วนรายละเอียด
 
@@ -1935,3 +1943,81 @@ Desktopcontent1425/scroll1425, mobileoverride390×844 actualcontent375/scroll375
 **รายละเอียด/หลักฐาน:** supportตรวจเฉพาะsource/Gitblobs/files/PNG/receipts: prepush10, scope4, commit5, patch8, PNG3, postdeploy13, private/procedural/SQL12ผ่าน/0ไม่ผ่าน มีscope-index1not_runและR01–R24ยังdesigned_not_run/actual:nullตามcomplete-flow designs แยกจากmain633applicationtests/focused7/localCPU84 Mainพิสูจน์D2miss→deferredready/storage151574bytes/hashตรงและEtnew-sessionpersistenthit/RAMmiss; snapshotcharged9202276=physical5007972+4MiBreservations<200MB MainรันnewQAjob1งาน/0candidates/manualedit/UndoRedo/S2review/planner2.03km/3D/Savev3/History/Open; supportเทียบgeometrybrowser/AX/SQLตรง, reviewv2/missionv3/analysisreferencesเก็บอยู่ โดยไม่ได้rehashprotectedresultbodiesเอง
 
 **ขอบเขต/งานต่อ:** supportไม่มีapp/build/JSproductimport/browserautomation/project-provider/SQL/Gitmutation/commit/push/deploy และไม่แก้product/schema/config/package/website tests Privatecaseเป็นหนึ่งบัญชี/manualcase ไม่แทนpositiveMLcandidate/สองบัญชี/conflict/expiry/faultmatrix/flight/retention/performance หลังOpenต้องreloadภาพและทบทวนreadiness; UIยังมีSomeGEEdataunavailable/flightinputsneeded ไม่วินิจฉัยสาเหตุจากภาพ Mainรับช่วงรวมoverview/queue/planและdocs-onlypublication พร้อมfinal-publication.jsonยืนยันexactactivealias/CIและunchangedapplicationhashesภายหลัง ไม่ถือว่าขั้นนั้นรันแล้ว ไม่มีคำถามผู้ใช้ค้าง บันทึกนี้appendหลังre-readและรักษาmain§3.69/รายการอื่นทั้งหมด
+
+
+<!-- export-settings-guidance-2026-10-31 -->
+### อธิบาย export settings จากภาพผู้ใช้ — 31 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้ถามว่าหกช่องในภาพเว็บไซต์ต้องกรอกอะไร ไม่ได้สั่งแก้ฟอร์มหรือกรอก/รับรองข้อจำกัดภารกิจแทน
+
+**สรุป:** ตรวจ actual checkout HEAD a767faf และ Git status ก่อนแก้ พบงาน CPU เดิมเก้า paths ค้างอยู่ จึงแก้เฉพาะ canonical MD สองไฟล์ อธิบาย firmware ตามระบบที่ตั้งใจใช้, Home เป็นระดับ AMSL ของจุดขึ้นบิน, ceiling เป็นเพดานเหนือ Home, corridor เป็นระยะเผื่อทางราบ, validUntil เป็นเวลาหมดอายุการทบทวนข้อจำกัด และ source เป็นแหล่งอ้างอิงการตรวจ ไม่สามารถระบุค่าจริงเฉพาะภารกิจจากภาพได้ ไม่มีคำถามผู้ใช้ที่ต้องรอคำตอบเพิ่ม
+
+**รายละเอียด/หลักฐาน:** อ่าน src/planning-trial-client.js (fields/read), src/trial-export.js (checkTrialExport/buildQGCPlan), src/planning-geospatial-ui.js และ src/planning-estimated-demo.js ฟอร์ม datetime-local เติม Z จึงต้องกรอก UTC (เวลาไทยลบ 7 ชั่วโมง); ceiling ต้องไม่น้อยกว่า relativeHeightM; validity ต้องยังไม่หมดและครอบคลุมจบภารกิจรวม sorties/declared end; corridor ใช้ตรวจระยะจาก manual no-go polygons ทุก segment รวมขาไป/กลับ ไม่ใช่แบบจำลองความคลาดเคลื่อนหรือ onboard fence Source เป็นข้อความที่ผู้ใช้รับรองเอง ระบบไม่ได้ยืนยันสิทธิ์บิน กรณี Home ใช้ GEE มีปุ่ม Use reviewed estimate หลังผู้ใช้ตรวจ launch level/height reference แล้ว เป็น 30 m DSM/EGM2008 estimate ไม่ใช่ผลสำรวจจุดขึ้นบินจริง ตรวจ official QGC Plan file format ยืนยัน plannedHomePosition ใช้ latitude/longitude/AMSL: https://docs.qgroundcontrol.com/master/en/qgc-dev-guide/file_formats/plan.html#mission-object
+
+**การใช้งาน/งานคงเหลือ:** หากข้อมูลจริงยังไม่พร้อม ให้เว้น Unknown และตรวจ source ก่อนส่งออกปกติ; กรณีสาธิตใช้ Estimated demo ซึ่งมี home 0/ceiling 60/corridor 5 เป็น fixture สมมติ ไม่ย้ายค่าเหล่านี้ไปยืนยันภารกิจจริง คิว implementation-queue.json ไม่มี requirement/status/คำตอบค้างเปลี่ยน จึงไม่แก้ JSON
+
+**ผลตรวจ/เผยแพร่:** รอบนี้อ่าน source/เอกสารทางการและตรวจ diff ของเอกสารเท่านั้น ไม่มี implementation, app tests, build, browser/runtime, QGC import/SITL/บินจริง หรือทดสอบฮาร์ดแวร์ใหม่ ไม่ใช้ผลเก่าเป็น fresh result ไม่มี commit/push/deploy/การเปลี่ยน configuration หรือบัญชี สถานะ release เดิมคงตามรายการก่อนหน้า
+
+
+<!-- ci-documentation-followup-2026-10-31 -->
+### 3.70 ตรวจ CI commit เอกสารล่าสุดและทบทวนงานคงเหลือ — 31 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้ขอให้ตรวจ CI ของ commit เอกสารล่าสุดอีกครั้ง หากผ่านให้อัปเดตบันทึกงานและรายละเอียดเว็บไซต์ แล้วสรุปงานที่ยังเหลือ โดยไม่เปิด Billing หรือสมัคร subscription รอบนี้เป็นการตรวจและอัปเดตเอกสาร ไม่ใช่คำสั่งเผยแพร่หรือเพิ่มฟังก์ชันใหม่
+
+**สรุปผลสด:** GitHub push workflow `Verify XEDO`, run [41100815452](https://github.com/megaaaop/XEDO/actions/runs/41100815452), head `a767faf3b67c7248e55a329579dba67a02047532`, completed/success จากเดิมที่บันทึกไว้ว่า queued Job `124217590574` Check, test and build ผ่านทุกขั้น: install locked dependencies, JavaScript syntax, automated tests, hosted build, workspace/Worker build และ standalone file build ผลrunอัปเดต2026-10-30T17:55:18Z (31ต.ค.00:55:18เวลาไทย) และตรวจสถานะใหม่ตามtimestampในci.json ไม่ใช้ผล633testsเดิมเป็นการรันlocalใหม่รอบนี้
+
+Vercelอ่านผ่านalias `xedo-eight.vercel.app` ใหม่ ได้deployment `dpl_DYMmXXi5Qsm2oMNM2APy5CXwv7DS`, READY, Production/iad1, main/commit a767faf ตรงCI ไม่มีการสร้างdeployment/เปลี่ยนalias/env/schema/account/สิทธิ์ ขอบเขตfresh verificationรอบนี้คือCIjobs/stepsและdeploymentidentityเท่านั้น Browser/privateAI/geometry/cache/static29checksเป็นหลักฐานก่อนหน้าที่อ้างอิงตามเดิม ไม่ได้รันซ้ำเพื่อปิดCI
+
+**งานคงเหลือที่แนะนำเรียงลำดับ:**
+
+1. **ซ้อมการนำเสนอบนเครื่องจริงหลังเปิดเครื่องใหม่** — เปิดshortcut CPU→READY→Login→Analyzeพื้นที่ใหม่→Inspectorแก้/ยืนยันพื้นที่→preview/3D→Save/History/Open และสาธิต.planเมื่อข้อมูลพร้อม เป็นoperationalacceptanceของระบบที่มีอยู่ ไม่ใช่ฟังก์ชันที่ยังไม่ทำ; การตรวจCIครั้งนี้ไม่ได้rebootเครื่องหรือรับรองเครือข่ายสถานที่จริง
+2. **ส่งมอบชุดเปิด CPU Worker ใน Git ให้ครบ** — มีเก้าไฟล์launcher/guard/worker/คู่มือ/testsที่ทำและตรวจในเครื่องแล้ว แต่ยังdirtyและเว้นจากGEErelease ต้องตรวจdiff/secretแล้วcommit/pushในขอบเขตที่ผู้ใช้อนุมัติ ไม่ทำเพิ่มในรอบนี้ CPUยังรันในเครื่องและต้องเปิดออนไลน์
+3. **เพิ่มqualificationตามขอบเขตถัดไป** — positiveAIcandidateรับ/แก้/ปฏิเสธบนรุ่นล่าสุด, regressionหลายบัญชี/session/conflict, physicalmobile/trackpad, ระยะยาว/100jobsต่อเดือน, near200km²/worst-casegeometry และcachecleanup/staleassetเมื่อgraphเปลี่ยน มีหลักฐานpilot/กรณีเดิมบางส่วนแล้ว ไม่อ้างว่าทั้งmatrixยังไม่เคยทดสอบหรือว่าผ่านครบจากCI รอบนี้ QGC/SITL/บินจริงแยกจากการปิดfunctionalprototype
+4. **พัก: Raspberry Pi/รูป/telemetry** — เลขเดิม7/ลำดับคิวเดิม4 ยังไม่ต้องทำตามคำสั่งผู้ใช้ และไม่เป็นเงื่อนไขของการวางแผนก่อนบิน
+5. **พัก: ผลทดลองและรายงานก่อน–หลัง** — เลขเดิม8/ลำดับคิวเดิม5 ยังเป็นงานเหลือที่ผู้ใช้พักไว้ ต้องใช้ข้อมูลทดลองจริง
+
+ฟังก์ชันหลักUX/บัญชีInspectorส่วนตัว/Save–History/AIและแก้พื้นที่/CPUAnalyze/GEEcache200MB/3D/3ขั้นตอนและ4calculatorsทำและเผยแพร่ตามหลักฐานก่อนหน้าแล้ว GEEv1.1ข้อ1–6ไม่มีCIค้าง รายการใหม่ข้างต้นเป็นกลุ่มงานปฏิบัติการ/ส่งมอบ/qualification ไม่เพิ่มlegacyfeature-stageหรือคืนงานnormalflow/ตารางเวลาที่ผู้ใช้ตัดออก ไม่มีคำถามผู้ใช้ค้าง
+
+**ไฟล์/หลักฐาน/การเผยแพร่:** อัปเดตสองcanonicalMDโดยmergeรายการ export-settings-guidance และ capsule-degradation ของแชทอื่นไว้ครบ อัปเดตqueue latestPublishedRelease.documentationFollowup/phase6Execution/latestRemainingWorkAudit และreceiptเดิมให้CIcomplete=true/pendingExternalVerification=[] โดยเก็บqueuedobservationเดิมเป็นประวัติ หลักฐานสด `C:/mega/codex/iENA/outputs/XEDO_CI_Followup_2026-10-31/ci.json`, jobs.json, production-deployment.json และREPORT.md; originalproductionreceiptอยู่phase6primary/final-publication.json รอบนี้ไม่แก้source/worker/tests/config/package ไม่รันlocaltests/build/browser/AIใหม่ ไม่commit/push/deploy ไม่เปิดBilling/subscription ไม่มีคำถามรอคำตอบ
+
+
+<!-- remaining-work-summary-2026-10-31 -->
+### 3.71 สรุปขั้นตอนที่ยังเหลือจากคิวปัจจุบัน — 31 ตุลาคม 2026
+
+**หัวข้อ/สรุป:** ผู้ใช้ถามว่าตอนนี้เหลือขั้นตอนอะไร อ่านcanonicalสองMD, implementation-queue.json และGitstatusล่าสุดก่อนสรุป คง3กลุ่มงานต่อและ2กลุ่มพักไว้ตาม§3.70 ไม่มีการรับrequirementใหม่หรือสั่งimplementation/publish ผลCIsuccessเป็นผลที่ตรวจรอบ§3.70 ไม่ใช่การอ่านproviderใหม่รอบนี้
+
+**รายละเอียด/ลำดับ:** (1) ซ้อมบนเครื่องที่จะนำเสนอหลังเปิดเครื่องใหม่: Shortcut→CPU READY→Login→Analyzeพื้นที่ใหม่→Inspectorแก้/ยืนยันพื้นที่→planner/3D→Save/History/Open และเตรียมภารกิจข้อมูลพร้อมสำหรับ.plan (2) เก็บชุดCPUlauncher/worker/guard/คู่มือ/tests9ไฟล์และcanonicaldocs/queueที่แก้ล่าสุดแต่ยังไม่commitลงGitเมื่อมีคำสั่งเผยแพร่ โดยตรวจdiff/secretก่อน รวมเป็นกลุ่มส่งมอบเดิม ไม่เพิ่มfeaturestageหรืออนุมัติpushจากคำขอสรุป (3) ขยายregressionกรณีAIมีcandidate/หลายบัญชี/session/conflict/มือถือจริง/trackpad/longsoakและข้อจำกัดgeometry/พื้นที่/cacheตามขอบเขต มีหลักฐานpilotและกรณีเดิมบางส่วนแล้ว (4) Pi/รูป/telemetryเลขเดิม7ยังพัก (5) ผลทดลอง/รายงานก่อน–หลังเลขเดิม8ยังพัก ไม่คืนงานnormalflow/ตารางเวลาที่ผู้ใช้ตัดออกเข้าคิว
+
+**หลักฐาน/สถานะ:** GitHEADยังa767faf3b67c7248e55a329579dba67a02047532 พบcanonicalสองMD/queueและCPU9pathsค้างในเครื่อง อัปเดตสองMDและเติมรายละเอียดส่งมอบเอกสารในกลุ่ม2ของqueue รักษารายการแชทอื่นทั้งหมดและโครงสร้างหัวข้อ/สรุป/รายละเอียด ฟังก์ชันหลักและการเผยแพร่คงสถานะที่มีหลักฐานก่อนหน้า CIไม่มีรายการค้างตาม§3.70 ไม่มีคำถามผู้ใช้รอคำตอบ รอบนี้ไม่ได้ทดสอบapplication/build/browser/CPU/AI/CI/deploymentสด ไม่แก้source/config/accounts/schema ไม่commit/push/deploy และไม่เปิดBilling/subscription
+
+
+<!-- presentation-delivery-main-start-2026-10-31 -->
+### 3.72 ซ้อม flow นำเสนอและส่งมอบ CPU Worker ใน Git — 31 ตุลาคม 2026
+
+**หัวข้อ/คำสั่ง:** ผู้ใช้สั่งเริ่มกลุ่ม1–2 ทดสอบflowก่อนนำเสนอ เก็บชุดCPUและเอกสารลงGit บันทึกสองMD และpushได้ ห้ามBilling/subscription ผู้ใช้รายงานว่ามีปัญหาการใช้งานเล็กน้อยแต่ให้เลื่อนไปแก้ภายหลัง จึงรับเป็นdeferred issueรอรายละเอียด ไม่วินิจฉัย/แก้websitefeatureจากข้อมูลที่ยังไม่มี ไม่ใช้คำสั่งนี้เปิดงานกลุ่ม3/Pi/รายงานทดลองหรือเปลี่ยนบัญชี/schema/env
+
+**สรุปงานที่ตรวจจริงก่อนpush:**
+
+| รายการ | ผลรอบนี้ |
+|---|---|
+| Node tests | 633ผ่าน/0fail/cancel/skip; fresh full log |
+| Python CPU tests | 84ผ่าน/0fail; รวมWindowscross-processlock/reconnect/wrong-accountpreservation/redaction |
+| Syntax/build | checkและhosted/workspace/portableผ่านทั้งสาม |
+| CMD/shortcut | Start.cmdจากcwdอื่นได้ALREADY OPEN ขณะdaemonเดิมทำงาน ไม่มีworkerชุดที่สอง; check-onlyผ่านโดยไม่อ่านsession/request; Desktopshortcutreadbacktarget/cwd/args/windowstyleถูก |
+| Browserใหม่ | ผู้ใช้Sign inเอง แท็บเดิม/draftเดิมไม่reload/ไม่ปิด; LocalprocessorReady |
+| Analyze | พื้นที่ใหม่482,535m², job4656e09c-3778-4ed1-a8b0-39d67f3e91d1 สำเร็จattempt1/1tile; 18:55:23.380678→18:56:20.047051UTC รวม56.666s ไม่ใช่inferenceล้วน |
+| Inspector | ผลใหม่0candidates; วาดmanual4มุม/แก้GeoJSON/Undo/Redoตรง ตรวจSentinel2จริง27Oct03:54UTCแล้วconfirmreviewv2manualcomplete; ก่อนมีภาพถูกblockโดยเก็บdraft |
+| Planner | route2.75km/22waypoints/74terrain samples; เลือกHome/Move→Cancelคืนพิกัดเดิม; Diagramและgeoreferencedsatellitegroundพร้อมใน3D |
+| Persistence | QAmission9e826af9-01f0-4cc6-92ab-4b93e2f56f39/v3, History3/2/1→Openv3คืนgeometryตรง; readonlySQLยืนยันowner/revision/analysisRef/riskDraft/targetgeometryตรง |
+| Exportสาธิต | แท็บEstimateddemoแยก ข้อมูลสมมติ/archivedimage; เลือกจุดHomeและreviewsyntheticconstraintsในdemoเท่านั้น; 4/4ready/1sortie/1.88km; actual.plan8053bytes/20items/Planv1/finiteparams |
+| Four calculators | เปิดผลDrift/Flight/Export/Oilครบ; Driftscenarioไม่ได้เลือก จึงไม่อ้างว่าcomputeddriftใหม่ Flightwind/batterypass/1sortie, Oil10–30L/3.772–11.316kgเป็นfixtureสมมติ |
+| Console | 0capturedwarn/errorทั้งสองQAtabs |
+
+**ข้อพบจากเครื่องมือ/การแก้ทางทดสอบ:** restrictedNodeรอบแรกspawnENOENTก่อนครบ และWindowsunit-testchildterminationทำให้lockcleanupไม่สำเร็จ เก็บrestrictedlogsแยกแล้วรันด้วยordinaryhostprocessaccessผ่าน633/84 ไม่แก้productเพื่อทำassertionให้ผ่าน Download-eventwaitของbrowsertooltimeout20s แต่เว็บแสดงDownloadstartedและมีไฟล์จริงใหม่ในDownloads19:02:20UTC จึงตรวจไฟล์นั้นตรงๆ ไม่กดซ้ำ SHA256 `44ae693769893942fa1a5c69e88baf76fc47c64a78a980dbdb9bb09132b4bd14`; screenshot/AX/receiptเก็บไว้ ไม่อ้างtooltimeoutเป็นwebsitefailureหรืออ้างว่าไม่มีtoolerror
+
+**สิ่งที่ส่งมอบ/สถาปัตยกรรม:** 9CPUpathsเดิมคือStart/ReconnectCMD, CPU_WORKER_START_GUIDE.md, workerREADME, remote_worker.py, launch_worker.py, worker_guard.py, test_launcher.py, test_remote_worker.py รวมกับสองcanonicalMD/queueเป็น12ไฟล์ ผู้ใช้อนุมัติเก็บและpushแล้ว Guardล็อกsession+workRootก่อนอ่าน/refreshsessionหรือrecovercheckpoint และCLIstatus/login/logoutใช้guardเดียวกัน Reconnectตรวจmachine registryก่อนแทนที่protectedsessionเดิม ไม่บันทึกpassword/response ลงconsole/สถานะ ข้อมูลจริง/config/DPAPI/model/raster/venvอยู่ignoredlocalpaths ไม่ใส่GitหรือVercel .vercelignoreกันworker/CMD/docsออกจากwebdeploy Browser25buildhashesตรงapplicationที่qualifiedเดิม ไม่มีfrontend/API/config/schema/account/modelchange
+
+**ข้อจำกัด/งานต่อ:** ทดสอบกับworkerเดิมที่เปิดอยู่ ไม่rebootWindows/ไม่restartdaemon/ไม่ทำproductionreconnect/ไม่ใช้รหัสผ่านแทนผู้ใช้ CPUยังต้องเปิดเครื่อง/online/READY ผล0candidatesไม่รับรองไม่มีน้ำมัน และmanualcaseไม่แทนpositivecandidateหรือfulltwo-account/fault/longsoakmatrix NormalflightexportของQAจริงยังgated ไม่tickphysical/airspaceapprovalให้ภารกิจจริง QGCnativeimport/SITL/บินจริง/physicalmobileยังไม่รัน ปัญหาเล็กน้อยที่ผู้ใช้รายงานยัง**รอรายละเอียดภายหลังตามที่ให้เลื่อน** ไม่บล็อกการเก็บงานที่อนุมัติ Piและรายงานทดลองยังพัก
+
+**หลักฐาน/สถานะ:** `C:/mega/codex/iENA/outputs/XEDO_Presentation_Rehearsal_2026-10-31/` มีREPORT.md, initial/release manifests, local-verification.json, browser-observation.json, job.json, private-persistence.json, download-verification.json/presentation-demo.plan, AX/screenshots/test/buildlogs คง3mainparts/3steps/4calculatorsและบันทึกแชทอื่นครบ ก่อนpushสถานะverified_ready_for_push; publication.jsonจะเก็บexactGit/CI/automaticVerceldeploymentidentityหลังpush ไม่สร้างmanualdeploymentหรือเปิดบริการเสียเงิน ปิดreceipt/สถานะจริงในownedsectionหลังเผยแพร่
+<!-- presentation-delivery-main-end-2026-10-31 -->

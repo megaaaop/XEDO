@@ -124,3 +124,15 @@ Productionเผยแพร่เฉพาะbrowser/NodeAPI ส่วนworker
 configอ้างDPAPImachine-sessionเดิม เก็บผลเต็มในlocal-data/local-ai-worker/runs ใช้heartbeat20s/poll10s/CPU4threads/หนึ่งงานต่อครั้ง เปิดเพียงdaemonเดียว หยุดด้วยCtrl+Cเมื่อไม่มีงานกำลังทำ ต้องเปิดPC/internetและไม่SleepสำหรับAnalyzeใหม่ หน้าเว็บแสดงOfflineเมื่อworkerขาดpresence ผลที่เผยแพร่และprivatehistoryยังอ่านได้จากSupabaseตอนCPUปิด ไม่เปิดpublicport/tunnel/paidfallback/Billing/subscription ห้ามcommitconfig/session/rawTIFF/modelweights ไม่ต้องเปิดlocalQAserver5193เพื่อใช้production
 
 ผู้ใช้ต้องSign inใหม่เมื่อbrowseraccesssessionหมดอายุ;ไม่ใส่passwordลงworkerconfig รุ่นเผยแพร่ทดสอบCPUsmallarea2งานและUIถึงSavev3แล้ว หลังผู้ใช้Sign inใหม่ตรวจBrowserHistory3/2/1→เปิดVersion3→พื้นที่ที่แก้/confirmedreviewกลับมาครบแล้ว ไม่มีคำถามรอคำตอบ รายละเอียดล่าสุดในdocs/WEBSITE_DETAILS.md§3.50
+
+
+### 3.9 เปิดแบบคลิกเดียวหลังเปิดเครื่องใหม่
+
+เครื่องเดิมใช้Start-XEDO-CPU.cmdที่release-rootได้แล้ว รอREADYและเปิดหน้าต่างค้างไว้ ไม่ต้องเปิดCodex/localQAserverหรือพิมพ์Pythoncommandทุกครั้ง ดูdocs/CPU_WORKER_START_GUIDE.mdสำหรับขั้นตอนก่อนปิดเครื่อง/วันนำเสนอ/Sign inInspectorและReconnect-XEDO-CPU.cmdเฉพาะเมื่อCPUsessionต้องเชื่อมใหม่ Guardป้องกันworker/directCLIที่ใช้sessionหรือworkRootเดียวกันพร้อมกัน ดังนั้นอย่าเรียกstatus/login/logoutขนานกับworkerที่เปิดอยู่ Lockfileที่เหลือหลังcrashไม่ต้องลบ ส่วนactive.jsonต้องปล่อยให้โปรแกรมตรวจrecovery ไม่รับรองresumeจากtileเดิมเมื่อปิดเครื่องกลางงาน รอบนี้localPython84tests/actualstartupReady/duplicateguardผ่าน ไม่มีOSrebootจริงหรือpush/deploy/Billing/subscription
+
+
+### 3.10 Git delivery and presentation rehearsal — 31 October 2026
+
+User authorized committing/pushing the existing nine launcher/guard/worker/guide/test paths and canonical documents. Fresh633Node/84Python/syntax/hosted+workspace+portablebuilds passed. Current-production browser completed one new-areaCPU job, manual boundary edit/Undo/Redo, image review, 2.75kmroute/3D and privateSavev3/History/Open; a separate Estimateddemo downloaded an actual20-itemPlan. Start from a differentcwd correctly returnedALREADY OPEN; desktopshortcuttarget matched. The existing daemon stayed running; no OSreboot, daemonrestart, productionreconnect, nativeQGC/SITL or physicalflight was performed. Detailed evidence and final Git/CI identity: docs/XEDO_WORK_LOG.md and docs/WEBSITE_DETAILS.md §3.72 / outputs/XEDO_Presentation_Rehearsal_2026-10-31/publication.json (local evidence).
+
+Git distributes code and guides only. Config/DPAPIsession/weights/rasters/venv remain private/local and excluded; .vercelignore excludes this CPU package and CMD launchers from the website. No cloud CPU, Billing or subscription is enabled. A separately reported user issue is deferred until details are supplied; this delivery adds no unrelated frontend repair.

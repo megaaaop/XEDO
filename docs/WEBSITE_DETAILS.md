@@ -9,6 +9,14 @@
 
 ## 2. สรุป
 
+**ซ้อมนำเสนอและเตรียมส่งมอบ CPU — 31 ต.ค. 2026 (§3.72):** ผู้ใช้อนุมัติข้อ1–2/ทดสอบ/เก็บCPUกับเอกสารลงGitและpush Fresh633Node/84Python/syntax/3buildsผ่าน BrowserจริงSign inโดยผู้ใช้→พื้นที่ใหม่482535m²→CPUสำเร็จ56.67s→manualedit/Undo/Redo→reviewv2→route2.75km/22waypoints/3Dsatellite→Savev3/History/Open/SQLพิกัดตรง Estimateddemoแยกdownload.planจริง20items/8053bytes ได้ตรวจ4calculatorpanels; driftไม่ได้เลือกscenario Start.cmdจากcwdอื่นป้องกันเปิดซ้ำ/shortcutชี้ถูก/workerเดิมยังREADY ไม่rebootOSหรือหยุดworkerเดิม เก็บ12ไฟล์ในscopeก่อนpush ไม่มีBilling/subscription ปัญหาใหม่ที่ผู้ใช้ให้เลื่อนไปแก้ยังรอรายละเอียดโดยไม่บล็อกscopeนี้ สถานะpushสุดท้ายในownedsection/receipt
+
+**สรุปงานคงเหลือล่าสุด — 31 ต.ค. 2026 (§3.71):** จากคิวและGitในเครื่อง เหลือ3กลุ่ม: ซ้อมนำเสนอหลังเปิดเครื่องใหม่, เก็บชุดCPU9ไฟล์พร้อมเอกสารล่าสุดลงGitเมื่อได้รับคำสั่งเผยแพร่, และขยายการทดสอบเฉพาะทาง/ระยะยาว อีก2กลุ่มPiกับรายงานทดลองยังพัก CIเอกสารปิดแล้วตามผลตรวจ§3.70 รอบนี้สรุปและอัปเดตเอกสาร ไม่ตรวจCI/เว็บจริงซ้ำ ไม่แก้product ไม่รันtests/build/AI ไม่commit/push/deploy/Billing/subscription ไม่มีคำถามค้าง
+
+**ตรวจ CI เอกสารล่าสุดผ่านแล้ว — 31 ต.ค. 2026 (§3.70):** [run41100815452](https://github.com/megaaaop/XEDO/actions/runs/41100815452) ของcommit `a767faf3b67c7248e55a329579dba67a02047532` เป็น completed/success ทุกjobและstep รวมsyntax/tests/build3รูปแบบ ตรวจaliasสดยังเป็นdpl_DYMmXXi5Qsm2oMNM2APy5CXwv7DS/READY/commitเดียวกัน ปิดCIที่ค้างจากรอบเผยแพร่แล้ว เหลืองานเก็บก่อนนำเสนอ/ส่งมอบ/ขยายqualification3กลุ่ม และงานพักPi/รายงานทดลอง2กลุ่ม รอบนี้อ่านCI/deploymentและอัปเดตเอกสารในเครื่อง ไม่แก้product ไม่รันlocaltests/browser/AIใหม่ ไม่commit/push/deploy และไม่เปิดBilling/subscription ไม่มีคำถามรอคำตอบ
+
+**คำอธิบาย export settings — 31 ต.ค. 2026:** ตรวจช่องในภาพผู้ใช้กับ `planning-trial-client.js`/`trial-export.js` แล้ว: firmware เป็น target, Home ใช้ AMSL, ceiling อ้างอิงเหนือ Home, corridor เป็น lateral buffer สำหรับตรวจ manual no-go, validUntil ต้องครอบคลุมเวลาภารกิจ และ source เป็นข้อความอ้างอิงที่ผู้ใช้รับรองเอง ช่อง datetime-local ในฟอร์มนี้ตีความเป็น UTC โดยเติม Z; ค่า demo ไม่ใช่ข้อจำกัดจริง ไม่มี code/tests/build/runtime/publish รอบนี้ รายละเอียดท้ายเอกสาร
+
 **GEE v1.1 ข้อ 6 เผยแพร่และตรวจหลัง deploy แล้ว — 31 ต.ค. 2026 (§3.69):** รุ่น application 71e8f45 / dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG READY และ CI41095720672 success ตั้ง cache Secret/Config เฉพาะ Production ตามที่ผู้ใช้อนุญาต แก้ missing-asset404 ที่เคยได้ immutable แล้ว HTML23,516bytes/24assets ตรง build; แคชจริง miss→เขียนเสร็จหลัง response→newdeployment persistent hit/RAM miss/hashตรง Inspector เปิดประวัติเดิม→Analyzeผ่าน CPU→แก้พื้นที่/Undo/Redo→review→planner2.03km→3D satellite→Savev3/เปิดกลับ/SQLตรง คง3ขั้นตอน/4ตัวคำนวณ Fullsuiteใหม่633ผ่าน/CI3buildsผ่าน ผู้ช่วยทวน source/evidence แยกจาก runtime ไม่มี Billing/subscription/schema/accounts change ไม่มีคำถามผู้ใช้ค้าง Docs-only follow-up identity และ smoke ของ alias ล่าสุดอยู่ primary/final-publication.json; private UI ตรวจบน application revision ที่ระบุ
 
 **GEE v1.1 ข้อ 5 ตรวจ performance/resilience ในเครื่องเสร็จ — 30 ต.ค. 2026 (§3.68):** แชทหลักรันใหม่633testsผ่าน/3builds/syntaxผ่าน source20ไฟล์ไม่เปลี่ยน ผู้ช่วยเดิมทวนวิธีวัดและหลักฐาน LocalUIready median388.3→228.3ms แต่FCP140→204ms; persistenthitลดGEEpixelsได้แต่ช้ากว่าoff3/5คู่ ไม่อ้างเร็วขึ้นทุกกรณี Foreground11m35s/Settings32คู่/2D–3D20รอบ/A→B→Aผ่าน pageexceptions0 และ44proxyAbortErrorแยกเป็นการยกเลิกที่สังเกตได้ ไม่มีcommit/push/deploy/Billing/subscriptionหรือschema/accounts change ข้อ6ยังรอคำสั่ง ไม่มีคำถามค้าง
@@ -1362,3 +1370,79 @@ Desktopcontent1425/scroll1425, mobileoverride390×844 actualcontent375/scroll375
 **หลักฐาน/ข้อจำกัด:** D2/fb484bcมีrealmiss→deferredready/settled/storage151574bytes/hashตรง; Et/71e8มีpersistenthit/RAMmiss/newsession/PNGเดิม แยกsame-sessionRAMreturnแรกไว้ Snapshotbudget/privilegesผ่านแต่ไม่ใช่near-capcleanupstress MainnewQA0candidatesจึงทดสอบmanualdraw/edit/UndoRedo→reviewv2→planner2.03km/4panels/flat-reference3D→Savev3/History/Open Supportเทียบbrowser/AX/SQLmanualgeometryและstoredreferencesแล้ว เปิดกลับยังต้องreloadcontext/reviewreadiness ไม่คืนstaleapproval UIwarningSomeGEEdataunavailableและflightinputsneededยังแสดง; ไม่อ้างterrainclearance/บินจริง/MLaccuracy/fulltwoaccountfaultmatrix/physicalmobile/retention/productionperformance
 
 **เจ้าของงาน/ส่งต่อ:** ดู `C:/mega/codex/iENA/outputs/XEDO_Performance_Phase6_2026-10-30/support/HANDOFF.md` และ supportFINAL_REPORT_REVIEW/JSONs Mainเป็นผู้รันwebsite/provider/CPU/SQLและทำsource/Git/deployทั้งหมด Supportทำread-onlyfile/source/evidencereviewและappendสองMDตามจังหวะที่mainหยุดเขียน ไม่แก้overview/queueหรือproductใดๆ รักษา9dirtyCPUpathsและบันทึกแชทอื่นเดิม ไม่มีคำถามผู้ใช้ค้าง Mainจะรวมสถานะและทำdocs-onlyfollowupพร้อมprimary/final-publication.jsonหลังsupportidle
+
+
+<!-- export-settings-guidance-2026-10-31 -->
+### ความหมายและพฤติกรรม export settings ในภาพ — 31 ตุลาคม 2026
+
+**หัวข้อ/สรุป:** ตรวจ source เพื่ออธิบายการกรอกให้ผู้ใช้ โดยไม่แก้ application: src/planning-trial-client.js กำหนดหกช่องและอ่านค่า; src/trial-export.js ตรวจข้อมูลก่อนสร้าง .plan ค่า Unknown/Not configured เป็น placeholder ของช่องว่าง
+
+**รายละเอียดพฤติกรรม:** firmware รับ PX4/ArduPilot เป็น target ไม่พิสูจน์ installed firmware; homeAmslM เป็น AMSL ของ Home และถูกเขียนใน plannedHomePosition; ceilingM อ้างอิงเหนือ Home ต้อง >= relativeHeightM ไม่ใช่เพดานจากฐานข้อมูลหน่วยงาน; corridorM เป็น lateral margin สำหรับตรวจ route ทุก segment กับ manual no-go polygons ด้วยระยะ <= margin รวมการแตะขอบ ไม่ตั้ง onboard geofence หรือรับรอง obstacle clearance; validUntil ต้องอยู่อนาคตและครอบคลุมจบ sorties/declared mission end; source เป็นข้อความอ้างอิง user-attested ไม่ตรวจใบอนุญาตอัตโนมัติ ช่อง datetime-local ถูกตีความเป็น UTC ด้วยการเติม Z จึงให้ผู้ใช้แปลงเวลาไทยลบ 7 ชั่วโมงก่อนกรอก
+
+Home มีทางเลือกใช้ reviewed GEE estimate ผ่าน src/planning-geospatial-ui.js: ผู้ใช้ต้องตรวจ launch elevation/compatible reference ก่อน Use reviewed estimate; ข้อมูลเป็น 30 m DSM/EGM2008 จึงไม่รับรองความสูงจริงของแท่น/ดาดฟ้าหรือ clearance Estimated demo ใน src/planning-estimated-demo.js ใช้ Home 0/ceiling 60/corridor 5 และ source ที่ระบุ synthetic constraints เป็น fixture สำหรับสาธิต มิใช่ค่ามาตรฐานของภารกิจจริง การกรอกครบหรือได้ไฟล์ไม่ใช่ flight approval คู่มือ QGC รองรับ planned Home AMSL: https://docs.qgroundcontrol.com/master/en/qgc-dev-guide/file_formats/plan.html#mission-object
+
+**การบำรุงรักษา/สถานะ:** ยังไม่ได้รับคำสั่งเปลี่ยนฟอร์มหรือเพิ่ม requirement; ไม่เปลี่ยนคิว ไม่มีคำถามรอคำตอบ รอบนี้ source/document inspection และ documentation diff เท่านั้น ไม่รัน app tests/build/browser/QGC/SITL/บินจริง และไม่ commit/push/deploy ดู chronology ใน XEDO_WORK_LOG รายการวันเดียวกัน
+
+
+<!-- ci-documentation-followup-2026-10-31 -->
+### 3.70 ตรวจ CI commit เอกสารล่าสุดและทบทวนงานคงเหลือ — 31 ตุลาคม 2026
+
+**หัวข้อ:** ผู้ใช้ขอให้ตรวจ CI ของ commit เอกสารล่าสุดอีกครั้ง หากผ่านให้อัปเดตบันทึกงานและรายละเอียดเว็บไซต์ แล้วสรุปงานที่ยังเหลือ โดยไม่เปิด Billing หรือสมัคร subscription รอบนี้เป็นการตรวจและอัปเดตเอกสาร ไม่ใช่คำสั่งเผยแพร่หรือเพิ่มฟังก์ชันใหม่
+
+**สรุปผลสด:** GitHub push workflow `Verify XEDO`, run [41100815452](https://github.com/megaaaop/XEDO/actions/runs/41100815452), head `a767faf3b67c7248e55a329579dba67a02047532`, completed/success จากเดิมที่บันทึกไว้ว่า queued Job `124217590574` Check, test and build ผ่านทุกขั้น: install locked dependencies, JavaScript syntax, automated tests, hosted build, workspace/Worker build และ standalone file build ผลrunอัปเดต2026-10-30T17:55:18Z (31ต.ค.00:55:18เวลาไทย) และตรวจสถานะใหม่ตามtimestampในci.json ไม่ใช้ผล633testsเดิมเป็นการรันlocalใหม่รอบนี้
+
+Vercelอ่านผ่านalias `xedo-eight.vercel.app` ใหม่ ได้deployment `dpl_DYMmXXi5Qsm2oMNM2APy5CXwv7DS`, READY, Production/iad1, main/commit a767faf ตรงCI ไม่มีการสร้างdeployment/เปลี่ยนalias/env/schema/account/สิทธิ์ ขอบเขตfresh verificationรอบนี้คือCIjobs/stepsและdeploymentidentityเท่านั้น Browser/privateAI/geometry/cache/static29checksเป็นหลักฐานก่อนหน้าที่อ้างอิงตามเดิม ไม่ได้รันซ้ำเพื่อปิดCI
+
+**งานคงเหลือที่แนะนำเรียงลำดับ:**
+
+1. **ซ้อมการนำเสนอบนเครื่องจริงหลังเปิดเครื่องใหม่** — เปิดshortcut CPU→READY→Login→Analyzeพื้นที่ใหม่→Inspectorแก้/ยืนยันพื้นที่→preview/3D→Save/History/Open และสาธิต.planเมื่อข้อมูลพร้อม เป็นoperationalacceptanceของระบบที่มีอยู่ ไม่ใช่ฟังก์ชันที่ยังไม่ทำ; การตรวจCIครั้งนี้ไม่ได้rebootเครื่องหรือรับรองเครือข่ายสถานที่จริง
+2. **ส่งมอบชุดเปิด CPU Worker ใน Git ให้ครบ** — มีเก้าไฟล์launcher/guard/worker/คู่มือ/testsที่ทำและตรวจในเครื่องแล้ว แต่ยังdirtyและเว้นจากGEErelease ต้องตรวจdiff/secretแล้วcommit/pushในขอบเขตที่ผู้ใช้อนุมัติ ไม่ทำเพิ่มในรอบนี้ CPUยังรันในเครื่องและต้องเปิดออนไลน์
+3. **เพิ่มqualificationตามขอบเขตถัดไป** — positiveAIcandidateรับ/แก้/ปฏิเสธบนรุ่นล่าสุด, regressionหลายบัญชี/session/conflict, physicalmobile/trackpad, ระยะยาว/100jobsต่อเดือน, near200km²/worst-casegeometry และcachecleanup/staleassetเมื่อgraphเปลี่ยน มีหลักฐานpilot/กรณีเดิมบางส่วนแล้ว ไม่อ้างว่าทั้งmatrixยังไม่เคยทดสอบหรือว่าผ่านครบจากCI รอบนี้ QGC/SITL/บินจริงแยกจากการปิดfunctionalprototype
+4. **พัก: Raspberry Pi/รูป/telemetry** — เลขเดิม7/ลำดับคิวเดิม4 ยังไม่ต้องทำตามคำสั่งผู้ใช้ และไม่เป็นเงื่อนไขของการวางแผนก่อนบิน
+5. **พัก: ผลทดลองและรายงานก่อน–หลัง** — เลขเดิม8/ลำดับคิวเดิม5 ยังเป็นงานเหลือที่ผู้ใช้พักไว้ ต้องใช้ข้อมูลทดลองจริง
+
+ฟังก์ชันหลักUX/บัญชีInspectorส่วนตัว/Save–History/AIและแก้พื้นที่/CPUAnalyze/GEEcache200MB/3D/3ขั้นตอนและ4calculatorsทำและเผยแพร่ตามหลักฐานก่อนหน้าแล้ว GEEv1.1ข้อ1–6ไม่มีCIค้าง รายการใหม่ข้างต้นเป็นกลุ่มงานปฏิบัติการ/ส่งมอบ/qualification ไม่เพิ่มlegacyfeature-stageหรือคืนงานnormalflow/ตารางเวลาที่ผู้ใช้ตัดออก ไม่มีคำถามผู้ใช้ค้าง
+
+**ไฟล์/หลักฐาน/การเผยแพร่:** อัปเดตสองcanonicalMDโดยmergeรายการ export-settings-guidance และ capsule-degradation ของแชทอื่นไว้ครบ อัปเดตqueue latestPublishedRelease.documentationFollowup/phase6Execution/latestRemainingWorkAudit และreceiptเดิมให้CIcomplete=true/pendingExternalVerification=[] โดยเก็บqueuedobservationเดิมเป็นประวัติ หลักฐานสด `C:/mega/codex/iENA/outputs/XEDO_CI_Followup_2026-10-31/ci.json`, jobs.json, production-deployment.json และREPORT.md; originalproductionreceiptอยู่phase6primary/final-publication.json รอบนี้ไม่แก้source/worker/tests/config/package ไม่รันlocaltests/build/browser/AIใหม่ ไม่commit/push/deploy ไม่เปิดBilling/subscription ไม่มีคำถามรอคำตอบ
+
+
+<!-- remaining-work-summary-2026-10-31 -->
+### 3.71 สรุปขั้นตอนที่ยังเหลือจากคิวปัจจุบัน — 31 ตุลาคม 2026
+
+**หัวข้อ/สรุป:** ผู้ใช้ถามว่าตอนนี้เหลือขั้นตอนอะไร อ่านcanonicalสองMD, implementation-queue.json และGitstatusล่าสุดก่อนสรุป คง3กลุ่มงานต่อและ2กลุ่มพักไว้ตาม§3.70 ไม่มีการรับrequirementใหม่หรือสั่งimplementation/publish ผลCIsuccessเป็นผลที่ตรวจรอบ§3.70 ไม่ใช่การอ่านproviderใหม่รอบนี้
+
+**รายละเอียด/ลำดับ:** (1) ซ้อมบนเครื่องที่จะนำเสนอหลังเปิดเครื่องใหม่: Shortcut→CPU READY→Login→Analyzeพื้นที่ใหม่→Inspectorแก้/ยืนยันพื้นที่→planner/3D→Save/History/Open และเตรียมภารกิจข้อมูลพร้อมสำหรับ.plan (2) เก็บชุดCPUlauncher/worker/guard/คู่มือ/tests9ไฟล์และcanonicaldocs/queueที่แก้ล่าสุดแต่ยังไม่commitลงGitเมื่อมีคำสั่งเผยแพร่ โดยตรวจdiff/secretก่อน รวมเป็นกลุ่มส่งมอบเดิม ไม่เพิ่มfeaturestageหรืออนุมัติpushจากคำขอสรุป (3) ขยายregressionกรณีAIมีcandidate/หลายบัญชี/session/conflict/มือถือจริง/trackpad/longsoakและข้อจำกัดgeometry/พื้นที่/cacheตามขอบเขต มีหลักฐานpilotและกรณีเดิมบางส่วนแล้ว (4) Pi/รูป/telemetryเลขเดิม7ยังพัก (5) ผลทดลอง/รายงานก่อน–หลังเลขเดิม8ยังพัก ไม่คืนงานnormalflow/ตารางเวลาที่ผู้ใช้ตัดออกเข้าคิว
+
+**หลักฐาน/สถานะ:** GitHEADยังa767faf3b67c7248e55a329579dba67a02047532 พบcanonicalสองMD/queueและCPU9pathsค้างในเครื่อง อัปเดตสองMDและเติมรายละเอียดส่งมอบเอกสารในกลุ่ม2ของqueue รักษารายการแชทอื่นทั้งหมดและโครงสร้างหัวข้อ/สรุป/รายละเอียด ฟังก์ชันหลักและการเผยแพร่คงสถานะที่มีหลักฐานก่อนหน้า CIไม่มีรายการค้างตาม§3.70 ไม่มีคำถามผู้ใช้รอคำตอบ รอบนี้ไม่ได้ทดสอบapplication/build/browser/CPU/AI/CI/deploymentสด ไม่แก้source/config/accounts/schema ไม่commit/push/deploy และไม่เปิดBilling/subscription
+
+
+<!-- presentation-delivery-main-start-2026-10-31 -->
+### 3.72 ซ้อม flow นำเสนอและส่งมอบ CPU Worker ใน Git — 31 ตุลาคม 2026
+
+**หัวข้อ/คำสั่ง:** ผู้ใช้สั่งเริ่มกลุ่ม1–2 ทดสอบflowก่อนนำเสนอ เก็บชุดCPUและเอกสารลงGit บันทึกสองMD และpushได้ ห้ามBilling/subscription ผู้ใช้รายงานว่ามีปัญหาการใช้งานเล็กน้อยแต่ให้เลื่อนไปแก้ภายหลัง จึงรับเป็นdeferred issueรอรายละเอียด ไม่วินิจฉัย/แก้websitefeatureจากข้อมูลที่ยังไม่มี ไม่ใช้คำสั่งนี้เปิดงานกลุ่ม3/Pi/รายงานทดลองหรือเปลี่ยนบัญชี/schema/env
+
+**สรุปงานที่ตรวจจริงก่อนpush:**
+
+| รายการ | ผลรอบนี้ |
+|---|---|
+| Node tests | 633ผ่าน/0fail/cancel/skip; fresh full log |
+| Python CPU tests | 84ผ่าน/0fail; รวมWindowscross-processlock/reconnect/wrong-accountpreservation/redaction |
+| Syntax/build | checkและhosted/workspace/portableผ่านทั้งสาม |
+| CMD/shortcut | Start.cmdจากcwdอื่นได้ALREADY OPEN ขณะdaemonเดิมทำงาน ไม่มีworkerชุดที่สอง; check-onlyผ่านโดยไม่อ่านsession/request; Desktopshortcutreadbacktarget/cwd/args/windowstyleถูก |
+| Browserใหม่ | ผู้ใช้Sign inเอง แท็บเดิม/draftเดิมไม่reload/ไม่ปิด; LocalprocessorReady |
+| Analyze | พื้นที่ใหม่482,535m², job4656e09c-3778-4ed1-a8b0-39d67f3e91d1 สำเร็จattempt1/1tile; 18:55:23.380678→18:56:20.047051UTC รวม56.666s ไม่ใช่inferenceล้วน |
+| Inspector | ผลใหม่0candidates; วาดmanual4มุม/แก้GeoJSON/Undo/Redoตรง ตรวจSentinel2จริง27Oct03:54UTCแล้วconfirmreviewv2manualcomplete; ก่อนมีภาพถูกblockโดยเก็บdraft |
+| Planner | route2.75km/22waypoints/74terrain samples; เลือกHome/Move→Cancelคืนพิกัดเดิม; Diagramและgeoreferencedsatellitegroundพร้อมใน3D |
+| Persistence | QAmission9e826af9-01f0-4cc6-92ab-4b93e2f56f39/v3, History3/2/1→Openv3คืนgeometryตรง; readonlySQLยืนยันowner/revision/analysisRef/riskDraft/targetgeometryตรง |
+| Exportสาธิต | แท็บEstimateddemoแยก ข้อมูลสมมติ/archivedimage; เลือกจุดHomeและreviewsyntheticconstraintsในdemoเท่านั้น; 4/4ready/1sortie/1.88km; actual.plan8053bytes/20items/Planv1/finiteparams |
+| Four calculators | เปิดผลDrift/Flight/Export/Oilครบ; Driftscenarioไม่ได้เลือก จึงไม่อ้างว่าcomputeddriftใหม่ Flightwind/batterypass/1sortie, Oil10–30L/3.772–11.316kgเป็นfixtureสมมติ |
+| Console | 0capturedwarn/errorทั้งสองQAtabs |
+
+**ข้อพบจากเครื่องมือ/การแก้ทางทดสอบ:** restrictedNodeรอบแรกspawnENOENTก่อนครบ และWindowsunit-testchildterminationทำให้lockcleanupไม่สำเร็จ เก็บrestrictedlogsแยกแล้วรันด้วยordinaryhostprocessaccessผ่าน633/84 ไม่แก้productเพื่อทำassertionให้ผ่าน Download-eventwaitของbrowsertooltimeout20s แต่เว็บแสดงDownloadstartedและมีไฟล์จริงใหม่ในDownloads19:02:20UTC จึงตรวจไฟล์นั้นตรงๆ ไม่กดซ้ำ SHA256 `44ae693769893942fa1a5c69e88baf76fc47c64a78a980dbdb9bb09132b4bd14`; screenshot/AX/receiptเก็บไว้ ไม่อ้างtooltimeoutเป็นwebsitefailureหรืออ้างว่าไม่มีtoolerror
+
+**สิ่งที่ส่งมอบ/สถาปัตยกรรม:** 9CPUpathsเดิมคือStart/ReconnectCMD, CPU_WORKER_START_GUIDE.md, workerREADME, remote_worker.py, launch_worker.py, worker_guard.py, test_launcher.py, test_remote_worker.py รวมกับสองcanonicalMD/queueเป็น12ไฟล์ ผู้ใช้อนุมัติเก็บและpushแล้ว Guardล็อกsession+workRootก่อนอ่าน/refreshsessionหรือrecovercheckpoint และCLIstatus/login/logoutใช้guardเดียวกัน Reconnectตรวจmachine registryก่อนแทนที่protectedsessionเดิม ไม่บันทึกpassword/response ลงconsole/สถานะ ข้อมูลจริง/config/DPAPI/model/raster/venvอยู่ignoredlocalpaths ไม่ใส่GitหรือVercel .vercelignoreกันworker/CMD/docsออกจากwebdeploy Browser25buildhashesตรงapplicationที่qualifiedเดิม ไม่มีfrontend/API/config/schema/account/modelchange
+
+**ข้อจำกัด/งานต่อ:** ทดสอบกับworkerเดิมที่เปิดอยู่ ไม่rebootWindows/ไม่restartdaemon/ไม่ทำproductionreconnect/ไม่ใช้รหัสผ่านแทนผู้ใช้ CPUยังต้องเปิดเครื่อง/online/READY ผล0candidatesไม่รับรองไม่มีน้ำมัน และmanualcaseไม่แทนpositivecandidateหรือfulltwo-account/fault/longsoakmatrix NormalflightexportของQAจริงยังgated ไม่tickphysical/airspaceapprovalให้ภารกิจจริง QGCnativeimport/SITL/บินจริง/physicalmobileยังไม่รัน ปัญหาเล็กน้อยที่ผู้ใช้รายงานยัง**รอรายละเอียดภายหลังตามที่ให้เลื่อน** ไม่บล็อกการเก็บงานที่อนุมัติ Piและรายงานทดลองยังพัก
+
+**หลักฐาน/สถานะ:** `C:/mega/codex/iENA/outputs/XEDO_Presentation_Rehearsal_2026-10-31/` มีREPORT.md, initial/release manifests, local-verification.json, browser-observation.json, job.json, private-persistence.json, download-verification.json/presentation-demo.plan, AX/screenshots/test/buildlogs คง3mainparts/3steps/4calculatorsและบันทึกแชทอื่นครบ ก่อนpushสถานะverified_ready_for_push; publication.jsonจะเก็บexactGit/CI/automaticVerceldeploymentidentityหลังpush ไม่สร้างmanualdeploymentหรือเปิดบริการเสียเงิน ปิดreceipt/สถานะจริงในownedsectionหลังเผยแพร่
+<!-- presentation-delivery-main-end-2026-10-31 -->

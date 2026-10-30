@@ -149,13 +149,13 @@ class Config:
         return self
 
 class RpcClient:
-    def __init__(self,config,store,transport=None,sleeper=time.sleep,clock=time.time):
+    def __init__(self,config,store,transport=None,sleeper=time.sleep,clock=time.time,load_session=True):
         self.config,self.store,self.sleeper,self.clock=config.validate(),store,sleeper,clock
         if transport is None:
             import requests
             transport=requests.Session()
         self.transport=transport
-        self.session=store.load()
+        self.session=store.load() if load_session else None
 
     def _request(self,path,body,access=None,retries=1):
         headers={'apikey':self.config.publishable_key,'Content-Type':'application/json'}
@@ -180,7 +180,7 @@ class RpcClient:
                 raise WorkerError(code,'The worker request was rejected.',retryable=response.status_code in (429,500,502,503,504),status=response.status_code)
             return value
 
-    def _accept_auth(self,value,expected_user=None):
+    def _accept_auth(self,value,expected_user=None,persist=True):
         try:
             user=value['user']['id']
             if not UUID.fullmatch(user) or (expected_user and user!=expected_user): raise ValueError()
@@ -191,20 +191,31 @@ class RpcClient:
             if not all(isinstance(session[k],str) and 0<len(session[k])<12000 for k in ['access_token','refresh_token']):raise ValueError()
         except Exception:
             raise WorkerError('AUTH_RESPONSE_INVALID','Machine authentication returned an invalid session.') from None
-        self.session=session;self.store.save(session)
+        self.session=session
+        if persist:self.store.save(session)
 
     def login(self,email,password):
         value=self._request('/auth/v1/token?grant_type=password',{'email':email,'password':password},retries=0)
-        self._accept_auth(value)
-        try: result=self.rpc('presence',{})
+        # Verify the machine registry before replacing a previous protected
+        # session. A valid Inspector login is not a CPU worker login.
+        self._accept_auth(value,persist=False)
+        # Do not refresh/persist a newly granted login before registry
+        # verification, even for an unusually short token or a rejected JWT.
+        try: result=self._request('/rest/v1/rpc/xedo_local_worker',{'p_action':'presence','p_payload':{}},self.session['access_token'])
         except Exception:
-            self.session=None;self.store.clear();raise
+            self.session=None;raise
+        self.store.save(self.session)
         return {'signedIn':True,'machineUserId':self.session['user_id'],'presence':result}
 
     def refresh(self):
         if not self.session or not self.session.get('refresh_token'):
             raise WorkerError('MACHINE_SIGN_IN_REQUIRED','Sign in with the registered machine account first.')
-        value=self._request('/auth/v1/token?grant_type=refresh_token',{'refresh_token':self.session['refresh_token']},retries=0)
+        try:
+            value=self._request('/auth/v1/token?grant_type=refresh_token',{'refresh_token':self.session['refresh_token']},retries=0)
+        except WorkerError as error:
+            if error.status in (400,401,403):
+                raise WorkerError('MACHINE_SIGN_IN_REQUIRED','Reconnect the existing registered CPU account.',status=error.status) from None
+            raise
         self._accept_auth(value,self.session.get('user_id'))
 
     def rpc(self,action,payload):
@@ -444,16 +455,21 @@ def main():
     args=parser.parse_args()
     try:
         config=load_config(args.config,args.local_qa)
-        client=RpcClient(config,SessionStore(config.session_file,config.base_url))
-        if args.command=='login':
-            email=input('Registered machine account email: ').strip()
-            password=getpass.getpass('Machine account password (not the Inspector password): ')
-            result=client.login(email,password);password=None
-            print(json.dumps(result,ensure_ascii=True));return 0
-        if args.command=='status':
-            print(json.dumps(client.rpc('presence',{}),ensure_ascii=True));return 0
-        if args.command=='logout':client.logout();print('{"signedOut":true}');return 0
-        return Worker(config,client).loop(args.once)
+        from worker_guard import WorkerGuard, GuardError
+        try:
+            with WorkerGuard(config):
+                client=RpcClient(config,SessionStore(config.session_file,config.base_url),load_session=args.command!='login')
+                if args.command=='login':
+                    email=input('Registered machine account email: ').strip()
+                    password=getpass.getpass('Machine account password (not the Inspector password): ')
+                    result=client.login(email,password);password=None
+                    print(json.dumps(result,ensure_ascii=True));return 0
+                if args.command=='status':
+                    print(json.dumps(client.rpc('presence',{}),ensure_ascii=True));return 0
+                if args.command=='logout':client.logout();print('{"signedOut":true}');return 0
+                return Worker(config,client).loop(args.once)
+        except GuardError as error:
+            raise WorkerError(error.code,'Another CPU worker or account operation is open, or its status could not be checked safely.') from None
     except KeyboardInterrupt:
         print('{"event":"stopped"}');return 130
     except WorkerError as error:

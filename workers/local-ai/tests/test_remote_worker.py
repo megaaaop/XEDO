@@ -111,6 +111,45 @@ class RemoteWorkerTests(unittest.TestCase):
             t=Transport([Response(200,{'access_token':'new','refresh_token':'refresh','expires_in':3600,'user':{'id':str(uuid.uuid4())}})])
             with self.assertRaises(worker.WorkerError):worker.RpcClient(c,store,t).rpc('presence',{})
 
+    def test_rejected_refresh_requires_machine_reconnect_without_leaking_response(self):
+        for status in [400,401,403]:
+            with self.subTest(status=status), tempfile.TemporaryDirectory() as d:
+                c=config(Path(d));store=worker.SessionStore(c.session_file,c.base_url,Protector())
+                auth=session();auth['expires_at']=0;store.save(auth)
+                t=Transport([Response(status,{'code':'refresh_token_not_found','message':'private-refresh-secret'})])
+                with self.assertRaises(worker.WorkerError) as caught:worker.RpcClient(c,store,t).rpc('presence',{})
+                self.assertEqual(caught.exception.code,'MACHINE_SIGN_IN_REQUIRED')
+                self.assertNotIn('private-refresh',str(caught.exception))
+
+    def test_explicit_reconnect_can_replace_unreadable_old_session(self):
+        with tempfile.TemporaryDirectory() as d:
+            c=config(Path(d));store=worker.SessionStore(c.session_file,c.base_url,Protector())
+            c.session_file.write_bytes(b'invalid-old-protected-session')
+            user=str(uuid.uuid4());t=Transport([Response(200,{'access_token':'new-access','refresh_token':'new-refresh','expires_in':3600,'user':{'id':user}}),Response(200,{'online':True})])
+            client=worker.RpcClient(c,store,t,load_session=False)
+            client.login('cpu@example.invalid','fixture-password')
+            self.assertEqual(store.load()['user_id'],user)
+            self.assertNotIn(b'new-refresh',c.session_file.read_bytes())
+
+    def test_wrong_account_on_reconnect_preserves_previous_protected_session(self):
+        with tempfile.TemporaryDirectory() as d:
+            c=config(Path(d));store=worker.SessionStore(c.session_file,c.base_url,Protector())
+            store.save(session());before=c.session_file.read_bytes()
+            t=Transport([Response(200,{'access_token':'inspector-access','refresh_token':'inspector-refresh','expires_in':3600,'user':{'id':str(uuid.uuid4())}}),Response(403,{'code':'MACHINE_NOT_REGISTERED'})])
+            client=worker.RpcClient(c,store,t,load_session=False)
+            with self.assertRaises(worker.WorkerError):client.login('wrong@example.invalid','fixture-password')
+            self.assertEqual(c.session_file.read_bytes(),before)
+
+    def test_reconnect_short_token_or_401_cannot_persist_before_registry_verification(self):
+        for duration,status in [(10,403),(3600,401)]:
+            with self.subTest(duration=duration,status=status), tempfile.TemporaryDirectory() as d:
+                c=config(Path(d));store=worker.SessionStore(c.session_file,c.base_url,Protector());store.save(session());before=c.session_file.read_bytes()
+                t=Transport([Response(200,{'access_token':'unverified-access','refresh_token':'unverified-refresh','expires_in':duration,'user':{'id':str(uuid.uuid4())}}),Response(status,{'code':'REJECTED'})])
+                client=worker.RpcClient(c,store,t,load_session=False)
+                with self.assertRaises(worker.WorkerError):client.login('wrong@example.invalid','fixture-password')
+                self.assertEqual(len(t.calls),2)
+                self.assertEqual(c.session_file.read_bytes(),before)
+
     def test_transient_request_bounded_and_same_body(self):
         with tempfile.TemporaryDirectory() as d:
             c=config(Path(d));store=worker.SessionStore(c.session_file,c.base_url,Protector());store.save(session())

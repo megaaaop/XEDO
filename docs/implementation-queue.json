@@ -294,31 +294,36 @@
     "latestPlanPath": "docs/AI_INTEGRATION_PLAN.md"
   },
   "currentImplementationScope": {
-    "id": "gee-performance-v1-1-phase-6-2026-10-30",
-    "status": "published_and_postdeploy_verified",
-    "authorizedPhases": [
-      6
+    "id": "presentation-rehearsal-cpu-git-delivery-2026-10-31",
+    "status": "verified_ready_for_push",
+    "authorizedRemainingGroups": [
+      1,
+      2
     ],
     "pushAuthorized": true,
-    "productionDeployAuthorized": true,
+    "manualDeployRequested": false,
     "billingAuthorized": false,
     "subscriptionAuthorized": false,
-    "schemaChangesPlanned": false,
-    "accountChangesPlanned": false,
-    "proof": "outputs/XEDO_Performance_Phase6_2026-10-30/primary",
+    "applicationFeatureRepairAuthorized": false,
+    "deferredUserIssue": "User reported a minor usage problem but explicitly requested fixing it later; details not yet supplied.",
+    "proofDirectory": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31",
     "pendingUserInput": null,
-    "cacheSecretApprovedByUser": true,
-    "productionCacheEnvironmentConfigured": true,
-    "initialCommit": "fb484bc28076b5a5d49d407e7377143cf25fbdee",
-    "initialConfiguredDeployment": "dpl_D2aTXfcNyXFAmuBiRsZtB4an2Rhz",
-    "postdeployFinding": "404_missing_hashed_asset_inherited_immutable_header",
-    "qualifiedApplicationCommit": "71e8f45053f7b38fefe6ce382f96619e5d682297",
-    "qualifiedApplicationDeployment": "dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG",
-    "ciRunId": 41095720672,
-    "ciConclusion": "success",
-    "postdeployFindingResolved": true,
-    "privateUiVerified": true,
-    "finalDocumentationPublicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\final-publication.json"
+    "localVerification": {
+      "nodeTestsPassed": 633,
+      "pythonTestsPassed": 84,
+      "syntaxPassed": true,
+      "builds": [
+        "hosted",
+        "workspace",
+        "portable"
+      ],
+      "duplicateCmd": "ALREADY OPEN",
+      "actualOsReboot": false
+    },
+    "browserRehearsalComplete": true,
+    "actualOsReboot": false,
+    "workerRestarted": false,
+    "publicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31\\publication.json"
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
@@ -1008,10 +1013,23 @@
     "verificationRecord": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\REPORT.md",
     "browserHistoryReopen": "passed_with_existing_inspector_new_mission_v3",
     "documentationFollowup": {
+      "commit": "a767faf3b67c7248e55a329579dba67a02047532",
+      "deploymentId": "dpl_DYMmXXi5Qsm2oMNM2APy5CXwv7DS",
+      "state": "READY",
+      "ciRunIds": [
+        41100815452
+      ],
+      "ciConclusion": "success",
+      "checkedAtUtc": "2026-10-30T18:44:02.364Z",
+      "recordedOn": "2026-10-31",
       "receipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\final-publication.json",
+      "freshEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_CI_Followup_2026-10-31\\ci.json",
       "productSourceChange": false,
-      "note": "Qualified application revision above; exact final documentation commit/deployment/CI and unchanged artifact smoke recorded after push to avoid commit self-reference. Private UI was not replayed on the documentation-only deployment."
-    }
+      "privateUiReplayedThisTurn": false,
+      "note": "CI formerly queued is now completed/success; production alias identity freshly verified. Current-turn documentation edits remain local; no new commit/push/deploy."
+    },
+    "activeProductionCommit": "a767faf3b67c7248e55a329579dba67a02047532",
+    "activeProductionDeploymentId": "dpl_DYMmXXi5Qsm2oMNM2APy5CXwv7DS"
   },
   "removedFromCurrentCloseout": [
     {
@@ -2750,6 +2768,37 @@
       ],
       "nextPhase": 6,
       "nextPhaseAuthorized": false
+    },
+    {
+      "id": "gee-performance-v1-1-phase-6-2026-10-30",
+      "status": "published_and_postdeploy_verified",
+      "authorizedPhases": [
+        6
+      ],
+      "pushAuthorized": true,
+      "productionDeployAuthorized": true,
+      "billingAuthorized": false,
+      "subscriptionAuthorized": false,
+      "schemaChangesPlanned": false,
+      "accountChangesPlanned": false,
+      "proof": "outputs/XEDO_Performance_Phase6_2026-10-30/primary",
+      "pendingUserInput": null,
+      "cacheSecretApprovedByUser": true,
+      "productionCacheEnvironmentConfigured": true,
+      "initialCommit": "fb484bc28076b5a5d49d407e7377143cf25fbdee",
+      "initialConfiguredDeployment": "dpl_D2aTXfcNyXFAmuBiRsZtB4an2Rhz",
+      "postdeployFinding": "404_missing_hashed_asset_inherited_immutable_header",
+      "qualifiedApplicationCommit": "71e8f45053f7b38fefe6ce382f96619e5d682297",
+      "qualifiedApplicationDeployment": "dpl_EtSbsVA5JPknKc1G8yCEgG5NSsWG",
+      "ciRunId": 41095720672,
+      "ciConclusion": "success",
+      "postdeployFindingResolved": true,
+      "privateUiVerified": true,
+      "finalDocumentationPublicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\final-publication.json",
+      "documentationCiComplete": true,
+      "documentationCiRunId": 41100815452,
+      "documentationCiConclusion": "success",
+      "documentationCiVerifiedAtUtc": "2026-10-30T18:44:02.364Z"
     }
   ],
   "localCpuWebIntegrationExecution": {
@@ -3337,7 +3386,12 @@
           "excludedDirtyLocalCpuFiles": 9,
           "proofDirectory": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary",
           "pendingUserAnswers": [],
-          "finalDocumentationPublicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\final-publication.json"
+          "finalDocumentationPublicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\final-publication.json",
+          "documentationCiComplete": true,
+          "documentationCiRunId": 41100815452,
+          "documentationCiConclusion": "success",
+          "documentationCiVerifiedAtUtc": "2026-10-30T18:44:02.364Z",
+          "pendingExternalVerification": []
         }
       },
       "phase12Execution": {
@@ -3627,7 +3681,12 @@
         "excludedDirtyLocalCpuFiles": 9,
         "proofDirectory": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary",
         "pendingUserAnswers": [],
-        "finalDocumentationPublicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\final-publication.json"
+        "finalDocumentationPublicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Performance_Phase6_2026-10-30\\primary\\final-publication.json",
+        "documentationCiComplete": true,
+        "documentationCiRunId": 41100815452,
+        "documentationCiConclusion": "success",
+        "documentationCiVerifiedAtUtc": "2026-10-30T18:44:02.364Z",
+        "pendingExternalVerification": []
       }
     },
     "initialAuditDeploymentSnapshot": {
@@ -3692,7 +3751,10 @@
     "report": "outputs/XEDO_CPU_Launcher_2026-10-30/REPORT.md",
     "processingChangesStatusImmediately": true,
     "loginCannotPersistBeforeMachineRegistry": true,
-    "desktopShortcutCreatedAndVerified": true
+    "desktopShortcutCreatedAndVerified": true,
+    "latestVerificationOn": "2026-10-31",
+    "latestFreshPythonTests": 84,
+    "publicationStatus": "verified_ready_for_push"
   },
   "desktopShortcutExecution": {
     "recordedOn": "2026-10-30",
@@ -3799,8 +3861,8 @@
   },
   "latestRemainingWorkAudit": {
     "date": "2026-10-31",
-    "kind": "phase6_production_release_postdeploy_closeout",
-    "sourceSection": "3.69",
+    "kind": "presentation_rehearsal_and_cpu_delivery",
+    "sourceSection": "3.72",
     "corePrototypeFeatureFlow": "complete_with_prior_browser_api_evidence",
     "priorRuntimeProof": "outputs/XEDO_Post_Reset_Check_2026-10-30",
     "followups": [
@@ -3808,6 +3870,11 @@
         "id": "gee-map-speed",
         "status": "phase_1_through_6_published_and_postdeploy_verified",
         "description": "200MB private cache and split hosted shell published; immutable404 repaired; real deferred write/new-deployment reuse and signed-in AI/edit/save/reopen passed. No universal latency guarantee."
+      },
+      {
+        "id": "presentation-rehearsal",
+        "status": "recommended_operational_acceptance",
+        "description": "XEDO CPU Worker→READY→Sign in→Analyzeพื้นที่ใหม่→Inspectorแก้/ยืนยันพื้นที่→planner/3D→Save/History/Open; สาธิตไฟล์.planด้วยflowที่ข้อมูลพร้อม"
       },
       {
         "id": "extended-qualification",
@@ -3828,11 +3895,82 @@
       3
     ],
     "pendingUserAnswers": [],
-    "applicationChangedThisTurn": true,
+    "applicationChangedThisTurn": false,
     "runtimeTestsRunThisTurn": true,
-    "publishedThisTurn": true,
+    "publishedThisTurn": false,
     "billingOrSubscriptionOpened": false,
-    "canonicalNumberingUnchanged": true
+    "canonicalNumberingUnchanged": true,
+    "ciReadFreshThisTurn": false,
+    "productionIdentityReadFreshThisTurn": true,
+    "docsUpdatedLocallyThisTurn": true,
+    "orderedRemainingGroups": [
+      {
+        "order": 1,
+        "id": "presentation-rehearsal",
+        "status": "completed_current_browser_and_existing_worker_flow",
+        "legacyStageNumber": 4,
+        "title": "ซ้อมใช้งานบนเครื่องที่จะนำเสนอหลังเปิดเครื่องใหม่",
+        "completion": "XEDO CPU Worker→READY→Sign in→Analyzeพื้นที่ใหม่→Inspectorแก้/ยืนยันพื้นที่→planner/3D→Save/History/Open; สาธิตไฟล์.planด้วยflowที่ข้อมูลพร้อม",
+        "limitation": "CPUยังทำงานบนเครื่องนี้และต้องออนไลน์; ไม่อ้างว่าทดสอบOSreboot/เครือข่ายสถานที่จริงในรอบCIนี้",
+        "actualOsReboot": false,
+        "freshWorkerRestart": false,
+        "proofDirectory": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31"
+      },
+      {
+        "order": 2,
+        "id": "local-launcher-git-delivery",
+        "status": "verified_ready_for_push",
+        "legacyStageNumber": null,
+        "title": "เก็บชุดเปิด CPU Worker และคู่มือเก้าไฟล์ลง Git เมื่ออนุมัติการเผยแพร่ขอบเขตนี้",
+        "completion": "ตรวจdiff/ไม่มีข้อมูลลับ/คู่มือและlauncherตรงเครื่อง แล้วcommit/pushเฉพาะไฟล์ที่เกี่ยวข้อง",
+        "limitation": "เป็นงานส่งมอบและทำซ้ำจากGit; ไม่ใช่ฟังก์ชันเว็บไซต์ที่ยังไม่ทำ และไม่รวมในreleaseGEEเดิม",
+        "pendingCanonicalDocs": [
+          "docs/XEDO_WORK_LOG.md",
+          "docs/WEBSITE_DETAILS.md",
+          "docs/implementation-queue.json"
+        ],
+        "deliveryIncludesCurrentLocalDocumentation": true,
+        "currentSummaryDoesNotAuthorizePublication": false,
+        "publicationNowAuthorized": true
+      },
+      {
+        "order": 3,
+        "id": "extended-qualification",
+        "status": "optional_separately_scoped_qualification",
+        "legacyStageNumber": 4,
+        "title": "เพิ่มความครอบคลุมการทดสอบระยะยาวและกรณีขอบเขต",
+        "completion": "ตรวจpositiveAIcandidateรับ/แก้/ปฏิเสธบนรุ่นล่าสุด, regressionสองบัญชี/session/revision conflict, physicalmobile/trackpad, longsoak/100jobs-month, near200km²/worst-casegeometry, cachecleanup/staleassetsเมื่อgraphเปลี่ยน",
+        "limitation": "มีหลักฐานpilotและบางกรณีเดิมแล้ว แต่ไม่อ้างว่าfreshmatrixครบจากCIรอบนี้; QGC/SITL/บินจริงเป็นqualificationอีกขอบเขต"
+      },
+      {
+        "order": 4,
+        "id": "raspberry-pi-telemetry",
+        "status": "deferred_by_user",
+        "legacyStageNumber": 7,
+        "title": "เชื่อม Raspberry Pi รูปและ telemetry",
+        "completion": "ทำเมื่อผู้ใช้กลับมาอนุมัติ",
+        "limitation": "ไม่จำเป็นต่อการวิเคราะห์ก่อนบินและสร้างแผนในscopeปัจจุบัน"
+      },
+      {
+        "order": 5,
+        "id": "experiment-before-after-reports",
+        "status": "deferred_by_user",
+        "legacyStageNumber": 8,
+        "title": "บันทึกผลทดลองและรายงานก่อน–หลัง",
+        "completion": "ทำเมื่อมีข้อมูลทดลองและผู้ใช้อนุมัติ",
+        "limitation": "ยังคงเป็นงานพัก; ไม่เติมข้อมูลผลทดลองหรืออายุแคปซูลจากการคาดเดา"
+      }
+    ],
+    "groupedRemainingSummary": {
+      "operationalDeliveryQualificationGroups": 3,
+      "deferredGroups": 2,
+      "newMissingCoreFeatureStages": 0,
+      "legacyFeatureStageCountsUnchanged": true
+    },
+    "documentationCiPending": false,
+    "summaryReviewedOn": "2026-10-31",
+    "summarySourceSection": "3.71",
+    "summaryReviewScope": "Local canonical queue and Git state only; no new CI/provider/runtime tests or publication"
   },
   "publicationHistory": [
     {
@@ -3863,5 +4001,76 @@
         "note": "Final history-resolution documentation commit follows; latest identity in ignored release-receipt.json."
       }
     }
-  ]
+  ],
+  "ciDocumentationFollowupExecution": {
+    "recordedOn": "2026-10-31",
+    "checkedAtUtc": "2026-10-30T18:44:02.364Z",
+    "status": "complete_ci_success_docs_updated_locally",
+    "commit": "a767faf3b67c7248e55a329579dba67a02047532",
+    "ciRunId": 41100815452,
+    "ciConclusion": "success",
+    "productionDeploymentId": "dpl_DYMmXXi5Qsm2oMNM2APy5CXwv7DS",
+    "productionReady": true,
+    "applicationChanged": false,
+    "localTestsOrBuildRun": false,
+    "browserOrAiRun": false,
+    "commitCreated": false,
+    "push": false,
+    "deploy": false,
+    "billingOrSubscriptionChanged": false,
+    "pendingUserAnswers": [],
+    "proofDirectory": "C:\\mega\\codex\\iENA\\outputs\\XEDO_CI_Followup_2026-10-31"
+  },
+  "deferredUserReportedIssue": {
+    "recordedOn": "2026-10-31",
+    "status": "reported_details_pending_deferred_by_user",
+    "userStatement": "ตอนนี้ผมลองใช้เเล้วมีปัญหานิดนึง เดี๋ยวค่อยเเก้",
+    "repairDeferredByUser": true,
+    "blocksAuthorizedRehearsalAndDelivery": false,
+    "detailsSupplied": false
+  },
+  "presentationCpuDeliveryExecution": {
+    "recordedOn": "2026-10-31",
+    "status": "verified_ready_for_push",
+    "scope": [
+      1,
+      2
+    ],
+    "pushAuthorized": true,
+    "manualDeployRequested": false,
+    "billingOrSubscriptionChanged": false,
+    "nodeTestsPassed": 633,
+    "pythonTestsPassed": 84,
+    "builds": [
+      "hosted",
+      "workspace",
+      "portable"
+    ],
+    "newAiJobs": 1,
+    "missionId": "9e826af9-01f0-4cc6-92ab-4b93e2f56f39",
+    "jobId": "4656e09c-3778-4ed1-a8b0-39d67f3e91d1",
+    "jobSucceeded": true,
+    "missionRevision": 3,
+    "history": [
+      3,
+      2,
+      1
+    ],
+    "geometryRestored": true,
+    "readonlySqlMatches": true,
+    "routeKm": 2.75,
+    "waypoints": 22,
+    "terrainSamples": 74,
+    "demoPlanItems": 20,
+    "demoPlanBytes": 8053,
+    "actualOsReboot": false,
+    "workerRestarted": false,
+    "duplicateStartPrevented": true,
+    "userPerformedInspectorLogin": true,
+    "passwordReadByAgent": false,
+    "hosted25FilesUnchanged": true,
+    "sourceRepairOfDeferredIssue": false,
+    "proofDirectory": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31",
+    "publicationReceipt": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Presentation_Rehearsal_2026-10-31\\publication.json"
+  }
 }
