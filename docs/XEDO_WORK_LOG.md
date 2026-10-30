@@ -5,7 +5,7 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **30 ตุลาคม2026 — ขั้น7เผยแพร่จริงและตรวจcoreแล้ว;รอSign inใหม่ปิดbrowserHistoryreopen ไม่มีBilling/subscription**
+- อัปเดตล่าสุด: **30 ตุลาคม2026 — ขั้น7เผยแพร่และตรวจproductioncore/Historyreopenครบ ไม่มีคำถามรอคำตอบ/Billing/subscription**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
@@ -22,7 +22,7 @@
 
 ### สถานะล่าสุดที่มีหลักฐาน
 
-**ขั้น7เผยแพร่แล้ว — 30 ตุลาคม2026:** เว็บจริง https://xedo-eight.vercel.app/ ใช้ application commit 6a1c626cda0cf6dad22b603d6647f41b325598ff / Production dpl_6G8DzTyKUYskvxza8Fb5KUYEoByE READY; CI feature41042450911/main41042599241success หน้าHTMLตรงbuild6207852bytes/SHA2566db264f4e06c5c98b718a652a0b7c70fbe97e6b2363dc0a1152cc9a664188efc ทดสอบproductionBFF→Supabase→CPUในเครื่อง→ผลใหม่2งานสำเร็จ Browserจริง Analyzeพื้นที่ใหม่→manual draw/edit/UndoRedo→confirmreviewv2/complete→planner1.76km→Savev3 ผ่าน APIอ่านhistory3/2/1และทดสอบบัญชีอื่นอ่าน/แก้ไม่ได้ หน้าmobile390px/Loginไม่ล้นแนวนอน **รอคำตอบ:** ให้ผู้ใช้Sign inใหม่เพื่อปิดกรณีHistory→reopenผ่านหน้าจอหลังsessionหมดอายุ (APIhistoryผ่านแล้ว) ไม่มีBilling/subscription/SQL/Auth changesรอบนี้ ดู§3.49
+**ขั้น7ปิดแล้ว — 30 ตุลาคม2026:** เผยแพร่ https://xedo-eight.vercel.app/ และตรวจproductionAnalyze→localCPUจริง→Inspectorแก้พื้นที่→confirm→planner→Save/history/reopenครบ หลังผู้ใช้Sign inใหม่ Rootรีเฟรชbrowserแล้วตรวจHistory[3,2,1]→เปิดVersion3สำเร็จ manualtarget4จุดและConfirmedreviewv2/completeกลับมาครบ ไม่มีคำถามรอคำตอบ รายละเอียด§3.49–3.50;ยังต้องเปิดPC/worker/internetสำหรับAnalyzeใหม่ ไม่มีBilling/subscription
 
 **ประวัติเมื่อปิดขั้น6ก่อนอนุญาตเผยแพร่ (สถานะปัจจุบันดูขั้น7):** Inspector เดิมเชื่อมสำเร็จครบสามบัญชีแล้ว ใช้ Supabase xedo จริงกับเว็บในเครื่องและ CPU ในเครื่องได้ตั้งแต่ Analyze พื้นที่ใหม่ → โหลดภาพ SAR → ผล owned AI → Inspector แก้/วาดพื้นที่ → ตรวจภาพ Sentinel-2 จริง → confirm → planner → Save/history/private reopen ไม่มีคำถามรอคำตอบ ขั้นถัดไปคือขั้น7เตรียมเผยแพร่เมื่อผู้ใช้อนุญาต โดยรอบนี้ไม่ commit/push/deploy ไม่เปิด Billing/subscription และไม่เปลี่ยนรหัสผ่านหรือบัญชีเดิม
 
@@ -32,7 +32,7 @@
 
 **ผลสดขั้น3–5 — 30ต.ค.:** กดAnalyzeบนเว็บทดสอบได้จริง งานfd333481-5af8-4d17-8a51-1d0fdea2f13dใช้GEE Sentinel-1 acquisition26ต.ค.23:00:37UTCจากพื้นที่ใหม่5.0172กม² ทำCPU/package23.373s/runner0.504s/nativepeak509.92MiB;คิวถึงpublished28.421s ผล0candidateเป็นsuccessตามโมเดล ไม่ใช่ยืนยันไม่มีน้ำมัน Inspectorวาดและแก้manualtarget/UndoRedo/reviewSentinel-2/confirmv2→plannerroute11.47km→Save/reopen4versionsสำเร็จ Result10303bytesเปิดได้หลังworkerหยุดและserverrestart บัญชีBobไม่เห็นงานAliceผ่านUI/BFF/localSQL เว็บ606tests/Python30tests/3buildsผ่าน ดูรายละเอียดรอบล่าสุดท้ายไฟล์และWEBSITE_DETAILS§3.45
 
-**สถานะใช้งาน:** ขั้น1–7เผยแพร่coreแล้วผ่านproductionsmall-areaCPUและInspectorแก้พื้นที่/confirm/planner/Save APIhistory/privateownershipผ่าน เหลือbrowserHistoryreauthและqualificationแยกตาม§3.49
+**สถานะใช้งาน:** ขั้น1–7เผยแพร่และตรวจproductionAnalyze/CPU/edit/confirm/planner/Save/history/reopenครบ ไม่มีคำถามรอคำตอบ รายละเอียด§3.49–3.50;เหลือqualificationระยะยาว/อุปกรณ์ที่แยกไว้
 
 **ประวัติผลimplementationขั้น1–2ในรอบก่อนหน้า30ต.ค.:** โปรแกรมworkers/local-aiพร้อมรับพื้นที่GeoJSONแล้วค้น/โหลดหนึ่งSARscene→validate→CPU→score/mask/preview→candidate/coveragepackageอัตโนมัติ โดยใช้computePixelsเพราะcredentialเดิมไม่มีthumbnails.create ไม่เพิ่มIAM/Billing ภาพใหม่5.0172/197.5274กม²และautodownloadbaseline176.478กม²ผ่าน Score/maskbaselineต่าง0ทุกpixel/validDATAและVALIDตรงเดิม/13Python testsผ่าน ดูoutputs/XEDO_Local_CPU_Pipeline_2026-10-30/REPORT.mdและWEBSITE_DETAILS§3.44 ยังไม่เชื่อมhostedqueue/ส่งresultเข้าฐานข้อมูลหรือปุ่มAnalyzeบนเว็บ
 
@@ -73,7 +73,7 @@
 | **3** (ก่อนหน้า4) | **6** | preparedAI+Inspectorแก้พื้นที่เสี่ยง+planner | **เชื่อม ทดสอบ และเผยแพร่29ต.ค.แล้ว** เปิดpreparedSAR14พื้นที่ แก้/เพิ่ม/ปฏิเสธ ยืนยันtarget ส่งplannerและprivateSave/history; agentตรวจlocalfixtureAuth+liveGEE,productionguest/API/liveDB ไม่ใช้passwordจริง |
 | **4** (ก่อนหน้า5) | **7** | Pi / ภาพ / telemetry | **พักตามคำสั่งผู้ใช้** |
 | **5** (ก่อนหน้า6) | **8** | ผลทดลองและรายงานก่อน–หลัง | **พักตามคำสั่งผู้ใช้** |
-| **6** (งานใหม่29ต.ค.) | **9** | AI วิเคราะห์พื้นที่ใหม่ด้วย CPU ในเครื่อง | **ขั้น1–7เผยแพร่coreแล้ว** production2งานใหม่/Inspectorแก้พื้นที่→confirm→planner→Save/APIhistoryผ่าน; **รอคำตอบ:** Sign inใหม่ปิดbrowserHistoryreopen;qualificationระยะยาวยังแยก ไม่มีBilling/subscription |
+| **6** (งานใหม่29ต.ค.) | **9** | AI วิเคราะห์พื้นที่ใหม่ด้วย CPU ในเครื่อง | **ขั้น1–7เผยแพร่และตรวจcoreครบ** production2งานใหม่/Inspectorแก้พื้นที่→confirm→planner→Save→History→reopenผ่าน ไม่มีคำถามรอคำตอบ/Billing/subscription;qualificationระยะยาวยังแยก |
 
 การรับคำสั่งใหม่ที่ระบุเพียง “ข้อ 1/2/3…” ให้ใช้ **เลขใหม่** จากตารางนี้ หากผู้ใช้บอก “เลขเดิม” หรืออ้างข้อความเก่า ให้จับคู่ตามบริบท รายละเอียดเชิงเทคนิคและประวัติที่บันทึกก่อนรอบเรียงใหม่นี้ รวมทั้ง HTML แผน AI เดิม ยังใช้เลขเดิมเมื่อไม่ได้ระบุว่าเป็นเลขใหม่
 
@@ -1352,3 +1352,14 @@ Regression รอบแรกพบ VM test harness ยังไม่มี ins
 **ไฟล์เปลี่ยนและหลักฐาน:** applicationcommitรวม50ไฟล์ phase1–6/QAprivacy/releaseguards;รอบปิดงานแก้docs/XEDO_WORK_LOG.md,WEBSITE_DETAILS.md,implementation-queue.json,LOCAL_CPU_AI_INTEGRATION_PLAN.mdและworkers/local-ai/README.md Evidenceapplication-deployment.json,ci-application.json,public-html-receipt.json,private-route-checks.json,acceptance/production-6db264f4e06c5c98b718.json,browser-api-receipts.json,browser-actions.json,browser-console.json,REPORT.mdอยู่outputs/XEDO_Local_AI_Phase7_2026-10-30 ไม่เผยแพร่DPAPI/privateactorUUID/rawTIFF/weights
 
 **งานเหลือแยกจากreleasecore:** browserHistoryreauthตามข้างบน;qualification100jobs/monthlongsoak/คนละmachine-sessionglobalclaimrace/harddeadline30minจริง/worst-case8192vertices/physicaltouch-trackpad/heap-listenersยังไม่รัน ไม่reusephase6near200กม²/noSARว่าเป็นproductionใหม่ Pi/telemetryและรายงานก่อน–หลังยังdeferredตามผู้ใช้ ไม่เปิดBilling/subscription
+
+
+### 3.50 ปิด browser History หลังผู้ใช้ Sign in ใหม่ — 30 ตุลาคม2026
+
+**หัวข้อ/คำตอบที่รับ:** ผู้ใช้ตอบเข้าแล้ว Rootไม่ขอpassword/tokenและไม่เปลี่ยนบัญชี หน้าเดิมยังcachedsessionexpiredจึงreloadอย่างตั้งใจหลังSavev3persistแล้ว เปิดInspectoraccountพบsigned-inและโหลดMy missionsจริง ไม่ถือเพียงข้อความผู้ใช้ว่าbrowsercaseผ่าน
+
+**ผลตรวจสด:** คลิกHistoryของQA Production browser — area analysis เห็นVersion3/2/1→คลิกVersion3→ข้อความOpened version3.Reload satellite imagery and review flight readiness.→ปิดaccountpanelพบSaved AI review restored./Confirmed reviewv2·manual·complete SAR26ต.ค./analysis30ต.ค./0candidatesเดิม target4จุดในGeoJSONตรงที่แก้ไว้ทุกพิกัดและมีLocalprocessorReady ระบบให้reloadcontextimageก่อนPrepareจึงไม่คงimageReadyจากsnapshot ไม่มีการAnalyze/confirm/Saveซ้ำหรือเพิ่มrevisionใหม่ รอบนี้เป็นbrowserreopenจริงหลังsessionเปลี่ยน ไม่ใช่เพียงAPIhistoryreadback
+
+**เอกสาร/เผยแพร่/หลักฐาน:** เก็บscreenshots/production-history-versions.png,production-history-opened-v3.png,production-restored-ai-review.pngและปรับbrowser-actions.json/REPORT.md/queueเป็นpassed ไม่มีรอคำตอบ CanonicalสองMD/queue/localplan/workerREADMEอัปเดตclosureแล้ว Docscommitad1359ec2389043572c43dbee7638e0eb4d25917เคยREADYที่dpl_2bhptbByMBJwi6KxSnk7a1pdEWjC/mainCI41045535830และfeatureCI41045330460success;รอบนี้จะpushdocs-onlyfollowupปิดpendingและตรวจidentity/HTMLอีกครั้ง บันทึกสุดท้ายในphase7release-receipt.json ไม่เปลี่ยนapplicationหลัง6a1c626/ไม่applySQL/Auth/Billing/subscription ไม่รัน611Node/69PythonหรือCPUใหม่เพราะแก้เฉพาะเอกสาร ผลทดสอบเหล่านั้นเป็นpreflightสดของreleaseเดียวกัน มิใช่รอบใหม่ของการปิดHistory
+
+**ขอบเขตที่ยังแยกไว้:** browsercoreและprivatehistoryจบแล้ว; signed-inmobile/physicaltouch-trackpad/heap/listeners/100jobsmonthlongsoak/คนละmachine-sessionrace/รอharddeadline30minจริง/worstcase8192vertsยังไม่ทดสอบ ไม่ถือเป็นfeatureimplementationค้าง Pi/telemetryและรายงานก่อน–หลังยังพักตามผู้ใช้ ผล0candidateไม่ยืนยันว่าไม่มีน้ำมัน ไม่มีBilling/subscriptionหรือcloudcomputeใหม่

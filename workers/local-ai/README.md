@@ -123,4 +123,4 @@ Productionเผยแพร่เฉพาะbrowser/NodeAPI ส่วนworker
 
 configอ้างDPAPImachine-sessionเดิม เก็บผลเต็มในlocal-data/local-ai-worker/runs ใช้heartbeat20s/poll10s/CPU4threads/หนึ่งงานต่อครั้ง เปิดเพียงdaemonเดียว หยุดด้วยCtrl+Cเมื่อไม่มีงานกำลังทำ ต้องเปิดPC/internetและไม่SleepสำหรับAnalyzeใหม่ หน้าเว็บแสดงOfflineเมื่อworkerขาดpresence ผลที่เผยแพร่และprivatehistoryยังอ่านได้จากSupabaseตอนCPUปิด ไม่เปิดpublicport/tunnel/paidfallback/Billing/subscription ห้ามcommitconfig/session/rawTIFF/modelweights ไม่ต้องเปิดlocalQAserver5193เพื่อใช้production
 
-ผู้ใช้ต้องSign inใหม่เมื่อbrowseraccesssessionหมดอายุ;ไม่ใส่passwordลงworkerconfig รุ่นเผยแพร่ทดสอบCPUsmallarea2งานและUIถึงSavev3แล้ว BrowserHistoryreopenหลังexpiryยังรอผู้ใช้Sign inใหม่ในรอบตรวจขั้น7 รายละเอียดล่าสุดในdocs/WEBSITE_DETAILS.md§3.49
+ผู้ใช้ต้องSign inใหม่เมื่อbrowseraccesssessionหมดอายุ;ไม่ใส่passwordลงworkerconfig รุ่นเผยแพร่ทดสอบCPUsmallarea2งานและUIถึงSavev3แล้ว หลังผู้ใช้Sign inใหม่ตรวจBrowserHistory3/2/1→เปิดVersion3→พื้นที่ที่แก้/confirmedreviewกลับมาครบแล้ว ไม่มีคำถามรอคำตอบ รายละเอียดล่าสุดในdocs/WEBSITE_DETAILS.md§3.50
