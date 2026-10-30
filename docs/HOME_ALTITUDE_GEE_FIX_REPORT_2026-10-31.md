@@ -1,7 +1,7 @@
 # รายงานตรวจและแก้ Home altitude จาก Google Earth Engine
 
 วันที่: **31 ตุลาคม 2026 — Asia/Bangkok**
-สถานะ: **ตรวจภาพและ JSON ใหม่ตรงกันแล้ว; fresh639tests/syntax/3buildsผ่าน กำลังเผยแพร่ตามคำสั่งล่าสุด**
+สถานะ: **เผยแพร่ Home fix แล้ว — source5c0f8c0, CI41119318880success, ProductionEmjFcwuwREADY; ภาพและJSONบนเว็บจริงตรงกัน**
 ฐาน source ที่เริ่มตรวจ: `9acdd8a`
 โปรเจกต์: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 
@@ -60,7 +60,7 @@ if (terrainMode() === 'automatic' && terrainAssessment().state === 'ready') {
 | การตรวจ | ผล | หลักฐาน |
 |---|---|---|
 | ทำซ้ำใน browser ก่อนแก้กับ GEE จริง | พบช่องว่างทั้งที่ Home มี 10.79 m | `before.json` |
-| browser หลัง reload build สุดท้าย | ช่องมี `10.788701057434082`, terrain ยัง needs review, ปุ่ม Replace เปิดใช้งาน | `final-browser.json`, `after.jpg` |
+| browser รอบแรก (หลักฐานประวัติ) | JSONมีค่าแต่after.jpgยังUnknown จึงไม่ใช้ภาพเดิมเป็นผลผ่าน; หลักฐานใหม่§9ตรงกันแล้ว | `final-browser.json`; ภาพใหม่release proof |
 | GEE API จริงจาก Node process ใหม่ ไม่ใช้ cached context | terrain ready, Home `10.788701057434082`, assessment review; เรียก compute จริง 2 ครั้ง | `live-api.json` |
 | ค่า manual `99` แล้ว refresh GEE | ยังคง `99`; กด Replace แล้วกลับเป็นค่าจาก GEE | `manual-override.json` และ browser observation |
 | เปลี่ยน Home เป็น `[101.20, 12.65]` | ค่าเดิมถูกล้างระหว่างรอ และเติม `0` จากข้อมูลใหม่ | `changed-home.json` |
@@ -101,7 +101,7 @@ if (terrainMode() === 'automatic' && terrainAssessment().state === 'ready') {
 
 ## 7. ขอบเขตและสถานะเผยแพร่
 
-**รุ่นแก้ไขนี้ยังอยู่ในเครื่อง ยังไม่ได้ commit/push/deploy** เว็บ production จึงยังไม่ได้รับ source รอบนี้ การตรวจ browser ทำที่ `http://127.0.0.1:5186/` ด้วย build ที่แก้แล้ว และ GEE จริง ใช้ภารกิจชั่วคราวใน browser ไม่สร้างงาน AI หรือบันทึก mission ใหม่ในบัญชี
+**หมายเหตุประวัติการพัฒนาก่อนเผยแพร่:** ระหว่างรอบแรกpatchยังอยู่ในเครื่อง; ปัจจุบันเผยแพร่และตรวจproductionแล้วตาม§9 การตรวจ browser ทำที่ `http://127.0.0.1:5186/` ด้วย build ที่แก้แล้ว และ GEE จริง ใช้ภารกิจชั่วคราวใน browser ไม่สร้างงาน AI หรือบันทึก mission ใหม่ในบัญชี
 
 ข้อมูลความสูงยังเป็นแบบจำลอง DSM ความละเอียด 30 เมตรและใช้ EGM2008 ซึ่งรวมอิทธิพลสิ่งปลูกสร้าง/พืชพรรณตามคำอธิบายของ [Google Earth Engine Data Catalog](https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_DEM_GLO30_2024_1) จึงต้องตรวจระดับจุดขึ้นบินและการอ้างอิงความสูงจริงก่อนใช้ภาคสนาม ผลนี้ไม่ใช่การทดสอบ QGroundControl native import, SITL หรือการบินจริง
 
@@ -124,3 +124,10 @@ if (terrainMode() === 'automatic' && terrainAssessment().state === 'ready') {
 Mainchatทดสอบใหม่639ผ่าน/0fail/cancel/skip syntaxและ3buildsผ่าน GuestChromeที่127.0.0.1:5187 ได้7browsercasesตรงความคาดหวัง; liveGEEprocessใหม่2compute/2434ms/Home10.788701057434082/assessmentreview ภาพ local-home-surface.pngตรงJSONก่อนและหลังในแท็บ889234777: Homeมีค่าจริง,reviewedfalse,needsreview,Downloaddisabled ภาพแรกทันทีหลังscrollยังเห็นก่อนหน้า จึงใช้captureใหม่หลังrenderโดยไม่แก้DOM ไม่มีหลักฐานพอให้สรุปว่านี่คือสาเหตุเดียวของภาพafter.jpgเก่า
 
 Sourcepatchไม่ต้องแก้เพิ่มหลังreplay ผลmasked/stale/referenceผิดเป็นfixture ไม่ใช่providerfaultจริง เตรียมเผยแพร่ตามauthorizationใหม่และจะเติมCI/deployment/liveproofจริงต่อท้าย ตรวจเฉพาะHome/GEEและrelease regressions ไม่อ้างทดสอบบินจริงหรือprivateCPUflowใหม่ NoBilling/subscription หลักฐาน: C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/
+
+
+**ผลเผยแพร่ที่ตรวจจริง:** source `5c0f8c0bdd65451fcf4e37e1795182a436a3cb9c`, CI [41119318880](https://github.com/megaaaop/XEDO/actions/runs/41119318880) success, Vercel `dpl_EmjFcwuwgjVoWpmVHsSDrykZ9rxW` READY/iad1/alias [Production](https://xedo-eight.vercel.app/) HTTP32checks/25hashesตรงใหม่ Guestbrowser7casesผ่านและcapturedwarn/error0 ไม่พบerror/fatallogsตามqueryช่วงตรวจ ภาพด้านล่างตรงค่าในJSONก่อนและหลังcaptureจากแท็บเดียวกัน: Home10.788701057434082m ขณะrouteยังneedsreview/reviewedfalse/Downloaddisabled
+
+![Home altitude บน Production หลัง deploy](C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/production-home-surface.png)
+
+หลักฐาน: production-matched-proof.json,production-browser-cases.json,source-ci.json,source-deployment.json,source-production-smoke.json ในreleaseevidence directoryเดียวกัน finaldocs-onlySHA/CI/deploymentบันทึกในpublication.json ไม่มีคำถามรอคำตอบ ไม่มีBilling/subscription งานอื่นที่เลื่อนไว้ไม่รวมรอบนี้

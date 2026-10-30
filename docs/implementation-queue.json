@@ -295,7 +295,7 @@
   },
   "currentImplementationScope": {
     "id": "home-altitude-gee-autofill-2026-10-31",
-    "status": "verified_local_release_in_progress",
+    "status": "published_verified_production",
     "applicationFeatureRepairAuthorized": true,
     "reportRequested": true,
     "pushAuthorized": true,
@@ -308,7 +308,8 @@
     "latestActionScope": "User authorized steps1–4: matched screenshot/DOM evidence, regression, canonical docs, push/deploy if verified; no Billing/subscription",
     "visualEvidenceRecheckRequired": false,
     "reviewEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Home_Altitude_Report_Review_2026-10-31\\review.json",
-    "releaseEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Home_Altitude_Release_2026-10-31"
+    "releaseEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Home_Altitude_Release_2026-10-31",
+    "publicationReceipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json"
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
@@ -4159,7 +4160,7 @@
   "homeAltitudeGeeRepair": {
     "id": "home-altitude-gee-autofill-2026-10-31",
     "recordedOn": "2026-10-31",
-    "status": "verified_local_release_in_progress",
+    "status": "published_verified_production",
     "confirmedRootCause": "Automatic Home copy and Replace button were gated on full-route terrain readiness rather than Home sample availability.",
     "originalUserMissionCauseProven": false,
     "realGeeHomeElevationM": 10.788701057434082,
@@ -4192,11 +4193,15 @@
     "evidence": "output/playwright/home-altitude-2026-10-31",
     "schemaOrAccountChanges": false,
     "newAiJobCreated": false,
-    "commit": false,
-    "push": false,
-    "deploy": false,
+    "commit": true,
+    "push": true,
+    "deploy": true,
     "pendingUserAnswers": [],
-    "visualEvidenceMatched": true
+    "visualEvidenceMatched": true,
+    "sourceCommit": "5c0f8c0bdd65451fcf4e37e1795182a436a3cb9c",
+    "productionDeploymentId": "dpl_EmjFcwuwgjVoWpmVHsSDrykZ9rxW",
+    "ciRunId": 41119318880,
+    "ciConclusion": "success"
   },
   "homeAltitudeReportReviewExecution": {
     "atUtc": "2026-10-30T19:37:32.718958+00:00",
@@ -4296,6 +4301,17 @@
     "pendingUserAnswers": [],
     "billingOrSubscription": false,
     "evidence": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31",
-    "publication": "in_progress"
+    "publication": "source_published_verified_docs_followup",
+    "sourceCommit": "5c0f8c0bdd65451fcf4e37e1795182a436a3cb9c",
+    "productionDeploymentId": "dpl_EmjFcwuwgjVoWpmVHsSDrykZ9rxW",
+    "ciRunId": 41119318880,
+    "ciConclusion": "success",
+    "postdeployHttpChecks": 32,
+    "buildHashesMatch": 25,
+    "productionCases": 7,
+    "productionVisualJsonMatched": true,
+    "productionConsoleWarnError": 0,
+    "runtimeErrorFatalQuery": "no_logs_found_in_scoped_window",
+    "receipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json"
   }
 }

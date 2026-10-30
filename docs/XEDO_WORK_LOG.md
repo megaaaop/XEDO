@@ -5,13 +5,13 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **31 ตุลาคม 2026 — ตรวจ Home altitude ภาพ/JSON ตรงกันและ tests ผ่าน เตรียม release ตามคำสั่งล่าสุด**
+- อัปเดตล่าสุด: **31 ตุลาคม 2026 — Home altitude ขึ้นproductionแล้ว ภาพ/JSONตรงกัน CIและpostdeployผ่าน (§3.75)**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
 - จุดประสงค์รอบนี้: ทำข้อ1–4 ตรวจภาพ/JSON regression เอกสาร และ push/deploy เมื่อผ่าน
-- สถานะเผยแพร่: local verification ผ่านแล้ว; กำลังเตรียมcommit/push และตรวจproductionใหม่ ผลจริงจะบันทึกใน§3.75และpublication.json
+- สถานะเผยแพร่: source5c0f8c0/CI41119318880success/ProductionEmjFcwuwREADY; finaldocs-onlyidentityและCIเก็บในrelease/publication.json
 - **ขอบเขตคำสั่งล่าสุด:** อนุญาตHome repairข้อ1–4 ทดสอบ บันทึกสองMD และpush/deployเมื่อผ่าน; ห้ามBilling/subscription
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
@@ -20,7 +20,7 @@
 
 ## 2. สรุป
 
-**Home altitude ผ่านการตรวจภาพ/JSON และ regression ใหม่แล้ว — 31 ต.ค. 2026 (§3.75): Automatic เติม10.788701057434082mจาก GEE จริงแม้ route needs review; manual99/Replace/Homechange/zero/Manualmode/clearผ่าน ภาพ local-home-surface.pngตรงJSONก่อน–หลังในแท็บเดียวกัน 639tests/syntax/3buildsผ่าน เตรียมเผยแพร่ตามคำสั่งผู้ใช้ ยังไม่อ้างว่าขึ้นproductionจนตรวจหลังdeployเสร็จ ไม่เปิดBilling/subscription**
+**Home altitude เผยแพร่และตรวจบนเว็บจริงแล้ว — 31 ต.ค. 2026 (§3.75): source5c0f8c0 / dpl_EmjFcwuwgjVoWpmVHsSDrykZ9rxW READY, CI41119318880 success ภาพProductionกับJSONก่อน–หลังตรง10.788701057434082m ตรวจ7casesทั้งlocal/productionและHTTP32checks/25buildhashesผ่าน คงneedsreview/reviewedfalse/exportguard ไม่มีBilling/subscription รายการเอกสารติดตามและidentityล่าสุดอยู่publication.json**
 
 **ทวนรายงาน Home altitude — 31 ต.ค. 2026 (§3.74):** พบรายงานตรงกับภาพและโค้ดแก้ในเครื่องแล้ว ตรวจhash7ไฟล์ตรงvalidationและอ่านlogเดิม639ผ่าน ไม่รันtests/browser/GEEใหม่ พบafter.jpgยังแสดงHomeUnknownแต่final-browser.jsonบันทึก10.788701057434082 จึงต้องreplayUI/จับภาพจากแท็บและbuildเดียวกันก่อนเผยแพร่ ไม่สรุปจากภาพเดียวว่าpatchล้มเหลว ตรวจproductionidentityสดยัง9acdd8a/FXc525READYซึ่งเป็นรุ่นก่อนHomefix รอบนี้วางแผนและบันทึกเท่านั้น ไม่แก้source/รายงานต้นฉบับ/ไม่pushdeploy/Billing/subscription
 
@@ -2095,3 +2095,10 @@ PostpushHTTP32checksผ่าน: HTML23516bytesและ24assetsตรง25hash
 **การแก้/คงพฤติกรรม:** source2ไฟล์แยกHomeavailabilityจากrouteassessment ปุ่มReplaceใช้Home-onlyavailability; test3ไฟล์เพิ่ม6regressions และvercel.jsonexactassetinventoryสอดคล้องbuild ไม่ลดtolerance2m/ไม่เปลี่ยนplanning-terrain.jsหรือplanning-geospatial-gate.js คง3ขั้นตอน/4ตัวคำนวณ/manualownership/freshness/dataset/EGM2008/30m/reviewedfalse ไม่มีsourcefixเพิ่มในmainturnเพราะpatchเดิมผ่านการreplayแล้ว
 
 **หลักฐาน/ข้อจำกัด/สถานะ:** หลักฐานใหม่อยู่ C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/ มีtests.log,syntax.log,build3logs,hosted-artifacts.jsonใหม่25files,local-browser-cases.json,local-matched-proof.json,live-gee.json และภาพจริง เก็บlive-gee-missing-env.jsonแยกจากhelperครั้งแรกที่ลืมโหลด.env (not_configured/0compute) แล้วแก้คำสั่งรันด้วย--env-file-if-exists=.env ไม่แก้productหรือcredentials ไม่มีnewCPU/AI/privateaccountqualification/QGCnative/SITL/บินจริงรอบนี้ ไม่มีคำถามรอคำตอบ Pending publication: commit/push/CI/deploy/liveHome acceptanceกำลังทำและจะเติมผลจริงก่อนปิดงาน
+
+
+**ผลเผยแพร่ Home altitude และตรวจหลัง deploy (§3.75):** normalfast-forwardpushไปmainจาก9acdd8aเป็น 5c0f8c0bdd65451fcf4e37e1795182a436a3cb9c; Gitdeployment dpl_EmjFcwuwgjVoWpmVHsSDrykZ9rxW READY/iad1/aliasxedo-eight.vercel.app ตรงsource CI [41119318880](https://github.com/megaaaop/XEDO/actions/runs/41119318880) completed/success ตรวจpublicHTTP32รายการผ่าน HTML23,516bytesและ24assetsตรงSHA256ของbuildใหม่ MIME/cacheถูกต้อง missingassetและไฟล์CPU/privateguide404แบบไม่immutable guestsessionusernull/privatejobs401/basemapGET405พร้อมno-store
+
+**ผลบน Production จริง:** Guestแท็บ889234787 ไม่ใช้บัญชี/ภารกิจเดิม พื้นที่/พิกัดเดียวกับlocalได้Home10.788701057434082 ภาพproduction-home-surface.pngตรงproduction-matched-proof.jsonก่อนและหลังcapture GEEplanningready/route needsreview/reviewedfalse/Downloaddisabled Manual99→Refreshคง99,ReplaceกลับGEE,Home12.65ล้างระหว่างรอแล้ว0จริง,Manualemptyrefreshคงempty,clearlongitudeล้างค่าและปิดReplaceครบ7cases consolewarn/error0 Runtimeerror/fatalqueryของdeploymentในช่วงตรวจไม่พบlogs ไม่อ้างครอบคลุมทุกtraffic/บัญชี/บินจริง
+
+**การส่งมอบและไฟล์:** เผยแพร่10pathsเฉพาะHome (source2/tests3/vercelassetinventory/รายงาน/สองMD/queue) ผลstrictscopeและcredentialscan35filesไม่พบcredential/clientservermarkers; helperตรวจscopeเคยtrimleadingstatusspaceทำให้pathแถวแรกไม่ตรง แก้helperเป็นtrimEndแล้วผ่าน ไม่แก้productเพื่อให้ผ่าน Publicationreceipt: C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json บันทึกsourceและเอกสารติดตามSHA/CI/deploymentแยกกันเพื่อไม่เขียนself-referentialcommitID ชุดเอกสารติดตามไม่เปลี่ยนclient/API/worker จึงตรวจCIและhash/liveUIของaliasล่าสุดซ้ำ ไม่มีBilling/subscription/env/schema/accountschange ไม่มีคำถามรอคำตอบ งานHomeข้อ1–4ปิดแล้ว ปัญหาอื่นที่ผู้ใช้ให้เลื่อนไว้และqualification/Pi/รายงานทดลองยังคงสถานะเดิม ไม่เปิดงานเพิ่ม
