@@ -2,7 +2,7 @@ import proj4 from 'proj4';
 import {validateGeometry} from './domain.js';
 import {buildDeploymentPreview} from './deployment-plan.js';
 
-const EPS=1e-6,MAX_WAYPOINTS=500,MAX_SORTIES=200,MAX_CANDIDATES=2000;
+const EPS=1e-6,MAX_WAYPOINTS=500,MAX_SORTIES=200,MAX_CANDIDATES=10000;
 const distance=(a,b)=>Math.hypot(b[0]-a[0],b[1]-a[1]);
 const cross=(a,b)=>a[0]*b[1]-a[1]*b[0];
 const delta=(a,b)=>[a[0]-b[0],a[1]-b[1]];
@@ -100,6 +100,20 @@ function connectors(ring){
 
 /** Camera and uniform-power trial calculation. No aircraft or flight readiness claim. */
 export function buildTrialFlight(geometry,settings={}){
+  const primary=buildFlightForHeading(geometry,settings,0);
+  if(settings.planningProfile?.profileId!=='xedo-flight-planning-v1')return primary;
+  if(primary.battery.state==='pass'&&primary.battery.sorties.length<=40)return primary;
+  if(primary.camera.state!=='pass'||primary.wind.state!=='pass')return primary;
+  let best=primary;
+  for(const angle of [30,60,90]){
+    const alternative=buildFlightForHeading(geometry,settings,angle);
+    if(alternative.battery.state==='pass'&&(best.battery.state!=='pass'||alternative.battery.sorties.length<best.battery.sorties.length))best=alternative;
+  }
+  if(best!==primary)best.warnings.push('A bounded comparison of track directions reduces battery changes for this Home. The exact inspection polygon and camera spacing are retained.');
+  return best;
+}
+function buildFlightForHeading(geometry,settings={},headingOffsetDeg=0){
+  const optimise=settings.planningProfile?.profileId==='xedo-flight-planning-v1';
   validateGeometry(geometry);
   const input=normalize(settings),missing=[],need=names=>{const absentNames=names.filter(name=>input[name]===null);for(const name of absentNames)if(!missing.includes(name))missing.push(name);return absentNames.length===0;};
   const camera={state:'incomplete',footprintAcrossM:null,footprintAlongM:null,gsdXM:null,gsdYM:null,lineSpacingM:null,photoSpacingM:null,triggerIntervalS:null};
@@ -133,13 +147,13 @@ export function buildTrialFlight(geometry,settings={}){
   camera.state=intervalReady?'pass':'incomplete';
   if(camera.lineSpacingM<5||camera.lineSpacingM>1000){camera.state='blocked';return block('CAMERA_SPACING_UNSUPPORTED','Camera-derived line spacing is outside the tested 5–1000 m preview range. Change the explicit camera/overlap/height settings or split the area; spacing was not clamped.');}
   if(intervalReady&&camera.triggerIntervalS+1e-12<input.minTriggerIntervalS){camera.state='blocked';return block('CAMERA_INTERVAL_INFEASIBLE','The camera cannot capture at the required interval. Reduce ground speed or explicitly revise the camera/overlap/height settings.');}
-  const plan=buildDeploymentPreview({geometry,altitudeM:input.altitudeM,spacingM:camera.lineSpacingM,speedMps:input.speedMps});result.plan=plan;
+  const plan=buildDeploymentPreview({geometry,altitudeM:input.altitudeM,spacingM:camera.lineSpacingM,speedMps:input.speedMps,headingOffsetDeg});result.plan=plan;
   if(plan.status!=='generated')return block(plan.code,plan.message);
   result.state='generated';
   const projection=proj4('EPSG:4326',plan.projection.definition),origin=plan.projection.origin,project=position=>delta(projection.forward(position),origin),ring=plan.localTarget.coordinates[0],homePoint=project(home.position),insideHome=contains(homePoint,ring),findConnector=connectors(ring);
   if(!homePoint.every(Number.isFinite)||distance(homePoint,ring[0])>100000)return block('HOME_TOO_DISTANT','The trial is limited to home within 100 km of the first boundary vertex.');
   if(!insideHome)warnings.push('Home is outside the selected survey area. The direct home-to-boundary transit is unassessed for obstacles and airspace.');
-  const work=plan.segments.filter(segment=>segment.purpose==='survey');
+  const work=plan.segments.filter(segment=>segment.purpose==='survey').map((segment,index)=>({start:plan.localWaypoints[segment.from],end:plan.localWaypoints[segment.to],originalSegment:index,from:0,to:1}));
   const windLegCache=new Map();
   const airspeed=(a,b,length)=>{
     if(wind.speedMps===null)return null;
@@ -160,11 +174,17 @@ export function buildTrialFlight(geometry,settings={}){
   const route=(first,last)=>{
     const entries=[{point:homePoint,position:[...home.position],purpose:'transit'}];
     const append=(point,purpose,position)=>{if(distance(entries.at(-1).point,point)>EPS)entries.push({point,position:position?[...position]:projection.inverse([point[0]+origin[0],point[1]+origin[1]]),purpose});};
-    const start=plan.localWaypoints[work[first].from];
-    if(!insideHome)append(ring[0],'transit',geometry.coordinates[0][0]);
-    findConnector(insideHome?homePoint:ring[0],start).forEach(p=>append(p,'transit'));
-    for(let i=work[first].from+1;i<=work[last].to;i++)append(plan.localWaypoints[i],plan.waypoints[i].purpose,plan.waypoints[i].position);
-    findConnector(entries.at(-1).point,insideHome?homePoint:ring[0]).forEach(p=>append(p,'return'));
+    const start=work[first].start;
+    // Outside Home uses explicit direct transit to this sortie's actual entry,
+    // rather than a detour through the polygon's arbitrary first vertex.
+    if(!insideHome&&!optimise)append(ring[0],'transit',geometry.coordinates[0][0]);
+    if(insideHome||!optimise)findConnector(insideHome?homePoint:ring[0],start).forEach(p=>append(p,'transit'));
+    else append(start,'transit');
+    for(let i=first;i<=last;i++){
+      if(i>first)findConnector(entries.at(-1).point,work[i].start).forEach(p=>append(p,'transit'));
+      append(work[i].end,'survey');
+    }
+    if(insideHome||!optimise)findConnector(entries.at(-1).point,insideHome?homePoint:ring[0]).forEach(p=>append(p,'return'));
     if(!insideHome)append(homePoint,'return',home.position);
     // Preserve the explicitly entered home value without projection round-off.
     entries.at(-1).position=[...home.position];
@@ -175,7 +195,7 @@ export function buildTrialFlight(geometry,settings={}){
       if(i<entries.length-1){const next=delta(entries[i+1].point,entries[i].point),nextLength=Math.hypot(...next),cosine=(direction[0]*next[0]+direction[1]*next[1])/(d*nextLength);if(cosine<1-1e-10)turnCount++;}
     }
     const travelS=distanceM/input.speedMps,turnDurationS=input.turnS===null?null:turnCount*input.turnS,durationS=input.takeoffS===null||input.landingS===null||turnDurationS===null?null:travelS+input.takeoffS+input.landingS+turnDurationS;
-    return {waypoints:entries.map(entry=>({position:entry.position,altitudeM:input.altitudeM,altitudeReference:'AGL',purpose:entry.purpose,dispenser:'off'})),distanceM,durationS,energyWh:durationS===null||input.powerW===null?null:input.powerW*durationS/3600,requiredMaxAirspeedMps:wind.speedMps===null?null:required,phases:{takeoffS:input.takeoffS,landingS:input.landingS,turnCount,turnS:input.turnS,turnDurationS,travelS}};
+    return {waypoints:entries.map(entry=>({position:entry.position,altitudeM:input.altitudeM,altitudeReference:'AGL',purpose:entry.purpose,dispenser:'off'})),surveySegments:work.slice(first,last+1).map(({originalSegment,from,to})=>({originalSegment,from,to})),distanceM,durationS,energyWh:durationS===null||input.powerW===null?null:input.powerW*durationS/3600,requiredMaxAirspeedMps:wind.speedMps===null?null:required,phases:{takeoffS:input.takeoffS,landingS:input.landingS,turnCount,turnS:input.turnS,turnDurationS,travelS}};
   };
   const full=route(0,work.length-1);
   const windPass=trip=>windReady&&limitingWind<=input.windLimitMps+1e-9&&trip.requiredMaxAirspeedMps<=input.maxAirspeedMps+1e-9;
@@ -193,11 +213,21 @@ export function buildTrialFlight(geometry,settings={}){
   while(first<work.length){
     let best=null,end=-1;
     for(let last=first;last<work.length;last++){
-      if(++candidates>MAX_CANDIDATES){battery.state='blocked';return block('TRIAL_SOLVER_LIMIT','The bounded trial partition solver exceeded its work budget. Split the area.');}
+      if(++candidates>(optimise?MAX_CANDIDATES:2000)){battery.state='blocked';return block('TRIAL_SOLVER_LIMIT','The bounded trial partition solver exceeded its work budget. Split the area.');}
       const candidate=route(first,last);
       if(candidate.energyWh<=battery.budgetWh+1e-9&&windPass(candidate)){best=candidate;end=last;}
     }
-    if(!best){battery.state='blocked';return block('SORTIE_INFEASIBLE','No remaining survey segment fits the energy/return/landing reserve and wind limits. Split the area or revise the explicit profile.');}
+    if(!best){
+      const segment=work[first];
+      // Preserve every part of a long swath while allowing a battery change
+      // mid-swath. A tiny unserviceable part remains a real hard failure.
+      if(optimise&&distance(segment.start,segment.end)>25&&work.length<250){
+        const middle=segment.start.map((value,index)=>(value+segment.end[index])/2),fraction=(segment.from+segment.to)/2;
+        work.splice(first,1,{...segment,end:middle,to:fraction},{...segment,start:middle,from:fraction});
+        continue;
+      }
+      battery.state='blocked';return block('SORTIE_INFEASIBLE','No remaining survey segment fits the energy/return/landing reserve and wind limits. Split the area or revise the explicit profile.');
+    }
     totalWaypoints+=best.waypoints.length;
     if(sorties.length>=MAX_SORTIES||totalWaypoints>MAX_WAYPOINTS){battery.state='blocked';return block('TRIAL_ROUTE_LIMIT','Trial sorties exceed 200 sorties or 500 total waypoints including outbound and return. Split the area.');}
     sorties.push({index:sorties.length+1,...best});first=end+1;

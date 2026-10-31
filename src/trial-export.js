@@ -8,6 +8,7 @@ const MAX_SORTIES=40,MAX_WAYPOINTS=500,MAX_TOTAL_WAYPOINTS=5000,MAX_NO_GO=32,MAX
 const finite=value=>typeof value==='number'&&Number.isFinite(value);
 const position=value=>Array.isArray(value)&&value.length===2&&value.every(finite)&&Math.abs(value[0])<=180&&Math.abs(value[1])<=80;
 const text=value=>typeof value==='string'&&value.trim().length>0;
+const inputLabels={windLimitMps:'Aircraft wind limit (m/s)',maxAirspeedMps:'Aircraft maximum airspeed (m/s)',usableWh:'Starting usable energy (Wh)',reserveWh:'Final landing reserve (Wh)',powerW:'Assumed power (W)',takeoffS:'Takeoff allowance (s)',landingS:'Landing allowance (s)',turnS:'Turn allowance (s)',windEastMps:'Flight wind east (m/s)',windNorthMps:'Flight wind north (m/s)'};
 const distance=(a,b)=>Math.hypot(a[0]-b[0],a[1]-b[1]);
 const cross=(a,b,c)=>(b[0]-a[0])*(c[1]-a[1])-(b[1]-a[1])*(c[0]-a[0]);
 const isoTime=value=>typeof value==='string'&&/(?:Z|[+-]\d{2}:\d{2})$/.test(value)&&Number.isFinite(Date.parse(value))?Date.parse(value):null;
@@ -58,6 +59,13 @@ function noGoPolygons(value){
 
 /** Checks a user-attested trial export only. It neither contacts an authority nor controls equipment. */
 export function checkTrialExport(flight,settings={},nowMs=Date.now()){
+  return checkExport(flight,settings,nowMs,false);
+}
+/** Reference files retain physical review results separately from file checks. */
+export function checkPlanningReference(flight,settings={},nowMs=Date.now()){
+  return checkExport(flight,settings,nowMs,true);
+}
+function checkExport(flight,settings={},nowMs=Date.now(),reference=false){
   settings||={};
   const checks=[],missing=[],errors=[];
   const add=(id,state,message)=>{checks.push({id,state,message});if(state==='incomplete')missing.push(message);if(state==='blocked')errors.push(message);};
@@ -75,7 +83,13 @@ export function checkTrialExport(flight,settings={},nowMs=Date.now()){
   };
   if(flight?.state==='generated'&&flight.plan?.status==='generated')add('plan','pass','Trial route geometry generated.');
   else add('plan',flight?.state==='blocked'||flight?.plan?.status==='blocked'?'blocked':'incomplete','Generate an unblocked trial route first.');
-  if(Array.isArray(flight?.missing)&&flight.missing.length)add('flight-inputs','incomplete','Complete the missing flight inputs: '+flight.missing.filter(text).join('; '));
+  if(flight?.state==='blocked'&&text(flight.message))add('flight-route','blocked',flight.message);
+  for(const error of Array.isArray(flight?.errors)?flight.errors:[]){
+    if(!text(error))continue;
+    const key=Object.keys(inputLabels).find(key=>error.startsWith(key+' '));
+    add('flight-input-validation','blocked',key?inputLabels[key]+error.slice(key.length):error);
+  }
+  if(Array.isArray(flight?.missing)&&flight.missing.length)add('flight-inputs','incomplete','Complete the missing flight inputs: '+flight.missing.filter(text).map(key=>inputLabels[key]||key).join('; '));
   assessment('camera',flight?.camera,'Camera');assessment('wind',flight?.wind,'Wind');assessment('battery',flight?.battery,'Battery');
   const groundSpeedMps=flight?.settings?.groundSpeedMps??flight?.settings?.speedMps??flight?.plan?.parameters?.speedMps;
   if(groundSpeedMps==null)add('ground-speed','incomplete','Specify the assessed route ground speed.');
@@ -87,8 +101,9 @@ export function checkTrialExport(flight,settings={},nowMs=Date.now()){
   else if(!position(settings.home))add('home','blocked','Home must be a valid [longitude, latitude] position between 80° south/north.');
   else{home=[...settings.home];add('home','pass','Explicit takeoff/landing position supplied.');}
   confirmation('homeConfirmed','The home position has been checked for this trial.');
-  confirmation('flatSurfaceConfirmed','The surveyed surface is level with the home/takeoff surface; AGL can be illustrated as height above home.');
-  confirmation('airspaceReviewed','The manually supplied constraints have been reviewed for the planned time and area.');
+  if(!reference||settings.terrainMode!=='automatic')confirmation('flatSurfaceConfirmed','The surveyed surface is level with the home/takeoff surface; AGL can be illustrated as height above home.');
+  if(reference)confirmation('planningReviewed','The planning assumptions, route, return and terrain findings have been reviewed.');
+  else confirmation('airspaceReviewed','The manually supplied constraints have been reviewed for the planned time and area.');
   const homeAmslM=number('homeAmslM','home altitude AMSL (m)',-1000,10000);
   const relativeHeightM=number('relativeHeightM','relative-home height (m)',5,500);
   const ceilingM=number('ceilingM','manual relative-home ceiling (m)',0,10000);
@@ -117,7 +132,7 @@ export function checkTrialExport(flight,settings={},nowMs=Date.now()){
   else if(validUntilMs===null)add('constraint-validity','blocked','Constraint validity must be a valid ISO timestamp with a UTC offset.');
   else add('constraint-validity',validUntilMs>nowMs?'pass':'blocked',validUntilMs>nowMs?'Manual review is not yet expired.':'The manual constraint review has expired.');
   let polygons=null;
-  if(settings.noGo==null)add('no-go-data','incomplete','Supply reviewed no-go polygons, or an explicit empty collection if the review found none.');
+  if(settings.noGo==null)add('no-go-data',reference?'review':'incomplete',reference?'No-go data is not assessed. No reviewed empty collection or airspace clearance is inferred.':'Supply reviewed no-go polygons, or an explicit empty collection if the review found none.');
   else try{polygons=noGoPolygons(settings.noGo);add('no-go-data','pass',`${polygons.length} manual no-go polygons supplied; these are not an automatically verified airspace database.`);}catch(error){add('no-go-data','blocked',error.message);}
   let targetValid=false;
   try{validateGeometry(flight?.plan?.target);targetValid=true;}catch{add('target','incomplete','A valid exact target polygon is required.');}
@@ -180,9 +195,10 @@ export function checkTrialExport(flight,settings={},nowMs=Date.now()){
     add('no-go-route',conflict?'blocked':'pass',conflict?`Sortie ${conflict.sortie}, segment ${conflict.segment} intersects or touches manual no-go polygon ${conflict.polygon} within the requested ${corridorM} m corridor.`:'All sortie segments, including outbound and return, avoid the supplied no-go polygons and requested corridor.');
   }catch(error){add('no-go-route','blocked',error.message);}
   const state=errors.length?'blocked':missing.length?'incomplete':'pass';
-  return {schema_version:VERSION,state,pass:state==='pass',canExport:state==='pass',checks,missing,errors,warnings:[
+  return {schema_version:VERSION,purpose:reference?'planning_reference':'strict_trial',state,pass:state==='pass',canExport:state==='pass',checks,missing,errors,warnings:[
+    ...(reference?['Planning reference: editable aircraft/energy assumptions and relative-Home heights. Terrain review and strict checks remain separate. Airspace is not automatically verified.']:[]),
     'Manual trial checks only. Source, surface and airspace declarations are user-attested; no authority lookup or physical aircraft validation was performed.',
-    'AGL is mapped to height above home only under the confirmed assumption that the survey surface and takeoff surface share the same level. This is not a terrain-following export.',
+    reference?'Exported heights are relative to Home. They are not constant AGL or terrain-following heights over an uneven surface.':'AGL is mapped to height above home only under the confirmed assumption that the survey surface and takeoff surface share the same level. This is not a terrain-following export.',
     'The corridor is a requested lateral margin, not a verified autopilot turn, navigation-error or obstacle-clearance model.',
     'Manual no-go polygons and the ceiling are checked before export; this file does not configure an onboard geofence or flight-controller ceiling.',
     'The scheduled end sums airborne sortie durations. Additional battery-change or ground delays must be included explicitly in plannedEndAt.',
@@ -195,6 +211,11 @@ export function checkTrialExport(flight,settings={},nowMs=Date.now()){
 export function buildQGCPlan(flight,settings={},sortieIndex=0){
   const report=checkTrialExport(flight,settings);
   if(!report.pass)throw Object.assign(new Error([...report.errors,...report.missing].join(' ')||'Trial export checks are incomplete.'),{code:'TRIAL_EXPORT_BLOCKED',status:422,report});
+  return serializeQGCPlan(flight,report,sortieIndex);
+}
+/** Internal serializer: exported builders must supply their own validated report. */
+export function serializeQGCPlan(flight,report,sortieIndex=0){
+  if(report?.pass!==true)throw Object.assign(new Error('A validated export report is required.'),{status:422,code:'TRIAL_EXPORT_BLOCKED'});
   if(!Number.isInteger(sortieIndex)||sortieIndex<0||sortieIndex>=flight.battery.sorties.length)throw Object.assign(new Error('Select a valid zero-based sortie index.'),{code:'INVALID_SORTIE_INDEX',status:422,report});
   const sortie=flight.battery.sorties[sortieIndex],home=report.home,height=report.relativeHeightM;
   const speed=report.groundSpeedMps;
@@ -206,5 +227,5 @@ export function buildQGCPlan(flight,settings={},sortieIndex=0){
   for(const waypoint of sortie.waypoints.slice(1))navigation(16,waypoint.position,height);
   navigation(21,home,0);
   const plan={fileType:'Plan',geoFence:{circles:[],polygons:[],version:2},groundStation:'QGroundControl',mission:{cruiseSpeed:speed,firmwareType:report.firmware==='PX4'?12:3,globalPlanAltitudeMode:1,hoverSpeed:speed,items,plannedHomePosition:[home[1],home[0],report.homeAmslM],vehicleType:2,version:2},rallyPoints:{points:[],version:2},version:1};
-  return {filename:`XEDO-trial-sortie-${String(sortieIndex+1).padStart(2,'0')}.plan`,mime:'application/json',text:JSON.stringify(plan,null,2),report:{...report,sortieIndex,adapterVersion:VERSION,itemCount:items.length}};
+  return {filename:`XEDO-${report.purpose==='planning_reference'?'planning':'trial'}-sortie-${String(sortieIndex+1).padStart(2,'0')}.plan`,mime:'application/json',text:JSON.stringify(plan,null,2),report:{...report,sortieIndex,adapterVersion:VERSION,itemCount:items.length}};
 }

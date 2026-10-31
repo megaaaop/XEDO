@@ -9,6 +9,12 @@
 
 ## 2. สรุป
 
+**แก้ normal-area planning export และผ่านในเครื่องแล้ว — 31 ต.ค. 2026 (§3.82): profile8ค่ามีmanual ownership; shared planning_reference แยกstrict; exact Polygon/Homeเดิมได้35sorties/69surveysegmentsครบ/133.2Wh budget ไม่เพิ่มพลังงาน เก็บไฟล์.planจริงเที่ยว1/35และ auditตรงroute/Home; terrain range2.5788m/tolerance2mยังreview strictยังfalse no-goยังnull แก้forecast-window oscillationแล้ว Fresh682Node/syntax/3buildsผ่าน กำลังfinal-candidate browser replay และpush/deployตามอนุมัติ ไม่มีBilling/subscription**
+
+**เริ่ม implementation ตามแผนแล้ว — 31 ต.ค. 2026 (§3.81): ผู้ใช้อนุมัติแก้/ทดสอบ/push/deployเมื่อผ่าน เก็บ actual mission snapshot ใน outputs นอก Git พบ GEE58/58 จุด range2.58m/tolerance2m Home1.5ตรง ขาดโปรไฟล์8ค่า และ route partition เดิม infeasible เริ่ม shared planning_reference validator แยก strict และแก้ตัวแบ่งเที่ยว/เปรียบเทียบ heading โดยไม่เปลี่ยนพื้นที่หรือพลังงาน ยังอยู่ระหว่างตรวจ ยังไม่มีผล full suite/build/browser download ใหม่หรือการเผยแพร่รอบนี้ ไม่มี Billing/subscription**
+
+**วางแผนแก้ Surface review และดาวน์โหลด .plan — 31 ต.ค. 2026 (§3.80): ภาพแสดง5ค่าexportครบ/Route&airspaceReadyแล้ว แต่ยังมีterrainreviewและflight/battery8ค่าขาด พร้อม3morechecksที่ต้องอ่านreportเต็ม ทำPLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.mdแล้ว แนะนำprofileสมมติบนพื้นที่เดิม+planning_reference readiness/exportแยกstrictchecksจริง มี23กรณีdesigned_not_run รอบนี้แผน/เอกสารเท่านั้น ไม่แก้codeหรือpushdeploy**
+
 **ฟอร์ม4ช่องเผยแพร่และตรวจเว็บจริงแล้ว — 31 ต.ค. 2026 (§3.79): source5ead660/CI41131117157success/ProductionFTnxwMJ9READY ผ่าน8casesทั้งlocalและproduction ภาพ/JSONตรง60m/5m/วันที่ตามend/sourceprofileร่วมกับHomeGEE0จริง HTTP32checks/25webhashesตรง ใหม่ ไม่มีคำตอบรอเรื่องนี้ เหลือเตรียมนำเสนอ2รายการเดิม ไม่มีBilling/subscription Finaldocs-onlyidentityและCIเก็บในpublication.json**
 
 **ผู้ใช้ขอให้เติมช่องที่เหลืออัตโนมัติ — 31 ต.ค. 2026 (§3.78): ตรวจแท็บจริงHome0ตรงกับGEEแล้ว แต่ceiling/corridor/validity/sourceยังmanual จึงเพิ่มeditableplanningprofile60m/5m/วันที่ตามเวลาจบ/แหล่งอ้างอิงโปรไฟล์ พร้อมปุ่มUse planning defaultsและเก็บmanual/importownership 652tests/syntax/3buildsผ่านในเครื่อง การตรวจbrowserbuildสุดท้ายยังไม่ครบเพราะเครื่องมือหยุดยืนยันURLWindowsไม่ได้ ยังไม่pushdeploy จึงยังไม่ปิดปัญหาฝั่งเว็บจริง**
@@ -1590,3 +1596,46 @@ Freeze hosted-artifacts.jsonใหม่25files (HTML23,516bytes+24assets) ส�
 **Productionbrowserยืนยัน:** GuestQAใหม่ไม่แตะuserdraftหรือบัญชีจริง ผ่าน8casesเดียวกับlocalทั้งหมด default60/5/source/validUntil=end,automaticdateตามend,manual75/0/customsource/expiryรักษาเมื่อendเปลี่ยน,manualblankรักษา,Useplanningdefaultsคืน4ค่าและรักษาArduPilot,เข้า–ออกdemoคืนprofile,autoownershipยังตามendหลังdemo,publicGEEHome0ร่วมกับdefaults ภาพproduction-four-fields.pngและproduction-proof.jsonก่อน/หลังตรงกัน,capturedwarn/error0 Reviewhumanfalse/Downloaddisabledตามข้อมูลflightที่ยังขาด ไม่อ้างว่าทุกเงื่อนไขบินจริงผ่านจากการเติม4ค่า ไม่มีจริงSupaSave/AIjob/OSreboot/QGC/SITLใหม่รอบนี้
 
 **ส่งมอบ/ข้อจำกัด:** ปิดpendingbrowserของ§3.78และคำถามรอแล้ว คืนคิวก่อนนำเสนอเป็นซ้อมเครื่องจริงหลังbootและชุดสำรอง2รายการเดิม งานsnapshotfilechooserผ่านChromeagentติดextensionfileURLpermissionไม่ได้เปลี่ยนสิทธิ์และไม่countเป็นUIimportpass; restore/serializationผ่านVM/fullsuiteเดิมและdemo roundtripผ่านbrowserในรอบนี้ ผล652localtests/syntax/3buildsเป็นretainedsource-identicalจากรอบก่อน ไม่อ้างรันlocalใหม่ CIsourceรอบนี้ใหม่และsuccess ตรวจstrictscope/credentialscan39filesไม่พบcredential/clientservermarkers ไม่มีproductsourcechangeเพิ่มหลัง652tests ไม่มีBilling/subscription/accounts/schema/env/CPUchange CanonicalสองMDและqueueติดตามผลในcommitเอกสารแยก finalSHA/CI/deployment/hash/newpageproofอยู่ C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json
+
+
+<!-- normal-area-plan-export-readiness-plan-2026-10-31 -->
+### 3.80 แผนแก้ Review needed และดาวน์โหลด .plan จากพื้นที่เดิม — 31 ตุลาคม 2026
+
+**หัวข้อ/ขอบเขต:** ผู้ใช้ส่ง2ภาพว่าฟอร์ม5ค่ามีแล้ว แต่SurfaceReviewneeded/Downloaddisabled และสั่งทำแผนละเอียดเป็น.md ยังไม่ลงมือแก้ อ่านบันทึก/queue/AGENTS/Gitก่อนงาน SourceHEAD1b498acและGitสะอาดก่อนเขียนเอกสาร ไม่ใช้สิทธิ์push/deployของrelease4ช่องก่อนหน้ากับงานนี้
+
+**สิ่งที่ตรวจจากภาพและsource:** ภาพHome1.5/ceiling60/corridor5/validity/sourceครบและเลือกArduPilot Route&airspaceReady/checkboxเลือกแล้ว SurfaceยังGEEneedsreview ภาพแจ้งmissingwindLimitMps/maxAirspeedMps/usableWh/reserveWh/powerW/takeoffS/landingS/turnSและWind/Batteryincomplete พร้อม3morechecksที่ยังไม่มีIDเต็ม ไม่เดาว่าเป็น3ข้อใดหรือrange/offsetตัวเลขเท่าไร SourceยืนยันcanExportต้องexportCheckpass+4rowsReady; terrainreviewเกิดเมื่อrange/Homeoffsetเกินtoleranceหลังข้อมูลผ่านnormalize และbuilderตรวจก่อนserializeอีกชั้น Homeมีตัวเลขไม่ยืนยันmatchingGEEprovenanceทันที
+
+**แผนที่สร้าง:** docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md มี3ส่วนหลักและรายละเอียด12หัวข้อ: facts/unknowns/codepaths,เป้าหมาย,fullblockerdiagnostics,editableflightprofile8ค่าที่มีในEstimateddemo,sharedplanningReferencevsstrictreadiness,exportbuilder/runtimeparity,UXBeforedownload,filescope,testmatrix23กรณี และacceptanceจนถึงดาวน์โหลด.planจริงจากพื้นที่เดิม แนะนำreuseเฉพาะassumptions8ค่าไม่เรียกcreateEstimatedDemoInputsย้ายขอบเขต/ลม/Homeของผู้ใช้ budget177.6−44.4=133.2Whไม่สับสน182.7minเป็นหนึ่งแบต terrainreviewคงตามจริงไม่เพิ่มtoleranceหรือtickflatSurfaceเพื่อให้ผ่าน planmodeต้องยังblockinvalid/missing/stale/mismatched/knownconflictอย่างเหมาะสม ไม่เปลี่ยนstrictbuilderpassหรือสร้างno-goempty/approvalปลอม
+
+**สถาปัตยกรรมที่มีผลต่อวิธีแก้:** hostedbuildกำหนดSTANDALONE=true/GEE_HOSTED=true การคำนวณและสร้างไฟล์ผ่านplanning-file-apiในbrowser ขณะที่workspaceSTANDALONE=falseใช้planningTrialAPI/api/v2/planning-trial จึงเสนอsharedpurechecks/serializer/operationที่ทั้งสองใช้ ไม่ต้องเปิดcloudCPUหรือVercelFunctionใหม่ ตัวดาวน์โหลดคงaccount/revision/hash/Abortguards และหนึ่ง.planต่อsortieที่เลือกตามขีดจำกัดเดิม ไม่อ้างnativeQGC/MissionPlanner/SITL/บินจริงจากการparseไฟล์
+
+**Scope/คิว/สิ่งที่เหลือ:** ระบุชัดว่าเดิม3เคยตัดnormalflowprofileออก แผนนี้เป็นข้อเสนอเปิดกลับเฉพาะส่วนจำเป็นต่อปัญหา8ค่าและexportหลังสั่งimplementation ไม่เปิดtime-schedulingrewriteอัตโนมัติ งาน4exportdefaults/Homeก่อนหน้ายังเป็นcompletedpublishedในscopeเดิม แต่ปัญหาnormal-areafullplanยังไม่ปิด เพิ่มrepairplanนี้เป็นลำดับแรกก่อนซ้อมเครื่อง/ชุดสำรอง รักษางานพักPi/ผลทดลอง/paidcloud/qualification ไม่มีคำถามที่ต้องตอบเพื่อส่งแผนนี้ ขั้นต่อไปคือรอคำสั่งเริ่มแก้ ไม่ส่งผู้ช่วยหรือแก้websiteขนานโดยไม่มีคำสั่ง
+
+**ไฟล์/ตรวจ/เผยแพร่:** แก้เฉพาะplan.mdใหม่/สองcanonicalMD/queueอ่านล่าสุดก่อนเขียนและเก็บประวัติเดิม ตรวจMarkdown3parts/8keys/23testIDs/JSONparse/diffและขอบเขตGitเท่านั้น ทุกtestcaseในแผนdesigned_not_run/actualnull ไม่มีproductcode/config/contracts/tests/บัญชี/schema/envเปลี่ยน ไม่มีfreshbrowser/API/GEE/AI/tests/build/CI/deploymentrun ไม่รีไซเคิล652testsเดิมเป็นผลใหม่ ไม่commit/push/deployและไม่เปิดBilling/subscription หลักฐานdocumentvalidation C:/mega/codex/iENA/outputs/XEDO_Plan_Export_Readiness_Plan_2026-10-31/validation.json
+
+### 3.81 เริ่มแก้ normal-area planning export ตามแผนที่อนุมัติ — 31 ตุลาคม 2026
+
+- คำสั่งล่าสุด: แก้ตามแผน ให้พื้นที่เดิมดาวน์โหลด .plan จริง ทดสอบ/บันทึกสอง MD แล้ว push/deployเมื่อผ่าน ไม่มี Billing/subscription
+- เก็บข้อมูลก่อนแก้ผ่าน UI: `outputs/XEDO_Plan_Export_Repair_2026-10-31/private-original-snapshot.json` และ `private-user-before.json` เป็นหลักฐานในเครื่อง ห้ามลง Git เพราะมีรายละเอียดภารกิจ
+- Diagnostics ใหม่: route53.3km, Home1.5m, GEE58/58 samples/range0–2.58m เทียบ tolerance2m ทำให้ review; 8ค่า flight ขาดและ no-go null ขณะบันทึก
+- พบ partition เดิมยึดแนวบินเต็มเส้นและ transit ผ่าน vertexแรก จึง infeasible กับ133.2Wh budget เริ่มแก้แบ่งแนวบินระหว่างเที่ยว/ตรงไป entry ของ sortie และเปรียบเทียบทิศ0/30/60/90องศาแบบ bounded โดยเก็บ coverage fractions ครบ
+- ผล probe เฉพาะ CPU calculation บนพื้นที่เดิม: profileเดิมได้35sortiesที่heading30deg แทน71ที่heading0deg ยังไม่ใช่ผล browser export/acceptance
+- เริ่ม flight profile ownership8ค่าและ planning reference checks/operation แยกstrict reportเดิม ไม่มีการยก tolerance/สร้างลม0/เปลี่ยน no-go nullเป็นempty
+- ยังไม่รัน full suite/build/postdeploy ในจุดบันทึกนี้; ไม่มี push/deploy ใหม่ ไม่มี schema/account/env/billing/subscription change ไม่มีคำถามจำเป็นรอคำตอบ
+
+### 3.82 Local acceptance และเผยแพร่ normal-area planning export — 31 ตุลาคม 2026
+
+**ขอบเขต:** ผู้ใช้อนุมัติแก้ตามแผนให้พื้นที่เดิมโหลด.planจริง ทดสอบ/บันทึกสอง MD แล้วpush/deployเมื่อผ่าน ไม่มีBilling/subscription ไม่ใช้สิทธิ์จากreleaseก่อนแทนคำสั่งนี้ แชทหลักเป็นผู้แก้ ไม่มีagentแก้พร้อมกัน
+
+**Implementation:** flight profile8ค่าownershipautomatic/manual; legacy/importblankzeroและdemo backupคืนได้, strict checker/buildQGCPlanและ/exportเดิมไม่ถูกลดเงื่อนไข เพิ่มplanning_reference checksและ/planning-exportทั้งbrowser adapter/workspace ใช้schema/purposeชัดเจน คงno-go null=not_assessed/suppliedconflictblock คงGEEreviewและnumericrange/tolerance ไม่ทำflatSurfaceConfirmedปลอมหรือเพิ่มtolerance; stale/missing/mismatch/knownDSMcollision/wind/energy/timeยังblock เพิ่มfriendlyunits/Viewallchecks/asyncinputHashguard รายละเอียดทุกไฟล์ในPLAN_EXPORT_READINESS_REPAIR_REPORT_2026-10-31.md
+
+**Route/time:** diagnosticsพบfullswathpartition/firstvertexdetourinfeasible จึงเพิ่มboundedheading0/30/60/90comparisonและmid-swathsplitสำหรับplanningprofileเท่านั้น เก็บfractionsทุกsurveysegmentและHomeกลับทุกเที่ยว ผลพื้นที่เดิม35sorties heading30/69segmentsครบ/totaldistance117788.7554m/max132.9476Wh≤133.2Wh Airborne439.4625min+5buffer+34x10turnaround=784.4625min ไม่รวม35เที่ยวเป็นแบตเดียว Adapter40/500/5000limitsยังอยู่ พบเวลาwindowสลับเพราะforecastrefreshทำbatterytemporaryincomplete จึงเก็บdurationSource assessed_sortiesและroute samplesระหว่างgap; actual gatesยังblockจนข้อมูลใหม่ครบ ไม่rewriteuser-start/derived-endซึ่งยังนอกscope
+
+**Fresh verification:** npm test -- --test-concurrency=2 ได้682pass/0fail/cancel/skip, npmruncheckและbuild/buildworkspace/buildfileผ่าน Fullsuiteรวมstrictregressions, stale/partial/wrongGEE/Home/route, wind/no-go/energy/time, hash/session/revision/doubleclick, profileblankzero/import/demo และSQLPGliteSavev3v4/history/reopen/ownerisolation ไม่อ้างว่าSQLtestเป็นrealSupabase/browserSaveใหม่
+
+**Browser/artifacts:** เปิดChrome QAคนละแท็บ ไม่เปลี่ยนoriginaluserdraft ใช้GeoJSON/Homeเดิมผ่านvisiblefieldsและrealSentinel2 27Oct/automaticregionalforecast/GEE ได้Home1.5m range2.578836679/tolerance2mครบ58samplesstrictfalseplanningtrue ดาวน์โหลด01/35ผ่านUIพบไฟล์OSจริง4975/2638bytes/12/6itemsArduPilot3; auditเทียบserializerตรงselection/Home/waypointsมีแค่16/21/22/178และcoverage69segmentscomplete body17213bytes เก็บหลักฐานในoutputs/XEDO_Plan_Export_Repair_2026-10-31นอกGit (precise mission/privatejsonห้ามpublish) ตรวจ390pxnooverflowและ2D/3D readinessได้ ไม่มีbroadhardwareperformance/nativeQGC/SITL/flightclaim FinalcandidateและProductionreplayจะเติมreceiptหลังทำจริง
+
+**Publication/status:** กำลังscope/credentialscan/hashfreeze→normalpushmain→automaticVercelProduction→exactCI/alias/hashsmoke/browserdownloadจริง ไม่มีmigration/account/env/CPU/AIcloud/Billing/subscriptionchange ไม่มีคำถามจำเป็นรอคำตอบ Nativeimport/SITL/fieldqualification/rebootrehearsal/ชุดสำรองยังแยกไว้ ผลจริงหลังเผยแพร่และexactsource/finalSHAจะอยู่outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json
+
+
+**Final candidate acceptance (ก่อน push):** replayChromeบนbuildสุดท้ายอีกครั้งด้วยพื้นที่/Homeเดิม ได้35sorties/784.4625minและplanningready/terrainreviewตามเดิม Download01/35จริงรอบใหม่ (` (1).plan`) เทียบserializer/hashตรงกับsnapshotf54ac8561bcc มี12/6items ตรวจpickerdisabledระหว่างPreparingและคืนenabledหลังสำเร็จ DOMbootassetตรงfrozenmanifest consolewarning/error0 `final-local-browser-proof.json`, `local-download-audit.json`, `final-local-ready.png`; requestinputsล่าสุด17212bytes Fresh682tests/0failและ3builds Source22paths+hosted25filesอยู่manifest ไม่เปลี่ยนproductหลังfreeze กำลัง normalpush/deployและตรวจProductionต่อ ไม่มีBilling/subscription

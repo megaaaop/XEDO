@@ -50,12 +50,13 @@ export function initializePlanningReadiness({root = globalThis.document, getStat
     const detail = element('p', 'trial-readiness-detail');
     heading.append(label, status);
     node.append(heading, detail);
-    let action = null, checkbox = null;
+    let action = null, checkbox = null, checkText=null;
     if (id === 'airspace') {
       const checkLabel = element('label', 'trial-readiness-check');
       checkbox = element('input');
       checkbox.type = 'checkbox';
       const text = element('span', '', 'I have reviewed the route and airspace restrictions');
+      checkText=text;
       checkLabel.append(checkbox, text);
       node.append(checkLabel);
       listen(checkbox, 'change', () => onAction('airspace-toggle', checkbox.checked));
@@ -65,7 +66,7 @@ export function initializePlanningReadiness({root = globalThis.document, getStat
       listen(action, 'click', () => onAction(id));
       node.append(action);
     }
-    return {node, label, status, detail, action, checkbox};
+    return {node, label, status, detail, action, checkbox,checkText};
   }
 
   for (const container of [inline, dialogList]) {
@@ -100,6 +101,8 @@ export function initializePlanningReadiness({root = globalThis.document, getStat
     // The controller decides when to announce a changed calculation. This text
     // remains available to a screen reader without repeatedly interrupting it.
     reasons.setAttribute('role', 'note');
+    const allChecks=element('button','button quiet','View all checks');allChecks.type='button';
+    listen(allChecks,'click',()=>onAction('checks'));reasons.append(allChecks);
   }
 
   function finishDialog() {
@@ -126,14 +129,17 @@ export function initializePlanningReadiness({root = globalThis.document, getStat
       return {id, title: row.title || title, state: Object.hasOwn(STATE_LABELS, row.state) ? row.state : 'waiting', detail: row.detail || '', actionLabel: row.actionLabel || ''};
     });
     const count = rows.filter(row => row.state === 'ready').length;
+    const reference=value.purpose==='planning_reference';
     const blocked = rows.some(row => row.state === 'blocked');
-    const complete = count === ROWS.length && value.canExport === true;
+    const complete = (reference||count === ROWS.length) && value.canExport === true;
     const state = blocked || (count === ROWS.length && !complete) ? 'blocked' : complete ? 'ready' : 'review';
     if (open) {
       setViewProperty(open.dataset, 'readiness', state);
       setViewProperty(headerIcon, 'textContent', state === 'ready' ? '✓' : state === 'blocked' ? '×' : '!');
       setViewProperty(headerCount, 'textContent', `${count}/${ROWS.length}`);
-      setAttribute(open, 'aria-label', `Flight readiness: ${count} of ${ROWS.length} ready. ${STATE_LABELS[state]}.`);
+      setViewProperty(headerText,'textContent',reference?'Plan readiness':'Flight readiness');
+      if(reference)setViewProperty(headerCount,'textContent',complete?'File ready':'Check inputs');
+      setAttribute(open, 'aria-label', reference?`Plan readiness: ${STATE_LABELS[state]}. Surface model: ${STATE_LABELS[rows.find(row=>row.id==='terrain').state]}.`:`Flight readiness: ${count} of ${ROWS.length} ready. ${STATE_LABELS[state]}.`);
     }
     for (const group of views) {
       for (const row of rows) {
@@ -144,6 +150,7 @@ export function initializePlanningReadiness({root = globalThis.document, getStat
         setViewProperty(view.detail, 'textContent', row.detail);
         setViewProperty(view.detail, 'hidden', !row.detail);
         if (view.checkbox) {
+          setViewProperty(view.checkText,'textContent',reference?'I reviewed the planning assumptions, route and terrain findings':'I have reviewed the route and airspace restrictions');
           setViewProperty(view.checkbox, 'checked', row.state === 'ready');
           setViewProperty(view.checkbox, 'disabled', Boolean(value.working));
         }

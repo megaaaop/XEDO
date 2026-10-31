@@ -6,6 +6,7 @@ import {calculateDrift} from './trial-drift.js';
 import {calculateOil} from './trial-oil.js';
 import {buildTrialFlight} from './trial-flight.js';
 import {checkTrialExport,buildQGCPlan} from './trial-export.js';
+import {checkPlanningExport,buildPlanningQGCPlan} from './planning-export-readiness.js';
 
 const fail=(message,status=422)=>{throw Object.assign(new Error(message),{status});};
 const json=(value,status=200)=>new Response(JSON.stringify(value),{status,headers:{'Content-Type':'application/json;charset=utf-8','Cache-Control':'no-store'}});
@@ -44,6 +45,7 @@ function checkedGeometry(geometry){
   validateGeometry(geometry);
 }
 export async function calculatePlanningTrial(db,body){
+  if(body.export?.purpose!=null&&!['planning_reference','strict_trial'].includes(body.export.purpose))fail('Select a supported export purpose.');
   const original=await source(db,body.surveyId,body.geometry);checkedGeometry(original.geometry);
   const attempt=(calculate,fallback)=>{try{return calculate();}catch(error){return {...fallback,state:'blocked',errors:[error.message],warnings:[...(fallback.warnings||[]),error.message],hardwareControl:false};}};
   const driftEmpty={state:body.driftEnabled?'incomplete':'disabled',missing:body.driftEnabled?['Inspection boundary']:[],geometry:null,features:{type:'FeatureCollection',features:[]},warnings:['Drift is a manually configured constant-vector scenario, not a live forecast.']};
@@ -66,9 +68,11 @@ export async function calculatePlanningTrial(db,body){
   }
   applyEnvironmentExportGate(exportCheck,{...body,geometry:original.geometry});
   applyGeospatialExportGate(exportCheck,{...body,geometry:original.geometry});
+  const planningCheck=checkPlanningExport(flight,{...body,geometry:original.geometry});
   const oil=attempt(()=>calculateOil(body.oil||{}),{missing:[],areaM2:null,volumeLowL:null,volumeHighL:null,oilMassLowKg:null,oilMassHighKg:null,capsulesLowKg:null,capsulesHighKg:null,warnings:[]});
-  const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(canonical({source:original,...body})))),x=>x.toString(16).padStart(2,'0')).join('');
-  return {schema_version:'xedo-planning-trial/1',purpose:'planning_trial_only',generatedAt:new Date().toISOString(),inputHash:hash,source:original,inputs:structuredClone(body),target,drift,flight,exportCheck,oil,hardwareControl:false,releaseControl:false};
+  const {sortieIndex:_selection,...missionBody}=body;
+  const hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(canonical({source:original,...missionBody})))),x=>x.toString(16).padStart(2,'0')).join('');
+  return {schema_version:'xedo-planning-trial/1',purpose:'planning_trial_only',generatedAt:new Date().toISOString(),inputHash:hash,source:original,inputs:structuredClone(body),target,drift,flight,exportCheck,planningCheck,oil,hardwareControl:false,releaseControl:false};
 }
 export async function planningTrialAPI(req,env,db,url){
   if(!url.pathname.startsWith('/api/v2/planning-trial'))return null;
@@ -77,11 +81,15 @@ export async function planningTrialAPI(req,env,db,url){
     if(!url.searchParams.get('survey'))fail('A saved survey ID is required.');
     const value=await source(db,url.searchParams.get('survey'));checkedGeometry(value.geometry);return json(value);
   }
-  if(!['/api/v2/planning-trial','/api/v2/planning-trial/export'].includes(url.pathname))fail('Trial route not found.',404);
+  if(!['/api/v2/planning-trial','/api/v2/planning-trial/export','/api/v2/planning-trial/planning-export'].includes(url.pathname))fail('Trial route not found.',404);
   if(req.method!=='POST')return new Response(null,{status:405,headers:{Allow:'POST'}});
   const origin=req.headers.get('origin');if((origin&&origin!==url.origin)||req.headers.get('sec-fetch-site')==='cross-site')fail('Cross-site trial requests are not permitted.',403);
   const body=await input(req);let result;
   try{result=await calculatePlanningTrial(db,body);}catch(error){if(error.status)throw error;fail(error.message||'Check the trial inputs.');}
+  if(url.pathname.endsWith('/planning-export')){
+    const file=buildPlanningQGCPlan(result.flight,{...body,geometry:result.source.geometry},body.sortieIndex??0);
+    return json({...file,inputHash:result.inputHash,hardwareControl:false,releaseControl:false});
+  }
   if(url.pathname.endsWith('/export')){
     if(!result.exportCheck.pass)return json({code:'TRIAL_CHECKS_INCOMPLETE',message:'Complete all export checks before downloading a flight file.',details:result.exportCheck,retryable:false,request_id:crypto.randomUUID()},422);
     const index=body.sortieIndex??0;if(!Number.isInteger(index)||index<0)fail('Select a valid sortie.');

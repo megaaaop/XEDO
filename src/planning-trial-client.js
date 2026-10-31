@@ -13,6 +13,7 @@ import {createInspectionTileReadiness,expectedInspectionTileKeys} from './planni
 import {initializePlanningReadiness} from './planning-readiness.js';
 import {createPlanningSchedule} from './planning-schedule.js';
 import {createPlanningExportDefaults} from './planning-export-defaults.js';
+import {createPlanningFlightProfile} from './planning-flight-profile.js';
 import {planningRouteSamples} from './planning-route-samples.js';
 import {initializePlanningHelp} from './planning-help.js';
 import {initializePlanningEnvironmentUI} from './planning-environment-ui.js';
@@ -88,6 +89,7 @@ let environmentUI=null;let geospatialUI=null;let inspectorUI=null;let riskUI=nul
 let estimatedDemo=false,missionBackup=null;
 const schedule=createPlanningSchedule();
 const exportDefaults=createPlanningExportDefaults();
+const flightProfile=createPlanningFlightProfile();
 let routePoints=[],readinessUI=null;
 let geometry=null,surveyId=null,result=null,working=false,revision=0,abort=null,draw=null,sketch=null,sketchListener=null,vertexCount=0,selectHome=false,mode='2d',renderer=null,rendererTask=null,example=false;
 let currentStep=1,review=null,webMission=null,satelliteRaster=null,satelliteAbort=null,satelliteToken=0,calculationTimer=null,satelliteBusy=false;
@@ -129,7 +131,8 @@ function announce(message){$('#trial-live').textContent=message;}
 function setWorking(value,label='Calculating…'){
   working=value;const allowed=currentStep===3&&review?.ready;
   $('#trial-run').disabled=value||!!draw||!allowed;paintActionButton($('#trial-run'),value,label,'Refresh calculations');
-  $('#trial-qgc').disabled=value||!!draw||!allowed||!result?.exportCheck?.pass;$('#trial-snapshot').disabled=value||!!draw||!result;
+  $('#trial-qgc').disabled=value||!!draw||!allowed||!selectedExportCheck()?.pass;$('#trial-snapshot').disabled=value||!!draw||!result;
+  $('#trial-sortie').disabled=value||!!downloadFeedback.current;
   $('#trial-settings').setAttribute('aria-busy',String(value));refreshFlow();
 }
 function queueCalculations(){
@@ -138,11 +141,18 @@ function queueCalculations(){
   calculationTimer=setTimeout(()=>{if(currentStep===3&&review?.ready&&!draw&&!working)$('#trial-run').click();},250);
 }
 function invalidate(){
+  syncFlightPlanningProfile();
   syncExportPlanningDefaults();
   if(!downloadFeedback.current){$('#trial-download-status').hidden=true;$('#trial-download-status').textContent='';}
   revision++;if(!applyingRiskReceipt)inspectorUI?.changed();abort?.abort();abort=null;result=null;clearTimeout(calculationTimer);$('#trial-qgc').disabled=true;$('#trial-snapshot').disabled=true;for(const id of ['drift','flight','export','oil'])$('#'+id+'-result').textContent='Results update automatically when the mission is prepared.';$('#trial-sortie').innerHTML='<option value="0">No assessed sorties</option>';drawMap();update3D();statuses();if(working)setWorking(false);refreshFlow();geospatialUI?.changed();queueCalculations();
 }
 function field(group,key){return $('#f-'+group+'-'+key);}
+function syncFlightPlanningProfile(){
+  const patch=flightProfile.reconcile(read('flight'));
+  for(const [key,value] of Object.entries(patch))field('flight',key).value=value??'';
+  return Object.keys(patch).length>0;
+}
+function selectedExportCheck(){return example?result?.exportCheck:result?.planningCheck;}
 function syncExportPlanningDefaults(){
   const patch=exportDefaults.reconcile(read('export'));
   for(const [key,value] of Object.entries(patch))field('export',key).value=key==='validUntil'?value?.replace(/Z$/,'')||'':value??'';
@@ -170,23 +180,20 @@ function readinessState(){
   const f=read('flight'),hasHome=Number.isFinite(f.homeLongitude)&&Number.isFinite(f.homeLatitude),selected=hasHome&&$('#export-home-confirmed').checked&&!selectHome;
   const timing=schedule.getReadiness(),assessment=terrainAssessment(),model=geospatialUI?.getPatch()?.export?.homeElevationEvidence?.mode==='gee_model';
   const geospatialStatus=geospatialUI?.getStatus?.()??geospatialUI?.getState?.().status;
-  const surfaceDetail=geospatialStatus==='not_configured'?'GEE connection not configured':assessment.state==='unknown'?(assessment.reasons?.[0]||assessment.label):assessment.label;
+  const surfaceDetail=geospatialStatus==='not_configured'?'GEE connection not configured':assessment.state==='unknown'?(assessment.reasons?.[0]||assessment.label):assessment.label+(assessment.state==='review'?' · Range '+number(assessment.terrainRangeM)+' m / tolerance '+number(assessment.toleranceM)+' m; planning heights remain relative to Home.':'');
   const manual=terrainMode()==='manual',surfaceReady=manual?$('#export-flat-confirmed').checked:assessment.state==='ready'&&model;
+  const referenceTerrainAllowed=!example&&!manual&&['ready','review'].includes(assessment.state)&&model;
   const rows=[
     {id:'home',title:'Launch / Return',state:selected?'ready':hasHome?'review':'waiting',detail:selectHome?'Finish or cancel launch-point selection on the map.':selected?number(f.homeLatitude,5)+', '+number(f.homeLongitude,5):'Choose the drone launch and return point.',actionLabel:selectHome?'Cancel selection':selected?'Move point':'Choose on map'},
     {id:'schedule',title:'Takeoff time',state:timing.status==='expired'?'blocked':timing.status,detail:timing.status==='ready'?new Date(schedule.getPatch().plannedTakeoffAt).toLocaleString('en-GB',{timeZone:'UTC',hour12:false})+' UTC':timing.message,actionLabel:timing.status==='expired'?'Replan':'Time settings'},
     {id:'terrain',title:'Surface model',state:surfaceReady?'ready':manual?'review':assessment.state==='ready'?'review':assessment.state,detail:manual?($('#export-flat-confirmed').checked?'Manually reviewed reference':'Review the surface and Home height reference'):assessment.state==='ready'&&!model?'Use the GEE Home estimate or choose a manual reference':surfaceDetail||'Waiting for GEE samples',actionLabel:'Surface settings'},
-    {id:'airspace',title:'Route & airspace',state:$('#export-airspace-reviewed').checked?'ready':'review',detail:'I reviewed the full route, return and current airspace constraints.'}
+    {id:'airspace',title:example?'Route & airspace':'Planning review',state:$(example?'#export-airspace-reviewed':'#export-planning-reviewed').checked?'ready':'review',detail:example?'I reviewed the full route, return and current airspace constraints.':'Review the aircraft and battery assumptions, route, return and terrain findings. Airspace data remains separately assessed.'}
   ];
-  const blockers=rows.filter(row=>row.state!=='ready').map(row=>row.title+': '+row.detail);
+  const blockers=rows.filter(row=>row.state!=='ready'&&!(row.id==='terrain'&&referenceTerrainAllowed)).map(row=>row.title+': '+row.detail);
   if(!result)blockers.push(currentStep===3?'Waiting for route calculations.':'Complete the satellite survey and prepare the mission.');
-  else if(!result.exportCheck.pass){
-    const checks=[...(result.exportCheck.errors||[]),...(result.exportCheck.missing||[])].filter(message=>!/GEE|surface|home position|constraints have been reviewed/i.test(message)&&(!/home altitude/i.test(message)||manual));
-    blockers.push(...checks.slice(0,3));
-    if(checks.length>3)blockers.push((checks.length-3)+' more checks in Calculation details.');
-  }
+  else for(const check of selectedExportCheck()?.checks||[])if(['blocked','incomplete'].includes(check.state))blockers.push(check.message);
   if(riskUI?.blocked())blockers.push('Confirm the current Inspector risk area before planning or downloading.');
-  return {rows,canExport:!riskUI?.blocked()&&!!result?.exportCheck?.pass&&rows.every(row=>row.state==='ready'),blockingReasons:[...new Set(blockers)],working,homeModelReady:geospatialUI?.canUseModelHomeEstimate()===true};
+  return {purpose:example?'strict_trial':'planning_reference',rows,canExport:!riskUI?.blocked()&&!!selectedExportCheck()?.pass&&rows.every(row=>row.state==='ready'||(referenceTerrainAllowed&&row.id==='terrain')),blockingReasons:[...new Set(blockers)],working,homeModelReady:geospatialUI?.canUseModelHomeEstimate()===true};
 }
 const readinessNodes=Object.create(null);
 const readinessNode=id=>readinessNodes[id]??=(document.querySelector('#'+id));
@@ -203,6 +210,7 @@ function renderReadiness(){
   set('trial-terrain-use-model','hidden',!automatic);
   set('trial-terrain-use-model','disabled',working||!state.homeModelReady);
   text('trial-terrain-status',state.rows[2].detail);
+  set('trial-planning-review','hidden',example);
   const timing=schedule.getState();
   text('trial-schedule-summary',timing.mode==='automatic'&&!timing.pending?'Takeoff: analysis + 1 hour · '+number(timing.windowDurationS/60,1)+' min mission window':'');
   set('trial-replan','disabled',working||!review?.ready);
@@ -222,19 +230,21 @@ function notice(){
   $('#trial-demo-information').hidden=!estimatedDemo;
   $('#trial-load').disabled=example;$('#trial-survey').disabled=example;
   $('#trial-basemap-status').hidden=!geeHosted||example;
-  if(!downloadFeedback.current)$('#trial-qgc').textContent=example?'Download demo mission file':'Download mission file';
+  if(!downloadFeedback.current)$('#trial-qgc').textContent=example?'Download demo mission file':'Download planning file';
   updateHardwareProfileState();environmentUI?.changed();
 }
-function resetReview(home=false){$('#export-airspace-reviewed').checked=false;$('#export-flat-confirmed').checked=false;if(home)$('#export-home-confirmed').checked=false;}
+function resetReview(home=false){$('#export-planning-reviewed').checked=false;$('#export-airspace-reviewed').checked=false;$('#export-flat-confirmed').checked=false;if(home)$('#export-home-confirmed').checked=false;}
 function clearGeometry(){riskUI?.reset();resetSurvey();resetReview();schedule.reset();routePoints=[];geometry=null;surveyId=null;environmentUI?.changed();$('#trial-survey').value='';$('#trial-geometry').value='';$('#trial-source').textContent='No boundary selected.';notice();invalidate();}
 function read(group){const data={};for(const item of document.querySelectorAll('[name^="'+group+'."]')){const key=item.name.slice(group.length+1),value=item.value.trim();if(item.type==='datetime-local'){const instant=new Date(value+'Z');data[key]=/^\d{4}-\d\d-\d\dT/.test(value)&&Number.isFinite(instant.getTime())?instant.toISOString():null;}else data[key]=value===''?null:item.type==='number'?Number(value):value;}return data;}
 function body(){
+  syncFlightPlanningProfile();
   syncExportPlanningDefaults();
   const flight=read('flight'),lon=flight.homeLongitude,lat=flight.homeLatitude;delete flight.homeLongitude;delete flight.homeLatitude;
   flight.home=lon==null&&lat==null?null:[lon,lat];
+  flight.planningProfile=flightProfile.metadata(flight);
   if(flight.sideOverlap!=null)flight.sideOverlap/=100;if(flight.frontOverlap!=null)flight.frontOverlap/=100;
   const exportValues=read('export');
-  const exportSettings={...exportValues,planningDefaults:exportDefaults.metadata(exportValues),schedule:schedule.getPatch().schedule,homeConfirmed:$('#export-home-confirmed').checked,flatSurfaceConfirmed:$('#export-flat-confirmed').checked,airspaceReviewed:$('#export-airspace-reviewed').checked};
+  const exportSettings={...exportValues,purpose:example?'strict_trial':'planning_reference',planningReviewed:$('#export-planning-reviewed').checked,planningDefaults:exportDefaults.metadata(exportValues),schedule:schedule.getPatch().schedule,homeConfirmed:$('#export-home-confirmed').checked,flatSurfaceConfirmed:$('#export-flat-confirmed').checked,airspaceReviewed:$('#export-airspace-reviewed').checked};
   const noGo=$('#export-nogo').value.trim();if(noGo){try{exportSettings.noGo=JSON.parse(noGo);}catch{exportSettings.noGo=noGo;}}else exportSettings.noGo=null;
   const oil={...read('oil'),emulsion:$('#oil-emulsion').checked};if(oil.gsdYM==null)delete oil.gsdYM;if(!oil.emulsion&&oil.oilFraction==null)delete oil.oilFraction;
   const drift=read('drift'),automatic=environmentUI?.getPatch();if(automatic){Object.assign(flight,automatic.flight);Object.assign(drift,automatic.drift);}
@@ -263,13 +273,14 @@ async function update3D(){
   try{if(!renderer){$('#trial-3d-empty').hidden=false;$('#trial-3d-empty').textContent='Preparing 3D view…';rendererTask??=import('./deployment-3d.js').then(m=>m.createDeployment3D($('#trial-canvas'),{onInteractionChange:active=>{const b=$('#trial-3d-interact');b.textContent=active?'Exit 3D controls':'Interact with 3D';b.setAttribute('aria-pressed',String(active));}}));renderer=await rendererTask;}if(token!==revision||mode!=='3d')return;$('#trial-3d-empty').hidden=true;const context=geospatialUI?.getContext();renderer.setActive(true);renderer.setData({plan,context});renderer.setGroundMode(groundMode);groundController.update({geometry:renderer.getGroundGeometry(),available:!runtime.localFile&&(geeHosted||!fileMode)});document.querySelector('.trial-3d-label').textContent=(context?'GEE surface samples · Flat flight-height illustration':'Flat height preview')+' · Click to orbit; Escape to scroll the page';}
   catch{if(token!==revision)return;$('#trial-canvas').hidden=true;$('#trial-3d-empty').hidden=false;$('#trial-3d-empty').innerHTML='The 3D tools could not load. <button class="button secondary" type="button" id="trial-reload">Reload page</button><p>Download a snapshot first to retain your inputs.</p>';$('#trial-reload').onclick=()=>location.reload();}
 }
-function statuses(){const states=result?[['Drift scenarios',result.drift.state],['Camera route',result.flight.plan?.status==='generated'?'assumption_based':result.flight.state],['Flight file checks',result.exportCheck.state],['Oil & material',result.oil.state]]:[['Drift scenarios','waiting'],['Camera route','waiting'],['Flight file checks','waiting'],['Oil & material','waiting']];const labels={assumption_based:'Estimate computed',generated:'Route generated',pass:'Manual checks complete',incomplete:'Inputs needed',blocked:'Blocked',disabled:'Not selected',waiting:'Not calculated'};$('#trial-status').innerHTML=states.map(([name,state])=>'<div data-state="'+esc(state)+'"><small>'+esc(name)+'</small><strong>'+esc(labels[state]||state)+'</strong></div>').join('');renderMissionSummary();}
+function statuses(){const states=result?[['Drift scenarios',result.drift.state],['Camera route',result.flight.plan?.status==='generated'?'assumption_based':result.flight.state],['Planning file checks',selectedExportCheck()?.state||'incomplete'],['Oil & material',result.oil.state]]:[['Drift scenarios','waiting'],['Camera route','waiting'],['Flight file checks','waiting'],['Oil & material','waiting']];const labels={assumption_based:'Estimate computed',generated:'Route generated',pass:'Manual checks complete',incomplete:'Inputs needed',blocked:'Blocked',disabled:'Not selected',waiting:'Not calculated'};$('#trial-status').innerHTML=states.map(([name,state])=>'<div data-state="'+esc(state)+'"><small>'+esc(name)+'</small><strong>'+esc(labels[state]||state)+'</strong></div>').join('');renderMissionSummary();}
 function render(){
   const {drift,flight,exportCheck,oil}=result,camera=flight.camera||{},battery=flight.battery||{};
   $('#drift-result').innerHTML='<p class="trial-result-context">'+esc(drift.state==='disabled'?'Original boundary selected':'Constant-vector search scenarios')+'</p>'+dl([['Nominal east displacement',number(drift.displacement?.eastM)+' m'],['Nominal north displacement',number(drift.displacement?.northM)+' m'],['Distance',number(drift.displacement?.distanceM)+' m']])+list(drift.missing)+list(drift.warnings);
   $('#flight-result').innerHTML='<p class="trial-result-context">Camera & flight estimates</p>'+dl([['Across / along footprint',number(camera.footprintAcrossM)+' / '+number(camera.footprintAlongM)+' m'],['GSD X / Y',number(camera.gsdXM,4)+' / '+number(camera.gsdYM,4)+' m/px'],['Line / photo spacing',number(camera.lineSpacingM)+' / '+number(camera.photoSpacingM)+' m'],['Trigger interval',number(camera.triggerIntervalS)+' s'],['Survey geometry distance',number(flight.plan?.estimates?.distanceM)+' m'],['All sorties incl. home transit',number(battery.totalDistanceM)+' m'],['Wind assessment',flight.wind?.state||'Unknown'],['Battery assessment',battery.state||'Unknown'],['Assessed sorties',battery.sorties?.length||0]])+list(flight.missing)+list(flight.wind?.missing)+list(battery.missing)+list(flight.warnings);
   if(battery.sorties?.length)$('#flight-result').innerHTML+='<table><thead><tr><th>Sortie</th><th>Time</th><th>Energy</th></tr></thead><tbody>'+battery.sorties.map((s,i)=>'<tr><td>'+String(i+1)+'</td><td>'+number(s.durationS/60)+' min</td><td>'+number(s.energyWh)+' Wh</td></tr>').join('')+'</tbody></table>';
-  $('#export-result').innerHTML='<p class="trial-result-context">'+esc(exportCheck.pass?'Manual export checks complete':'Export checks need review')+'</p>'+(exportCheck.checks||[]).map(c=>'<span class="trial-checkline" data-state="'+esc(c.state)+'">'+esc(c.message||c.id)+'</span>').join('')+list(exportCheck.missing)+list(exportCheck.errors)+list(exportCheck.warnings);
+  const planning=result.planningCheck;
+  $('#export-result').innerHTML=(planning?'<p class="trial-result-context">Planning reference · '+esc(planning.pass?'File checks complete':'File checks need attention')+'</p>'+(planning.checks||[]).map(c=>'<span class="trial-checkline" data-state="'+esc(c.state)+'">'+esc(c.message||c.id)+'</span>').join('')+list(planning.warnings):'')+'<details><summary>Strict trial export checks · '+esc(exportCheck.pass?'Complete':'Review needed')+'</summary>'+(exportCheck.checks||[]).map(c=>'<span class="trial-checkline" data-state="'+esc(c.state)+'">'+esc(c.message||c.id)+'</span>').join('')+list(exportCheck.warnings)+'</details>';
   $('#oil-result').innerHTML='<p class="trial-result-context">Assumption-based quantity range</p>'+dl([['Reviewed oil area',number(oil.areaM2)+' m²'],['Oil volume lower / upper',number(oil.volumeLowL)+' / '+number(oil.volumeHighL)+' L'],['Oil mass lower / upper',number(oil.oilMassLowKg)+' / '+number(oil.oilMassHighKg)+' kg'],['Dry capsules lower / upper',number(oil.capsulesLowKg,3)+' / '+number(oil.capsulesHighKg,3)+' kg']])+list(oil.missing)+list(oil.warnings);
   $('#trial-sortie').innerHTML=battery.sorties?.length?battery.sorties.map((s,i)=>'<option value="'+i+'">Sortie '+(i+1)+' · '+number(s.distanceM)+' m</option>').join(''):'<option value="0">No assessed sorties</option>';
   statuses();drawMap();update3D();setWorking(false);
@@ -300,7 +311,7 @@ $('#trial-run').onclick=async()=>{
     try{data=await api('',{method:'POST',body:JSON.stringify(inputs),signal:controller.signal});}finally{clearTimeout(timer);}
     if(token!==revision)return;
     const timingChanged=syncScheduleFields(schedule.complete(data.flight));
-    const samples=planningRouteSamples(data.flight),samplesChanged=JSON.stringify(samples)!==JSON.stringify(routePoints);
+    const samples=data.flight.battery?.state==='incomplete'&&schedule.getState().durationSource==='assessed_sorties'?routePoints:planningRouteSamples(data.flight),samplesChanged=JSON.stringify(samples)!==JSON.stringify(routePoints);
     routePoints=samples;result=data;render();
     if(timingChanged||samplesChanged)resetReview();
     if(timingChanged)environmentUI?.changed();
@@ -313,10 +324,10 @@ $('#trial-run').onclick=async()=>{
 function download(text,filename,mime='application/json'){const url=URL.createObjectURL(new Blob([text],{type:mime})),a=document.createElement('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);}
 $('#trial-qgc').onclick=async()=>{
   if(downloadFeedback.current||working||draw||currentStep!==3||!review?.ready||riskUI?.blocked()||!readinessState().canExport){renderReadiness();return;}
-  const context=inspectorUI?.contextKey(),token=revision,operation=downloadFeedback.begin('download','Checking account…');
+  const context=inspectorUI?.contextKey(),token=revision,selectedSortie=Number($('#trial-sortie').value),operation=downloadFeedback.begin('download','Checking account…');
   const output=$('#trial-download-status');let timer,completed=false;
   const phase=label=>{if(!downloadFeedback.update(operation,label))return;paintActionButton($('#trial-qgc'),true,label,'Download mission file');output.hidden=false;output.textContent=label;output.dataset.actionBusy='true';};
-  const unchanged=()=>token===revision&&context===inspectorUI?.contextKey();
+  const unchanged=()=>token===revision&&context===inspectorUI?.contextKey()&&selectedSortie===Number($('#trial-sortie').value);
   error();setWorking(true,'Preparing mission file…');phase('Checking account…');
   try{
     if(inspectorUI&&!await inspectorUI.ensureSession())return;
@@ -326,14 +337,15 @@ $('#trial-qgc').onclick=async()=>{
     if(environmentUI&&!await environmentUI.ensureFresh()){output.textContent='Conditions updated. Review the calculations and confirmations before downloading.';error(output.textContent);return;}
     if(!unchanged()||!readinessState().canExport)return;
     phase('Preparing mission file…');abort=new AbortController();const controller=abort;timer=setTimeout(()=>controller.abort(),25000);
-    const data=await api('/export',{method:'POST',body:JSON.stringify({...body(),sortieIndex:Number($('#trial-sortie').value)}),signal:controller.signal});
+    const data=await api(example?'/export':'/planning-export',{method:'POST',body:JSON.stringify({...body(),sortieIndex:selectedSortie}),signal:controller.signal});
     if(!unchanged())return;
+    if(data.inputHash!==result?.inputHash)throw Error('The file does not match the current mission inputs. Recalculate before downloading.');
     phase('Checking account before download…');if(inspectorUI&&!await inspectorUI.ensureSession())return;
     if(!unchanged())return;
     if(!readinessState().canExport)throw Error('Flight readiness changed while the file was being prepared. Review or replan before downloading.');
     download(data.text,example?'XEDO-estimated-demo-'+data.filename:data.filename,data.mime);completed=true;output.textContent='Mission file ready. Download started.';announce(example?'Estimated demo file ready. Download started using assumed inputs.':'Mission file ready. Download started.');
   }catch(e){if(token===revision){output.textContent=e.name==='AbortError'?'Export timed out. Recalculate and try again.':e.message;error(output.textContent);invalidate();}}
-  finally{clearTimeout(timer);if(downloadFeedback.end(operation)){paintActionButton($('#trial-qgc'),false,'',example?'Download demo mission file':'Download mission file');output.dataset.actionBusy='false';if(!completed&&output.textContent.endsWith('…'))output.textContent='Download paused. Review the current mission and try again.';if(token===revision)setWorking(false);else renderReadiness();}}
+  finally{clearTimeout(timer);if(downloadFeedback.end(operation)){paintActionButton($('#trial-qgc'),false,'',example?'Download demo mission file':'Download planning file');output.dataset.actionBusy='false';if(!completed&&output.textContent.endsWith('…'))output.textContent='Download paused. Review the current mission and try again.';if(token===revision)setWorking(false);else renderReadiness();}}
 };
 $('#trial-snapshot').onclick=()=>{if(result&&!draw)download(JSON.stringify({...result,exampleData:example,...(estimatedDemo?{demoProfile:ESTIMATED_DEMO_PROFILE}:{})},null,2),(example?'XEDO-estimated-demo-':'XEDO-planning-trial-')+result.inputHash.slice(0,12)+'.json');};
 function compatibleInputs(inputs){
@@ -359,14 +371,15 @@ function restoreInputs(inputs){
   $('#export-home-confirmed').checked=restored.export.homeConfirmed===true;
   $('#export-flat-confirmed').checked=restored.export.flatSurfaceConfirmed===true;
   $('#export-airspace-reviewed').checked=restored.export.airspaceReviewed===true;
+  $('#export-planning-reviewed').checked=restored.export.planningReviewed===true;
   $('#export-nogo').value=restored.export.noGo?JSON.stringify(restored.export.noGo):'';
   $('#oil-emulsion').checked=restored.oil.emulsion===true;
   $('#trial-camera-preset').value=XEDO_HARDWARE_PROFILE.cameraPreset;updateHardwareProfileState();
-  exportDefaults.restore(restored.export);syncExportPlanningDefaults();
+  exportDefaults.restore(restored.export);syncExportPlanningDefaults();flightProfile.restore(restored.flight);syncFlightPlanningProfile();
 }
 // Keep raw values: even a partially entered mission must survive a demo visit.
 function captureMission(){
-  return {geometry:structuredClone(geometry),surveyId,schedule:schedule.getPatch(),exportDefaults:exportDefaults.metadata(read('export')),source:$('#trial-source').textContent,back:$('#trial-back').getAttribute('href'),riskBackup:riskUI?.backup(),savedImageSelection:structuredClone(savedImageSelection),
+  return {geometry:structuredClone(geometry),surveyId,schedule:schedule.getPatch(),exportDefaults:exportDefaults.metadata(read('export')),flightProfile:flightProfile.metadata(read('flight')),source:$('#trial-source').textContent,back:$('#trial-back').getAttribute('href'),riskBackup:riskUI?.backup(),savedImageSelection:structuredClone(savedImageSelection),
     controls:[...document.querySelectorAll('#trial-settings input[id],#trial-settings select[id],#trial-settings textarea[id]')].filter(input=>input.type!=='file').map(input=>({id:input.id,value:input.value,checked:input.checked}))};
 }
 function useDemo(){
@@ -384,7 +397,7 @@ function leaveDemo(){
   if(previous?.geometry)setGeometry(previous.geometry,previous.surveyId);else clearGeometry();
   if(previous){
     for(const saved of previous.controls){const input=document.getElementById(saved.id);if(input){input.value=saved.value;if(typeof saved.checked==='boolean')input.checked=saved.checked;}}
-    $('#trial-source').textContent=previous.source;$('#trial-back').setAttribute('href',previous.back);schedule.restore(previous.schedule?.schedule,previous.schedule||{});exportDefaults.restore({...read('export'),planningDefaults:previous.exportDefaults});syncExportPlanningDefaults();savedImageSelection=structuredClone(previous.savedImageSelection||null);riskUI?.restoreBackup(previous.riskBackup);
+    $('#trial-source').textContent=previous.source;$('#trial-back').setAttribute('href',previous.back);schedule.restore(previous.schedule?.schedule,previous.schedule||{});exportDefaults.restore({...read('export'),planningDefaults:previous.exportDefaults});syncExportPlanningDefaults();flightProfile.restore({...read('flight'),planningProfile:previous.flightProfile});syncFlightPlanningProfile();savedImageSelection=structuredClone(previous.savedImageSelection||null);riskUI?.restoreBackup(previous.riskBackup);
   }else restoreInputs(applyFixedPlanningSettings({}));
   resetReview(true);notice();geospatialUI?.changed();invalidate();drawMap();error();
   announce('Mission inputs restored. Review the image and export confirmations again.');
@@ -417,6 +430,7 @@ $('#trial-restore').onchange=async event=>{
 function changed(event){
   const input=event.target,name=input.name||'',id=input.id;
   if(name.startsWith('export.'))exportDefaults.edited(name.slice(7));
+  if(name.startsWith('flight.'))flightProfile.edited(name.slice(7));
   if(name==='drift.observedAt')delete input.dataset.satelliteObservedAt;
   if(['export.plannedTakeoffAt','export.plannedEndAt'].includes(name)){
     try{schedule.setManual(read('export'));}catch{error('Choose valid takeoff and end times.');return;}
@@ -461,6 +475,11 @@ $('#trial-export-defaults').onclick=()=>{
   exportDefaults.reset(read('export'));syncExportPlanningDefaults();resetReview();invalidate();
   announce('Planning values restored. Review the route and airspace before downloading.');
 };
+$('#trial-flight-defaults').onclick=()=>{
+  if(working)return;
+  flightProfile.reset(read('flight'));syncFlightPlanningProfile();resetReview();invalidate();
+  announce('Aircraft planning assumptions restored. Review the recalculated route and battery sorties.');
+};
 $('#trial-home-clear').onclick=()=>{
   if(working)return;selectHome=false;geospatialUI?.revokeHomeEstimate();
   field('flight','homeLongitude').value='';field('flight','homeLatitude').value='';routePoints=[];
@@ -494,7 +513,7 @@ function renderMissionSummary(){
   }else $('#trial-summary-material').textContent='Awaiting reviewed drone evidence';
   $('#trial-sortie-wrap').hidden=!(battery?.sorties?.length>1);
   if(working)$('#trial-engine-status').textContent='Calculating…';
-  else if(result)$('#trial-engine-status').textContent=result.exportCheck.pass?(example?'Demo file ready · Assumed inputs':'Mission file ready · Review before field use'):flight?.state==='blocked'?'Flight blocked · Open Calculation details':route?.status==='generated'&&battery?.state!=='pass'?'Route preview ready · Complete wind, battery and home settings':'Mission settings or export review needed';
+  else if(result)$('#trial-engine-status').textContent=selectedExportCheck()?.pass?(example?'Demo file ready · Assumed inputs':'Planning file ready · Select a sortie to download'):flight?.state==='blocked'?'Flight blocked · Open Calculation details':route?.status==='generated'&&battery?.state!=='pass'?'Route preview ready · Complete wind, battery and home settings':'Mission settings or export review needed';
   else if(currentStep===3)$('#trial-engine-status').textContent=riskUI?.blocked()?'Confirm the current inspection area to update the route.':'Calculating…';
 }
 function refreshFlow(){
@@ -772,7 +791,8 @@ readinessUI=initializePlanningReadiness({getState:readinessState,onAction:(id,ch
   if(id==='home')chooseHome();
   else if(id==='schedule'){if(schedule.getReadiness().status==='expired')$('#trial-replan').click();else{openSettings();field('export','plannedTakeoffAt').focus();}}
   else if(id==='terrain'){openSettings();$('#trial-export-panel').parentElement.open=true;$('#trial-terrain-mode').focus();}
-  else if(id==='airspace-toggle'){$('#export-airspace-reviewed').checked=checked;invalidate();announce(checked?'Airspace review recorded. Updating mission checks…':'Airspace review cleared. Updating mission checks…');}
+  else if(id==='checks')$('#trial-results-open').click();
+  else if(id==='airspace-toggle'){$(example?'#export-airspace-reviewed':'#export-planning-reviewed').checked=checked;invalidate();announce(checked?'Review recorded. Updating mission checks…':'Review cleared. Updating mission checks…');}
 }});
 $('#trial-replan').onclick=()=>{if(working||!review?.ready)return;syncScheduleFields(schedule.begin());resetReview();environmentUI?.changed();invalidate();announce('Replanning. Takeoff will be one hour after successful route analysis.');};
 const readinessVisibility=()=>{if(!document.hidden)renderReadiness();};
@@ -792,7 +812,7 @@ inspectorUI=initializeInspector({localFile:runtime.localFile,
   captureDocument:title=>{
     const inputs=body();delete inputs.surveyId;inputs.geometry=structuredClone(riskUI?.target()||geometry);
     for(const key of ['terrainAssessment','homeElevationEvidence'])delete inputs.export[key];
-    inputs.export.homeConfirmed=false;inputs.export.flatSurfaceConfirmed=false;inputs.export.airspaceReviewed=false;
+    inputs.export.homeConfirmed=false;inputs.export.flatSurfaceConfirmed=false;inputs.export.airspaceReviewed=false;inputs.export.planningReviewed=false;
     const scene=review?.scene,image=geometry&&['gee','archived'].includes(scene?.provider)&&scene?.id&&scene?.acquiredAt?{provider:scene.provider,sceneId:scene.id,acquiredAt:scene.acquiredAt,selectionGeometry:structuredClone(geometry)}:structuredClone(savedImageSelection);
     return {schemaVersion:'xedo-inspector-mission/1',title,inputMode:estimatedDemo?'estimated_demo':'mission',searchGeometry:structuredClone(geometry),imageSelection:image,...(riskUI?.capture()||{analysisRef:null,riskDraft:null}),planningInputs:inputs};
   },

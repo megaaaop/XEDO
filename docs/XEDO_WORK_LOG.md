@@ -5,20 +5,26 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **31 ตุลาคม 2026 — ฟอร์ม4ช่องขึ้นเว็บจริงแล้ว/8casesผ่าน/CIและpostdeployผ่าน (§3.79)**
+- อัปเดตล่าสุด: **31 ตุลาคม 2026 — local plan downloadผ่านจริง กำลังเผยแพร่ (§3.82)**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
-- จุดประสงค์รอบนี้: ตรวจ4ช่องบนbuildสุดท้ายและเผยแพร่เมื่อผ่าน พร้อมตรวจCI/Productionและบันทึกผล
-- สถานะเผยแพร่: source5ead660/CI41131117157success/ProductionFTnxwMJ9READY; finaldocs-onlyidentityดูrelease/publication.json
-- **ขอบเขตคำสั่งล่าสุด:** อนุญาตตรวจ4ช่องและpush/deployเมื่อผ่าน บันทึกสองMD; ห้ามBilling/subscription
+- จุดประสงค์รอบนี้: แก้ readiness/แบ่งเที่ยว/ดาวน์โหลด.plan บนพื้นที่เดิม ทดสอบและเผยแพร่ตามอนุมัติ
+- สถานะเผยแพร่: local acceptanceผ่าน กำลังpush/deploy; exact receiptของรอบนี้อยู่outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.jsonเมื่อทำจริง
+- **ขอบเขตคำสั่งล่าสุด:** อนุมัติ implementation/test และ push/deployเมื่อผ่านตามแผน ไม่เปิดBilling/subscription
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
 
 **กติกาเพิ่ม 27 ต.ค.:** งานแก้/ตรวจเว็บไซต์ลักษณะนี้ต้องบันทึกสองที่: ไฟล์นี้เก็บประวัติ ผลตรวจ และการเผยแพร่; `docs/WEBSITE_DETAILS.md` เก็บโครงสร้าง พฤติกรรม dependency และรายละเอียดวิธีแก้ อัปเดตทั้งสองก่อนจบรอบ และรักษาคิว JSON ให้ตรงกัน
 
 ## 2. สรุป
+
+**แก้ normal-area planning export และผ่านในเครื่องแล้ว — 31 ต.ค. 2026 (§3.82): profile8ค่ามีmanual ownership; shared planning_reference แยกstrict; exact Polygon/Homeเดิมได้35sorties/69surveysegmentsครบ/133.2Wh budget ไม่เพิ่มพลังงาน เก็บไฟล์.planจริงเที่ยว1/35และ auditตรงroute/Home; terrain range2.5788m/tolerance2mยังreview strictยังfalse no-goยังnull แก้forecast-window oscillationแล้ว Fresh682Node/syntax/3buildsผ่าน กำลังfinal-candidate browser replay และpush/deployตามอนุมัติ ไม่มีBilling/subscription**
+
+**เริ่ม implementation ตามแผนแล้ว — 31 ต.ค. 2026 (§3.81): ผู้ใช้อนุมัติแก้/ทดสอบ/push/deployเมื่อผ่าน เก็บ actual mission snapshot ใน outputs นอก Git พบ GEE58/58 จุด range2.58m/tolerance2m Home1.5ตรง ขาดโปรไฟล์8ค่า และ route partition เดิม infeasible เริ่ม shared planning_reference validator แยก strict และแก้ตัวแบ่งเที่ยว/เปรียบเทียบ heading โดยไม่เปลี่ยนพื้นที่หรือพลังงาน ยังอยู่ระหว่างตรวจ ยังไม่มีผล full suite/build/browser download ใหม่หรือการเผยแพร่รอบนี้ ไม่มี Billing/subscription**
+
+**วางแผนแก้ Surface review และดาวน์โหลด .plan — 31 ต.ค. 2026 (§3.80): ภาพแสดง5ค่าexportครบ/Route&airspaceReadyแล้ว แต่ยังมีterrainreviewและflight/battery8ค่าขาด พร้อม3morechecksที่ต้องอ่านreportเต็ม ทำPLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.mdแล้ว แนะนำprofileสมมติบนพื้นที่เดิม+planning_reference readiness/exportแยกstrictchecksจริง มี23กรณีdesigned_not_run รอบนี้แผน/เอกสารเท่านั้น ไม่แก้codeหรือpushdeploy**
 
 **ฟอร์ม4ช่องเผยแพร่และตรวจเว็บจริงแล้ว — 31 ต.ค. 2026 (§3.79): source5ead660/CI41131117157success/ProductionFTnxwMJ9READY ผ่าน8casesทั้งlocalและproduction ภาพ/JSONตรง60m/5m/วันที่ตามend/sourceprofileร่วมกับHomeGEE0จริง HTTP32checks/25webhashesตรง ใหม่ ไม่มีคำตอบรอเรื่องนี้ เหลือเตรียมนำเสนอ2รายการเดิม ไม่มีBilling/subscription Finaldocs-onlyidentityและCIเก็บในpublication.json**
 
@@ -613,7 +619,7 @@ Release นี้เปลี่ยน source, tests, scripts และเอก
 
 **รายละเอียดที่ตรวจจริง:**
 
-- Gitเริ่มรอบclean HEAD28d7e9d; Vercelaliasตรวจซ้ำในรอบนี้READYที่`dpl_CtoT3UAo4iwD4QTvTj27WZdSwHi5`/SHA28d7e9d1b852f1d55ecf115681ff24a13f968918 ไม่ได้เปิดbrowserหรือรันทดสอบซ้ำ ผล482testsเป็นของrelease3Dก่อนหน้า
+- Gitเริ่มรอบclean HEAD28d7e9d; Vercelaliasตรวจซ้ำในรอบนี้READYที่`dpl_CtoT3UAo4iwD4QTvTj27WZdSwHi5`/SHA28d7e9d1b852f1d55ecf115682ff24a13f968918 ไม่ได้เปิดbrowserหรือรันทดสอบซ้ำ ผล482testsเป็นของrelease3Dก่อนหน้า
 - Planner: hardwareprofileมีcamera/height/speed แต่battery/windlimits/allowancesยังอยู่ในEstimatedDemo; exportต้องมีtarget/height/constraints/reviewsครบ ไม่แก้เพียงปลดปุ่มdownload; schedule.completeยังอัปเดตเฉพาะautomatic ส่วนmanualรับstart+endคู่ จึงยังไม่ใช่userstart/derivedend
 - UX: GEEstatus/context/scrollและ3Dgroundเสร็จแล้ว เหลือป้ายPrototypeซ้ำ/ข้อความ/flowหลัก และตรวจหลังเชื่อมfeatureใหม่ การทดสอบcapacityเต็มรูปแบบไม่รวมเป้าหมาย4ชั่วโมง
 - Accounts: hostedvercel.jsonมีเฉพาะGEE/environment/context ไม่มีlogin/session/privateMissionAPI;db/schema.tsไม่มีaccount/session/ownerสำหรับภารกิจ `actor`ในworkerเป็นauditmetadataและstoragequeryยังglobal จึงไม่ใช่privateownership มีsnapshot/revision/eventsที่reuseได้แต่ต้องทำserverownershipจริง
@@ -682,7 +688,7 @@ Release นี้เปลี่ยน source, tests, scripts และเอก
 - **หัวข้อ:** เตรียมผล AI/SAR เดิมพร้อม metadata/พิกัด/หลักฐานตรวจซ้ำ และออกแบบกรณีทดสอบ ส่งให้แชทหลักเป็นผู้เชื่อมเว็บไซต์เพียงแชทเดียว
 - **สรุป:** ชุดข้อมูลพร้อมตรวจรับในเครื่องที่ [HANDOFF.md](C:/mega/codex/iENA/outputs/XEDO_Parallel_Handoff_2026-10-27/support/HANDOFF.md); utility ตรวจจริง32checksผ่าน valid1,061,830/candidate15,248/NoData702,950; raw14components/0holes/area1,524,800m²; nativeและserializedWGS84→UTM roundtripต่าง0pixel มี44websitecasesสถานะdesigned_not_runทั้งหมด
 - **รายละเอียด/ไฟล์:** เขียนเฉพาะsupport/ ตามbrief: manifest.json,candidates.raw.geojson,coverage.raw.geojson,source_footprints.geojson,coordinate_reference.json,validation.json,prepare_result.py,requirements.lock.txt,package_checksums.json,preparation-run.log,PROVENANCE_AUDIT.md,provenance.evidence.json,TEST_PLAN.md,HANDOFF.md,delivery_status.json,continuity_receipt.json,record_delivery.py และสำเนาartifacts5ไฟล์ตรงhash; appendบันทึกเฉพาะสองMarkdownกลางตามAGENTS ไม่แก้overviewหรือimplementation-queue.json
-- **ผลตรวจจริง:** source HEADที่อ่าน28d7e9d1b852f1d55ecf115681ff24a13f968918; output1317×1340/EPSG32647/10m/affinecropตรงraster; mask0/1/255และscoreNoData-9999ตรงกัน; threshold0.3pixelwiseตรง; checkpointและoriginalinputs3ไฟล์hashตรง; sourceไฟล์ไม่เปลี่ยนและcopiesตรงbytes; all848candidateverticesCRSroundtripmax2.108e-9m; coveragevalid/NoDataroundtrip0; corepackage12hashesตรง เปิดpreviewเดิมตรวจแล้ว (ไม่ใช้PNGแทนgeoreference)
+- **ผลตรวจจริง:** source HEADที่อ่าน28d7e9d1b852f1d55ecf115682ff24a13f968918; output1317×1340/EPSG32647/10m/affinecropตรงraster; mask0/1/255และscoreNoData-9999ตรงกัน; threshold0.3pixelwiseตรง; checkpointและoriginalinputs3ไฟล์hashตรง; sourceไฟล์ไม่เปลี่ยนและcopiesตรงbytes; all848candidateverticesCRSroundtripmax2.108e-9m; coveragevalid/NoDataroundtrip0; corepackage12hashesตรง เปิดpreviewเดิมตรวจแล้ว (ไม่ใช้PNGแทนgeoreference)
 - **อุปสรรค/งานต่อ:** runtimeproxyติดตั้งครั้งแรกไม่สำเร็จ แก้แล้วด้วยenvironmentแยกsupport/.venvจากPyPI ไม่แตะglobal/sitepackagesของเว็บ; candidate-00012มี378verticesเกินplanner120ต้องให้mainกำหนดpolicyและInspectorreviewก่อนส่งหนึ่งplanningPolygon; รักษาวันภาพ9ต.ค./inferenceเดิม11ต.ค.2026,land/lookalikes,accuracy_validated_on_gee=falseและunknownversionsเป็นnull
 - **ไม่รัน/ไม่แก้:** ไม่มีwebsiteunit/integration/browser/auth/privacy/save/exportchecksใหม่ ไม่มีinference/training/accuracy/liveGEE/hardware; ไม่ใช้482testsเก่าเป็นผลรอบนี้ ไม่แก้source/API/DB/schema/config/package/website tests หรือผลbuild
 - **การเผยแพร่:** local-only ไม่มีcommit/push/deploy ไม่มีข้อความส่งไปuser-ownedchatอื่น ผู้ใช้นำabsoluteHANDOFFpathให้mainอ่านต่อ แชทหลักเป็นผู้รวมstatus/queueและดูแลintegration/releaseตามคำสั่งผู้ใช้
@@ -748,7 +754,7 @@ Release นี้เปลี่ยน source, tests, scripts และเอก
 - **ข้อเสนอ/งานmain:** rawimmutable→draft/decisions→confirmedreview→planningtarget→plan;setGeometryresetภาพ/review/scheduleจึงไม่ใช้ต่อvertex;surveyIdresolveกลับfrozenoriginalboundaryต้องมีtargetadapter;ขยายepoch/result/review/target/sessionguardก่อนและหลังawait/export;Savefail/conflictรักษาdraft,Cancelตรวจreadinessใหม่ RE01–RE14webcasesทั้งหมดdesigned_not_run/executed0
 - **ไฟล์/ประวัติ:** เขียนเฉพาะreview-edit/และappendสองMarkdownกลางตามAGENTS ไม่แตะcoremanifest/checksums/validation/TEST_PLAN44กรณีเดิม Initialzero-area fixtureconstructionเคยfailedจากnonlinearreprojection เก็บvalidation.initial-fixture-construction.json แล้วแก้เฉพาะfixtureWGS84;ผลปัจจุบันผ่าน พร้อมdelivery_status/continuity_receipt/source_drift_observation
 - **ขอบเขตล่าสุด:** ไม่เพิ่มnormalprofile/batterydefaults/userstart-derivedend/fullnormalexportgateที่ผู้ใช้ตัดออก เก็บplanner/เวลา/export/readinessเดิม แผนเก่าPL01/PL02และgateที่ขัดกันถูกsupersedeเฉพาะscopeโดยไม่แก้coretestplan
-- **Source/งานขนาน:** HEADอ่าน28d7e9d1b852f1d55ecf115681ff24a13f968918 มีdocsdirty4ตั้งแต่เริ่ม;ท้ายรอบพบmainเพิ่มuntrackedinspector-mission-document/save schemasและexamples อ่านสองschemaเท่านั้น/ไม่แก้ บันทึกhashและmappingข้อเสนอในhandoff§3.7 ต้องตรวจcontractล่าสุดก่อนintegration ไม่ถือschemaartifactเป็นAPI/DBที่deployแล้ว
+- **Source/งานขนาน:** HEADอ่าน28d7e9d1b852f1d55ecf115682ff24a13f968918 มีdocsdirty4ตั้งแต่เริ่ม;ท้ายรอบพบmainเพิ่มuntrackedinspector-mission-document/save schemasและexamples อ่านสองschemaเท่านั้น/ไม่แก้ บันทึกhashและmappingข้อเสนอในhandoff§3.7 ต้องตรวจcontractล่าสุดก่อนintegration ไม่ถือschemaartifactเป็นAPI/DBที่deployแล้ว
 - **ไม่รัน/เผยแพร่:** ไม่มีwebsiteeditor/API/auth/privacy/save/history/browser/staleexportexecutionหรือProductioncalls ไม่มีnewinference/training/accountDBservicechanges/Gitmutation/commit/push/deploy Supportไม่แก้source/config/schema/packages/tests/buildของweb
 - **งานค้าง/รอคำตอบ:** ไม่มีdata/runtimeblockerหรือคำถามผู้ใช้ค้าง Mainใช้fixtureทำcontract/editor/ownership/persistenceและรันRE01–RE14จริง ผู้ใช้นำabsolutehandoffpathส่งต่อmain ไม่มีการส่งข้อความไปuser-ownedchatอื่นเอง
 
@@ -794,7 +800,7 @@ Release นี้เปลี่ยน source, tests, scripts และเอก
 
 **รายละเอียดและไฟล์ที่เปลี่ยน:**
 
-- อ่าน log/queue และ Git status ของ active checkout ก่อนทำงาน HEAD `28d7e9d1b852f1d55ecf115681ff24a13f968918` มี docs/contracts ค้างจาก phase1 รักษารายการ support ทั้ง 17:58 และ 21:19 และงานเดิมไว้
+- อ่าน log/queue และ Git status ของ active checkout ก่อนทำงาน HEAD `28d7e9d1b852f1d55ecf115682ff24a13f968918` มี docs/contracts ค้างจาก phase1 รักษารายการ support ทั้ง 17:58 และ 21:19 และงานเดิมไว้
 - อ่าน local config เฉพาะรายการ plugin/MCP ที่ไม่เปิดเผย secret และ manifest/.app.json พบ Supabase app ID `asdk_app_69d3e5ee6a708191baa733f7b8931995`; เปิด public plugin page ผ่าน IAB ตรวจชื่อ/Apps/version แต่ session นั้นไม่ได้ล็อกอิน จึงไม่เห็นปุ่มจัดการ connection ส่วนตัว ไม่ใช้ข้อความที่เดาชื่อเมนูเป็นข้อเท็จจริง
 - ใช้ OpenAI Docs และ Supabase skill ตรวจ official docs/source; subagent ช่วยค้นแบบ read-only พบ OpenAI Plugins → Installed → Supabase และ Apps/connection details ตาม client; OAuth ต้องเลือก **megaphijak** และ xedo ถ้ามี project selector Browser OAuth account อาจต่างจากบัญชีใน screenshot จึงให้ตรวจ Authorizing as
 - ตรวจทางเข้า Supabase Organization Settings → Connections → OAuth Apps → Authorized apps จาก source ทางการ เพื่อดู grant ที่มีอยู่ ไม่ให้สร้าง Published app ใหม่ และไม่อนุมาน organization slug จากชื่อ megaphijak การเข้า Organization Settings จาก project breadcrumb ยังไม่ได้กดตรวจจริง จึงไม่ชี้รูปเฟืองในภาพแบบเดา
@@ -2173,3 +2179,46 @@ PostpushHTTP32checksผ่าน: HTML23516bytesและ24assetsตรง25hash
 **Productionbrowserยืนยัน:** GuestQAใหม่ไม่แตะuserdraftหรือบัญชีจริง ผ่าน8casesเดียวกับlocalทั้งหมด default60/5/source/validUntil=end,automaticdateตามend,manual75/0/customsource/expiryรักษาเมื่อendเปลี่ยน,manualblankรักษา,Useplanningdefaultsคืน4ค่าและรักษาArduPilot,เข้า–ออกdemoคืนprofile,autoownershipยังตามendหลังdemo,publicGEEHome0ร่วมกับdefaults ภาพproduction-four-fields.pngและproduction-proof.jsonก่อน/หลังตรงกัน,capturedwarn/error0 Reviewhumanfalse/Downloaddisabledตามข้อมูลflightที่ยังขาด ไม่อ้างว่าทุกเงื่อนไขบินจริงผ่านจากการเติม4ค่า ไม่มีจริงSupaSave/AIjob/OSreboot/QGC/SITLใหม่รอบนี้
 
 **ส่งมอบ/ข้อจำกัด:** ปิดpendingbrowserของ§3.78และคำถามรอแล้ว คืนคิวก่อนนำเสนอเป็นซ้อมเครื่องจริงหลังbootและชุดสำรอง2รายการเดิม งานsnapshotfilechooserผ่านChromeagentติดextensionfileURLpermissionไม่ได้เปลี่ยนสิทธิ์และไม่countเป็นUIimportpass; restore/serializationผ่านVM/fullsuiteเดิมและdemo roundtripผ่านbrowserในรอบนี้ ผล652localtests/syntax/3buildsเป็นretainedsource-identicalจากรอบก่อน ไม่อ้างรันlocalใหม่ CIsourceรอบนี้ใหม่และsuccess ตรวจstrictscope/credentialscan39filesไม่พบcredential/clientservermarkers ไม่มีproductsourcechangeเพิ่มหลัง652tests ไม่มีBilling/subscription/accounts/schema/env/CPUchange CanonicalสองMDและqueueติดตามผลในcommitเอกสารแยก finalSHA/CI/deployment/hash/newpageproofอยู่ C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json
+
+
+<!-- normal-area-plan-export-readiness-plan-2026-10-31 -->
+### 3.80 แผนแก้ Review needed และดาวน์โหลด .plan จากพื้นที่เดิม — 31 ตุลาคม 2026
+
+**หัวข้อ/ขอบเขต:** ผู้ใช้ส่ง2ภาพว่าฟอร์ม5ค่ามีแล้ว แต่SurfaceReviewneeded/Downloaddisabled และสั่งทำแผนละเอียดเป็น.md ยังไม่ลงมือแก้ อ่านบันทึก/queue/AGENTS/Gitก่อนงาน SourceHEAD1b498acและGitสะอาดก่อนเขียนเอกสาร ไม่ใช้สิทธิ์push/deployของrelease4ช่องก่อนหน้ากับงานนี้
+
+**สิ่งที่ตรวจจากภาพและsource:** ภาพHome1.5/ceiling60/corridor5/validity/sourceครบและเลือกArduPilot Route&airspaceReady/checkboxเลือกแล้ว SurfaceยังGEEneedsreview ภาพแจ้งmissingwindLimitMps/maxAirspeedMps/usableWh/reserveWh/powerW/takeoffS/landingS/turnSและWind/Batteryincomplete พร้อม3morechecksที่ยังไม่มีIDเต็ม ไม่เดาว่าเป็น3ข้อใดหรือrange/offsetตัวเลขเท่าไร SourceยืนยันcanExportต้องexportCheckpass+4rowsReady; terrainreviewเกิดเมื่อrange/Homeoffsetเกินtoleranceหลังข้อมูลผ่านnormalize และbuilderตรวจก่อนserializeอีกชั้น Homeมีตัวเลขไม่ยืนยันmatchingGEEprovenanceทันที
+
+**แผนที่สร้าง:** docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md มี3ส่วนหลักและรายละเอียด12หัวข้อ: facts/unknowns/codepaths,เป้าหมาย,fullblockerdiagnostics,editableflightprofile8ค่าที่มีในEstimateddemo,sharedplanningReferencevsstrictreadiness,exportbuilder/runtimeparity,UXBeforedownload,filescope,testmatrix23กรณี และacceptanceจนถึงดาวน์โหลด.planจริงจากพื้นที่เดิม แนะนำreuseเฉพาะassumptions8ค่าไม่เรียกcreateEstimatedDemoInputsย้ายขอบเขต/ลม/Homeของผู้ใช้ budget177.6−44.4=133.2Whไม่สับสน182.7minเป็นหนึ่งแบต terrainreviewคงตามจริงไม่เพิ่มtoleranceหรือtickflatSurfaceเพื่อให้ผ่าน planmodeต้องยังblockinvalid/missing/stale/mismatched/knownconflictอย่างเหมาะสม ไม่เปลี่ยนstrictbuilderpassหรือสร้างno-goempty/approvalปลอม
+
+**สถาปัตยกรรมที่มีผลต่อวิธีแก้:** hostedbuildกำหนดSTANDALONE=true/GEE_HOSTED=true การคำนวณและสร้างไฟล์ผ่านplanning-file-apiในbrowser ขณะที่workspaceSTANDALONE=falseใช้planningTrialAPI/api/v2/planning-trial จึงเสนอsharedpurechecks/serializer/operationที่ทั้งสองใช้ ไม่ต้องเปิดcloudCPUหรือVercelFunctionใหม่ ตัวดาวน์โหลดคงaccount/revision/hash/Abortguards และหนึ่ง.planต่อsortieที่เลือกตามขีดจำกัดเดิม ไม่อ้างnativeQGC/MissionPlanner/SITL/บินจริงจากการparseไฟล์
+
+**Scope/คิว/สิ่งที่เหลือ:** ระบุชัดว่าเดิม3เคยตัดnormalflowprofileออก แผนนี้เป็นข้อเสนอเปิดกลับเฉพาะส่วนจำเป็นต่อปัญหา8ค่าและexportหลังสั่งimplementation ไม่เปิดtime-schedulingrewriteอัตโนมัติ งาน4exportdefaults/Homeก่อนหน้ายังเป็นcompletedpublishedในscopeเดิม แต่ปัญหาnormal-areafullplanยังไม่ปิด เพิ่มrepairplanนี้เป็นลำดับแรกก่อนซ้อมเครื่อง/ชุดสำรอง รักษางานพักPi/ผลทดลอง/paidcloud/qualification ไม่มีคำถามที่ต้องตอบเพื่อส่งแผนนี้ ขั้นต่อไปคือรอคำสั่งเริ่มแก้ ไม่ส่งผู้ช่วยหรือแก้websiteขนานโดยไม่มีคำสั่ง
+
+**ไฟล์/ตรวจ/เผยแพร่:** แก้เฉพาะplan.mdใหม่/สองcanonicalMD/queueอ่านล่าสุดก่อนเขียนและเก็บประวัติเดิม ตรวจMarkdown3parts/8keys/23testIDs/JSONparse/diffและขอบเขตGitเท่านั้น ทุกtestcaseในแผนdesigned_not_run/actualnull ไม่มีproductcode/config/contracts/tests/บัญชี/schema/envเปลี่ยน ไม่มีfreshbrowser/API/GEE/AI/tests/build/CI/deploymentrun ไม่รีไซเคิล652testsเดิมเป็นผลใหม่ ไม่commit/push/deployและไม่เปิดBilling/subscription หลักฐานdocumentvalidation C:/mega/codex/iENA/outputs/XEDO_Plan_Export_Readiness_Plan_2026-10-31/validation.json
+
+### 3.81 เริ่มแก้ normal-area planning export ตามแผนที่อนุมัติ — 31 ตุลาคม 2026
+
+- คำสั่งล่าสุด: แก้ตามแผน ให้พื้นที่เดิมดาวน์โหลด .plan จริง ทดสอบ/บันทึกสอง MD แล้ว push/deployเมื่อผ่าน ไม่มี Billing/subscription
+- เก็บข้อมูลก่อนแก้ผ่าน UI: `outputs/XEDO_Plan_Export_Repair_2026-10-31/private-original-snapshot.json` และ `private-user-before.json` เป็นหลักฐานในเครื่อง ห้ามลง Git เพราะมีรายละเอียดภารกิจ
+- Diagnostics ใหม่: route53.3km, Home1.5m, GEE58/58 samples/range0–2.58m เทียบ tolerance2m ทำให้ review; 8ค่า flight ขาดและ no-go null ขณะบันทึก
+- พบ partition เดิมยึดแนวบินเต็มเส้นและ transit ผ่าน vertexแรก จึง infeasible กับ133.2Wh budget เริ่มแก้แบ่งแนวบินระหว่างเที่ยว/ตรงไป entry ของ sortie และเปรียบเทียบทิศ0/30/60/90องศาแบบ bounded โดยเก็บ coverage fractions ครบ
+- ผล probe เฉพาะ CPU calculation บนพื้นที่เดิม: profileเดิมได้35sortiesที่heading30deg แทน71ที่heading0deg ยังไม่ใช่ผล browser export/acceptance
+- เริ่ม flight profile ownership8ค่าและ planning reference checks/operation แยกstrict reportเดิม ไม่มีการยก tolerance/สร้างลม0/เปลี่ยน no-go nullเป็นempty
+- ยังไม่รัน full suite/build/postdeploy ในจุดบันทึกนี้; ไม่มี push/deploy ใหม่ ไม่มี schema/account/env/billing/subscription change ไม่มีคำถามจำเป็นรอคำตอบ
+
+### 3.82 Local acceptance และเผยแพร่ normal-area planning export — 31 ตุลาคม 2026
+
+**ขอบเขต:** ผู้ใช้อนุมัติแก้ตามแผนให้พื้นที่เดิมโหลด.planจริง ทดสอบ/บันทึกสอง MD แล้วpush/deployเมื่อผ่าน ไม่มีBilling/subscription ไม่ใช้สิทธิ์จากreleaseก่อนแทนคำสั่งนี้ แชทหลักเป็นผู้แก้ ไม่มีagentแก้พร้อมกัน
+
+**Implementation:** flight profile8ค่าownershipautomatic/manual; legacy/importblankzeroและdemo backupคืนได้, strict checker/buildQGCPlanและ/exportเดิมไม่ถูกลดเงื่อนไข เพิ่มplanning_reference checksและ/planning-exportทั้งbrowser adapter/workspace ใช้schema/purposeชัดเจน คงno-go null=not_assessed/suppliedconflictblock คงGEEreviewและnumericrange/tolerance ไม่ทำflatSurfaceConfirmedปลอมหรือเพิ่มtolerance; stale/missing/mismatch/knownDSMcollision/wind/energy/timeยังblock เพิ่มfriendlyunits/Viewallchecks/asyncinputHashguard รายละเอียดทุกไฟล์ในPLAN_EXPORT_READINESS_REPAIR_REPORT_2026-10-31.md
+
+**Route/time:** diagnosticsพบfullswathpartition/firstvertexdetourinfeasible จึงเพิ่มboundedheading0/30/60/90comparisonและmid-swathsplitสำหรับplanningprofileเท่านั้น เก็บfractionsทุกsurveysegmentและHomeกลับทุกเที่ยว ผลพื้นที่เดิม35sorties heading30/69segmentsครบ/totaldistance117788.7554m/max132.9476Wh≤133.2Wh Airborne439.4625min+5buffer+34x10turnaround=784.4625min ไม่รวม35เที่ยวเป็นแบตเดียว Adapter40/500/5000limitsยังอยู่ พบเวลาwindowสลับเพราะforecastrefreshทำbatterytemporaryincomplete จึงเก็บdurationSource assessed_sortiesและroute samplesระหว่างgap; actual gatesยังblockจนข้อมูลใหม่ครบ ไม่rewriteuser-start/derived-endซึ่งยังนอกscope
+
+**Fresh verification:** npm test -- --test-concurrency=2 ได้682pass/0fail/cancel/skip, npmruncheckและbuild/buildworkspace/buildfileผ่าน Fullsuiteรวมstrictregressions, stale/partial/wrongGEE/Home/route, wind/no-go/energy/time, hash/session/revision/doubleclick, profileblankzero/import/demo และSQLPGliteSavev3v4/history/reopen/ownerisolation ไม่อ้างว่าSQLtestเป็นrealSupabase/browserSaveใหม่
+
+**Browser/artifacts:** เปิดChrome QAคนละแท็บ ไม่เปลี่ยนoriginaluserdraft ใช้GeoJSON/Homeเดิมผ่านvisiblefieldsและrealSentinel2 27Oct/automaticregionalforecast/GEE ได้Home1.5m range2.578836679/tolerance2mครบ58samplesstrictfalseplanningtrue ดาวน์โหลด01/35ผ่านUIพบไฟล์OSจริง4975/2638bytes/12/6itemsArduPilot3; auditเทียบserializerตรงselection/Home/waypointsมีแค่16/21/22/178และcoverage69segmentscomplete body17213bytes เก็บหลักฐานในoutputs/XEDO_Plan_Export_Repair_2026-10-31นอกGit (precise mission/privatejsonห้ามpublish) ตรวจ390pxnooverflowและ2D/3D readinessได้ ไม่มีbroadhardwareperformance/nativeQGC/SITL/flightclaim FinalcandidateและProductionreplayจะเติมreceiptหลังทำจริง
+
+**Publication/status:** กำลังscope/credentialscan/hashfreeze→normalpushmain→automaticVercelProduction→exactCI/alias/hashsmoke/browserdownloadจริง ไม่มีmigration/account/env/CPU/AIcloud/Billing/subscriptionchange ไม่มีคำถามจำเป็นรอคำตอบ Nativeimport/SITL/fieldqualification/rebootrehearsal/ชุดสำรองยังแยกไว้ ผลจริงหลังเผยแพร่และexactsource/finalSHAจะอยู่outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json
+
+
+**Final candidate acceptance (ก่อน push):** replayChromeบนbuildสุดท้ายอีกครั้งด้วยพื้นที่/Homeเดิม ได้35sorties/784.4625minและplanningready/terrainreviewตามเดิม Download01/35จริงรอบใหม่ (` (1).plan`) เทียบserializer/hashตรงกับsnapshotf54ac8561bcc มี12/6items ตรวจpickerdisabledระหว่างPreparingและคืนenabledหลังสำเร็จ DOMbootassetตรงfrozenmanifest consolewarning/error0 `final-local-browser-proof.json`, `local-download-audit.json`, `final-local-ready.png`; requestinputsล่าสุด17212bytes Fresh682tests/0failและ3builds Source22paths+hosted25filesอยู่manifest ไม่เปลี่ยนproductหลังfreeze กำลัง normalpush/deployและตรวจProductionต่อ ไม่มีBilling/subscription

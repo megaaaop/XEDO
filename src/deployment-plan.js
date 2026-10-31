@@ -80,7 +80,8 @@ function terrainFor(point,samples){
 }
 
 /** Deterministic diagram and route estimate only. Never emits flight commands. */
-export function buildDeploymentPreview({geometry,altitudeM=50,spacingM=100,speedMps=5,context=null}={}){
+export function buildDeploymentPreview({geometry,altitudeM=50,spacingM=100,speedMps=5,context=null,headingOffsetDeg=0}={}){
+  parameter(headingOffsetDeg,'Track heading offset (degrees)',0,90);
   parameter(altitudeM,'Preview altitude (m AGL)',5,500);parameter(spacingM,'Track spacing (m)',5,1000);parameter(speedMps,'Preview speed (m/s)',0.1,30);
   const areaM2=validateGeometry(geometry),target=structuredClone(geometry),coordinates=target.coordinates[0];
   const longitudes=coordinates.map(p=>p[0]),latitudes=coordinates.map(p=>p[1]);
@@ -102,6 +103,8 @@ export function buildDeploymentPreview({geometry,altitudeM=50,spacingM=100,speed
     const candidate=Math.atan2(ring[i+1][1]-ring[i][1],ring[i+1][0]-ring[i][0]),ys=ring.map(p=>-Math.sin(candidate)*p[0]+Math.cos(candidate)*p[1]),width=Math.max(...ys)-Math.min(...ys);
     if(width<smallestWidth-1e-6){smallestWidth=width;angle=candidate;}
   }
+  angle+=headingOffsetDeg*Math.PI/180;
+  base.parameters.headingOffsetDeg=headingOffsetDeg;
   const cosine=Math.cos(angle),sine=Math.sin(angle),rotate=p=>[cosine*p[0]+sine*p[1],-sine*p[0]+cosine*p[1]],unrotate=p=>[cosine*p[0]-sine*p[1],sine*p[0]+cosine*p[1]],rotated=ring.map(rotate);
   const low=Math.min(...rotated.map(p=>p[1])),high=Math.max(...rotated.map(p=>p[1])),trackCount=Math.ceil((high-low)/spacingM);
   if(trackCount>MAX_TRACKS)return blocked('TOO_MANY_TRACKS','The preview exceeds 200 survey tracks. Increase spacing or split the area.');

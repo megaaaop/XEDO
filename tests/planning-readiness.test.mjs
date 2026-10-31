@@ -157,3 +157,8 @@ test('Partial/missing markup is safe and dispose removes action handlers', () =>
   assert.deepEqual(h.actions, []);
   assert.doesNotThrow(() => initializePlanningReadiness({root:null}).render());
 });
+test('Planning reference readiness can report file ready while retaining the yellow terrain review and its actual details',()=>{
+ const h=harness();h.state.purpose='planning_reference';h.state.canExport=true;h.state.rows=h.state.rows.map(row=>({...row,state:row.id==='terrain'?'review':'ready'}));h.state.rows[2].detail='Range 2.58 m / tolerance 2 m';h.ui.render();
+ assert.equal(h.node('trial-readiness-open').dataset.readiness,'ready');assert.match(h.node('trial-readiness-open').getAttribute('aria-label'),/Plan readiness: Ready.*Surface model: Review needed/);
+ assert.equal(h.row('terrain').dataset.state,'review');assert.match(h.row('terrain').children[1].textContent,/2.58/);assert.equal(h.row('airspace').children[2].children[1].textContent,'I reviewed the planning assumptions, route and terrain findings');h.ui.dispose();
+});

@@ -58,6 +58,7 @@ export function createPlanningSchedule({ now = Date.now, bufferS = 300, turnarou
     pending: false,
     analysedAt: null,
     flightDurationS: null,
+    durationSource: null,
     sortieCount: 0,
     schedulingBufferS: bufferS,
     turnaroundS,
@@ -90,6 +91,11 @@ export function createPlanningSchedule({ now = Date.now, bufferS = 300, turnarou
 
   function complete(flight) {
     if (schedule.mode !== 'automatic' || flight?.plan?.status !== 'generated') return getPatch();
+    const assessed=Number.isFinite(flight.battery?.totalDurationS)&&flight.battery.totalDurationS>0&&flight.battery?.sorties?.length>0;
+    // Forecast refresh temporarily removes wind/battery assessments. Do not
+    // shrink an assessed window to the geometry-only estimate and refetch in a
+    // loop. Export still requires a new complete wind/battery result.
+    if(!schedule.pending&&schedule.durationSource==='assessed_sorties'&&!assessed)return getPatch();
     const analysedAt = schedule.pending ? iso(clock()) : schedule.analysedAt;
     const durationS = durationFor(flight);
     const sortieCount = Math.max(1, Array.isArray(flight.battery?.sorties) ? flight.battery.sorties.length : 0);
@@ -97,7 +103,7 @@ export function createPlanningSchedule({ now = Date.now, bufferS = 300, turnarou
     const takeoff = Date.parse(analysedAt) + HOUR_MS;
     const nextTakeoff = iso(takeoff);
     const nextEnd = iso(takeoff + windowDurationS * 1000);
-    schedule = { ...schedule, pending: false, analysedAt, flightDurationS: durationS, sortieCount, windowDurationS };
+    schedule = { ...schedule, pending: false, analysedAt, flightDurationS: durationS,durationSource:assessed?'assessed_sorties':'route_estimate', sortieCount, windowDurationS };
     plannedTakeoffAt = nextTakeoff;
     plannedEndAt = nextEnd;
     return getPatch();
@@ -151,6 +157,7 @@ export function createPlanningSchedule({ now = Date.now, bufferS = 300, turnarou
       next = {
         version: VERSION, mode: 'automatic', pending: metadata.pending, analysedAt,
         flightDurationS: metadata.pending ? null : metadata.flightDurationS,
+        durationSource:metadata.pending?null:metadata.durationSource==='assessed_sorties'?'assessed_sorties':'route_estimate',
         sortieCount: metadata.pending ? 0 : metadata.sortieCount,
         schedulingBufferS, turnaroundS: restoredTurnaroundS,
         windowDurationS: metadata.pending ? null : metadata.windowDurationS,

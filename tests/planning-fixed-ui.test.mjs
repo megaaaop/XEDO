@@ -9,6 +9,7 @@ import {validateGeometry} from '../src/domain.js';
 import {ESTIMATED_DEMO_PROFILE,createEstimatedDemoInputs} from '../src/planning-estimated-demo.js';
 import {createPlanningSchedule} from '../src/planning-schedule.js';
 import {createPlanningExportDefaults} from '../src/planning-export-defaults.js';
+import {createPlanningFlightProfile} from '../src/planning-flight-profile.js';
 import {createActionFeedback} from '../src/action-feedback.js';
 
 const client=await readFile(new URL('../src/planning-trial-client.js',import.meta.url),'utf8');
@@ -20,7 +21,7 @@ function section(from,to){const start=client.indexOf(from),end=client.indexOf(to
 // browser/map/network adapters. Hidden controls remain in queries as in the DOM.
 function harness(){
   const nodes=[];
-  const explicitControls=new Set(['trial-camera-preset','drift-enabled','export-home-confirmed','export-flat-confirmed','export-airspace-reviewed','export-nogo','oil-emulsion','trial-environment-mode','trial-environment-site','trial-terrain-mode','trial-terrain-tolerance']);
+  const explicitControls=new Set(['trial-camera-preset','drift-enabled','export-home-confirmed','export-flat-confirmed','export-airspace-reviewed','export-planning-reviewed','export-nogo','oil-emulsion','trial-environment-mode','trial-environment-site','trial-terrain-mode','trial-terrain-tolerance']);
   class Element{
     constructor(tag='input'){this.tagName=tag.toUpperCase();this.type=tag==='select'?'select-one':'text';this.children=[];this.dataset={};this.attributes={};this.textContent='';this.hidden=false;this.readOnly=false;this.disabled=false;this.checked=false;this._value='';nodes.push(this);}
     set value(value){this._value=String(value);} get value(){return this._value;}
@@ -46,7 +47,7 @@ function harness(){
     const helper=createPlanningSchedule(options);
     return {...helper,restore:(metadata,fields)=>helper.restore(metadata==null?metadata:plain(metadata),fields==null?fields:plain(fields)),setManual:fields=>helper.setManual(plain(fields))};
   }
-  const context=vm.createContext({document,calls,structuredClone,Date,JSON,downloadFeedback:createActionFeedback(),createPlanningSchedule:scheduleFactory,createPlanningExportDefaults,XEDO_HARDWARE_PROFILE,FIXED_PLANNING_SETTINGS,FIXED_SEARCH_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,fixedSettingConflicts,validateGeometry,ESTIMATED_DEMO_PROFILE,createEstimatedDemoInputs});
+  const context=vm.createContext({document,calls,structuredClone,Date,JSON,downloadFeedback:createActionFeedback(),createPlanningSchedule:scheduleFactory,createPlanningExportDefaults,createPlanningFlightProfile,XEDO_HARDWARE_PROFILE,FIXED_PLANNING_SETTINGS,FIXED_SEARCH_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,fixedSettingConflicts,validateGeometry,ESTIMATED_DEMO_PROFILE,createEstimatedDemoInputs});
   vm.runInContext(`
     const $=selector=>document.querySelector(selector);
     let geometry=${JSON.stringify(polygon())},surveyId=null,revision=0,example=false,draw={active:true},selectHome=false,result=null,working=false,currentStep=3,review={ready:true};
@@ -93,7 +94,7 @@ test('Real read/body includes hidden constants, converts overlap once and keeps 
   const ui=harness();assert.equal(ui.context.read('flight').sideOverlap,70);
   for(const key of ['homeLongitude','homeLatitude','windEastMps','reserveWh'])ui.input('flight',key).value='0';
   ui.input('flight','altitudeM').value='99';ui.input('flight','sideOverlap').value='5';
-  const input=ui.body();assertConstants(input);assert.deepEqual(input.flight.home,[0,0]);assert.equal(input.flight.windEastMps,0);assert.equal(input.flight.reserveWh,0);assert.equal(input.flight.usableWh,null);assert.equal(input.driftEnabled,false);assert.equal(input.oil.emulsion,false);
+  const input=ui.body();assertConstants(input);assert.deepEqual(input.flight.home,[0,0]);assert.equal(input.flight.windEastMps,0);assert.equal(input.flight.reserveWh,0);assert.equal(input.flight.usableWh,177.6);assert.equal(input.driftEnabled,false);assert.equal(input.oil.emulsion,false);
   for(const key of ['homeConfirmed','flatSurfaceConfirmed','airspaceReviewed'])assert.equal(input.export[key],false);
   assert.equal(input.export.noGo,null);assert.equal(Object.hasOwn(input.oil,'gsdYM'),false);assert.equal(Object.hasOwn(input.oil,'oilFraction'),false);assert.deepEqual(input.geometry,polygon());
 });
@@ -116,10 +117,15 @@ test('A demo visit and saved restore retain automatic validity ownership and man
 
 test('Real restore adopts missing constants, retains mission zeros, and is stable for matching snapshots',()=>{
   const ui=harness();ui.restore({flight:{home:[0,0],reserveWh:0,windNorthMps:0},oil:{areaM2:0},export:{homeAmslM:0},driftEnabled:false});
-  const input=ui.body();assertConstants(input);assert.equal(ui.input('flight','sideOverlap').value,'70');assert.equal(ui.input('flight','frontOverlap').value,'80');assert.equal(ui.node('trial-camera-preset').value,XEDO_HARDWARE_PROFILE.cameraPreset);assert.deepEqual(input.flight.home,[0,0]);assert.equal(input.flight.reserveWh,0);assert.equal(input.flight.windNorthMps,0);assert.equal(input.flight.usableWh,null);assert.equal(input.oil.areaM2,0);assert.equal(input.export.homeAmslM,0);
+  const input=ui.body();assertConstants(input);assert.equal(ui.input('flight','sideOverlap').value,'70');assert.equal(ui.input('flight','frontOverlap').value,'80');assert.equal(ui.node('trial-camera-preset').value,XEDO_HARDWARE_PROFILE.cameraPreset);assert.deepEqual(input.flight.home,[0,0]);assert.equal(input.flight.reserveWh,0);assert.equal(input.flight.windNorthMps,0);assert.equal(input.flight.usableWh,177.6);assert.equal(input.oil.areaM2,0);assert.equal(input.export.homeAmslM,0);
   ui.restore(input);assert.deepEqual(ui.body(),input);
 });
 
+test('P17 a planning snapshot restores manual blank/zero ownership and clears its old review',async()=>{
+ const ui=harness(),input=ui.body();input.flight.turnS=0;input.flight.powerW=null;input.flight.planningProfile.fields.turnS={mode:'manual',value:0};input.flight.planningProfile.fields.powerW={mode:'manual',value:null};input.export.planningReviewed=true;
+ await ui.snapshot({schema_version:'xedo-planning-trial/1',inputs:input});
+ const after=ui.body();assert.equal(after.export.purpose,'planning_reference');assert.equal(after.export.planningReviewed,false);assert.equal(after.flight.turnS,0);assert.equal(after.flight.powerW,null);assert.equal(after.flight.planningProfile.fields.powerW.mode,'manual');
+});
 test('Real restore rejects changed or null constants before changing form values',()=>{
   const ui=harness();ui.input('flight','homeLongitude').value='101.31';const before=ui.body();
   for(const value of [100,null]){const conflict=structuredClone(before);conflict.flight.altitudeM=value;conflict.flight.home=[1,2];assert.throws(()=>ui.restore(conflict),/different fixed settings/);assert.deepEqual(ui.body(),before);}
@@ -156,6 +162,7 @@ test('Estimated demo loads the approved eight assumptions and visibly retains a 
 test('Leaving demo restores raw mission values, geometry, source and manual environment choice while clearing export confirmations',()=>{
   const ui=harness();
   ui.input('flight','usableWh').value='42.5000';ui.input('flight','powerW').value='';ui.input('flight','windEastMps').value='3.140';ui.input('flight','homeLongitude').value='101.3100000';ui.input('flight','homeLatitude').value='12.7100000';
+  vm.runInContext("flightProfile.edited('powerW')",ui.context);
   ui.node('export-nogo').value='{"unfinished":';ui.node('trial-environment-mode').value='manual';ui.node('trial-environment-site').value='channel';ui.node('trial-source').textContent='Original inspected boundary';ui.node('trial-back').setAttribute('href','/mission.html?incident=INC_original');
   for(const id of ['export-home-confirmed','export-flat-confirmed','export-airspace-reviewed'])ui.node(id).checked=true;
   const originalGeometry=ui.state().geometry;
@@ -180,7 +187,7 @@ test('Drawing a new boundary or clearing it inside demo keeps assumed inputs vis
   const changed=polygon();changed.coordinates[0]=changed.coordinates[0].map(([lon,lat])=>[lon+.02,lat+.01]);ui.context.setGeometry(changed);
   assert.deepEqual(ui.state().geometry,changed);assert.equal(ui.state().estimatedDemo,true);assert.equal(ui.state().example,true);assert.match(ui.node('trial-notice').textContent,/Estimated demo/);
   ui.context.clearGeometry();assert.equal(ui.state().geometry,null);assert.equal(ui.state().estimatedDemo,true);assert.equal(ui.state().example,true);assert.equal(ui.body().flight.powerW,600);assert.equal(ui.node('trial-demo-exit').hidden,false);
-  ui.node('trial-demo-exit').onclick();assert.deepEqual(ui.state().geometry,original);assert.equal(ui.state().example,false);assert.equal(ui.body().flight.powerW,null);
+  ui.node('trial-demo-exit').onclick();assert.deepEqual(ui.state().geometry,original);assert.equal(ui.state().example,false);assert.equal(ui.body().flight.powerW,600);
 });
 
 test('Estimated demo snapshots carry assumptions and round-trip without auto-confirming or overwriting the original mission backup',async()=>{
@@ -198,18 +205,18 @@ test('Legacy example snapshots retain their own assumptions without adopting the
   const ui=harness();ui.input('flight','usableWh').value='88.80';const input=createEstimatedDemoInputs();input.flight.usableWh=100;input.flight.reserveWh=20;input.flight.powerW=180;
   await ui.snapshot({schema_version:'xedo-planning-trial/1',exampleData:true,inputs:input});
   assert.equal(ui.state().example,true);assert.equal(ui.state().estimatedDemo,false);assert.equal(ui.body().flight.usableWh,100);assert.equal(ui.body().flight.powerW,180);assert.match(ui.node('trial-notice').textContent,/Test data/);
-  ui.node('trial-demo-exit').onclick();assert.equal(ui.input('flight','usableWh').value,'88.80');assert.equal(ui.body().flight.powerW,null);
+  ui.node('trial-demo-exit').onclick();assert.equal(ui.input('flight','usableWh').value,'88.80');assert.equal(ui.body().flight.powerW,600);
 });
 
-test('Restoring an ordinary mission snapshot from demo removes assumed values and drops demo metadata on subsequent downloads',async()=>{
+test('Restoring an ordinary mission snapshot retains supplied values, fills missing planning assumptions and drops demo metadata',async()=>{
   const ui=harness();ui.input('flight','usableWh').value='33';ui.node('trial-example').onclick();
   const input={geometry:polygon(),driftEnabled:false,flight:{home:[101.31,12.71],usableWh:90},export:{homeConfirmed:true,flatSurfaceConfirmed:true,airspaceReviewed:true}};
   await ui.snapshot({schema_version:'xedo-planning-trial/1',inputs:input});const restored=ui.body();
   assert.equal(ui.state().example,false);assert.equal(ui.state().estimatedDemo,false);assert.equal(ui.state().hasMissionBackup,false);assert.equal(restored.flight.usableWh,90);
-  for(const key of Object.keys(ESTIMATED_DEMO_PROFILE.flight).filter(key=>key!=='usableWh'))assert.equal(restored.flight[key],null,key);
+  for(const key of Object.keys(ESTIMATED_DEMO_PROFILE.flight).filter(key=>key!=='usableWh'))assert.equal(restored.flight[key],ESTIMATED_DEMO_PROFILE.flight[key],key);
   assert.equal(restored.export.firmware,null);assert.equal(restored.flight.windEastMps,null);assert.equal(restored.flight.windNorthMps,null);
   const result=await fileTrialAPI('',{method:'POST',body:JSON.stringify(restored)}),download=ui.saveSnapshot(result),saved=JSON.parse(download.text);
-  assert.match(download.filename,/^XEDO-planning-trial-.*\.json$/);assert.equal(saved.exampleData,false);assert.equal(Object.hasOwn(saved,'demoProfile'),false);assert.equal(saved.inputs.flight.powerW,null);
+  assert.match(download.filename,/^XEDO-planning-trial-.*\.json$/);assert.equal(saved.exampleData,false);assert.equal(Object.hasOwn(saved,'demoProfile'),false);assert.equal(saved.inputs.flight.powerW,600);
   ui.node('trial-demo-exit').onclick();assert.equal(ui.body().flight.usableWh,90);
 });
 

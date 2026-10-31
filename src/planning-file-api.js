@@ -1,5 +1,6 @@
 import {calculatePlanningTrial} from './trial-api.js';
 import {buildQGCPlan} from './trial-export.js';
+import {buildPlanningQGCPlan} from './planning-export-readiness.js';
 
 const MAX_BYTES=65536;
 const topFields=new Set(['surveyId','geometry','driftEnabled','drift','flight','export','oil','sortieIndex']);
@@ -28,13 +29,17 @@ function parse(body){
 export async function fileTrialAPI(path,options={}){
   checkAbort(options.signal);
   if(typeof path==='string'&&path.split('?')[0]==='/source')fail('Saved survey lookup needs the server database. In this standalone file, import a trial snapshot containing its source geometry or draw/import a boundary.',409,{code:'LOCAL_SOURCE_UNAVAILABLE'});
-  if(path!==''&&path!=='/export')fail('Local trial route not found.',404,{code:'NOT_FOUND'});
+  if(path!==''&&path!=='/export'&&path!=='/planning-export')fail('Local trial route not found.',404,{code:'NOT_FOUND'});
   if(options.method!=null&&options.method!=='POST')fail('Local trial calculations require POST inputs.',405,{code:'METHOD_NOT_ALLOWED'});
   const body=parse(options.body);
   let result;
   try{result=await calculatePlanningTrial(null,body);}catch(error){if(error.status)throw error;fail(error.message||'Check the trial inputs.');}
   checkAbort(options.signal);
   if(path==='')return result;
+  if(path==='/planning-export'){
+    let file;try{file=buildPlanningQGCPlan(result.flight,body,body.sortieIndex??0);}catch(error){fail(error.message,422,{code:error.code||'PLANNING_EXPORT_BLOCKED',details:error.report});}
+    checkAbort(options.signal);return {...file,inputHash:result.inputHash,hardwareControl:false,releaseControl:false};
+  }
   if(!result.exportCheck.pass)fail('Complete all export checks before downloading a flight file.',422,{code:'TRIAL_CHECKS_INCOMPLETE',details:result.exportCheck});
   let file;
   try{file=buildQGCPlan(result.flight,{...body.export,home:body.flight?.home},body.sortieIndex??0);}catch(error){fail(error.message||'Select a valid sortie.',422,{code:error.code||'TRIAL_EXPORT_BLOCKED',...(error.report?{details:error.report}:{})});}

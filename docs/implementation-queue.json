@@ -294,18 +294,19 @@
     "latestPlanPath": "docs/AI_INTEGRATION_PLAN.md"
   },
   "currentImplementationScope": {
-    "id": "export-planning-autofill-2026-10-31",
-    "status": "published_verified_production",
+    "id": "normal-area-plan-export-readiness-plan-2026-10-31",
+    "status": "verified_local_release_in_progress",
     "applicationFeatureRepairAuthorized": true,
     "pushAuthorized": true,
     "deployAuthorized": true,
     "billingAuthorized": false,
     "subscriptionAuthorized": false,
-    "baseSourceHead": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
-    "latestActionScope": "User explicitly authorized finishing four-field browser checks and push/deploy when passed. Eight local cases passed; publication in progress. No Billing/subscription.",
+    "baseSourceHead": "1b498ac5296217d4cc05c2f1d28e2479e0b2f16e",
+    "plan": "docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md",
     "pendingUserInput": null,
-    "releaseEvidence": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_2026-10-31",
-    "publicationReceipt": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json"
+    "pendingImplementationInstruction": false,
+    "latestActionScope": "User authorized implementation, complete tests and push/deploy when passed. Local682 tests/3builds and actual-area .plan1/35 passed; final candidate/production verification in progress. No Billing/subscription.",
+    "implementationAuthorized": true
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
@@ -402,6 +403,14 @@
       "manualOwnershipRequired": true,
       "humanReviewRemainsManual": true,
       "publicationStatus": "published_verified"
+    },
+    "normalAreaPlanExportRequested": {
+      "recordedOn": "2026-10-31",
+      "userRequest": "Five export fields now have values but review/download remain blocked; draft detailed repair plan first",
+      "phase": "verified_local_release_in_progress",
+      "plan": "docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md",
+      "implementationNotAuthorized": false,
+      "report": "docs/PLAN_EXPORT_READINESS_REPAIR_REPORT_2026-10-31.md"
     }
   },
   "stages": [
@@ -3895,9 +3904,9 @@
   },
   "latestRemainingWorkAudit": {
     "date": "2026-10-31",
-    "kind": "four_field_release_completed",
-    "sourceSection": "3.79",
-    "corePrototypeFeatureFlow": "complete_with_published_export_autofill",
+    "kind": "normal_area_plan_export_planning_only",
+    "sourceSection": "3.80",
+    "corePrototypeFeatureFlow": "Published features retained. User normal-area plan export still blocked by terrain review and missing flight parameters; a new plan is prepared only.",
     "priorRuntimeProof": "outputs/XEDO_Post_Reset_Check_2026-10-30",
     "followups": [
       {
@@ -3934,6 +3943,12 @@
         "description": "8local+8productionbrowsercases/CI/32HTTPchecks/25hashes passed; matched visual and JSON",
         "evidence": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_2026-10-31",
         "receipt": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json"
+      },
+      {
+        "id": "normal-area-plan-export-readiness-plan-2026-10-31",
+        "status": "planned_not_implemented",
+        "description": "Normal-area .plan readiness/export repair; confirmed2blockergroups and3unidentifiedchecks; detailed plan only",
+        "plan": "docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md"
       }
     ],
     "deferredLegacyStages": [
@@ -4021,7 +4036,7 @@
     },
     "documentationCiPending": false,
     "summaryReviewedOn": "2026-10-31",
-    "summarySourceSection": "3.76",
+    "summarySourceSection": "3.80",
     "summaryReviewScope": "Read current canonical documents, local Git and prior completed release receipt; no fresh runtime/CI/provider/browser checks this turn",
     "completedGroupsInThisExecution": [
       1,
@@ -4391,7 +4406,7 @@
   },
   "presentationReadinessSummary": {
     "recordedOn": "2026-10-31",
-    "sourceSection": "3.78",
+    "sourceSection": "3.80",
     "basis": "Read current canonical documents, local Git and prior completed release receipt; no fresh runtime/CI/provider/browser checks this turn",
     "head": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
     "verifiedReleaseReceipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json",
@@ -4446,6 +4461,14 @@
     "beforePresentation": [
       {
         "order": 1,
+        "id": "normal-area-plan-export-readiness-plan-2026-10-31",
+        "status": "planned_waiting_implementation_instruction",
+        "title": "ทำ readiness/ดาวน์โหลด .plan ของพื้นที่เดิมให้ครบตามแผน หลังได้รับคำสั่งให้แก้",
+        "plan": "docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md",
+        "acceptance": "Download an actual .plan of the current selected sortie and preserve real terrain review/profile provenance; all visible and hidden blockers identified"
+      },
+      {
+        "order": 2,
         "id": "actual-device-reboot-and-venue-rehearsal",
         "status": "recommended_final_acceptance_not_run_this_turn",
         "title": "ซ้อมหลังเปิดเครื่องใหม่ บนเครื่องและอินเทอร์เน็ตที่จะใช้จริง",
@@ -4459,7 +4482,7 @@
         "limitation": "Prior current-machine flow and user reset report exist; no agent-verified actual OS reboot/venue-network run. Not a request to reboot the user computer now."
       },
       {
-        "order": 2,
+        "order": 3,
         "id": "fixed-presentation-and-backup-pack",
         "status": "recommended_collection_not_run_this_turn",
         "title": "เลือกชุดนำเสนอและจัดไฟล์สำรองให้เปิดได้ทันที",
@@ -4525,7 +4548,7 @@
       }
     ],
     "clarificationThisTurn": true,
-    "currentRequiredRepair": null
+    "currentRequiredRepair": "normal-area-plan-export-readiness-plan-2026-10-31"
   },
   "homeAltitudeUserClarification": {
     "recordedOn": "2026-10-31",
@@ -4556,6 +4579,20 @@
       "reviewEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Home_Altitude_Report_Review_2026-10-31\\review.json",
       "releaseEvidence": "C:\\mega\\codex\\iENA\\outputs\\XEDO_Home_Altitude_Release_2026-10-31",
       "publicationReceipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json"
+    },
+    {
+      "id": "export-planning-autofill-2026-10-31",
+      "status": "published_verified_production",
+      "applicationFeatureRepairAuthorized": true,
+      "pushAuthorized": true,
+      "deployAuthorized": true,
+      "billingAuthorized": false,
+      "subscriptionAuthorized": false,
+      "baseSourceHead": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
+      "latestActionScope": "User explicitly authorized finishing four-field browser checks and push/deploy when passed. Eight local cases passed; publication in progress. No Billing/subscription.",
+      "pendingUserInput": null,
+      "releaseEvidence": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_2026-10-31",
+      "publicationReceipt": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json"
     }
   ],
   "exportPlanningAutofillExecution": {
@@ -4631,5 +4668,207 @@
     "httpChecks": 32,
     "hostedHashMatches": 25,
     "publicationReceipt": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json"
+  },
+  "normalAreaPlanExportRepairPlanning": {
+    "id": "normal-area-plan-export-readiness-plan-2026-10-31",
+    "recordedOn": "2026-10-31",
+    "sourceSection": "3.80",
+    "status": "implementation_verified_local",
+    "plan": "docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md",
+    "sourceHead": "1b498ac5296217d4cc05c2f1d28e2479e0b2f16e",
+    "evidenceBasis": "Actual user mission snapshot + source + fresh682test/syntax/3builds + real GEE/forecast/browser downloads",
+    "confirmedBlockerGroups": [
+      "surface_model_review",
+      "eight_missing_aircraft_battery_inputs"
+    ],
+    "remainingUnidentifiedChecks": 0,
+    "remainingUnidentifiedChecksBasis": "Resolved from complete actual snapshot: missing no-go data/battery sorties/environment-window and strict model gates; partition and forecast-loop causes repaired",
+    "missingFlightKeys": [
+      "windLimitMps",
+      "maxAirspeedMps",
+      "usableWh",
+      "reserveWh",
+      "powerW",
+      "takeoffS",
+      "landingS",
+      "turnS"
+    ],
+    "recommendedApproach": "Use editable planning assumptions on the current Inspector area; shared planning_reference readiness/export separate from unchanged strict checks and real terrain review",
+    "existingAssumptions": {
+      "windLimitMps": 8,
+      "maxAirspeedMps": 12,
+      "usableWh": 177.6,
+      "reserveWh": 44.4,
+      "powerW": 600,
+      "takeoffS": 30,
+      "landingS": 30,
+      "turnS": 5
+    },
+    "assumptionsNotHardwareMeasurements": true,
+    "hostedCalculationLocation": "Browser fileTrialAPI; hosted build STANDALONE=true/GEE_HOSTED=true",
+    "workspaceCalculationLocation": "planningTrialAPI /api/v2/planning-trial",
+    "normalFlowFormerScopeExclusion": "User explicitly reopened aircraft profile/reference export subset and necessary partition/refresh repairs; user-start derived-end scheduling rewrite remains excluded.",
+    "plannedChecks": [
+      {
+        "id": "P01",
+        "status": "passed",
+        "actual": "Profile8defaults with exact user Polygon/Home; actual browser calculation"
+      },
+      {
+        "id": "P02",
+        "status": "passed",
+        "actual": "Unit/VM automatic/manual ownership preserved"
+      },
+      {
+        "id": "P03",
+        "status": "passed",
+        "actual": "Unit/VM zero and deliberate blank preserved"
+      },
+      {
+        "id": "P04",
+        "status": "passed",
+        "actual": "Invalid zero rejects with friendly units"
+      },
+      {
+        "id": "P05",
+        "status": "passed",
+        "actual": "Actual known uneven GEE retains review; planning pass strict false"
+      },
+      {
+        "id": "P06",
+        "status": "passed",
+        "actual": "Unit stale/partial/expired/wrong area/Home/route"
+      },
+      {
+        "id": "P07",
+        "status": "passed",
+        "actual": "Unit manual Home mismatch and known DSM conflict"
+      },
+      {
+        "id": "P08",
+        "status": "passed",
+        "actual": "Unit missing/excess wind + actual model wind"
+      },
+      {
+        "id": "P09",
+        "status": "passed",
+        "actual": "Actual35sorties all return Home/within133.2Wh budget"
+      },
+      {
+        "id": "P10",
+        "status": "passed",
+        "actual": "Unit impossible reserve blocked without invented sorties"
+      },
+      {
+        "id": "P11",
+        "status": "passed",
+        "actual": "Unit validity/coverage + actual13h4min window"
+      },
+      {
+        "id": "P12",
+        "status": "passed",
+        "actual": "Unit >24h/expired times not clipped"
+      },
+      {
+        "id": "P13",
+        "status": "passed",
+        "actual": "Unit null remains not_assessed and supplied no-go conflicts block"
+      },
+      {
+        "id": "P14",
+        "status": "passed",
+        "actual": "Schedule regression + actual browser convergence"
+      },
+      {
+        "id": "P15",
+        "status": "passed",
+        "actual": "Structured all blockers/friendly units/View all checks"
+      },
+      {
+        "id": "P16",
+        "status": "passed",
+        "actual": "VM repeat/revision/session/hash/account guards + actual selected downloads"
+      },
+      {
+        "id": "P17",
+        "status": "passed",
+        "actual": "VM restore/legacy metadata + SQLPGlite Savev3/v4/history/owner isolation, not real-account browser Save"
+      },
+      {
+        "id": "P18",
+        "status": "passed",
+        "actual": "VM production demo capture/restore and ownership"
+      },
+      {
+        "id": "P19",
+        "status": "passed",
+        "actual": "Shared adapter/workspace operation parity +3builds; no native portable/QGC import"
+      },
+      {
+        "id": "P20",
+        "status": "passed",
+        "actual": "Actual local OS .plan1 and35 parsed and matched current snapshot"
+      },
+      {
+        "id": "P21",
+        "status": "passed",
+        "actual": "Actual report/snapshot purpose/profile/terrain strict separation"
+      },
+      {
+        "id": "P22",
+        "status": "passed",
+        "actual": "390px no overflow/2D3D/idle render regression; not broad device/perf benchmark"
+      },
+      {
+        "id": "P23",
+        "status": "pending_production",
+        "actual": null
+      }
+    ],
+    "implementationAuthorized": true,
+    "pushAuthorized": true,
+    "deployAuthorized": true,
+    "billingAuthorized": false,
+    "subscriptionAuthorized": false,
+    "pendingUserAnswers": [],
+    "pendingImplementationInstruction": false
+  },
+  "normalAreaPlanExportRepairExecution": {
+    "recordedOn": "2026-10-31",
+    "status": "verified_local_release_in_progress",
+    "report": "docs/PLAN_EXPORT_READINESS_REPAIR_REPORT_2026-10-31.md",
+    "evidence": "C:/mega/codex/iENA/outputs/XEDO_Plan_Export_Repair_2026-10-31",
+    "tests": 682,
+    "failures": 0,
+    "builds": [
+      "hosted",
+      "workspace",
+      "portable"
+    ],
+    "browser": {
+      "localDownloads": [
+        1,
+        35
+      ],
+      "sameGeometry": true,
+      "sameHome": true,
+      "sorties": 35,
+      "terrainReviewRetained": true,
+      "strictPassed": false,
+      "noGoInferred": false,
+      "finalCandidateReplay": "passed",
+      "productionReplay": "pending",
+      "consoleWarningsErrors": 0,
+      "finalBuildActualDownloads": [
+        1,
+        35
+      ],
+      "sortieLockedDuringPrepare": true,
+      "sortieUnlockedAfterDownload": true,
+      "frozenHostedFiles": 25
+    },
+    "billingAuthorized": false,
+    "subscriptionAuthorized": false,
+    "pendingUserAnswers": []
   }
 }

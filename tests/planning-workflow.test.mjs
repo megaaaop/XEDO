@@ -4,6 +4,7 @@ import {readFile} from 'node:fs/promises';
 import vm from 'node:vm';
 import {createPlanningSchedule} from '../src/planning-schedule.js';
 import {createPlanningExportDefaults} from '../src/planning-export-defaults.js';
+import {createPlanningFlightProfile} from '../src/planning-flight-profile.js';
 import {planningRouteSamples} from '../src/planning-route-samples.js';
 import {createEstimatedDemoInputs} from '../src/planning-estimated-demo.js';
 import {FIXED_PLANNING_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings} from '../src/planning-fixed-settings.js';
@@ -69,7 +70,7 @@ function harness() {
   };
   const input=createEstimatedDemoInputs();
   const context=vm.createContext({
-    document, calls, schedule:{...schedule,setManual:fields=>schedule.setManual(plain(fields))}, exportDefaults:createPlanningExportDefaults(), geospatialUI, AbortController, structuredClone, Date, JSON,
+    document, calls, schedule:{...schedule,setManual:fields=>schedule.setManual(plain(fields))}, exportDefaults:createPlanningExportDefaults(), flightProfile:createPlanningFlightProfile(), geospatialUI, AbortController, structuredClone, Date, JSON,
     FIXED_PLANNING_SETTINGS,isFixedPlanningField,applyFixedPlanningSettings,planningRouteSamples,setViewProperty,paintActionButton,downloadFeedback:createActionFeedback(),
     geometry:input.geometry,surveyId:null,result:null,working:false,revision:0,abort:null,
     draw:null,selectHome:false,routePoints:[],currentStep:3,review:{ready:true},calculationTimer:null,example:false,
@@ -86,7 +87,7 @@ function harness() {
     error(message=''){calls.error=message;},
     announce(message){calls.notices.push(message);},
     setWorking(value){context.working=value;},
-    async api(path,options){calls.requests.push(JSON.parse(options.body));if(path==='/export'&&heldExport)return heldExport;return fileTrialAPI(path,options);},
+    async api(path,options){calls.requests.push(JSON.parse(options.body));if(['/export','/planning-export'].includes(path)&&heldExport)return heldExport;const response=await fileTrialAPI(path,options);return path?{...response,inputHash:context.result?.inputHash}:response;},
     download(text,filename,mime){calls.downloads.push({text,filename,mime});},
     render(){context.working=false;context.renderReadiness();},
   });
@@ -111,7 +112,7 @@ function harness() {
   node('trial-terrain-mode').value='manual';node('trial-terrain-tolerance').value='2';
   node('export-nogo').value=JSON.stringify({type:'FeatureCollection',features:[]});
   node('trial-2d').onclick=()=>{context.mode='2d';};
-  function confirm(){for(const id of ['export-home-confirmed','export-flat-confirmed','export-airspace-reviewed'])node(id).checked=true;}
+  function confirm(){for(const id of ['export-home-confirmed','export-flat-confirmed','export-airspace-reviewed','export-planning-reviewed'])node(id).checked=true;}
   function begin(){context.syncScheduleFields(schedule.begin());}
   return {
     context,calls,schedule,node,field,confirm,begin,
@@ -195,7 +196,7 @@ test('Visible map picker selects launch/return, clears old reviews and model-own
 
 test('Moving and clearing launch point work independently of the polygon and disable old downloads', async () => {
   const h=harness(),geometry=plain(h.context.geometry);h.begin();await h.calculate();h.confirm();
-  h.context.result.exportCheck.pass=true;h.context.renderReadiness();
+  h.context.result.planningCheck.pass=true;h.context.renderReadiness();
   assert.equal(h.node('trial-qgc').disabled,false);
   h.node('trial-home').onclick();h.clickMap([101.23,12.64]);
   assert.deepEqual(plain(h.context.geometry),geometry);
@@ -243,7 +244,7 @@ test('Launch selection brings the map into view and focuses it without refocusin
 
 test('Moving a ready launch point blocks download immediately and cancellation restores the unchanged reviewed mission',async t=>{
   for(const cancelId of ['trial-home-cancel','trial-home-pick'])await t.test(cancelId,async()=>{
-    const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+    const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;
     h.context.renderReadiness();assert.equal(h.readiness().canExport,true);assert.equal(h.node('trial-qgc').disabled,false);
     const originalResult=h.context.result,originalGeometry=plain(h.context.geometry),originalHome=h.context.body().flight.home;
     const originalSamples=plain(h.context.routePoints),originalRevision=h.context.revision,requestCount=h.calls.requests.length;
@@ -261,14 +262,14 @@ test('Moving a ready launch point blocks download immediately and cancellation r
     assert.equal(h.context.result,originalResult);assert.deepEqual(plain(h.context.geometry),originalGeometry);
     assert.deepEqual(h.context.body().flight.home,originalHome);assert.deepEqual(plain(h.context.routePoints),originalSamples);
     assert.equal(h.context.revision,originalRevision,'Cancelling an uncommitted move must retain the existing calculation.');
-    for(const id of ['export-home-confirmed','export-flat-confirmed','export-airspace-reviewed'])assert.equal(h.node(id).checked,true);
+    for(const id of ['export-home-confirmed','export-flat-confirmed','export-airspace-reviewed','export-planning-reviewed'])assert.equal(h.node(id).checked,true);
   });
 });
 
 test('Invalid or emptied schedule fields revoke an earlier ready mission instead of retaining stale export readiness',async t=>{
   for(const key of ['plannedTakeoffAt','plannedEndAt'])for(const value of ['10000-01-01T12:00','999999-01-01T12:00','']){
     await t.test(key+' = '+(value||'(empty)'),async()=>{
-      const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+      const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;
       h.context.renderReadiness();assert.equal(h.node('trial-qgc').disabled,false);
       const input=h.field('export',key);input.value=value;
       assert.doesNotThrow(()=>h.context.changed({target:input}));
@@ -352,7 +353,7 @@ test('First route under a manually chosen schedule still requires fresh route an
 });
 
 test('Automatic terrain stays blocked without matching GEE Home provenance; manual mode requires explicit review', async () => {
-  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;
   h.node('trial-terrain-mode').value='automatic';
   assert.equal(h.readiness().canExport,false);
   assert.equal(h.readiness().rows[2].state,'unknown');
@@ -368,7 +369,7 @@ test('Automatic terrain stays blocked without matching GEE Home provenance; manu
 });
 
 test('Expired schedule disables download even when an earlier export assessment passed', async () => {
-  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;
   h.context.renderReadiness();assert.equal(h.node('trial-qgc').disabled,false);
   h.setNow(Date.parse(h.schedule.getPatch().plannedTakeoffAt));
   const status=h.readiness();
@@ -378,18 +379,18 @@ test('Expired schedule disables download even when an earlier export assessment 
   assert.match(status.blockingReasons.join(' '),/passed/);
   h.context.renderReadiness();
   assert.equal(h.node('trial-qgc').disabled,true);
-  assert.equal(h.context.result.exportCheck.pass,true,'Expired timing is checked again beyond the stored engine result');
+  assert.equal(h.context.result.planningCheck.pass,true,'Expired timing is checked again beyond the stored engine result');
 });
 
 test('Export response arriving after schedule expiry cannot download a stale mission', async () => {
-  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;
   h.context.renderReadiness();assert.equal(h.node('trial-qgc').disabled,false);
   const resolve=h.holdExport(),pending=h.node('trial-qgc').onclick();
   for(let i=0;i<10&&h.calls.requests.length<2;i++)await Promise.resolve();
   assert.equal(h.calls.requests.length,2,'Export must be waiting at the response boundary');
   assert.equal(h.context.working,true);
   h.setNow(Date.parse(h.schedule.getPatch().plannedTakeoffAt));
-  resolve({text:'mission content',filename:'trial.plan',mime:'application/json'});await pending;
+  resolve({inputHash:h.context.result?.inputHash,text:'mission content',filename:'trial.plan',mime:'application/json'});await pending;
   assert.deepEqual(h.calls.downloads,[]);
   assert.match(h.calls.error,/readiness changed.*replan/i);
   assert.equal(h.context.result,null);
@@ -398,45 +399,59 @@ test('Export response arriving after schedule expiry cannot download a stale mis
 });
 
 test('A response for a still-ready mission downloads normally after the same asynchronous check', async () => {
-  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;
   const resolve=h.holdExport(),pending=h.node('trial-qgc').onclick();
   for(let i=0;i<10&&h.calls.requests.length<2;i++)await Promise.resolve();
   assert.equal(h.calls.requests.length,2);
   h.setNow(h.now()+1000);
-  resolve({text:'mission content',filename:'trial.plan',mime:'application/json'});await pending;
+  resolve({inputHash:h.context.result?.inputHash,text:'mission content',filename:'trial.plan',mime:'application/json'});await pending;
   assert.deepEqual(h.calls.downloads,[{text:'mission content',filename:'trial.plan',mime:'application/json'}]);
   assert.equal(h.calls.error,'');
   assert.equal(h.context.working,false);
   assert.notEqual(h.context.result,null);
 });
 
+test('A mismatched calculation hash prevents downloading a file even when the revision is unchanged',async()=>{
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;
+  const resolve=h.holdExport(),pending=h.node('trial-qgc').onclick();
+  for(let i=0;i<20&&h.calls.requests.length<2;i++)await Promise.resolve();
+  resolve({inputHash:'another-mission',text:'wrong file',filename:'wrong.plan',mime:'application/json'});await pending;
+  assert.equal(h.calls.downloads.length,0);assert.match(h.calls.error,/does not match the current mission inputs/);
+});
+test('Changing the selected sortie while an export is waiting cannot download a different selection',async()=>{
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;h.node('trial-sortie').value='0';
+  const resolve=h.holdExport(),pending=h.node('trial-qgc').onclick();
+  for(let i=0;i<20&&h.calls.requests.length<2;i++)await Promise.resolve();
+  h.node('trial-sortie').value='1';resolve({inputHash:h.context.result.inputHash,text:'sortie zero',filename:'old.plan',mime:'application/json'});await pending;
+  assert.equal(h.calls.downloads.length,0);assert.equal(h.context.working,false);
+});
 test('Account change during the first asynchronous export check prevents the export request', async()=>{
-  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;
   let key='account-a',release;h.context.inspectorUI={contextKey:()=>key,changed(){},ensureSession:()=>new Promise(resolve=>{release=resolve;})};
   const pending=h.node('trial-qgc').onclick();key='signed-out';release(true);await pending;
   assert.equal(h.calls.requests.length,1);assert.deepEqual(h.calls.downloads,[]);
 });
 
 test('Account change after the export response was requested prevents a late download', async()=>{
-  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;
   let key='account-a';h.context.inspectorUI={contextKey:()=>key,changed(){},async ensureSession(){return true;}};
   const resolve=h.holdExport(),pending=h.node('trial-qgc').onclick();
   for(let i=0;i<20&&h.calls.requests.length<2;i++)await Promise.resolve();
-  assert.equal(h.calls.requests.length,2);key='account-b';resolve({text:'private plan',filename:'trial.plan',mime:'application/json'});await pending;
+  assert.equal(h.calls.requests.length,2);key='account-b';resolve({inputHash:h.context.result?.inputHash,text:'private plan',filename:'trial.plan',mime:'application/json'});await pending;
   assert.deepEqual(h.calls.downloads,[]);
 });
 
 test('A session that expires while the export is being prepared cannot download the response',async()=>{
-  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;
   let checks=0;h.context.inspectorUI={contextKey:()=> 'same-tab',changed(){},async ensureSession(){return ++checks===1;}};
   const resolve=h.holdExport(),pending=h.node('trial-qgc').onclick();
   for(let i=0;i<20&&h.calls.requests.length<2;i++)await Promise.resolve();
-  resolve({text:'expired plan',filename:'trial.plan',mime:'application/json'});await pending;
+  resolve({inputHash:h.context.result?.inputHash,text:'expired plan',filename:'trial.plan',mime:'application/json'});await pending;
   assert.equal(checks,2);assert.deepEqual(h.calls.downloads,[]);
 });
 
 test('Download feedback covers preflight and ten repeated calls cannot duplicate an export',async()=>{
-  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;
   let checks=0,release;h.context.inspectorUI={contextKey:()=> 'same',changed(){},ensureSession(){checks++;return checks===1?new Promise(resolve=>{release=resolve;}):Promise.resolve(true);}};
   const pending=h.node('trial-qgc').onclick();assert.match(h.node('trial-download-status').textContent,/Checking account/);assert.equal(h.node('trial-qgc').dataset.actionBusy,'true');
   for(let i=0;i<10;i++)await h.node('trial-qgc').onclick();assert.equal(checks,1);assert.equal(h.calls.requests.length,1);
@@ -444,16 +459,16 @@ test('Download feedback covers preflight and ten repeated calls cannot duplicate
 });
 
 test('A changed conditions preflight ends pending without creating or downloading a file',async()=>{
-  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;h.context.environmentUI.ensureFresh=async()=>false;
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;h.context.environmentUI.ensureFresh=async()=>false;
   await h.node('trial-qgc').onclick();assert.equal(h.calls.requests.length,1);assert.equal(h.calls.downloads.length,0);assert.equal(h.context.working,false);assert.equal(h.node('trial-qgc').dataset.actionBusy,'false');assert.match(h.node('trial-download-status').textContent,/Conditions updated/);
 });
 
 test('A completed demo download retains its demo label and filename',async()=>{
-  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;h.context.example=true;await h.node('trial-qgc').onclick();assert.equal(h.calls.downloads.length,1);assert.match(h.calls.downloads[0].filename,/^XEDO-estimated-demo-/);assert.equal(h.node('trial-qgc').textContent,'Download demo mission file');assert.equal(h.node('trial-qgc').dataset.actionBusy,'false');
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;h.context.example=true;h.context.result.exportCheck.pass=true;await h.node('trial-qgc').onclick();assert.equal(h.calls.downloads.length,1);assert.match(h.calls.downloads[0].filename,/^XEDO-estimated-demo-/);assert.equal(h.node('trial-qgc').textContent,'Download demo mission file');assert.equal(h.node('trial-qgc').dataset.actionBusy,'false');
 });
 
 test('Editing the mission clears an earlier completed download message and immediately blocks its old file',async()=>{
-  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;await h.node('trial-qgc').onclick();assert.equal(h.node('trial-download-status').hidden,false);h.node('export-airspace-reviewed').checked=false;h.context.changed({target:h.node('export-airspace-reviewed')});assert.equal(h.node('trial-download-status').hidden,true);assert.equal(h.node('trial-download-status').textContent,'');assert.equal(h.node('trial-qgc').disabled,true);assert.equal(h.context.result,null);
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;await h.node('trial-qgc').onclick();assert.equal(h.node('trial-download-status').hidden,false);h.node('export-airspace-reviewed').checked=false;h.context.changed({target:h.node('export-airspace-reviewed')});assert.equal(h.node('trial-download-status').hidden,true);assert.equal(h.node('trial-download-status').textContent,'');assert.equal(h.node('trial-qgc').disabled,true);assert.equal(h.context.result,null);
 });
 
 test('Native checkbox input/change pair performs one invalidation while number input stays immediate',()=>{
@@ -463,12 +478,12 @@ test('Native checkbox input/change pair performs one invalidation while number i
 test('Readiness checkbox retains its dialog and applies the review while navigation actions still close it',()=>{
   const h=harness();let onAction;h.context.initializePlanningReadiness=options=>{onAction=options.onAction;return {render(){}};};h.context.node=h.node;
   vm.runInContext(production('readinessUI=initializePlanningReadiness(',"$('#trial-replan').onclick="),h.context);
-  h.node('trial-readiness-dialog').open=true;onAction('airspace-toggle',true);assert.equal(h.node('trial-readiness-dialog').open,true);assert.equal(h.node('export-airspace-reviewed').checked,true);assert.equal(h.context.result,null);assert.match(h.calls.notices.at(-1),/Airspace review recorded/);
+  h.node('trial-readiness-dialog').open=true;onAction('airspace-toggle',true);assert.equal(h.node('trial-readiness-dialog').open,true);assert.equal(h.node('export-planning-reviewed').checked,true);assert.equal(h.node('export-airspace-reviewed').checked,false);assert.equal(h.context.result,null);assert.match(h.calls.notices.at(-1),/Review recorded/);
   onAction('home');assert.equal(h.node('trial-readiness-dialog').open,false);
 });
 
 test('Risk edits block old exports and current target pixels are checked before any export request',async()=>{
-  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.exportCheck.pass=true;assert.equal(h.readiness().canExport,true);const target=plain(h.context.geometry);
+  const h=harness();h.begin();await h.calculate();h.confirm();h.context.result.planningCheck.pass=true;assert.equal(h.readiness().canExport,true);const target=plain(h.context.geometry);
   h.context.riskUI={blocked:()=>true,hasAnalysis:()=>true,target:()=>target};assert.equal(h.readiness().canExport,false);await h.node('trial-qgc').onclick();assert.equal(h.calls.downloads.length,0);
   h.context.riskUI.blocked=()=>false;h.context.verifyRiskTargetPixels=async()=>{throw Error('The current image has no target pixels.');};const requests=h.calls.requests.length;await h.node('trial-qgc').onclick();assert.equal(h.calls.requests.length,requests);assert.equal(h.calls.downloads.length,0);assert.match(h.calls.error,/target pixels/);
 });

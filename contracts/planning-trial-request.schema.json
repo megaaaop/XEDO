@@ -82,14 +82,25 @@
         "object",
         "null"
       ],
-      "description": "Camera sensorWidthMm/sensorHeightMm/focalLengthMm, imageWidthPx/imageHeightPx, sideOverlap/frontOverlap, altitudeM (AGL), speedMps (ground), minTriggerIntervalS; true-east/north wind components and limits; usableWh/reserveWh/powerW, takeoffS/landingS/turnS; manual home [longitude,latitude]."
+      "description": "Camera sensorWidthMm/sensorHeightMm/focalLengthMm, imageWidthPx/imageHeightPx, sideOverlap/frontOverlap, altitudeM (AGL), speedMps (ground), minTriggerIntervalS; true-east/north wind components and limits; usableWh/reserveWh/powerW, takeoffS/landingS/turnS; manual home [longitude,latitude]. Optional planningProfile records eight field ownership/source assumptions and enables bounded battery-aware track selection without replacing geometry, Home or weather."
     },
     "export": {
       "type": [
         "object",
         "null"
       ],
-      "description": "Manual homeAmslM, firmware, qgcVersion, relativeHeightM/ceilingM, limitReference, flatSurfaceConfirmed/homeConfirmed/airspaceReviewed, source, plannedTakeoffAt/optional plannedEndAt/validUntil, reviewed noGo and corridorM. Home comes only from flight.home. Invalid or missing review values can produce a blocked/incomplete report in a 200 calculation."
+      "description": "Manual homeAmslM, firmware, qgcVersion, relativeHeightM/ceilingM, limitReference, flatSurfaceConfirmed/homeConfirmed/airspaceReviewed, source, plannedTakeoffAt/optional plannedEndAt/validUntil, reviewed noGo and corridorM. Home comes only from flight.home. Invalid or missing review values can produce a blocked/incomplete report in a 200 calculation. Normal UI uses planning_reference with its own explicit planningReviewed; strict checks remain independent. New /planning-export uses shared reference checks; /export remains strict.",
+      "properties": {
+        "purpose": {
+          "enum": [
+            "planning_reference",
+            "strict_trial"
+          ]
+        },
+        "planningReviewed": {
+          "type": "boolean"
+        }
+      }
     },
     "oil": {
       "type": [

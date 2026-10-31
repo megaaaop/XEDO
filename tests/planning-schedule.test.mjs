@@ -190,6 +190,15 @@ test('clock and timing settings are validated before updating state', () => {
   assert.throws(() => schedule.begin(), TypeError);
   assert.equal(schedule.getState().mode, 'idle');
 });
+test('P14 an assessed multi-sortie window survives a temporary forecast gap, then updates once on the new assessment',()=>{
+ const schedule=createPlanningSchedule({now:()=>START});schedule.begin();
+ const before=schedule.complete(flight(10000,20));assert.equal(before.schedule.durationSource,'assessed_sorties');
+ const pending={plan:{status:'generated',estimates:{durationS:900}},battery:{state:'incomplete',totalDurationS:null,sorties:[]}};
+ for(let i=0;i<20;i++)assert.deepEqual(schedule.complete(pending),before);
+ const restored=createPlanningSchedule({now:()=>START});restored.restore(before.schedule,before);assert.deepEqual(restored.complete(pending),before);
+ const after=schedule.complete(flight(11000,21));assert.equal(after.plannedTakeoffAt,before.plannedTakeoffAt);assert.notEqual(after.plannedEndAt,before.plannedEndAt);
+ assert.deepEqual(schedule.complete(flight(11000,21)),after);
+});
 test('Automatic and restored long schedules retain their real end and cannot report ready',()=>{
   const start=Date.parse('2026-10-27T20:24:05.270Z'),end=Date.parse('2026-10-30T01:15:37.015Z');
   const schedule=createPlanningSchedule({now:()=>start-3600000});schedule.begin();

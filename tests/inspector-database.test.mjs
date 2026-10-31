@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {readFile} from 'node:fs/promises';
 import {randomUUID} from 'node:crypto';
 import {createInspectorDatabase} from './helpers/inspector-db.mjs';
+import {createPlanningFlightProfile} from '../src/planning-flight-profile.js';
+import {validateInspectorSave} from '../src/inspector-validation.js';
 
 test('Inspector SQL executes locally: owner isolation, history, idempotency, CAS and live-session enforcement',async t=>{
   const {db,actors,rpc}=await createInspectorDatabase();t.after(()=>db.close());
@@ -25,6 +27,19 @@ test('Inspector SQL executes locally: owner isolation, history, idempotency, CAS
     const history=await rpc(a,'history',{missionId:saved.missionId});assert.deepEqual(history.map(x=>x.revision),[2,1]);
     assert.equal((await rpc(a,'get',{missionId:saved.missionId,revision:1})).document.title,draft.document.title);
     assert.equal((await rpc(a,'list'))[0].title,'Changed title');
+  });
+  await t.test('P17 planning purpose and field ownership survive SQL Save v3/v4, history, reopen and account isolation',async()=>{
+    const document=structuredClone(draft.document),profile=createPlanningFlightProfile();
+    document.planningInputs.flight={...document.planningInputs.flight,...profile.reconcile({}),turnS:0,powerW:500};profile.edited('turnS');profile.edited('powerW');
+    document.planningInputs.flight.planningProfile=profile.metadata(document.planningInputs.flight);
+    document.planningInputs.export={...document.planningInputs.export,purpose:'planning_reference',planningReviewed:false,noGo:null};
+    const update={...draft,missionId:saved.missionId,expectedRevision:2,mutationId:randomUUID(),document};validateInspectorSave(update);
+    const third=await rpc(a,'save',update);assert.equal(third.revision,3);
+    const opened=await rpc(a,'get',{missionId:saved.missionId});assert.deepEqual(opened.document.planningInputs,document.planningInputs);
+    const fourth=structuredClone(update);fourth.expectedRevision=3;fourth.mutationId=randomUUID();fourth.document.planningInputs.flight.powerW=null;fourth.document.planningInputs.flight.planningProfile.fields.powerW.value=null;
+    await rpc(a,'save',fourth);const older=await rpc(a,'get',{missionId:saved.missionId,revision:3});assert.equal(older.document.planningInputs.flight.powerW,500);
+    const current=await rpc(a,'get',{missionId:saved.missionId});assert.equal(current.document.planningInputs.flight.powerW,null);assert.equal(current.document.planningInputs.flight.planningProfile.fields.powerW.mode,'manual');assert.equal(current.document.planningInputs.export.noGo,null);
+    await assert.rejects(rpc(b,'get',{missionId:saved.missionId}),{code:'PT404'});
   });
   await t.test('Malformed/direct-RPC actions cannot create authoritative reviews or owner fields',async()=>{
     for(const payload of [{...draft,intent:'confirm_risk'},{...draft,owner_id:b.id},{...draft,document:{...draft.document,inputMode:'admin'}},{...draft,document:{title:'Incomplete'}},{...draft,document:{...draft.document,planningInputs:{padding:'x'.repeat(65536)}}}])await assert.rejects(rpc(a,'save',payload),{code:'PT422'});
