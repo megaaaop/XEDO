@@ -295,7 +295,7 @@
   },
   "currentImplementationScope": {
     "id": "normal-area-plan-export-readiness-plan-2026-10-31",
-    "status": "verified_local_release_in_progress",
+    "status": "published_verified",
     "applicationFeatureRepairAuthorized": true,
     "pushAuthorized": true,
     "deployAuthorized": true,
@@ -305,7 +305,7 @@
     "plan": "docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md",
     "pendingUserInput": null,
     "pendingImplementationInstruction": false,
-    "latestActionScope": "User authorized implementation, complete tests and push/deploy when passed. Local682 tests/3builds and actual-area .plan1/35 passed; final candidate/production verification in progress. No Billing/subscription.",
+    "latestActionScope": "Completed authorized repair. Source614fab7 CI41153555655 success, ProductionREADY, actual same-area .plan1/35 and32postdeploy checks passed. No Billing/subscription. Further unrelated work requires its own instruction.",
     "implementationAuthorized": true
   },
   "confirmedProductRequirements": {
@@ -407,10 +407,12 @@
     "normalAreaPlanExportRequested": {
       "recordedOn": "2026-10-31",
       "userRequest": "Five export fields now have values but review/download remain blocked; draft detailed repair plan first",
-      "phase": "verified_local_release_in_progress",
+      "phase": "published_verified",
       "plan": "docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md",
       "implementationNotAuthorized": false,
-      "report": "docs/PLAN_EXPORT_READINESS_REPAIR_REPORT_2026-10-31.md"
+      "report": "docs/PLAN_EXPORT_READINESS_REPAIR_REPORT_2026-10-31.md",
+      "sourceCommit": "614fab723ca7bd5f33a89345d1041942752733bb",
+      "publicationReceipt": "C:/mega/codex/iENA/outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json"
     }
   },
   "stages": [
@@ -3946,9 +3948,11 @@
       },
       {
         "id": "normal-area-plan-export-readiness-plan-2026-10-31",
-        "status": "planned_not_implemented",
-        "description": "Normal-area .plan readiness/export repair; confirmed2blockergroups and3unidentifiedchecks; detailed plan only",
-        "plan": "docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md"
+        "status": "published_verified",
+        "description": "Normal-area planning export repaired; same-area Production downloads verified with CI/hash evidence",
+        "plan": "docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md",
+        "report": "docs/PLAN_EXPORT_READINESS_REPAIR_REPORT_2026-10-31.md",
+        "receipt": "C:/mega/codex/iENA/outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json"
       }
     ],
     "deferredLegacyStages": [
@@ -4406,10 +4410,10 @@
   },
   "presentationReadinessSummary": {
     "recordedOn": "2026-10-31",
-    "sourceSection": "3.80",
-    "basis": "Read current canonical documents, local Git and prior completed release receipt; no fresh runtime/CI/provider/browser checks this turn",
-    "head": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
-    "verifiedReleaseReceipt": "C:/mega/codex/iENA/outputs/XEDO_Home_Altitude_Release_2026-10-31/publication.json",
+    "sourceSection": "3.82",
+    "basis": "Actual same-area planning export release and postdeploy verification; other presentation/qualification items retained",
+    "head": "614fab723ca7bd5f33a89345d1041942752733bb",
+    "verifiedReleaseReceipt": "C:/mega/codex/iENA/outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json",
     "completed": [
       {
         "id": "planner",
@@ -4456,17 +4460,18 @@
         "title": "เติม4ช่อง export planning อัตโนมัติพร้อมรักษาmanual",
         "evidence": "Published5ead660;8local+8productioncases/matchedscreenshots/CI/32HTTPchecks passed",
         "receipt": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json"
-      }
-    ],
-    "beforePresentation": [
+      },
       {
         "order": 1,
         "id": "normal-area-plan-export-readiness-plan-2026-10-31",
-        "status": "planned_waiting_implementation_instruction",
+        "status": "published_verified",
         "title": "ทำ readiness/ดาวน์โหลด .plan ของพื้นที่เดิมให้ครบตามแผน หลังได้รับคำสั่งให้แก้",
         "plan": "docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md",
-        "acceptance": "Download an actual .plan of the current selected sortie and preserve real terrain review/profile provenance; all visible and hidden blockers identified"
-      },
+        "acceptance": "Download an actual .plan of the current selected sortie and preserve real terrain review/profile provenance; all visible and hidden blockers identified",
+        "receipt": "C:/mega/codex/iENA/outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json"
+      }
+    ],
+    "beforePresentation": [
       {
         "order": 2,
         "id": "actual-device-reboot-and-venue-rehearsal",
@@ -4530,9 +4535,9 @@
       "scope": "Normal-flow aircraft defaults and user-start/derived-end rewrite were removed from current prototype closeout; normal export completeness is not a new closeout gate"
     },
     "pendingUserDetails": [],
-    "freshTests": false,
-    "freshBrowserOrAi": false,
-    "pushOrDeploy": false,
+    "freshTests": true,
+    "freshBrowserOrAi": true,
+    "pushOrDeploy": true,
     "billingOrSubscription": false,
     "resolvedUserDetails": [
       {
@@ -4548,7 +4553,7 @@
       }
     ],
     "clarificationThisTurn": true,
-    "currentRequiredRepair": "normal-area-plan-export-readiness-plan-2026-10-31"
+    "currentRequiredRepair": null
   },
   "homeAltitudeUserClarification": {
     "recordedOn": "2026-10-31",
@@ -4673,7 +4678,7 @@
     "id": "normal-area-plan-export-readiness-plan-2026-10-31",
     "recordedOn": "2026-10-31",
     "sourceSection": "3.80",
-    "status": "implementation_verified_local",
+    "status": "implemented_published_verified",
     "plan": "docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md",
     "sourceHead": "1b498ac5296217d4cc05c2f1d28e2479e0b2f16e",
     "evidenceBasis": "Actual user mission snapshot + source + fresh682test/syntax/3builds + real GEE/forecast/browser downloads",
@@ -4821,8 +4826,8 @@
       },
       {
         "id": "P23",
-        "status": "pending_production",
-        "actual": null
+        "status": "passed",
+        "actual": "Exact source CI/deployment/alias verified;32HTTP checks (24asset byte hashes + whole HTML exact LF normalization), actual Production .plan1/35 parsed/matched;390px/3D/console0"
       }
     ],
     "implementationAuthorized": true,
@@ -4835,7 +4840,7 @@
   },
   "normalAreaPlanExportRepairExecution": {
     "recordedOn": "2026-10-31",
-    "status": "verified_local_release_in_progress",
+    "status": "published_verified",
     "report": "docs/PLAN_EXPORT_READINESS_REPAIR_REPORT_2026-10-31.md",
     "evidence": "C:/mega/codex/iENA/outputs/XEDO_Plan_Export_Repair_2026-10-31",
     "tests": 682,
@@ -4857,7 +4862,7 @@
       "strictPassed": false,
       "noGoInferred": false,
       "finalCandidateReplay": "passed",
-      "productionReplay": "pending",
+      "productionReplay": "passed",
       "consoleWarningsErrors": 0,
       "finalBuildActualDownloads": [
         1,
@@ -4865,10 +4870,31 @@
       ],
       "sortieLockedDuringPrepare": true,
       "sortieUnlockedAfterDownload": true,
-      "frozenHostedFiles": 25
+      "frozenHostedFiles": 25,
+      "productionDownloads": [
+        1,
+        35
+      ],
+      "productionConsoleWarningsErrors": 0,
+      "productionMobileWidth": 390,
+      "productionThreeDReady": true
     },
     "billingAuthorized": false,
     "subscriptionAuthorized": false,
-    "pendingUserAnswers": []
+    "pendingUserAnswers": [],
+    "sourceCommit": "614fab723ca7bd5f33a89345d1041942752733bb",
+    "sourceCiRunId": 41153555655,
+    "sourceCiConclusion": "success",
+    "productionDeploymentId": "dpl_3tE6Kn9XywrysYfxBXxdi3tpqzr8",
+    "publicationReceipt": "C:/mega/codex/iENA/outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json",
+    "postdeployChecks": 32,
+    "exactAssetHashMatches": 24,
+    "htmlLineEndingOnly": true,
+    "terrainSamples": {
+      "known": 60,
+      "total": 60,
+      "fraction": 1
+    },
+    "activeRepairBlockers": []
   }
 }

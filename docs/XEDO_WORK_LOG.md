@@ -5,13 +5,13 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **31 ตุลาคม 2026 — local plan downloadผ่านจริง กำลังเผยแพร่ (§3.82)**
+- อัปเดตล่าสุด: **31 ตุลาคม 2026 — planning.planพื้นที่เดิมเผยแพร่และตรวจProductionผ่านจริง (§3.82)**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
 - จุดประสงค์รอบนี้: แก้ readiness/แบ่งเที่ยว/ดาวน์โหลด.plan บนพื้นที่เดิม ทดสอบและเผยแพร่ตามอนุมัติ
-- สถานะเผยแพร่: local acceptanceผ่าน กำลังpush/deploy; exact receiptของรอบนี้อยู่outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.jsonเมื่อทำจริง
+- สถานะเผยแพร่: source614fab7/CI41153555655success/Production3tE6Kn9XREADY; finaldocsidentity/CIอยู่outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json
 - **ขอบเขตคำสั่งล่าสุด:** อนุมัติ implementation/test และ push/deployเมื่อผ่านตามแผน ไม่เปิดBilling/subscription
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
@@ -19,6 +19,8 @@
 **กติกาเพิ่ม 27 ต.ค.:** งานแก้/ตรวจเว็บไซต์ลักษณะนี้ต้องบันทึกสองที่: ไฟล์นี้เก็บประวัติ ผลตรวจ และการเผยแพร่; `docs/WEBSITE_DETAILS.md` เก็บโครงสร้าง พฤติกรรม dependency และรายละเอียดวิธีแก้ อัปเดตทั้งสองก่อนจบรอบ และรักษาคิว JSON ให้ตรงกัน
 
 ## 2. สรุป
+
+**normal-area planning .plan เผยแพร่และตรวจเว็บจริงแล้ว — 31 ต.ค. 2026 (§3.82): source614fab7/CI41153555655success/dpl_3tE6Kn9XywrysYfxBXxdi3tpqzr8READY ใช้Polygon/Homeเดิมได้35sorties ตรวจGEE60/60ใหม่และforecastจริง โหลด01/35ผ่านProductionแล้ว ไฟล์12/6itemsและSHAตรงกับlocal ครบ69surveysegments/max132.9476Wh≤133.2Wh คงterrainreview/strictfalse/no-gonull Fresh682tests/3builds/32HTTPchecks/24assetbytehashesผ่าน HTMLต่างเพียงCRLF→LFจากGit 390px/2D3D/console0ผ่าน ไม่มีBilling/subscription ไม่เหลือคำถามหรือblockerของrepairนี้ Exact finaldocs identity/CIเก็บในpublication.json**
 
 **แก้ normal-area planning export และผ่านในเครื่องแล้ว — 31 ต.ค. 2026 (§3.82): profile8ค่ามีmanual ownership; shared planning_reference แยกstrict; exact Polygon/Homeเดิมได้35sorties/69surveysegmentsครบ/133.2Wh budget ไม่เพิ่มพลังงาน เก็บไฟล์.planจริงเที่ยว1/35และ auditตรงroute/Home; terrain range2.5788m/tolerance2mยังreview strictยังfalse no-goยังnull แก้forecast-window oscillationแล้ว Fresh682Node/syntax/3buildsผ่าน กำลังfinal-candidate browser replay และpush/deployตามอนุมัติ ไม่มีBilling/subscription**
 
@@ -2216,9 +2218,16 @@ PostpushHTTP32checksผ่าน: HTML23516bytesและ24assetsตรง25hash
 
 **Fresh verification:** npm test -- --test-concurrency=2 ได้682pass/0fail/cancel/skip, npmruncheckและbuild/buildworkspace/buildfileผ่าน Fullsuiteรวมstrictregressions, stale/partial/wrongGEE/Home/route, wind/no-go/energy/time, hash/session/revision/doubleclick, profileblankzero/import/demo และSQLPGliteSavev3v4/history/reopen/ownerisolation ไม่อ้างว่าSQLtestเป็นrealSupabase/browserSaveใหม่
 
-**Browser/artifacts:** เปิดChrome QAคนละแท็บ ไม่เปลี่ยนoriginaluserdraft ใช้GeoJSON/Homeเดิมผ่านvisiblefieldsและrealSentinel2 27Oct/automaticregionalforecast/GEE ได้Home1.5m range2.578836679/tolerance2mครบ58samplesstrictfalseplanningtrue ดาวน์โหลด01/35ผ่านUIพบไฟล์OSจริง4975/2638bytes/12/6itemsArduPilot3; auditเทียบserializerตรงselection/Home/waypointsมีแค่16/21/22/178และcoverage69segmentscomplete body17213bytes เก็บหลักฐานในoutputs/XEDO_Plan_Export_Repair_2026-10-31นอกGit (precise mission/privatejsonห้ามpublish) ตรวจ390pxnooverflowและ2D/3D readinessได้ ไม่มีbroadhardwareperformance/nativeQGC/SITL/flightclaim FinalcandidateและProductionreplayจะเติมreceiptหลังทำจริง
+**Browser/artifacts:** เปิดChrome QAคนละแท็บ ไม่เปลี่ยนoriginaluserdraft ใช้GeoJSON/Homeเดิมผ่านvisiblefieldsและrealSentinel2 27Oct/automaticregionalforecast/GEE ได้Home1.5m range2.578836679/tolerance2mครบ60samplesบนrouteใหม่strictfalseplanningtrue ดาวน์โหลด01/35ผ่านUIพบไฟล์OSจริง4975/2638bytes/12/6itemsArduPilot3; auditเทียบserializerตรงselection/Home/waypointsมีแค่16/21/22/178และcoverage69segmentscomplete body17213bytes เก็บหลักฐานในoutputs/XEDO_Plan_Export_Repair_2026-10-31นอกGit (precise mission/privatejsonห้ามpublish) ตรวจ390pxnooverflowและ2D/3D readinessได้ ไม่มีbroadhardwareperformance/nativeQGC/SITL/flightclaim FinalcandidateและProductionreplayจะเติมreceiptหลังทำจริง
 
 **Publication/status:** กำลังscope/credentialscan/hashfreeze→normalpushmain→automaticVercelProduction→exactCI/alias/hashsmoke/browserdownloadจริง ไม่มีmigration/account/env/CPU/AIcloud/Billing/subscriptionchange ไม่มีคำถามจำเป็นรอคำตอบ Nativeimport/SITL/fieldqualification/rebootrehearsal/ชุดสำรองยังแยกไว้ ผลจริงหลังเผยแพร่และexactsource/finalSHAจะอยู่outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json
 
 
 **Final candidate acceptance (ก่อน push):** replayChromeบนbuildสุดท้ายอีกครั้งด้วยพื้นที่/Homeเดิม ได้35sorties/784.4625minและplanningready/terrainreviewตามเดิม Download01/35จริงรอบใหม่ (` (1).plan`) เทียบserializer/hashตรงกับsnapshotf54ac8561bcc มี12/6items ตรวจpickerdisabledระหว่างPreparingและคืนenabledหลังสำเร็จ DOMbootassetตรงfrozenmanifest consolewarning/error0 `final-local-browser-proof.json`, `local-download-audit.json`, `final-local-ready.png`; requestinputsล่าสุด17212bytes Fresh682tests/0failและ3builds Source22paths+hosted25filesอยู่manifest ไม่เปลี่ยนproductหลังfreeze กำลัง normalpush/deployและตรวจProductionต่อ ไม่มีBilling/subscription
+
+
+**Production acceptance และปิด repair (31 ต.ค. 2026):** source [`614fab723ca7bd5f33a89345d1041942752733bb`](https://github.com/megaaaop/XEDO/commit/614fab723ca7bd5f33a89345d1041942752733bb), [CI41153555655](https://github.com/megaaaop/XEDO/actions/runs/41153555655) completed/success, Production `dpl_3tE6Kn9XywrysYfxBXxdi3tpqzr8` READY/alias xedo-eight.vercel.app/regioniad1 ตรงsource ใช้ChromeQA Productionคนละแท็บกับdraftเดิม ผ่านพื้นที่/Homeเดิม→ภาพ27Oct→automaticconditions/GEE→35sorties→Viewallchecks→planningreview→Download01/35จริง (` (2).plan`) พบOSfiles4975/2638bytes/12/6items ArduPilot3 ช่วง/พลังงาน/routeเหมือนlocal SHA256ทั้งสองไฟล์ตรงlocal ด้วย geometry/Homeunchanged/69segmentfractionsครบ/max132.947601868Wh≤133.2Wh Actualnewroute GEE60/60samples (ก่อนแก้58/58), Home1.5m/range2.578836679/tolerance2mยังreview strictfalseplanningtrue no-gonull/airspaceReviewedfalse ไม่สร้างapprovalปลอม Requestbodyล่าสุด17224bytes หน้าจอproduction-ready-full.pngตรงproduction-browser-proof.jsonและprivate snapshot ไม่ลงGit
+
+**Postdeploy checks:** 32HTTPchecksผ่าน รวม24assetsที่bytes/SHA256ตรงทุกไฟล์และHTML24071bytesตรงกับlocal24088bytesเมื่อแปลงเฉพาะCRLFเป็นLFตามGit เก็บfailureครั้งแรกซึ่งassert rawHTMLhashไม่ตรงเป็นverification discrepancyจากline endings แล้วตรวจเทียบentireLF-normalizedpayloadแบบexact ไม่ใช้การตัด/looselymatchเพื่อผ่าน Source/productไม่เปลี่ยนเพราะเหตุนี้ Privatejob401/sessionguestnull/no-store, CPUlauncher/source/docs404และmissingasset404nonimmutableยังถูกต้อง Chromeconsolewarn/error0 ตรวจruntimeerror/fatalเฉพาะdeploymentใน15นาทีไม่พบlogs ตรวจ3Dcanvasvisible/emptyhidden/readinessคงเดิมและ390pxcontent375/button301/nooverflow แล้วresetviewport/กลับ2D ไม่มีbroadperformance/nativeQGC/SITL/flightclaim
+
+**สถานะส่งมอบ:** อัปเดตสองcanonicalMD/รายงาน/queueจากplannedเป็นpublished_verified ไม่มีรอคำตอบหรือimplementation blockerของrepairนี้ ไม่ทำnormal-user-start/derived-endrewrite ไม่เปลี่ยนSQL/accounts/env/CPUworker/AI/cloud/Billing/subscription นอกscope คงreboot rehearsal/ชุดสำรองและextendedqualificationเดิมแยกไว้ CommitเอกสารติดตามและexactfinalCI/deploymentจะบันทึกใน `C:/mega/codex/iENA/outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json` เพื่อไม่สร้างself-referentialcommit loop
