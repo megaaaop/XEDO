@@ -297,7 +297,7 @@
     "id": "risk-map-highlight-2026-11-02",
     "recordedOn": "2026-11-02",
     "sourceSection": "3.91",
-    "status": "publishing_authorized",
+    "status": "published_verified",
     "scope": "Visual map highlights/legend/coverage feedback only; preserve geometry and confirmation guards.",
     "applicationFeatureRepairAuthorized": true,
     "pushAuthorized": true,
@@ -330,7 +330,8 @@
       "realAccountConfirmation": false,
       "mobileHardware": false
     },
-    "evidenceDirectory": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02"
+    "evidenceDirectory": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02",
+    "receipt": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02/publication.json"
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
@@ -896,7 +897,7 @@
       "id": "inspector-boundary-outside-reviewed-context-2026-11-02",
       "reportedOn": "2026-11-02",
       "sourceSection": "3.89",
-      "status": "visual_feedback_implemented_local_original_guard_preserved",
+      "status": "visual_feedback_published_original_boundary_review_required",
       "reportedSymptom": "The boundary extends beyond the reviewed image while manual Inspector target is selected and context image shows Ready.",
       "confirmedRootCause": "Client coversGeometry(review.geometry, selectedRiskDraft.geometry) rejects the target before pixel verification and confirm API. Live DOM search geometry does not cover the manual risk geometry; approximately 1.00135 percent lies outside.",
       "observedEvidence": {
@@ -924,7 +925,9 @@
       "deployAuthorized": false,
       "pendingDecisionIds": [],
       "highlightImplementation": "risk-map-highlight-2026-11-02",
-      "remaining": "The original outside target still requires editing or covering imagery/search review. Automatic search expansion preserving draft is outside this implementation."
+      "remaining": "The original outside target still requires editing or covering imagery/search review. Automatic search expansion preserving draft is outside this implementation.",
+      "highlightPublished": true,
+      "highlightReleaseReceipt": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02/publication.json"
     }
   ],
   "unansweredDecisions": [],
@@ -1090,22 +1093,24 @@
     }
   ],
   "latestPublishedRelease": {
-    "commit": "5ead6605a56923aa4ed0a665024a6c8f1d1a3438",
-    "productionDeploymentId": "dpl_FTnxwMJ9wtHf35oQFGzJe7gJKk8U",
+    "commit": "09b9630e5081f9776214366a204ab908938535f0",
+    "productionDeploymentId": "dpl_CtZ1uo4LJ6NUKGjVkFN3wbiTtiGQ",
     "url": "https://xedo-eight.vercel.app/",
     "sourceBranch": "main",
     "ciRunIds": [
-      41131117157
+      41436661699
     ],
     "ciConclusion": "success",
-    "publishedOn": "2026-10-31",
+    "publishedOn": "2026-11-02",
     "timezone": "Asia/Bangkok",
-    "scopeId": "export-planning-autofill-2026-10-31",
-    "verificationRecord": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json",
-    "htmlBytes": 23620,
-    "hostedHashMatches": 25,
+    "scopeId": "risk-map-highlight-2026-11-02",
+    "verificationRecord": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02/publication.json",
+    "htmlBytes": 24071,
+    "exactAssetHashMatches": 24,
+    "htmlGitLineEndingDifferenceOnly": true,
+    "productionBrowserCases": 6,
     "documentationFollowup": {
-      "receipt": "C:/mega/codex/iENA/outputs/XEDO_Export_Autofill_Release_2026-10-31/publication.json",
+      "receipt": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02/publication.json",
       "productSourceChange": false
     }
   },
@@ -4252,6 +4257,29 @@
       "activeProductionCommit": "b621fbd3153a7ca19c8236ad7dfeb39f293a5d49",
       "activeProductionDeploymentId": "dpl_BDn4FP9dYypi3cZhgmoJWGZLwb9w",
       "note": "Identity is from retained successful release receipt; not a fresh online check in this summary turn."
+    },
+    {
+      "id": "risk-map-highlight-2026-11-02",
+      "commit": "09b9630e5081f9776214366a204ab908938535f0",
+      "productionDeploymentId": "dpl_CtZ1uo4LJ6NUKGjVkFN3wbiTtiGQ",
+      "url": "https://xedo-eight.vercel.app/",
+      "sourceBranch": "main",
+      "ciRunIds": [
+        41436661699
+      ],
+      "ciConclusion": "success",
+      "publishedOn": "2026-11-02",
+      "timezone": "Asia/Bangkok",
+      "scopeId": "risk-map-highlight-2026-11-02",
+      "verificationRecord": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02/publication.json",
+      "htmlBytes": 24071,
+      "exactAssetHashMatches": 24,
+      "htmlGitLineEndingDifferenceOnly": true,
+      "productionBrowserCases": 6,
+      "documentationFollowup": {
+        "receipt": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02/publication.json",
+        "productSourceChange": false
+      }
     }
   ],
   "ciDocumentationFollowupExecution": {
@@ -5165,7 +5193,7 @@
     "id": "inspector-boundary-outside-reviewed-context-2026-11-02",
     "reportedOn": "2026-11-02",
     "sourceSection": "3.89",
-    "status": "visual_feedback_implemented_local_original_guard_preserved",
+    "status": "visual_feedback_published_original_boundary_review_required",
     "reportedSymptom": "The boundary extends beyond the reviewed image while manual Inspector target is selected and context image shows Ready.",
     "confirmedRootCause": "Client coversGeometry(review.geometry, selectedRiskDraft.geometry) rejects the target before pixel verification and confirm API. Live DOM search geometry does not cover the manual risk geometry; approximately 1.00135 percent lies outside.",
     "observedEvidence": {
@@ -5192,13 +5220,15 @@
     "pushAuthorized": false,
     "deployAuthorized": false,
     "pendingDecisionIds": [],
-    "highlightImplementation": "risk-map-highlight-2026-11-02"
+    "highlightImplementation": "risk-map-highlight-2026-11-02",
+    "highlightPublished": true,
+    "highlightReleaseReceipt": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02/publication.json"
   },
   "riskHighlightImplementation": {
     "id": "risk-map-highlight-2026-11-02",
     "recordedOn": "2026-11-02",
     "sourceSection": "3.91",
-    "status": "publishing_authorized",
+    "status": "published_verified",
     "scope": "Visual map highlights/legend/coverage feedback only; preserve geometry and confirmation guards.",
     "applicationFeatureRepairAuthorized": true,
     "pushAuthorized": true,
@@ -5231,12 +5261,13 @@
       "realAccountConfirmation": false,
       "mobileHardware": false
     },
-    "evidenceDirectory": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02"
+    "evidenceDirectory": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02",
+    "receipt": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02/publication.json"
   },
   "riskHighlightRelease": {
     "recordedOn": "2026-11-02",
     "sourceSection": "3.91",
-    "status": "publishing",
+    "status": "published_verified",
     "baseHead": "88a97ea1f4ae2bfe07e0334677b5801d19a417d3",
     "projectId": "prj_x35WcipWxA767cYwv3f0CXcdyea3",
     "teamId": "team_CV1O0uIz6BcarAQAOb8soV0I",
@@ -5244,6 +5275,23 @@
     "evidenceDirectory": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02",
     "billing": false,
     "subscription": false,
-    "pendingUserAnswers": []
+    "pendingUserAnswers": [],
+    "sourceCommit": "09b9630e5081f9776214366a204ab908938535f0",
+    "sourceCiRunId": 41436661699,
+    "sourceCiConclusion": "success",
+    "sourceDeploymentId": "dpl_CtZ1uo4LJ6NUKGjVkFN3wbiTtiGQ",
+    "sourceDeploymentReady": true,
+    "httpChecks": 32,
+    "exactAssetHashMatches": 24,
+    "htmlGitLineEndingDifferenceOnly": true,
+    "productionBrowserCases": 6,
+    "realInspectorSignIn": true,
+    "existingAnalysisAndLiveContext": true,
+    "newAnalysisStarted": false,
+    "actualUserOriginalTabEdited": false,
+    "siteConsoleWarningsErrors": 0,
+    "extensionDeprecationWarnings": 1,
+    "receipt": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02/publication.json",
+    "documentationFollowup": "Final docs identity/CI recorded in external receipt after verification"
   }
 }

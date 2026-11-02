@@ -5,13 +5,13 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **2 พฤศจิกายน 2026 — เผยแพร่และตรวจไฮไลต์แผนที่ (§3.91; อยู่ระหว่างดำเนินการ)**
+- อัปเดตล่าสุด: **2 พฤศจิกายน 2026 — ไฮไลต์แผนที่เผยแพร่และตรวจบน Production แล้ว (§3.91)**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
 - จุดประสงค์รอบนี้: push/deploy งานไฮไลต์ที่ทดสอบแล้ว และตรวจ Production/CI/ไฟล์ที่เผยแพร่ พร้อมบันทึกผล
-- สถานะเผยแพร่: ได้รับอนุมัติ push/deploy งานไฮไลต์ กำลังดำเนินการ ยังไม่อ้างผล Production ของรุ่นใหม่ก่อนตรวจสำเร็จ
+- สถานะเผยแพร่: ไฮไลต์ source09b9630 ขึ้นเว็บจริงและผ่าน CI/HTTP/artifact/browser acceptance แล้ว; final docs commit/CI/deployment identity เก็บใน publication.json
 - **ขอบเขตคำสั่งล่าสุด:** อนุมัติ push/deploy เฉพาะงานไฮไลต์ที่ทดสอบแล้วและเอกสารต่อเนื่อง ไม่ขยาย AOI/แก้ geometry/ปลด Confirm guard หรือimplement return/charge/resume ไม่เปิด Billing/subscription
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
@@ -20,7 +20,7 @@
 
 ## 2. สรุป
 
-**เริ่มเผยแพร่งานไฮไลต์ — 2 พ.ย. 2026 (§3.91): ผู้ใช้อนุมัติ push/deploy แล้ว ตรวจ source6ไฟล์ hashตรงกับชุด685tests/3buildsที่ผ่านก่อนหน้า และremote mainตรงฐาน88a97ea ตรวจVercelproject xedo/team/domain Production เดิมตรง กำลังfreeze→commit→normalpushmain→Git deployment→CI/artifact/browser acceptance รวมประวัติและแผนที่canonical docsอ้างอิงเป็นเอกสารเท่านั้น ไม่implement charging ไม่ส่งprivate outputsขึ้นGit ไม่เปิดBilling/subscription ผลหลังเผยแพร่จะบันทึกเมื่อเกิดจริง**
+**ไฮไลต์เผยแพร่และตรวจ Production แล้ว — 2 พ.ย. 2026 (§3.91): source09b9630/CI41436661699success/Productiondpl_CtZ1uo4LJ6NUKGjVkFN3wbiTtiGQREADY aliasจริงตรง ตรวจHTTP32checks/24asset hashesตรง HTMLต่างเพียงGitCRLF→LF เปิดInspectorจริง/ผลAIเดิม12candidates/Sentinel2สดแล้ว6browsercasesผ่าน รวมoriginaldraftoutside/inside/Undo/toggles/Confirmguard ไม่Saveทับร่างผู้ใช้ ไม่สั่งAIใหม่ ไม่พบsiteconsolewarning/error มี1Chrome-extension deprecationแยกไว้ ผลlocal685tests/3buildsยังเป็นชุดsourcehashเดียวกัน Exact finaldocs identity/CI/receiptอยู่publication.json ไม่มีBilling/subscriptionหรือคำตอบรอ**
 
 **ทำแผนที่ไฮไลต์ตามภาพ — 2 พ.ย. 2026 (§3.90): เพิ่ม selected Inspector สีเขียวโปร่ง/AIสีเหลือง/SARcoverageสีเทา/กรอบ reviewed image เส้นประฟ้า/เฉพาะส่วนล้นสีแดง พร้อม legend และสวิตช์แยกชั้นข้อมูลในเครื่อง refresh ตามภาพ/ร่างโดย cache input ไม่เพิ่ม RAF/poll/network หรือแก้ geometry/confirmation guards Fresh685tests/0fail,syntax,3buildsผ่าน Browser actual risk-editor/OpenLayers ด้วย recorded fixture+archived context ผ่าน6casesและconsole0; replay draftจริงแบบofflineยังoutsideถูกต้อง ไม่ได้แก้ร่าง/วิเคราะห์ใหม่/SaveบนProduction ไม่pushdeploy/Billing/subscription**
 
@@ -2372,3 +2372,10 @@ PostpushHTTP32checksผ่าน: HTML23516bytesและ24assetsตรง25hash
 **การตรวจ candidate:** SHA256ทั้ง6ไฟล์ตรง verification.json ของรอบimplementation จึงคงผล685tests/13targeted/syntax/3buildsและ6localcomponentcasesตาม§3.90 ไม่อ้างว่าเพิ่งรันlocalfullsuiteใหม่ในturnเผยแพร่ ตรวจdiff whitespace/scopeและfreeze exact source/hosted assetsก่อนcommit ใช้normalpush main ไม่forcepush ไม่publishprivate DOM/mission JSON/sessions/keys/artifactsในoutputs เอกสารแผนเก่ารักษาสถานะpreparedเท่านั้น
 
 **สถานะก่อนส่ง:** กำลังcommit/push→VercelGitProduction→ตรวจexactcommit/CI/READY/alias→HTTP+assetbytehash→browserQAแยกแท็บโดยรักษาร่างผู้ใช้เดิม ยังไม่ถือว่าผ่านจนตรวจจริง เก็บ release-manifest.json และpublication.json ใน outputs/XEDO_Risk_Highlight_2026-11-02 ไม่มีBilling/subscription/paidcloudหรือคำถามใหม่รอ ผลหลังเผยแพร่จะเติมด้านล่าง
+
+
+**ผลหลังเผยแพร่จริง (§3.91):** normalpush source09b9630e5081f9776214366a204ab908938535f0ขึ้นmainสำเร็จ CI41436661699completed/successทุกjobและsyntax/tests/3builds Productiondpl_CtZ1uo4LJ6NUKGjVkFN3wbiTtiGQREADY/iad1/aliasxedo-eight.vercel.appตรงcommit buildประมาณ13.0s ตรวจHTTP32รายการ asset24ไฟล์ตรงSHA256/bytes ภาพHTMLProduction24071bytesเทียบlocal24088bytesต่างเพียงCRLF→LFGitแบบexactfullpayload ไม่ใช่looseDOMmatch authpublicsessionnull/jobs401/providerwrongmethod405ยังno-store และworker/guide/privatepathsไม่ถูกserve
+
+**Production browser acceptance:** ผู้ใช้Sign inในแท็บQAใหม่889236036 เปิดผลเดิมวันที่2Nov17:10:15มี12candidates/CPUReady โหลดSentinel2จริง1Nov03:54UTC34.6%cloudพร้อม อ่านbootassetตรงmanifest ทำ6cases: ร่างmanualQAล้นชัด, replayร่างuserเดิมที่ล้นประมาณ1%, ขอบในภาพแล้วwarning/แดงหาย, Undoกลับgeometryเดิม, ปิด/เปิดAI/SAR/imagelegendไม่เปลี่ยนgeometry, Confirmoutsideยังถูกblockด้วยข้อความเดิมก่อนSave พิกัดและร่างเดิมในแท็บuserไม่ถูกแก้ ไม่สั่งAnalyzeใหม่ ไม่confirmภารกิจที่ผ่านหรือSaveเป็นrevisionใหม่ Siteconsolewarn/error0 แยกChromeextensionfeature_collector deprecation1ออก ไม่ใช่webscript ไม่ได้ทดสอบmobile/hardware/SITL/บินจริงเพิ่ม หลักฐานproduction-highlight.png/production-browser-summary.json/private-production-browser-cases.jsonในoutputsนอกGit ไม่มีคำถามLoginค้าง
+
+**ปิดรอบ/เอกสาร:** recordpostdeployทั้งสองcanonicalMDและqueueพร้อมreceipt กำลังส่งfollowupdocs-onlycommitบนmain แล้วตรวจCI/READY/unchangedhostedhashของcommitนั้นต่อ ExactfinalSHA/deployment/CIอยู่outputs/XEDO_Risk_Highlight_2026-11-02/publication.json เพื่อไม่สร้างself-referentialcommitloop คงchargingplanprepared/ข้อกำหนดgeometryreviewเดิม ไม่มีmigration/env/account/worker/Billing/subscriptionเปลี่ยน การแสดงสีแดงไม่ใช่การแก้ให้targetนอกภาพกลายเป็นconfirmed
