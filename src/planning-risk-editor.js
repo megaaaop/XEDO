@@ -8,8 +8,10 @@ import Modify from 'ol/interaction/Modify.js';
 import Translate from 'ol/interaction/Translate.js';
 import {Style,Stroke,Fill,Circle as CircleStyle} from 'ol/style.js';
 import {unByKey} from 'ol/Observable.js';
+import {getRenderPixel} from 'ol/render.js';
 import {createRiskState} from './planning-risk-state.js';
 import {validateRiskTarget,coversGeometry,geometryEquals} from './planning-risk-geometry.js';
+import {riskImageCoverage,clipOutsideImage} from './planning-risk-highlight.js';
 import {createAnalysisJobs} from './planning-analysis-jobs.js';
 import {paintActionButton} from './action-feedback.js';
 
@@ -17,34 +19,53 @@ const RESULT='XEDO_SAR_20261011T130518Z_6152a5';
 const copy=value=>structuredClone(value);
 const shape=area=>({type:'Polygon',coordinates:copy(area.rings)});
 const draftKey=draft=>JSON.stringify({...draft,baseReviewRevision:null});
-const style=(color,fill)=>new Style({stroke:new Stroke({color,width:2}),fill:new Fill({color:fill}),image:new CircleStyle({radius:5,fill:new Fill({color})})});
+const style=(color,fill,width=2,lineDash)=>new Style({stroke:new Stroke({color,width,lineDash}),fill:new Fill({color:fill}),image:new CircleStyle({radius:5,fill:new Fill({color})})});
 
 /** Risk edits own separate vector sources. They never change the image/search AOI. */
 export function initializeRiskEditor({map,inspector,getContext,useArea,onDraft,onTarget,verifyTargetPixels,prepareEdit}){
   const panel=document.createElement('section');panel.className='risk-panel';panel.setAttribute('aria-labelledby','risk-title');
-  panel.innerHTML=`<div class="risk-heading"><h3 id="risk-title">AI risk areas</h3><button id="risk-load" class="button secondary" type="button">Open prepared AI area</button></div>
+  panel.innerHTML=`<div id="risk-map-legend" class="risk-map-legend" role="group" aria-label="AI map legend" hidden><span><i class="risk-key-inspector"></i>Inspector area</span><span id="risk-key-raw"><i class="risk-key-ai"></i>AI candidates</span><span id="risk-key-sar"><i class="risk-key-sar"></i>SAR data coverage</span><span id="risk-key-image"><i class="risk-key-image"></i>Reviewed image boundary</span><span id="risk-key-outside"><i class="risk-key-outside"></i>Outside reviewed image</span></div>
+    <div class="risk-heading"><h3 id="risk-title">AI risk areas</h3><button id="risk-load" class="button secondary" type="button">Open prepared AI area</button></div>
     <section class="analysis-jobs" aria-label="Analyze selected area"><div class="risk-actions"><button id="analysis-start" class="button primary" type="button">Analyze area</button><button id="analysis-refresh" class="button quiet" type="button">Refresh analyses</button><button id="analysis-cancel" class="button quiet" type="button" hidden>Cancel analysis</button></div><p id="analysis-worker" class="muted"></p><p id="analysis-status" role="status" aria-live="polite"></p><progress id="analysis-progress" max="1" hidden aria-label="SAR analysis progress"></progress><ul id="analysis-history" class="analysis-history" aria-label="Recent analyses"></ul></section>
     <p id="risk-status" role="status" aria-live="polite">Open a prepared SAR result, then review and choose the area to inspect.</p>
-    <div id="risk-content" hidden><p id="risk-source" class="muted"></p><div class="risk-layers"><label><input id="risk-raw" type="checkbox" checked> Show AI candidates</label><label><input id="risk-coverage" type="checkbox"> Show data coverage</label></div>
+    <div id="risk-content" hidden><p id="risk-source" class="muted"></p><div class="risk-layers"><label><input id="risk-raw" type="checkbox" checked> Show AI candidates</label><label><input id="risk-coverage" type="checkbox" checked> Show SAR data coverage</label><label><input id="risk-image" type="checkbox" checked> Show reviewed image boundary</label></div><p id="risk-coverage-status" role="status" aria-live="polite"></p>
     <div class="risk-lists"><label>AI candidates<select id="risk-candidates" size="4" aria-label="AI candidates"></select></label><label>Inspector areas<select id="risk-areas" size="4" aria-label="Inspector areas"></select></label></div>
     <div class="risk-actions"><button id="risk-accept" type="button" class="button secondary">Use candidate</button><button id="risk-reject" type="button" class="button quiet">Reject candidate</button><button id="risk-edit" type="button" class="button secondary">Edit boundary</button><button id="risk-move" type="button" class="button secondary">Move area</button><button id="risk-add" type="button" class="button secondary">Draw inspection area</button></div>
     <div class="risk-actions"><button id="risk-finish" type="button" class="button secondary" hidden>Finish edit</button><button id="risk-cancel" type="button" class="button quiet" hidden>Cancel edit</button><button id="risk-undo" type="button" class="button quiet">Undo</button><button id="risk-redo" type="button" class="button quiet">Redo</button><button id="risk-reset" type="button" class="button quiet">Reset draft</button></div>
     <details><summary>Import an inspection boundary</summary><label class="risk-geometry-label">Selected inspection boundary (GeoJSON)<textarea id="risk-geometry" rows="3" spellcheck="false"></textarea></label><button id="risk-apply" type="button" class="button quiet">Apply boundary</button></details>
     <p id="risk-target-status" role="status"></p><button id="risk-confirm" type="button" class="button primary">Confirm inspection area</button></div>`;
   document.querySelector('.trial-map-panel').append(panel);
-  const $=id=>panel.querySelector('#'+id),format=new GeoJSON(),raw=new VectorSource(),drafts=new VectorSource(),coverage=new VectorSource();
-  const styles={raw:style('#edb977','#edb97718'),draft:style('#49d3d0','#49d3d028'),selected:style('#c0fc8e','#c0fc8e30'),coverage:style('#889cb6','#889cb60c')};
-  const rawLayer=new VectorLayer({source:raw,style:styles.raw}),draftLayer=new VectorLayer({source:drafts,style:f=>f.get('selected')?styles.selected:styles.draft}),coverageLayer=new VectorLayer({source:coverage,style:styles.coverage,visible:false});
-  rawLayer.setZIndex(22);coverageLayer.setZIndex(21);draftLayer.setZIndex(24);map.addLayer(coverageLayer);map.addLayer(rawLayer);map.addLayer(draftLayer);
+  const $=id=>panel.querySelector('#'+id),format=new GeoJSON(),raw=new VectorSource(),drafts=new VectorSource(),coverage=new VectorSource(),imageBoundary=new VectorSource(),outside=new VectorSource();
+  const styles={raw:style('#f4d27a','#f4d27a12',2.2),draft:style('#49d3d0','#49d3d01c'),selected:style('#c0fc8e','#c0fc8e24',3),coverage:style('#a3b0c0','#a3b0c008',1.6),image:style('#6fd7f1','#00000000',2,[8,6]),outside:style('#ff8b82','#ff756b66',3)};
+  const rawLayer=new VectorLayer({source:raw,style:styles.raw}),draftLayer=new VectorLayer({source:drafts,style:f=>f.get('selected')?styles.selected:styles.draft}),coverageLayer=new VectorLayer({source:coverage,style:styles.coverage}),imageLayer=new VectorLayer({source:imageBoundary,style:styles.image}),outsideLayer=new VectorLayer({source:outside,style:styles.outside,className:'risk-outside-layer'});
+  rawLayer.setZIndex(22);coverageLayer.setZIndex(21);imageLayer.setZIndex(23);draftLayer.setZIndex(24);outsideLayer.setZIndex(25);for(const layer of [coverageLayer,rawLayer,imageLayer,draftLayer,outsideLayer])map.addLayer(layer);
   let analysis=null,state=null,confirmed=null,baseline=null,busy=false,epoch=0,interaction=null,editMode=null,keys=[],silent=false,restorePending=false,jobController=null,jobView=null,historyKey='';
+  let highlightKey='',imageRings=null,clipSaved=false;
+  const renderKeys=[outsideLayer.on('prerender',event=>{
+    if(!imageRings||!event.context)return;
+    event.context.save();clipSaved=true;
+    clipOutsideImage(event.context,imageRings,coordinate=>{const pixel=map.getPixelFromCoordinate(coordinate);return pixel?getRenderPixel(event,pixel):null;});
+  }),outsideLayer.on('postrender',event=>{if(clipSaved){event.context.restore();clipSaved=false;}})];
   const message=(text,error=false)=>{$('risk-status').textContent=text;$('risk-status').dataset.error=String(error);};
   const readFeature=f=>format.writeGeometryObject(f.getGeometry(),{featureProjection:'EPSG:3857',dataProjection:'EPSG:4326'});
   const addFeature=(source,geometry,props={})=>{const f=format.readFeature({type:'Feature',geometry,properties:props},{dataProjection:'EPSG:4326',featureProjection:'EPSG:3857'});source.addFeature(f);return f;};
+  function refreshHighlights(){
+    const context=getContext(),selected=state?.getSelected(),key=JSON.stringify([!!state,context.imageReady,context.imageGeometry,selected?.geometry,$('risk-image').checked,$('risk-raw').checked,$('risk-coverage').checked]);
+    if(key===highlightKey)return;highlightKey=key;
+    imageBoundary.clear();outside.clear();imageRings=null;
+    const ready=!!state&&context.imageReady&&context.imageGeometry?.type==='Polygon';
+    if(ready){const feature=addFeature(imageBoundary,context.imageGeometry);imageRings=feature.getGeometry().getCoordinates();}
+    const feedback=riskImageCoverage(context,selected?.geometry);
+    if(state&&ready&&feedback.state==='outside')addFeature(outside,selected.geometry);
+    imageLayer.setVisible(!!ready&&$('risk-image').checked);
+    $('risk-coverage-status').textContent=feedback.message;$('risk-coverage-status').dataset.error=String(feedback.error);
+    $('risk-map-legend').hidden=!state;$('risk-key-raw').hidden=!$('risk-raw').checked;$('risk-key-sar').hidden=!$('risk-coverage').checked;$('risk-key-image').hidden=!ready||!$('risk-image').checked;$('risk-key-outside').hidden=feedback.state!=='outside';
+  }
   function stop(){if(interaction)map.removeInteraction(interaction);interaction=null;for(const key of keys)unByKey(key);keys=[];editMode=null;}
   function blocked(){return restorePending||!!analysis&&(!confirmed||state?.snapshot().editing||draftKey(state.getDraft())!==baseline);}
   function render(){
     $('risk-content').hidden=!state;panel.setAttribute('aria-busy',String(busy));$('risk-load').disabled=busy;
-    if(!state){renderJobs();return;}
+    refreshHighlights();if(!state){renderJobs();return;}
     const s=state.snapshot(),selected=state.getSelected();if(!interaction){drafts.clear();for(const area of s.draft.areas)addFeature(drafts,shape(area),{areaId:area.id,selected:area.id===s.draft.selectedAreaId});}
     const value=s.draft.selectedAreaId;$('risk-areas').replaceChildren();for(const [i,area] of s.draft.areas.entries())$('risk-areas').append(new Option((i+1)+'. '+area.origin.replaceAll('_',' '),area.id));$('risk-areas').value=value||'';
     for(const b of $('risk-content').querySelectorAll('button'))b.disabled=busy;
@@ -147,10 +168,10 @@ export function initializeRiskEditor({map,inspector,getContext,useArea,onDraft,o
     if(!acceptReceipt(receipt))throw Error('An earlier risk draft was saved. Your current edits are kept; confirm the current inspection area again.');message('Inspection area confirmed and saved. Prepare the drone mission to calculate its route.');
   });
   function acceptReceipt(receipt){if(!analysis)return false;if(!receipt?.confirmedReview){silent=true;confirmed=null;baseline=null;state.setBaseReviewRevision(receipt?.latestReviewRevision??null);silent=false;render();return false;}const r=receipt.confirmedReview,s=state.getSelected();if(!s||!geometryEquals(s.geometry,r.target.geometry)||JSON.stringify(r.analysisRef)!==JSON.stringify(analysis.analysisRef))return false;const same=confirmed?.reviewId===r.reviewId;silent=true;confirmed=copy(r);state.setBaseReviewRevision(r.reviewRevision);baseline=draftKey(state.getDraft());silent=false;render();message('Inspection area confirmed and saved as review v'+r.reviewRevision+'.');if(!same)onTarget?.(copy(r));return true;}
-  $('risk-raw').onchange=()=>rawLayer.setVisible($('risk-raw').checked);$('risk-coverage').onchange=()=>coverageLayer.setVisible($('risk-coverage').checked);
+  $('risk-raw').onchange=()=>{rawLayer.setVisible($('risk-raw').checked);refreshHighlights();};$('risk-coverage').onchange=()=>{coverageLayer.setVisible($('risk-coverage').checked);refreshHighlights();};$('risk-image').onchange=refreshHighlights;
   const escape=event=>{if(event.key==='Escape'&&interaction){event.preventDefault();stop();state.cancel();message('Risk edit cancelled.');}};map.getTargetElement().addEventListener('keydown',escape);
   return {
-    blocked,hasAnalysis:()=>!!analysis||restorePending,target:()=>!blocked()?copy(confirmed?.target.geometry||null):null,
+    blocked,refreshContext:refreshHighlights,hasAnalysis:()=>!!analysis||restorePending,target:()=>!blocked()?copy(confirmed?.target.geometry||null):null,
     capture:()=>({analysisRef:copy(analysis?.analysisRef||null),riskDraft:state?.getDraft()||null}),
     backup:()=>analysis?{analysis:copy(analysis),draft:state.getDraft(),confirmedReview:copy(confirmed),latestReviewRevision:state.getDraft().baseReviewRevision}:null,
     restoreBackup(value){if(value)install(value.analysis,value.draft,value);else this.reset();},
@@ -159,6 +180,6 @@ export function initializeRiskEditor({map,inspector,getContext,useArea,onDraft,o
     cancelEdit(){if(state?.snapshot().editing){stop();state.cancel();}},editing:()=>!!state?.snapshot().editing,
     validateRestore(doc,data){if(!doc.analysisRef)return;if(!data?.analysis||JSON.stringify(data.analysis.analysisRef)!==JSON.stringify(doc.analysisRef))throw Error('The saved AI source does not match its original hashes. Your current mission is kept.');const check=createRiskState({analysis:data.analysis});check.restore(doc.riskDraft);},
     restore(doc,data){if(!doc.analysisRef){this.reset();return;}install(data.analysis,doc.riskDraft,data);message('Saved AI review restored. Reload context imagery and review flight readiness.');},
-    dispose(){jobController.dispose();stop();map.getTargetElement().removeEventListener('keydown',escape);map.removeLayer(rawLayer);map.removeLayer(draftLayer);map.removeLayer(coverageLayer);panel.remove();}
+    dispose(){jobController.dispose();stop();for(const key of renderKeys)unByKey(key);map.getTargetElement().removeEventListener('keydown',escape);for(const layer of [rawLayer,draftLayer,coverageLayer,imageLayer,outsideLayer])map.removeLayer(layer);panel.remove();}
   };
 }

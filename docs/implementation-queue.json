@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedOn": "2026-10-31",
+  "updatedOn": "2026-11-02",
   "timezone": "Asia/Bangkok",
   "numbering": {
     "effectiveOn": "2026-10-27",
@@ -294,19 +294,43 @@
     "latestPlanPath": "docs/AI_INTEGRATION_PLAN.md"
   },
   "currentImplementationScope": {
-    "id": "normal-area-plan-export-readiness-plan-2026-10-31",
-    "status": "published_verified",
+    "id": "risk-map-highlight-2026-11-02",
+    "recordedOn": "2026-11-02",
+    "sourceSection": "3.91",
+    "status": "publishing_authorized",
+    "scope": "Visual map highlights/legend/coverage feedback only; preserve geometry and confirmation guards.",
     "applicationFeatureRepairAuthorized": true,
     "pushAuthorized": true,
     "deployAuthorized": true,
     "billingAuthorized": false,
     "subscriptionAuthorized": false,
-    "baseSourceHead": "1b498ac5296217d4cc05c2f1d28e2479e0b2f16e",
-    "plan": "docs/PLAN_EXPORT_READINESS_REPAIR_PLAN_2026-10-31.md",
     "pendingUserInput": null,
-    "pendingImplementationInstruction": false,
-    "latestActionScope": "Completed authorized repair. Source614fab7 CI41153555655 success, ProductionREADY, actual same-area .plan1/35 and32postdeploy checks passed. No Billing/subscription. Further unrelated work requires its own instruction.",
-    "implementationAuthorized": true
+    "changedSourceFiles": [
+      "src/planning-risk-highlight.js",
+      "src/planning-risk-editor.js",
+      "src/planning-risk.css",
+      "src/planning-trial-client.js",
+      "tests/planning-risk-highlight.test.mjs",
+      "vercel.json"
+    ],
+    "verification": {
+      "targetedTests": 13,
+      "fullTests": 685,
+      "failed": 0,
+      "syntax": true,
+      "builds": [
+        "hosted",
+        "workspace",
+        "standalone"
+      ],
+      "localComponentBrowserCases": 6,
+      "consoleWarningsOrErrors": 0,
+      "realUserDraftOfflineReplay": "outside",
+      "newInference": false,
+      "realAccountConfirmation": false,
+      "mobileHardware": false
+    },
+    "evidenceDirectory": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02"
   },
   "confirmedProductRequirements": {
     "productMode": "Functional prototype with a production-like user experience.",
@@ -413,6 +437,24 @@
       "report": "docs/PLAN_EXPORT_READINESS_REPAIR_REPORT_2026-10-31.md",
       "sourceCommit": "614fab723ca7bd5f33a89345d1041942752733bb",
       "publicationReceipt": "C:/mega/codex/iENA/outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json"
+    },
+    "automaticReturnChargeResume": {
+      "confirmedOn": "2026-10-31",
+      "goal": "Plan survey, return to charging station before energy is insufficient, charge and resume remaining work until complete.",
+      "base": "User-selected Home/charging station",
+      "mustReserveReturnAndLanding": true,
+      "newEnergyEachDeparture": true,
+      "preserveRemainingSegmentCoverage": true,
+      "chargePhaseMustBeExplicit": true,
+      "chargeDurationMustBeIncludedInMissionEnd": true,
+      "hardwareExecutionIncluded": false,
+      "stationOrBatteryChangeApprovedByThisAnswer": false,
+      "scope": "website planning and simulation"
+    },
+    "riskMapHighlight": {
+      "recordedOn": "2026-11-02",
+      "reference": "User attached example with transparent green Inspector boundary, yellow AI and coverage outlines",
+      "implementation": "risk-map-highlight-2026-11-02"
     }
   },
   "stages": [
@@ -849,6 +891,40 @@
       "originalUserMissionCauseProven": false,
       "report": "docs/HOME_ALTITUDE_GEE_FIX_REPORT_2026-10-31.md",
       "remaining": "Publish this local fix only when requested; retain separate terrain/export review checks."
+    },
+    {
+      "id": "inspector-boundary-outside-reviewed-context-2026-11-02",
+      "reportedOn": "2026-11-02",
+      "sourceSection": "3.89",
+      "status": "visual_feedback_implemented_local_original_guard_preserved",
+      "reportedSymptom": "The boundary extends beyond the reviewed image while manual Inspector target is selected and context image shows Ready.",
+      "confirmedRootCause": "Client coversGeometry(review.geometry, selectedRiskDraft.geometry) rejects the target before pixel verification and confirm API. Live DOM search geometry does not cover the manual risk geometry; approximately 1.00135 percent lies outside.",
+      "observedEvidence": {
+        "worker": "Ready",
+        "latestJob": "succeeded",
+        "candidates": 12,
+        "selectedOrigin": "manual",
+        "mainCoversDraft": false,
+        "approximateOutsideFraction": 0.010013523106683908,
+        "reviewInternalObjectRead": false,
+        "liveTabReadOnly": true
+      },
+      "verification": {
+        "existingRiskTestsPassed": 10,
+        "existingRiskTestsFailed": 0,
+        "offlineLiveDomGeometryCheck": true,
+        "newAIInference": false,
+        "browserConfirmationSubmitted": false,
+        "fullApplicationTests": false,
+        "build": false
+      },
+      "evidenceDirectory": "C:/mega/codex/iENA/outputs/XEDO_Image_Coverage_Diagnosis_2026-11-02",
+      "repairAuthorized": false,
+      "pushAuthorized": false,
+      "deployAuthorized": false,
+      "pendingDecisionIds": [],
+      "highlightImplementation": "risk-map-highlight-2026-11-02",
+      "remaining": "The original outside target still requires editing or covering imagery/search review. Automatic search expansion preserving draft is outside this implementation."
     }
   ],
   "unansweredDecisions": [],
@@ -2839,6 +2915,19 @@
       "sourceDeploymentId": "dpl_7xjXAYyQE2uo1aJJx4FpMx4xACpX",
       "postpushHttpChecks": 32,
       "workerAndGuideNotPublic": true
+    },
+    {
+      "id": "return-charge-resume-plan-2026-10-31",
+      "status": "detailed_plan_prepared",
+      "baseSourceHead": "88a97ea1f4ae2bfe07e0334677b5801d19a417d3",
+      "plan": "docs/RETURN_CHARGE_RESUME_PLAN_2026-10-31.md",
+      "pendingUserInput": null,
+      "applicationFeatureRepairAuthorized": false,
+      "pushAuthorized": false,
+      "deployAuthorized": false,
+      "billingAuthorized": false,
+      "subscriptionAuthorized": false,
+      "latestActionScope": "User requested a detailed explanation of repair steps. Expanded charging/partition/timeline/UI/export/test proposal and canonical docs only; no application or publishing instruction in this turn."
     }
   ],
   "localCpuWebIntegrationExecution": {
@@ -4553,7 +4642,7 @@
       }
     ],
     "clarificationThisTurn": true,
-    "currentRequiredRepair": null
+    "currentRequiredRepair": "return-charge-resume-plan-2026-10-31"
   },
   "homeAltitudeUserClarification": {
     "recordedOn": "2026-10-31",
@@ -4896,5 +4985,265 @@
       "fraction": 1
     },
     "activeRepairBlockers": []
+  },
+  "newAreaDownloadBatteryDiagnosis": {
+    "recordedOn": "2026-10-31",
+    "sourceSection": "3.83",
+    "status": "diagnosed_charging_goal_reconfirmed",
+    "report": "docs/NEW_AREA_DOWNLOAD_BATTERY_DIAGNOSIS_2026-10-31.md",
+    "evidence": "C:/mega/codex/iENA/outputs/XEDO_New_Area_Download_Diagnosis_2026-10-31",
+    "rootCode": "SORTIE_INFEASIBLE",
+    "wind": "pass",
+    "battery": "blocked",
+    "assessedSorties": 0,
+    "comparisonWithPreviousAcceptedCase": {
+      "sameGeometry": false,
+      "sameHome": false
+    },
+    "budgetWh": 133.2,
+    "farthestSurveyPointM": 1918.5345888783718,
+    "bareMaxReturnRadiusM": 1847.9999999999998,
+    "minimumWhWithoutSurveyTurns": 137.9023059252248,
+    "terrainRangeM": 3.467282772064209,
+    "offlineCandidates": [
+      {
+        "kind": "offline_reference_home_candidate_not_applied",
+        "offsetM": 0,
+        "geometryUnchanged": true,
+        "energyUnchanged": true,
+        "state": "blocked",
+        "code": "SORTIE_INFEASIBLE",
+        "battery": "blocked",
+        "sorties": 0,
+        "maxEnergyWh": null,
+        "durationS": null,
+        "groundAndGEEReassessmentRequired": true,
+        "physicalLaunchSiteVerified": false
+      },
+      {
+        "kind": "offline_reference_home_candidate_not_applied",
+        "offsetM": 100,
+        "geometryUnchanged": true,
+        "energyUnchanged": true,
+        "state": "blocked",
+        "code": "SORTIE_INFEASIBLE",
+        "battery": "blocked",
+        "sorties": 0,
+        "maxEnergyWh": null,
+        "durationS": null,
+        "groundAndGEEReassessmentRequired": true,
+        "physicalLaunchSiteVerified": false
+      },
+      {
+        "kind": "offline_reference_home_candidate_not_applied",
+        "offsetM": 150,
+        "geometryUnchanged": true,
+        "energyUnchanged": true,
+        "state": "generated",
+        "code": null,
+        "battery": "pass",
+        "sorties": 24,
+        "maxEnergyWh": 133.11369208986832,
+        "durationS": 16206.850560091312,
+        "groundAndGEEReassessmentRequired": true,
+        "physicalLaunchSiteVerified": false
+      },
+      {
+        "kind": "offline_reference_home_candidate_not_applied",
+        "offsetM": 200,
+        "geometryUnchanged": true,
+        "energyUnchanged": true,
+        "state": "generated",
+        "code": null,
+        "battery": "pass",
+        "sorties": 22,
+        "maxEnergyWh": 131.65154776691702,
+        "durationS": 14969.46608876404,
+        "groundAndGEEReassessmentRequired": true,
+        "physicalLaunchSiteVerified": false
+      }
+    ],
+    "configurationChanged": false,
+    "applicationCodeChanged": false,
+    "fullSuiteOrBuildRun": false,
+    "pushOrDeploy": false,
+    "billingOrSubscription": false,
+    "pendingUserAnswers": [],
+    "resolvedUserQuestion": {
+      "id": "new-area-home-or-profile-choice-2026-10-31",
+      "status": "superseded_by_requirement_clarification",
+      "answeredOn": "2026-10-31",
+      "userAnswer": "ที่ตกลงไว้ตอนเเรกคือให้มี plan บินกลับไป charge อัตโนมัติ เพราะฉะนั้นเวลาเเบตจะหมดเเล้วมันจะบินกลับเเท่นชาร์ต",
+      "interpretation": "Reaffirm automatic return to the charging station and resume remaining inspection. Does not select a new Home or change battery inputs."
+    }
+  },
+  "returnChargeResumePlanning": {
+    "recordedOn": "2026-10-31",
+    "sourceSection": "3.85",
+    "status": "detailed_plan_prepared",
+    "plan": "docs/RETURN_CHARGE_RESUME_PLAN_2026-10-31.md",
+    "existing": [
+      "per_sortie_Home_return",
+      "fresh_energy_budget_each_sortie",
+      "remaining_survey_partition"
+    ],
+    "gaps": [
+      "explicit_charge_model",
+      "charge_timeline_and_duration",
+      "clear_full_charge_reachability_reason",
+      "mission_sequence_export_manifest"
+    ],
+    "unprovidedProfileParameters": [
+      "measured_charge_duration_or_power_and_efficiency"
+    ],
+    "currentFullChargeReachabilityIssueRetained": true,
+    "pendingUserAnswers": [],
+    "applicationCodeChanged": false,
+    "testsRun": false,
+    "pushOrDeploy": false,
+    "billingOrSubscription": false,
+    "implementationOrder": [
+      "charging_profile_and_ownership",
+      "remaining_work_return_budget_partition",
+      "charge_events_energy_timeline",
+      "shared_readiness_forecast_and_UI",
+      "save_history_sequence_export_package",
+      "automated_and_actual_browser_acceptance"
+    ],
+    "proposedInitialModel": {
+      "kind": "fixed_duration_ground_charge_stop",
+      "proposedDurationS": 600,
+      "basis": "Existing generic turnaround assumption; proposed reuse only for reference planning, not measured charger performance",
+      "userConfirmedValue": false,
+      "applied": false,
+      "removeLegacyTurnaroundDoubleCount": true
+    },
+    "exampleArithmetic": {
+      "evidence": "C:/mega/codex/iENA/outputs/XEDO_New_Area_Download_Diagnosis_2026-10-31/charge-plan-example-arithmetic.json",
+      "actualMission": false,
+      "totalMinutes": 60.5
+    },
+    "testCaseStatus": "designed_not_run"
+  },
+  "interviewPowerShellPause": {
+    "recordedOn": "2026-11-01",
+    "sourceSection": "3.86",
+    "status": "paused_verified",
+    "scope": "Pause the identified local Data preview task and its PowerShell before the user's interview",
+    "scheduledTask": "com.openai.data-preview.6952ef9c969938f87d8c0f3d7408937f3973d14c82f75dbcdefaab417f933a58",
+    "previewProject": "bme-infographic-app",
+    "port": 7293,
+    "previousState": "Running",
+    "taskState": "Disabled",
+    "taskEnabled": false,
+    "repetitionInterval": "PT1M",
+    "matchingPowerShellAndNodeProcesses": 0,
+    "windowsTerminalProcesses": 0,
+    "portListening": false,
+    "currentXedoPlanTerminalLaunchMatches": 0,
+    "xedoSarAutomationAlreadyPaused": true,
+    "resumeOnlyOnUserRequest": true,
+    "verifiedAt": "2026-11-01T04:54:58+07:00",
+    "lastRunUnchangedAcrossScheduledMinute": true,
+    "restartPersistence": {
+      "sourceSection": "3.87",
+      "checkedAt": "2026-11-01T04:55:56+07:00",
+      "status": "persisted_disabled_configuration_verified",
+      "persistentXmlEnabled": false,
+      "logonTriggerPresentButTaskDisabled": true,
+      "matchingStartupCommands": 0,
+      "actualRebootTestPerformed": false,
+      "evidenceFile": "restart-persistence-check.json"
+    },
+    "evidence": "C:/mega/codex/iENA/outputs/PowerShell_Interview_Pause_2026-11-01",
+    "applicationCodeChanged": false,
+    "applicationTestsOrBuildRun": false,
+    "pushOrDeploy": false,
+    "pendingUserAnswers": []
+  },
+  "imageCoverageDiagnosis": {
+    "id": "inspector-boundary-outside-reviewed-context-2026-11-02",
+    "reportedOn": "2026-11-02",
+    "sourceSection": "3.89",
+    "status": "visual_feedback_implemented_local_original_guard_preserved",
+    "reportedSymptom": "The boundary extends beyond the reviewed image while manual Inspector target is selected and context image shows Ready.",
+    "confirmedRootCause": "Client coversGeometry(review.geometry, selectedRiskDraft.geometry) rejects the target before pixel verification and confirm API. Live DOM search geometry does not cover the manual risk geometry; approximately 1.00135 percent lies outside.",
+    "observedEvidence": {
+      "worker": "Ready",
+      "latestJob": "succeeded",
+      "candidates": 12,
+      "selectedOrigin": "manual",
+      "mainCoversDraft": false,
+      "approximateOutsideFraction": 0.010013523106683908,
+      "reviewInternalObjectRead": false,
+      "liveTabReadOnly": true
+    },
+    "verification": {
+      "existingRiskTestsPassed": 10,
+      "existingRiskTestsFailed": 0,
+      "offlineLiveDomGeometryCheck": true,
+      "newAIInference": false,
+      "browserConfirmationSubmitted": false,
+      "fullApplicationTests": false,
+      "build": false
+    },
+    "evidenceDirectory": "C:/mega/codex/iENA/outputs/XEDO_Image_Coverage_Diagnosis_2026-11-02",
+    "repairAuthorized": false,
+    "pushAuthorized": false,
+    "deployAuthorized": false,
+    "pendingDecisionIds": [],
+    "highlightImplementation": "risk-map-highlight-2026-11-02"
+  },
+  "riskHighlightImplementation": {
+    "id": "risk-map-highlight-2026-11-02",
+    "recordedOn": "2026-11-02",
+    "sourceSection": "3.91",
+    "status": "publishing_authorized",
+    "scope": "Visual map highlights/legend/coverage feedback only; preserve geometry and confirmation guards.",
+    "applicationFeatureRepairAuthorized": true,
+    "pushAuthorized": true,
+    "deployAuthorized": true,
+    "billingAuthorized": false,
+    "subscriptionAuthorized": false,
+    "pendingUserInput": null,
+    "changedSourceFiles": [
+      "src/planning-risk-highlight.js",
+      "src/planning-risk-editor.js",
+      "src/planning-risk.css",
+      "src/planning-trial-client.js",
+      "tests/planning-risk-highlight.test.mjs",
+      "vercel.json"
+    ],
+    "verification": {
+      "targetedTests": 13,
+      "fullTests": 685,
+      "failed": 0,
+      "syntax": true,
+      "builds": [
+        "hosted",
+        "workspace",
+        "standalone"
+      ],
+      "localComponentBrowserCases": 6,
+      "consoleWarningsOrErrors": 0,
+      "realUserDraftOfflineReplay": "outside",
+      "newInference": false,
+      "realAccountConfirmation": false,
+      "mobileHardware": false
+    },
+    "evidenceDirectory": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02"
+  },
+  "riskHighlightRelease": {
+    "recordedOn": "2026-11-02",
+    "sourceSection": "3.91",
+    "status": "publishing",
+    "baseHead": "88a97ea1f4ae2bfe07e0334677b5801d19a417d3",
+    "projectId": "prj_x35WcipWxA767cYwv3f0CXcdyea3",
+    "teamId": "team_CV1O0uIz6BcarAQAOb8soV0I",
+    "origin": "https://xedo-eight.vercel.app",
+    "evidenceDirectory": "C:/mega/codex/iENA/outputs/XEDO_Risk_Highlight_2026-11-02",
+    "billing": false,
+    "subscription": false,
+    "pendingUserAnswers": []
   }
 }

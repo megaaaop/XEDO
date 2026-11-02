@@ -533,7 +533,7 @@ function refreshFlow(){
   if(geometry){const metrics=selectionMetrics(geometry);$('#trial-area-size').textContent=metrics.areaM2>=1e6?number(metrics.areaM2/1e6)+' km²':number(metrics.areaM2,0)+' m²';$('#trial-area-vertices').textContent=(geometry.coordinates[0].length-1)+' boundary corners';}
   else{$('#trial-area-size').textContent='No area selected';$('#trial-area-vertices').textContent='Place at least three corners.';}
   [...document.querySelectorAll('.trial-map-legend>span')].forEach((item,i)=>{item.hidden=i>0&&(currentStep!==3||(i<3&&!result?.drift?.geometry)||(i===3&&result?.flight?.plan?.status!=='generated'));});
-  renderMissionSummary();renderReadiness();
+  riskUI?.refreshContext?.();renderMissionSummary();renderReadiness();
 }
 function setStep(next){
   if(next>1&&!geometry)return;if(next===3&&!review?.ready)return;stopDraw();selectHome=false;if(next===1){resetSurvey();invalidate();}currentStep=next;

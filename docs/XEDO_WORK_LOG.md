@@ -5,20 +5,38 @@
 **บันทึกสถานะเว็บไซต์ XEDO เพื่อทำงานต่อในแชทนี้และส่งต่อให้แชทอื่น**
 
 - วันที่เริ่มบันทึก: **26 ตุลาคม 2026** ตามเวลา `Asia/Bangkok`
-- อัปเดตล่าสุด: **31 ตุลาคม 2026 — planning.planพื้นที่เดิมเผยแพร่และตรวจProductionผ่านจริง (§3.82)**
+- อัปเดตล่าสุด: **2 พฤศจิกายน 2026 — เผยแพร่และตรวจไฮไลต์แผนที่ (§3.91; อยู่ระหว่างดำเนินการ)**
 - ไฟล์หลัก: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release\docs\XEDO_WORK_LOG.md`
 - โปรเจกต์ที่กำลังทำงาน: `C:\mega\codex\iENA\github-publish\XEDO-hardware-release`
 - เว็บไซต์: [XEDO Production](https://xedo-eight.vercel.app/)
 - Repository: [megaaaop/XEDO](https://github.com/megaaaop/XEDO)
-- จุดประสงค์รอบนี้: แก้ readiness/แบ่งเที่ยว/ดาวน์โหลด.plan บนพื้นที่เดิม ทดสอบและเผยแพร่ตามอนุมัติ
-- สถานะเผยแพร่: source614fab7/CI41153555655success/Production3tE6Kn9XREADY; finaldocsidentity/CIอยู่outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json
-- **ขอบเขตคำสั่งล่าสุด:** อนุมัติ implementation/test และ push/deployเมื่อผ่านตามแผน ไม่เปิดBilling/subscription
+- จุดประสงค์รอบนี้: push/deploy งานไฮไลต์ที่ทดสอบแล้ว และตรวจ Production/CI/ไฟล์ที่เผยแพร่ พร้อมบันทึกผล
+- สถานะเผยแพร่: ได้รับอนุมัติ push/deploy งานไฮไลต์ กำลังดำเนินการ ยังไม่อ้างผล Production ของรุ่นใหม่ก่อนตรวจสำเร็จ
+- **ขอบเขตคำสั่งล่าสุด:** อนุมัติ push/deploy เฉพาะงานไฮไลต์ที่ทดสอบแล้วและเอกสารต่อเนื่อง ไม่ขยาย AOI/แก้ geometry/ปลด Confirm guard หรือimplement return/charge/resume ไม่เปิด Billing/subscription
 
 **กติกาตามคำสั่งผู้ใช้:** ทุกครั้งที่ทำงานกับ XEDO ต้องอ่านไฟล์นี้ก่อนเริ่ม และบันทึกหรือแก้ไขไฟล์นี้ก่อนจบรอบ แม้รอบนั้นมีเพียงการรับข้อกำหนด วางแผน ตรวจสอบ หรืออัปเดตเอกสาร ให้เก็บโครงสร้างหลัก 3 ส่วนคือ **หัวข้อ / สรุป / รายละเอียด** ไว้เสมอ
 
 **กติกาเพิ่ม 27 ต.ค.:** งานแก้/ตรวจเว็บไซต์ลักษณะนี้ต้องบันทึกสองที่: ไฟล์นี้เก็บประวัติ ผลตรวจ และการเผยแพร่; `docs/WEBSITE_DETAILS.md` เก็บโครงสร้าง พฤติกรรม dependency และรายละเอียดวิธีแก้ อัปเดตทั้งสองก่อนจบรอบ และรักษาคิว JSON ให้ตรงกัน
 
 ## 2. สรุป
+
+**เริ่มเผยแพร่งานไฮไลต์ — 2 พ.ย. 2026 (§3.91): ผู้ใช้อนุมัติ push/deploy แล้ว ตรวจ source6ไฟล์ hashตรงกับชุด685tests/3buildsที่ผ่านก่อนหน้า และremote mainตรงฐาน88a97ea ตรวจVercelproject xedo/team/domain Production เดิมตรง กำลังfreeze→commit→normalpushmain→Git deployment→CI/artifact/browser acceptance รวมประวัติและแผนที่canonical docsอ้างอิงเป็นเอกสารเท่านั้น ไม่implement charging ไม่ส่งprivate outputsขึ้นGit ไม่เปิดBilling/subscription ผลหลังเผยแพร่จะบันทึกเมื่อเกิดจริง**
+
+**ทำแผนที่ไฮไลต์ตามภาพ — 2 พ.ย. 2026 (§3.90): เพิ่ม selected Inspector สีเขียวโปร่ง/AIสีเหลือง/SARcoverageสีเทา/กรอบ reviewed image เส้นประฟ้า/เฉพาะส่วนล้นสีแดง พร้อม legend และสวิตช์แยกชั้นข้อมูลในเครื่อง refresh ตามภาพ/ร่างโดย cache input ไม่เพิ่ม RAF/poll/network หรือแก้ geometry/confirmation guards Fresh685tests/0fail,syntax,3buildsผ่าน Browser actual risk-editor/OpenLayers ด้วย recorded fixture+archived context ผ่าน6casesและconsole0; replay draftจริงแบบofflineยังoutsideถูกต้อง ไม่ได้แก้ร่าง/วิเคราะห์ใหม่/SaveบนProduction ไม่pushdeploy/Billing/subscription**
+
+**ตรวจ AI boundary / reviewed image — 2 พ.ย. 2026 (§3.89): ตรวจ Chrome แท็บจริงพบ CPU Ready / งาน succeeded / 12 candidates / ร่าง selected เป็น manual แต่ภาพ context Ready ถูกโหลดสำหรับขอบเขตหลักเดิม ข้อความตรงกับ client coverage guard ก่อน pixel check และ confirm API เปรียบเทียบ DOM ด้วย source ปัจจุบันพบ mainCoversDraft=false และพื้นที่ร่างนอกกรอบเดิมประมาณ1.001% จุดมุมที่จับคู่ห่าง5.92–11.00m คงร่าง/ขอบเขต/ภารกิจเดิม ไม่มีการกด Confirm หรือ Analyze ใหม่ รัน existing planning-risk tests ใหม่10ผ่าน ไม่มี product code/build/push/deploy/Billing/subscription แผน charging เดิมยังไม่เริ่ม implement ไม่มีคำตอบรอ**
+
+**Flow ผู้ใช้จนได้ .plan — 1 พ.ย. 2026 (§3.88): อ่าน Production ใน guest tab ใหม่และ source ปัจจุบัน สรุป 3 ขั้น Select an area → Satellite survey → Flight plan พร้อมทางเลือก AI, การเลือก Home, ภาพครอบคลุมพื้นที่, ค่าอัตโนมัติ/firmware/review และวงจรแก้ Before download ไฟล์ออกทีละ sortie; guest manual flow ไม่บังคับ login ส่วน AI/private Save ใช้ Inspector ไม่มี application implementation/tests/build/AI inference/actual download/push/deploy ใหม่ และไม่มีคำตอบรอ คงคิวงานเดิม**
+
+**ตรวจการคงสถานะหลังรีสตาร์ต — 1 พ.ย. 2026 (§3.87): ตรวจสดเวลา 04:55:56 +07:00 task เดิมยัง Disabled/Enabled=false และ XML ที่บันทึกใน Windows มี Settings.Enabled=false ครอบคลุมทั้ง TimeTrigger ทุก 1 นาทีและ LogonTrigger จึงไม่กลับมาเปิดด้วยการรีสตาร์ต/ลงชื่อเข้าใช้ตาม trigger ของงานนี้ ไม่พบ PowerShell/WindowsTerminal/preview Node หรือ startup command อื่นที่ตรงกับชื่อ/โปรเจกต์ที่ตรวจ ไม่ได้ reboot เครื่องจริง ไม่มีการเปลี่ยน task เพิ่มหรือ application tests/build/publish ใหม่**
+
+**พัก PowerShell ก่อนสัมภาษณ์ — 1 พ.ย. 2026 (§3.86): ไม่พบคำสั่งเปิด terminal ในแผน return/charge/resume ที่ตรวจ พบ Windows Scheduled Task ของ Data preview โปรเจกต์ bme-infographic-app มี trigger ทุก 1 นาทีและ PowerShell/Node ทำงานอยู่ สำรอง task แล้ว Disable/Stop สำเร็จ ตรวจไม่พบ PowerShell/Windows Terminal ค้างและพอร์ต 7293 ไม่มี listener; automation XEDO SAR มีสถานะ PAUSED อยู่ก่อนแล้ว พัก preview ในเครื่องจนกว่าผู้ใช้ขอเปิดคืน ไม่แก้ product code/ไม่รัน application tests/build/ไม่ push/deploy**
+
+**อธิบายแผนแก้ return/charge/resume แบบละเอียด — 31 ต.ค. 2026 (§3.85): ขยายแผนเป็น6ช่วงงาน ตั้งchargingprofile→แบ่งremainingworkพร้อมreturnreserve→chargeevents/timeline→sharedchecks/UI→Save/exportpackage→testacceptance เสนอfixed-durationstopที่แก้ได้ก่อน 10minเดิมใช้ได้เฉพาะplanningassumptionที่ยังไม่ใช่specแท่นและไม่บวกturnaroundซ้ำ มีตัวอย่าง3เที่ยว60.5minสำหรับอธิบาย แยกneedschargingstopsจากunreachablewithfullcharge ชุดล่าสุด137.9>133.2Whจึงไม่สัญญาว่าเพิ่มtimelineแล้วจะผ่านโดยไม่เปลี่ยนinputs รอบนี้plan/docsเท่านั้น ไม่แก้source/tests/build/runtime/pushdeploy/Billing/subscription**
+
+**ยืนยันเป้าหมายกลับแท่นชาร์จและบินต่อ — 31 ต.ค. 2026 (§3.84): ผู้ใช้แก้ความเข้าใจว่าต้องเป็นsurvey→return→charge→resumeจนครบ ไม่ให้จบที่เสนอHomeใหม่ ตรวจsourceปัจจุบันมีreturnทุกsortie/เริ่มแบตใหม่/แบ่งremainingsegmentsแล้ว แต่chargephase/model/timelineยังไม่ครบ ใช้turnaround600sทั่วไปและexportแยกเที่ยว จัดทำRETURN_CHARGE_RESUME_PLAN_2026-10-31.md ปิดคำถามHome/profileเป็นsuperseded_by_requirement_clarification เก็บlowerboundต่อเที่ยว137.9>133.2Whตามเดิม คงHome/profileก่อน รอบนี้requirement/source/docsเท่านั้น ไม่มีimplementation/tests/build/pushdeploy/Billing/subscriptionใหม่**
+
+**ตรวจภาพใหม่ที่ยังโหลด.planไม่ได้ — 31 ต.ค. 2026 (§3.83): เปิดภารกิจจริงพบ Windpass/Batteryblocked/0sorties รหัสSORTIE_INFEASIBLE CPUทำซ้ำตรง snapshot ชุดนี้มีพื้นที่/Homeต่างจากชุดที่ผ่านก่อน จุดสำรวจไกลสุด1918.53m ใช้ขั้นต่ำ137.9023Whไปกลับรวมขึ้นลง ก่อนสำรวจ/เลี้ยว มากกว่างบ133.2Wh จึงไม่ติดจากSurfacereview3.47mหรือcheckboxอย่างเดียว ลองofflineHome150m→24sorties/200m→22sortiesโดยคงแบตเดิม ยังไม่ได้apply/ตรวจGEEHomeใหม่ รอคำตอบว่าจะเสนอHomeอ้างอิง/คงHomeแล้วให้สเปกจริง/อธิบายก่อน บันทึกสองMD/queue/รายงาน ไม่มีproductcode/fullsuite/build/pushdeploy/Billing/subscriptionใหม่**
 
 **normal-area planning .plan เผยแพร่และตรวจเว็บจริงแล้ว — 31 ต.ค. 2026 (§3.82): source614fab7/CI41153555655success/dpl_3tE6Kn9XywrysYfxBXxdi3tpqzr8READY ใช้Polygon/Homeเดิมได้35sorties ตรวจGEE60/60ใหม่และforecastจริง โหลด01/35ผ่านProductionแล้ว ไฟล์12/6itemsและSHAตรงกับlocal ครบ69surveysegments/max132.9476Wh≤133.2Wh คงterrainreview/strictfalse/no-gonull Fresh682tests/3builds/32HTTPchecks/24assetbytehashesผ่าน HTMLต่างเพียงCRLF→LFจากGit 390px/2D3D/console0ผ่าน ไม่มีBilling/subscription ไม่เหลือคำถามหรือblockerของrepairนี้ Exact finaldocs identity/CIเก็บในpublication.json**
 
@@ -2231,3 +2249,126 @@ PostpushHTTP32checksผ่าน: HTML23516bytesและ24assetsตรง25hash
 **Postdeploy checks:** 32HTTPchecksผ่าน รวม24assetsที่bytes/SHA256ตรงทุกไฟล์และHTML24071bytesตรงกับlocal24088bytesเมื่อแปลงเฉพาะCRLFเป็นLFตามGit เก็บfailureครั้งแรกซึ่งassert rawHTMLhashไม่ตรงเป็นverification discrepancyจากline endings แล้วตรวจเทียบentireLF-normalizedpayloadแบบexact ไม่ใช้การตัด/looselymatchเพื่อผ่าน Source/productไม่เปลี่ยนเพราะเหตุนี้ Privatejob401/sessionguestnull/no-store, CPUlauncher/source/docs404และmissingasset404nonimmutableยังถูกต้อง Chromeconsolewarn/error0 ตรวจruntimeerror/fatalเฉพาะdeploymentใน15นาทีไม่พบlogs ตรวจ3Dcanvasvisible/emptyhidden/readinessคงเดิมและ390pxcontent375/button301/nooverflow แล้วresetviewport/กลับ2D ไม่มีbroadperformance/nativeQGC/SITL/flightclaim
 
 **สถานะส่งมอบ:** อัปเดตสองcanonicalMD/รายงาน/queueจากplannedเป็นpublished_verified ไม่มีรอคำตอบหรือimplementation blockerของrepairนี้ ไม่ทำnormal-user-start/derived-endrewrite ไม่เปลี่ยนSQL/accounts/env/CPUworker/AI/cloud/Billing/subscription นอกscope คงreboot rehearsal/ชุดสำรองและextendedqualificationเดิมแยกไว้ CommitเอกสารติดตามและexactfinalCI/deploymentจะบันทึกใน `C:/mega/codex/iENA/outputs/XEDO_Plan_Export_Repair_2026-10-31/publication.json` เพื่อไม่สร้างself-referentialcommit loop
+
+### 3.83 ตรวจพื้นที่ชุดใหม่ที่ยังดาวน์โหลดไม่ได้ — 31 ตุลาคม 2026
+
+**คำสั่งและขอบเขต:** ผู้ใช้ส่งภาพใหม่ถามว่าทำไมยังไม่ได้ ตรวจแท็บChrome889234863โดยไม่reload/clear/เปลี่ยนพื้นที่หรือHome ก่อนงานGitcleanที่88a97ea อ่านcanonicallog/queueและmemoryworkflowแล้ว ใช้Computer UseเปิดViewallchecksและsnapshotจริง ไม่มีsubagent/applicationimplementationหรือสิทธิ์publishใหม่จากคำถามนี้
+
+**ผลจริง:** UIboot /assets/planner-GKAOXQGP.jsตรงfrozenrelease ไม่ใช่หน้ารุ่นก่อน Source snapshot XEDO-planning-trial-0375c94d9085.json พบflightstateblocked/codeSORTIE_INFEASIBLE/Windpass/Batteryblocked/0assessedsorties Surveyroute31110.2607m Surface0–3.467282772m/tolerance2mอยู่reviewแต่referenceheight50mไม่ชนknownDSM ตัวบล็อกหลักเป็นenergy/return ไม่มีเที่ยวที่ใช้ได้ บางerrorcondition-windowเป็นผลตามจากไม่มีassessedend ไม่ใช้เป็นเหตุให้แนะนำแก้เวลาอย่างเดียว ภาพผู้ใช้reviewcheckedจริง ต่อมาactive/refreshmodelresetreviewตามlifecycle จึงไม่กล่าวว่าผู้ใช้ลืมติ๊ก
+
+**CPU reproduction ใหม่:** จากsnapshotเดียวกัน buildTrialFlightกลับblocked/SORTIE_INFEASIBLEใน842.3ms ไม่มีmissingwind Budget177.6−44.4=133.2Wh, power600W, speed5m/s, takeoff/landing30+30s ให้baremaxradius1848m จุดsurveyไกลสุด1918.5346m (vertexไกลสุด1927.2434m) lowerboundไปกลับรวมขึ้นลง=137.902305925Wh ยังไม่รวมสำรวจ/เลี้ยว จึงเกินงบโดยไม่ต้องอาศัยrouteheuristicหรือการเพิ่มเที่ยว พื้นที่/Homeทั้งคู่ต่างจากprivateProductionfixtureของreleaseก่อน ผลผ่าน35sortiesเดิมยังเป็นผลของชุดก่อน ไม่ใช่หลักฐานว่าชุดใหม่นี้จะผ่าน
+
+**ทางเลือกที่รันแบบofflineเท่านั้น:** shiftHomeตามทิศvertexไกลสุด0/100mยังblocked;150mผ่านBattery24sorties/max133.1137Wh;200mผ่าน22sorties/max131.6515Wh คงPolygon/usable/reserve/power/speed/phasesเดิม ไม่เปลี่ยนHomeบนเว็บ ไม่สร้างไฟล์.planจากcandidateและไม่ยกเป็นexportReady เพราะยังไม่มีGEE/Homeใหม่/forecastwindow/reviewหรือphysicalsiteverification ข้อมูลพิกัดcandidateเก็บเฉพาะprivate-home-options.jsonนอกGit
+
+**UXที่เสนอเมื่อมีคำสั่งแก้:** ยกreasonBattery/requiredvsbudgetWhและMoveHomeเป็นprimaryblockerแทนGenerateunblockedroutefirst แยกHomecoordinateReadyจากreachability และcondition-windowรอassessedsortiesจากrootenergyfailure ไม่ปลดlockหรือเพิ่มWh/lowerreserveเพื่อทำให้ผ่าน
+
+**รอคำตอบ:** ส่งตัวเลือกผ่านasyncquestionแล้ว ให้เสนอHomeอ้างอิงใหม่ก่อนบนแผนที่ (แนะนำ), คงHomeแล้วผู้ใช้ให้specจริง, หรืออธิบายก่อนยังไม่เปลี่ยนค่าภารกิจ คำตอบนี้จำเป็นก่อนแก้configurationที่เกี่ยวข้อง ไม่ถือว่าเวลาที่ผ่านไปเป็นการอนุมัติ
+
+**Files/evidence:** รายงานdocs/NEW_AREA_DOWNLOAD_BATTERY_DIAGNOSIS_2026-10-31.md; inputs/report/snapshot/diagnosis/private-home-options/battery-blocked.pngในoutputs/XEDO_New_Area_Download_Diagnosis_2026-10-31 มีfreshCPUreproduction+4feasibilityprobes ไม่รันfullsuite/build/CI/GEEของHomecandidateใหม่ ผล682tests/3builds/32HTTPและ35sortiesของreleaseก่อนเป็นหลักฐานเดิมเท่านั้น รอบนี้แก้เอกสารสองMD/queue/รายงานในเครื่อง ไม่มีapplicationcode/account/SQL/env/AIjob/push/deploy/Billing/subscription change
+
+### 3.84 ผู้ใช้ยืนยันวงจรกลับแท่นชาร์จแล้วทำงานต่อ — 31 ตุลาคม 2026
+
+**คำตอบผู้ใช้:** ที่ตกลงไว้ตอนเเรกคือให้มี plan บินกลับไป charge อัตโนมัติ เพราะฉะนั้นเวลาเเบตจะหมดเเล้วมันจะบินกลับเเท่นชาร์ต ยึดเป็นข้อกำหนดล่าสุดของwebsite prototype: ออกจากฐานตรวจบางส่วน ก่อนพลังงานไม่พอต้องวางreturn/landingที่แท่น ชาร์จ แล้วทำremainingworkต่อจนครบ การตอบนี้ไม่ได้เลือกcandidateHomeหรือเปลี่ยนWh/reserve จึงคงconfigurationเดิมและเลิกบังคับตอบตัวเลือกHomevsprofileก่อนทำความเข้าใจflow
+
+**ตรวจsourceสด:** trial-flight.js:174–237เริ่มทุกsortieที่Homeรวมoutbound/return/takeoff/landing/turns คิดbudget=usable−reserve ใช้freshenergybudgetทุกเที่ยว และเดินfirst=end+1พร้อมsurveyfractionsเพื่อทำremainingworkต่อ แปลว่าตัวหารเที่ยวไม่ได้คิดให้ทั้งพื้นที่จบด้วยแบตก้อนเดียว แต่ยังสมมติว่าgroundserviceเติมพลังงานแล้ว ไม่จำลองchargingprocess planning-schedule.js:50/102ใช้groundturnaround600sทั่วไป ไม่ใช่ผลวัด/แบบคำนวณเวลาชาร์จ trial-export.js:211–231downloadหนึ่ง.planต่อsortieจบด้วยland ไม่มีchargingsequence/chargercommandหรือresumptionmanifestครบทั้งงาน ห้ามอ้างว่าฟังก์ชันกลับชาร์จอัตโนมัติครบแล้วจากฐานนี้
+
+**แนวทางที่บันทึก:** docs/RETURN_CHARGE_RESUME_PLAN_2026-10-31.md มีstation/energy/timeline/chargeprofile/coverage/exportpersistenceและ10casesdesigned_not_run คง3steps/4calculators เวลาชาร์จต้องมาจากprofileที่ระบุได้ ไม่เอา600sเดิมไปเรียกชาร์จเต็มจริงโดยไม่มีสเปก แยกplanreturn/charge/resumeบนเว็บจากhardwareexecution ไม่เพิ่มการเชื่อมแท่นหรือautopilotจริงโดยปริยาย
+
+**ข้อจำกัดที่ยังจริง:** การชาร์จที่ฐานทำให้เริ่มเที่ยวถัดไปด้วยพลังงานใหม่ แต่ทุกเที่ยวต้องไปและกลับถึงฐานได้ด้วยแบตเต็มตามprofile กรณี§3.83ใช้ขั้นต่ำ137.9023Whก่อนsurvey/turns เทียบbudget133.2Wh จึงยังfull-charge reachabilityไม่พอ การยืนยันcharginggoalไม่ได้ลบข้อเท็จจริงนี้และไม่อนุมัติปลดgate/เพิ่มenergyหรือลดreserve ต้องสื่อสารrootcauseนี้กับNeedschargingstopsแยกกันโดยไม่ชวนผู้ใช้เข้าใจว่าเพิ่มchargingcyclesอย่างเดียวแก้ระยะที่เกินได้
+
+**คำถามและสถานะ:** คำถามasyncเดิมปิดเป็นsuperseded_by_requirement_clarification เก็บคำตอบliteralและไม่ตีความเป็นการย้ายHome ไม่มีคำถามใหม่ที่ส่งให้ผู้ใช้รอคำตอบในรอบนี้ Chargingpower/durationจริงยังไม่ได้ให้มาเป็นunprovidedprofileparametersของแผน ไม่อ้างค่าขึ้นเอง
+
+**งาน/หลักฐานรอบนี้:** อ่านcurrentlog/queue/Gitและsourceจริง แก้สองcanonicalMD/queue/แผนใหม่ และannotateรายงานdiagnosisเดิม ไม่มีsourcecode/UI/geometry/Home/Wh/SQL/envchange ไม่รันCPUprobes/suite/build/browser/API/CIใหม่ ไม่commit/push/deploy ไม่เปิดBilling/subscription 682tests/oldreleaseและCPUprobes§3.83ยังเป็นผลเก่า ไม่ใช่ผลทดสอบchargingmodelใหม่
+
+### 3.85 รายละเอียดวิธีแก้แผนกลับชาร์จและบินต่อ — 31 ตุลาคม 2026
+
+**คำสั่ง:** ผู้ใช้ขอให้เล่ารายละเอียดการแก้ไข อ่านสองcanonical/queue/แผน/Gitล่าสุดก่อนทำงาน รักษาdirtydocsจาก§3.83–3.84 ไม่มีคำสั่งให้implementหรือpublishใหม่รอบนี้ ขยายdocs/RETURN_CHARGE_RESUME_PLAN_2026-10-31.mdส่วน3.8–3.13เพื่ออธิบายงาน/inputs/UX/export/testsให้reviewได้
+
+**ลำดับimplementationที่เสนอ:** (1)กำหนดusable/reserve/target/chargingprofileและownership (2)แบ่งremainingsegmentsโดยคิดoutbound/survey/turn/return/landingรวมreserveและcoverage (3)เพิ่มchargeevents/energytransition/timeline (4)ผูกsharedchecks/forecast/UIและrootblockers (5)SaveHistory/manifest/package/selected.plan (6)unitintegrationbrowseractualdownloadและตรวจgates คง3steps/4calculators/privateInspector/localCPUและไม่เพิ่มroleหรือcloudpaidservice
+
+**Chargingmodelproposal:** เริ่มfixed-durationstopที่แก้ได้เพื่อไม่แต่งchargerpower/efficiencyจริง ใช้10minเดิมได้เพียงproposedplanningground/chargeassumptionที่มีsource ไม่ใช่physicalชาร์จเต็ม10min และไม่ถือว่าผู้ใช้ยืนยันตัวเลข ควรถอด600s turnaroundเดิมจากการบวกซ้ำเมื่อใส่chargephaseแล้ว ค่า10minยังไม่applyกับsourceหรือภารกิจล่าสุด การมีchargingtimelineไม่ได้เพิ่มusable energyหรือทำให้จุดที่ไปแล้วกลับเกินbudgetเข้าถึงได้
+
+**อธิบายด้วยตัวอย่างสมมติ:** usable177.6/reserve44.4/power600W เที่ยวใช้120/125/110Whเหลือ57.6/52.6/67.6Wh Airborne35.5min+2stops×10min+buffer5=60.5min ตรวจเฉพาะarithmeticและเก็บcharge-plan-example-arithmetic.json ไม่ใช่flightCPUreplay/browserfileจากภารกิจจริง ไม่ใช่ผลทดสอบchargingmodule
+
+**UX/export:** เสนอFlightplanมีchargingstops/timeline/remainingworkและselectedsortiemap สถานะReadywithchargingstops/Chargingdurationneeded/Unreachablewithfullcharge/Conditionsrefreshแทนgenericblocked แสดงrequired/budgetWhและไม่ใช้Surface/เวลาแก้rootenergy failure อาจเพิ่มmissionpackageZIP+manifestคู่กับ.planเดี่ยว โดยไม่อ้างว่าQGCอ่านZIPแล้วชาร์จ/เปิดเที่ยวถัดไปเอง คงnormalPlanreference/strictgate/session/revision/hash guards ไม่มีcommandแท่นจริงจากไฟล์มาตรฐานโดยปริยาย
+
+**ข้อจำกัด/เกณฑ์รับงาน:** ล่าสุด137.9Whlowerbound>133.2Wh budgetยังเป็นข้อจำกัดต่อเที่ยว ต้องauditusable/reserve/targetและแสดงส่วนที่ไม่ถึง ห้ามแก้energy/ย้ายฐาน/ตัดพื้นที่เงียบ ทดสอบ3คลาสreachableเที่ยวเดียว/reachableหลายเที่ยวชาร์จ/unreachableแม้fullprofile รวมchargeไม่ซ้ำ/coverageครบ/forecastdates/manualownership/SaveHistory/actualpackage&selectedplan ไม่เอาtests682เดิมมาเรียกผลใหม่ ทั้ง10casesในแผนยังdesigned_not_run
+
+**สถานะ:** อัปเดตplan/สองMD/queueในเครื่อง ตรวจเอกสาร3parts/JSONและarithmeticตัวอย่าง ไม่มีapplicationimplementation/CPUsolver/browser/API/fullsuite/build/CI/commit/push/deployหรือBilling/subscriptionใหม่ ไม่มีคำถามใหม่ที่ส่งรอคำตอบ Parametersแท่นจริงยังunprovidedแต่ไม่ได้อนุมานว่าเป็นpermissionให้ตั้งspecขึ้นเอง
+
+### 3.86 ตรวจและพัก PowerShell ของ Data preview ก่อนสัมภาษณ์ — 1 พฤศจิกายน 2026
+
+**คำสั่งและขอบเขต:** ผู้ใช้แนบภาพ Windows Terminal/PowerShell และขอให้ตรวจ plan ว่ามีคำสั่งเปิด PowerShell ตลอดหรือไม่ พร้อมปิดฟังก์ชันนี้ก่อนสัมภาษณ์ อ่าน log/queue/AGENTS และ Git state จริงก่อนดำเนินการ รักษา dirty docs และแผนใหม่จาก §3.83–3.85; HEAD ที่ตรวจคือ 88a97ea1f4ae2bfe07e0334677b5801d19a417d3 ไม่มีคำสั่งให้ทำ charging implementation หรือ publish รอบนี้
+
+**ผลตรวจ:** docs/RETURN_CHARGE_RESUME_PLAN_2026-10-31.md ไม่พบ PowerShell/Start-Process/ScheduledTask/schtasks/NoExit/keep-alive/WindowStyle; Start-XEDO-CPU.cmd เป็น launcher ที่ผู้ใช้เปิดเอง ไม่พบ CPU Python worker ทำงานในการตรวจครั้งนี้ ไฟล์ automation xedo-sar ระบุ PAUSED อยู่ก่อนแล้ว ต้นเหตุที่สัมพันธ์กับหน้าต่างจริงคือ Scheduled Task `com.openai.data-preview.6952ef9c969938f87d8c0f3d7408937f3973d14c82f75dbcdefaab417f933a58` ซึ่งมี repetition PT1M และ PowerShell PID15656/child Node22656 ทำงานอยู่ Config ชี้ไป bme-infographic-app ใน Codex profile และพอร์ต 7293 ไม่ใช่ XEDO release; action มี -WindowStyle Hidden แต่ยังพบ WindowsTerminal PID21444 ขณะ launcher ทำงาน ไม่อ้างว่า Hidden รับประกันไม่มีหน้าต่าง
+
+**การเปลี่ยนแปลงจริง:** สำรอง task XML/CLIXML และ process metadata ใน outputs/PowerShell_Interview_Pause_2026-11-01 จากนั้น Disable-ScheduledTask และ Stop-ScheduledTask เฉพาะชื่อที่ตรวจได้ ผล State=Disabled/Settings.Enabled=false และ matching PowerShell/Node เหลือ 0; Windows Terminal หายไปโดยไม่ต้อง kill โปรแกรมอื่น พอร์ต 7293 ไม่มี listener ไม่ถอน plugin/ไม่ลบ preview/config/source และไม่ตั้งเปิดคืนอัตโนมัติ ให้เปิดคืนเฉพาะเมื่อผู้ใช้ขอ
+
+**ผลกระทบและหลักฐาน:** local preview ของ bme-infographic-app หยุดชั่วคราว ไม่เปลี่ยน hosted XEDO หรือ project application code หลักฐาน task-before.xml/task-before.clixml/processes-before.json/pause-receipt.json และ verification.json อยู่ใน evidence directory เดียวกัน การตรวจ Windows ครั้งแรกใน sandbox เข้า CIM ไม่ได้ จึงใช้การตรวจนอก sandbox ที่ผ่าน approval review แล้ว; ไม่มี auto-review rejection
+
+**ตรวจซ้ำหลังผ่านเวลารอบถัดไป:** เวลา 04:54:58 +07:00 task ยัง Disabled/Enabled=false, LastRunTime ไม่เปลี่ยนหลังผ่านกำหนด 04:54:53, PowerShell/WindowsTerminal=0 และ port7293 listener=0 เก็บ verification.json จริงแล้ว ตรวจ queue JSON/โครงสร้าง log สามส่วนและ git diff --check ผ่าน ไม่รัน application tests/build
+
+**ไฟล์และสถานะ:** อัปเดต XEDO_WORK_LOG.md/WEBSITE_DETAILS.md/implementation-queue.json เพื่อ continuity; แผน return/charge/resume ยัง detailed_plan_prepared และ unansweredDecisions ว่าง ไม่มี application tests/build/CPU inference/browser acceptance/commit/push/deploy/Billing/subscription ใหม่ ไม่ใช้ผล tests เก่าเป็นผลรอบนี้ ไม่มีคำตอบใหม่ที่รอจากผู้ใช้
+
+### 3.87 ยืนยันสถานะ preview หลังรีสตาร์ต — 1 พฤศจิกายน 2026
+
+**คำถาม:** ผู้ใช้ต้องการยืนยันว่ารีสตาร์ตแล้ว PowerShell ที่พักไว้จะไม่เปิดกลับมาระหว่างสัมภาษณ์ อ่าน current log/queue/Git ก่อนตรวจสด ไม่มีคำสั่งให้ reboot เครื่องหรือเปิดคืน
+
+**ผลตรวจใหม่:** เวลา 04:55:56 +07:00 Scheduled Task เดิม State=Disabled, Settings.Enabled=false และ Export-ScheduledTask XML ที่บันทึกอยู่จริงมี Task.Settings.Enabled=false พบทั้ง TimeTrigger PT1M และ LogonTrigger ภายใต้ task ที่ปิดอยู่ ค่า Disabled เป็นการตั้งค่าของ task ที่คงอยู่ข้ามการ reboot จึงปิดการเรียกผ่านทั้งสอง trigger ไม่พบ powershell.exe/WindowsTerminal.exe/Node ของ preview และ Win32_StartupCommand ไม่พบรายการที่ตรง data-preview/bme-infographic/taskID/XEDO/PowerShell/pwsh ในการตรวจครั้งนี้ หลักฐาน outputs/PowerShell_Interview_Pause_2026-11-01/restart-persistence-check.json
+
+**ขอบเขตความมั่นใจ:** ยังไม่ได้รีสตาร์ต Windows จริง ยืนยันจาก persisted task configuration และสถานะ process ปัจจุบัน ไม่รับรองว่าโปรแกรมอื่นทุกตัวบนเครื่องจะไม่มีวันเรียก PowerShell และการติดตั้ง/เปิด preview ใหม่ภายหลังอาจเปลี่ยนการตั้งค่าได้ ไม่เปิดคืนเองจนกว่าผู้ใช้ขอ
+
+**การเปลี่ยนแปลง/สถานะ:** รอบนี้อ่าน Windows state และอัปเดตสอง canonical MD/queue พร้อม evidence ใหม่เท่านั้น ไม่เปลี่ยน task เพิ่ม ไม่แก้ application/source ไม่รัน application tests/build/browser/CPU inference ไม่ commit/push/deploy/Billing/subscription ไม่มีคำตอบใหม่รอจากผู้ใช้ แผน charging เดิมคงสถานะเดิม
+
+### 3.88 อ่านเว็บไซต์และจัดทำ user flow จนดาวน์โหลดแผนบิน — 1 พฤศจิกายน 2026
+
+**คำขอ/ฐานที่ตรวจ:** ผู้ใช้ขอให้อ่าน website แล้วเขียน flow chart ว่าผู้ใช้ต้องทำอะไรถึงได้ plan การบิน อ่าน canonical log/queue/AGENTS และ Git ก่อนงาน HEAD 88a97ea1f4ae2bfe07e0334677b5801d19a417d3 บน codex/xedo-hardware-profile มี dirty สอง canonical MD/queue และสองแผนจากงานก่อนอยู่แล้ว เก็บงานเหล่านั้นทั้งหมด ไม่ถือ queued requirements เป็นคำสั่ง implementation
+
+**การตรวจใหม่:** เปิด https://xedo-eight.vercel.app/ ใน in-app browser tab ใหม่แบบ guest อ่านหน้า planner จริงและ Mission settings รวม Aircraft, camera & battery / Export constraints & review พบ 3 steps, optional Analyze area/prepared AI, flight firmware ยัง Unknown, export defaults 60 m/5 m/source/validity เติมอยู่ และ Home ต้องเลือกก่อนมี GEE estimate อ่าน source public/planning.html, planning-trial-client.js, planning-risk-editor.js, planning-analysis-jobs.js, inspector-client.js, planning-readiness.js, planning-flight-profile.js, planning-export-defaults.js, planning-export-readiness.js, trial-export.js, planning-schedule.js และ geospatial/environment gates ไม่เรียก Analyze ไม่ login ไม่แตะภารกิจเดิมและไม่เริ่ม worker/preview คืน
+
+**ข้อสรุป flow:** วาด Polygon 3–120 จุดไม่มี holes หรือ import; Set launch point; Review area image ค้นหาและโหลด covering Sentinel-2 แล้วตรวจภาพ; กรณี AI ต้องเลือก/แก้ candidate และ Confirm inspection area หลังภาพครอบคลุมโหลดครบ; Prepare drone mission; ตรวจ Mission settings/firmware/time/profile; รอเงื่อนไข/terrain/route/battery คำนวณ; ตรวจ route/return/ผลรายเที่ยวและ planning review; ถ้าไม่พร้อมอ่าน Before download/View all checks แก้สาเหตุแล้วคำนวณใหม่; เลือก sortie และ Download planning file .plan แล้วทำซ้ำสำหรับเที่ยวอื่นที่ต้องการ Guest manual flow ไม่บังคับบัญชี แต่ AI/private Save/History ใช้ Inspector; new SAR inference ต้อง local worker ส่วนผลเดิมไม่ต้องรัน inference ใหม่
+
+**ขอบเขตที่ต้องสื่อ:** Home height/flight assumptions/export defaults เติมอัตโนมัติภายใต้ ownership เดิม ไม่แนะนำกรอกทุกช่องเองเป็นทางหลัก; Surface review ไม่ใช่ blocker ทุกกรณีของ planning_reference หาก evidence ครบ/ตรง/สดและไม่ชน known surface แต่ missing/stale/mismatch/energy/wind/time/conflict ยัง block ไม่มีข้อกำหนดให้ oil/capsule estimate ครบเพื่อสร้าง flight .plan และไม่ต้องเชื่อม Pi/drone ไฟล์หนึ่งต่อ sortie ไม่ใช่ charging execution หรือ mission package ครบทั้งงาน แผน charging ยังไม่ implement
+
+**ไฟล์/ตรวจ/เผยแพร่:** บันทึก flow และ Mermaid ใน WEBSITE_DETAILS.md §3.88 และอัปเดต work log นี้ ตรวจ JSON parse/เอกสารสามส่วน/diff whitespace เฉพาะไฟล์ที่แก้ ไม่มี application tests/build/CPU inference/live GEE acceptance/actual .plan download/full normal-flow acceptance ใหม่ ผล browser รอบนี้เป็น read-only UI inspection ไม่มี commit/push/deploy/Billing/subscription เปลี่ยน requirements/status ใน queue จึงไม่แก้ JSON; unansweredDecisions ยังว่าง ไม่มีคำตอบรอ
+
+
+### 3.89 ตรวจขอบเขต Inspector เกิน reviewed image — 2 พฤศจิกายน 2026
+
+**คำขอ/ฐานที่ตรวจ:** ผู้ใช้ส่งภาพข้อความ The boundary extends beyond the reviewed image และขอวิเคราะห์สาเหตุ อ่าน log/queue/AGENTS และ Git HEAD 88a97ea1f4ae2bfe07e0334677b5801d19a417d3 ก่อนตรวจ เก็บ dirty docs/queue และแผนจากรอบก่อนทั้งหมด ไม่มี implementation หรือ publishing authorization ใหม่
+
+**หลักฐานใหม่จากเว็บจริง:** อ่าน Chrome browser3 tab889235989 ที่ https://xedo-eight.vercel.app/ โดยไม่ reload/reset/เปลี่ยนค่า พบ Local processor Ready, งานล่าสุด 2Nov17:10:15 succeeded, SAR acquired2026-11-01T23:00:42Z / inferred2026-11-02T10:10:42.462422+00:00 / SARUNet checkpoint41a2bd4b5b23 threshold0.3 และ12candidates ร่างที่เลือกใน Inspector areas เป็น manual แม้ฝั่ง AI candidates highlight candidate-00001 ภาพ Sentinel-2 1Nov03:54UTC แสดง Image ready for review ข้อความ error ยังตรงภาพผู้ใช้ การเลือก candidate ในรายการยังไม่เท่ากับ Use candidate
+
+**สาเหตุที่ยืนยันได้:** src/planning-risk-editor.js:139–144 ตรวจ validateRiskTarget → imageReady → coversGeometry(context.imageGeometry, selected.geometry) แล้วจึง verifyTargetPixels และ confirmRisk ข้อความนี้มาจาก coversGeometry=false ก่อน network pixel verification/confirm API ไม่ใช่หลักฐานว่า CPU inference ล้มเหลวหรือ GEE timeout src/planning-trial-client.js:726 + planning-satellite.js:51–56 เก็บ geometry ณ ตอนโหลดเป็น review.geometry และส่งเป็น imageGeometry ที่ :834 การแก้ risk draft ไม่เปลี่ยน search/image AOI โดยอัตโนมัติ จึง ImageReady ได้แต่พื้นที่ร่างไม่ครอบคลุม
+
+**คำนวณ geometry สด:** อ่านเฉพาะ DOM textarea trial-geometry กับ risk-geometry (ไม่อ่าน app globals/session/cookies) แล้วเรียก source coversGeometry/coverageDiagnostics ในเครื่อง mainCoversDraft=false, draftCoversMain=false; ส่วนร่างนอก main geometry ประมาณ1.0014% หรือ0.0313km² โดย local equirectangular approximation ค่าระยะจุดมุมตามลำดับประมาณ9.89/5.92/11.00m เป็นพิกัดคนละชุดจริง ไม่ใช่เพียง string/ring order ต่างกัน ไม่อ้างว่าได้อ่าน internal review geometry โดยตรง; สรุปจาก DOM + source ที่สร้าง review และ exact error branch ยังไม่มี event history ยืนยันว่าผู้ใช้วาดซ้ำ ลาก หรือ import มาอย่างไร
+
+**เหตุที่ UI ชวนสับสน:** Show data coverage วาด analysis.coverage ของ SAR ส่วน client confirmation เทียบ reviewed context image/search AOI เป็นคนละ layer; image Ready หมายถึงโหลดผ่านสำหรับ AOI เดิม ไม่ยืนยันว่าร่างใหม่อยู่ภายในทั้งหมด ปุ่ม Confirm เปิดตาม shape validity และมาแจ้ง coverage ตอนกดเท่านั้น จึงเกิด late error โดยไม่มีส่วนล้นสีแดง การขยาย zoom หรือ Load selected image ซ้ำด้วย AOI เดิมไม่เปลี่ยน logical boundary
+
+**แนวทางที่เสนอ ยังไม่ implement:** แสดง search AOI / reviewed context boundary / SAR valid coverage แยกชื่อและสี เพิ่ม preflight coverage status ต่อ selected draft และไฮไลต์ส่วนล้นก่อน Confirm ตัวเลือกที่รักษางานเดิมคือแก้ขอบร่างกลับภายในกรอบที่ตรวจไว้ หากต้องการขยายจริงให้สำรอง manual draft/lineage ก่อนและใช้ workflow ขยาย search area → Analyze ใหม่เมื่อเกิน original analysis search AOI → โหลด context image ให้ครอบคลุม → review/confirm ใหม่ กรณีอยู่ใน search แต่เกินเฉพาะ context ให้ reload covering context โดยไม่รัน AI ใหม่โดยไม่จำเป็น ต้องตรวจทั้ง client/server และห้ามเพียงลบ guard/เพิ่ม tolerance/clip หรือตัดพื้นที่เงียบ เปลี่ยน main geometry ผ่าน setGeometry ปัจจุบันจะ riskUI.reset จึงต้องออกแบบ draft preservation ก่อนใช้เป็นปุ่มแก้อัตโนมัติ
+
+**ตรวจ/ไฟล์/เผยแพร่:** รัน node --test tests/planning-risk.test.mjs ใหม่10passed/0failed/0skipped (coverage geometry, concavity/holes/NoData/state/undo/lineage) และ fresh offline comparison ของ DOM ชุดนี้ ไม่ใช่ browser confirmation success หรือ full application acceptance ไม่รัน build/full suite/new AI job/live GEE request/Supabase mutation/actual .plan download/CI ไม่เปลี่ยน source/config/tests/บัญชี/worker/Windows task ไม่ commit/push/deploy/Billing/subscription อัปเดตสอง canonical MD และ queue ด้วย diagnosed_not_fixed; เก็บ private DOM + geometry evidence ใน outputs/XEDO_Image_Coverage_Diagnosis_2026-11-02 นอก Git ไม่ใส่ precise coordinates ใน docs คง charging plan เดิม ไม่มีคำถามใหม่รอคำตอบ
+
+
+### 3.90 ทำไฮไลต์พื้นที่ Inspector/AI และส่วนล้นตามภาพ — 2 พฤศจิกายน 2026
+
+**ขอบเขต/การเปลี่ยน:** ผู้ใช้ขอทำ highlight ประมาณภาพ จึงทำ visual feedback ใน active checkout ตาม intent ไม่ใช้เป็นคำสั่ง publish หรือขยาย scope charging อ่าน log/queue/AGENTS/Git ก่อนแก้และรักษา dirty docs/แผนเดิม เพิ่ม src/planning-risk-highlight.js แยก display feedback และ canvas mask; ปรับ src/planning-risk-editor.js, planning-risk.css และ refresh hook ใน planning-trial-client.js เพิ่ม tests/planning-risk-highlight.test.mjs; vercel.json เปลี่ยนเฉพาะ exact asset cache inventory ที่ regenerate ด้วย script หลัง build ไม่แตะ env/API/Auth/DB/worker
+
+**พฤติกรรม:** selected Inspector เป็นเขียวโปร่งเส้น3px; AI candidates เหลือง; SAR valid coverage เทาและเปิดเริ่มต้นตามภาพ; reviewed context image เป็นเส้นประฟ้าเปิดเริ่มต้น มี legend ระบุแต่ละชั้นและ toggle แยก raw/SAR/image ข้อความ coverage บอก waiting/invalid/inside/outside ก่อนกด Confirm ส่วนล้นแดงเฉพาะ selected draft นอก review.geometry ใช้ Canvas even-odd inverse clip บน VectorLayer แยก ไม่แก้พิกัดจริง ไม่ตัดพื้นที่ทิ้ง และไม่ถือภาพบริบทที่มองเห็นรอบข้างเป็นขอบเขตที่ผ่าน review
+
+**Lifecycle/performance:** context refresh จาก refreshFlow ตาม image ready/reset/replacement และ render ตาม draft edit/select/undo/cancel ใช้ key ของ image/target/visibility ข้ามการคำนวณซ้ำ ไม่คำนวณ relationship ทุก pan/zoom/frame ไม่มี poll/RAF/network เพิ่ม Mask ใช้ OL getRenderPixel แปลง CSS viewport ไป canvas render pixels จึงตาม pan/zoom/rotation/HiDPI; save/restore context และ unbind render listeners/remove layers เมื่อ dispose Confirm ยังใช้ validateRiskTarget/imageReady/coversGeometry/visible pixels/server ownership+revision เดิม ไม่ตั้ง Ready แทนข้อมูลที่ไม่ครอบคลุม
+
+**ตรวจใหม่:** targeted risk+highlight13ผ่าน รวม new tests3cases ครอบคลุม missing/invalid/exact-boundary/overflow/replacement/expiry และ mask holes/pixel transform/invalid transform ไม่ mutate geometry Fresh npm test -- --test-concurrency=2 ผ่าน685/685,0fail/cancel/skip; npm run check และ node --check helper/editor ผ่าน; cache regeneration + npm run build (HTML24088bytes, initialJS805649bytes), build:workspace และ build:file ผ่าน Standalone artifact6225848bytes
+
+**Browser proof:** localhost5208 ใช้ component risk-editor/OpenLayers จริงกับ recorded SAR14candidates และ archived Sentinel context เป็น QA fixture ไม่ใช่ผล AI ใหม่ของ user ทดสอบ6case outside/inside/image unavailable/Confirm guard/layer toggles/rotation; สีแดง align หลังหมุนและหายเมื่ออยู่ในกรอบ คำอธิบายชั้นข้อมูลตรง toggle geometry ของ outside ไม่เปลี่ยนจาก toggles/rotation console warn/error0 มีภาพ highlight-desktop.png และ browser-cases.json ใน outputs/XEDO_Risk_Highlight_2026-11-02 อ่าน private DOM จากรอบก่อน replay helper แบบofflineได้ outside ตามเดิม ไม่ส่ง Confirm/Save/Analyze ให้ user บนProduction ไม่มี mobile/HiDPI hardware/full-account acceptance ใหม่ ค่า pixel transform มี unit coverage ไม่อ้าง physical device test
+
+**ข้อจำกัด/คงคิว:** งานนี้ทำให้มองเห็นส่วนล้น ไม่ทำให้ร่างเดิมที่เกินขอบเขตกลายเป็น confirmed อัตโนมัติ ต้องแก้ขอบหรือ review/analysis ที่ครอบคลุมตามกติกา ส่วน workflow ขยาย search area พร้อมรักษาร่างยังไม่ implement ไม่เปิด Billing/subscription ไม่ commit/push/deploy/CI ใหม่ อัปเดตสอง canonical MD และ queue; charging plan ยังคง detailed_plan_prepared ไม่มีคำตอบใหม่รอ
+
+
+### 3.91 เผยแพร่ไฮไลต์แผนที่ตามอนุมัติ — 2 พฤศจิกายน 2026
+
+**ขอบเขตและฐาน:** ผู้ใช้สั่ง push และ deploy งานไฮไลต์ตาม §3.90 อ่าน canonical docs/queue และ Git ใหม่ remote main/HEADตรง88a97ea1f4ae2bfe07e0334677b5801d19a417d3 ตรวจ Vercel xedo projectprj_x35WcipWxA767cYwv3f0CXcdyea3 / team_CV1O0uIz6BcarAQAOb8soV0I / aliasxedo-eight.vercel.app Productionเดิม READYตรงฐาน ส่งเฉพาะ6ไฟล์ source/test/cache-inventoryของhighlight และcanonical docs/queue พร้อม2เอกสารแผนก่อนหน้าที่บันทึกอ้างอิง ไม่ทำcharging implementation/บัญชี/DB/env/worker/automation
+
+**การตรวจ candidate:** SHA256ทั้ง6ไฟล์ตรง verification.json ของรอบimplementation จึงคงผล685tests/13targeted/syntax/3buildsและ6localcomponentcasesตาม§3.90 ไม่อ้างว่าเพิ่งรันlocalfullsuiteใหม่ในturnเผยแพร่ ตรวจdiff whitespace/scopeและfreeze exact source/hosted assetsก่อนcommit ใช้normalpush main ไม่forcepush ไม่publishprivate DOM/mission JSON/sessions/keys/artifactsในoutputs เอกสารแผนเก่ารักษาสถานะpreparedเท่านั้น
+
+**สถานะก่อนส่ง:** กำลังcommit/push→VercelGitProduction→ตรวจexactcommit/CI/READY/alias→HTTP+assetbytehash→browserQAแยกแท็บโดยรักษาร่างผู้ใช้เดิม ยังไม่ถือว่าผ่านจนตรวจจริง เก็บ release-manifest.json และpublication.json ใน outputs/XEDO_Risk_Highlight_2026-11-02 ไม่มีBilling/subscription/paidcloudหรือคำถามใหม่รอ ผลหลังเผยแพร่จะเติมด้านล่าง
